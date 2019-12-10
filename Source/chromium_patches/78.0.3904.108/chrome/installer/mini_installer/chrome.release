@@ -9,14 +9,14 @@
 # chrome.exe: %(ChromeDir)s\
 chrome_proxy.exe: %(ChromeDir)s\
 tangramcore.dll: %(ChromeDir)s\
-tangramcore.pdb: %(ChromeDir)s\
+#tangramcore.pdb: %(ChromeDir)s\
 tangram_clr_rt.dll: %(ChromeDir)s\
-tangram_clr_rt.pdb: %(ChromeDir)s\
+#tangram_clr_rt.pdb: %(ChromeDir)s\
 tangram_chrome_rt.dll: %(ChromeDir)s\
-tangram_chrome_rt.dll.pdb: %(ChromeDir)s\
+#tangram_chrome_rt.dll.pdb: %(ChromeDir)s\
 winrtapi\*.dll: %(ChromeDir)s\
 mfcexe\*.exe: %(ChromeDir)s\
-csharpexe\*.exe: %(ChromeDir)s\
+csharpexe\*.*: %(ChromeDir)s\
 tangramcomponent\*.dll: %(ChromeDir)s\tangramcomponent\
 tangramcomponent\*.component: %(ChromeDir)s\tangramcomponent\
 #
@@ -31,7 +31,7 @@ tangramhelper.exe: %(VersionDir)s\
 # Chrome version dir entries, sorted alphabetically.
 #
 chrome.dll: %(VersionDir)s\
-chrome.dll.pdb: %(VersionDir)s\
+#chrome.dll.pdb: %(VersionDir)s\
 chrome_100_percent.pak: %(VersionDir)s\
 chrome_child.dll: %(VersionDir)s\
 chrome_elf.dll: %(VersionDir)s\

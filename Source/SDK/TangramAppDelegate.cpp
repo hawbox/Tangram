@@ -927,7 +927,7 @@ namespace TangramCommon
 			if (m_strProviderID != _T(""))
 			{
 				m_strProviderID.MakeLower();
-				g_pTangramImpl->InsertTangramDataMap(1, m_strProviderID, this);
+				g_pTangramImpl->InsertTangramDataMap(1, m_strProviderID, (ITangramWindowProvider*)this);
 				//g_pTangramImpl->m_pTangramImplData->m_mapTangramWindowProvider[m_strProviderID] = this;
 			}
 		}

@@ -16,7 +16,7 @@ tangram_chrome_rt.dll: %(ChromeDir)s\
 #tangram_chrome_rt.dll.pdb: %(ChromeDir)s\
 winrtapi\*.dll: %(ChromeDir)s\
 mfcexe\*.exe: %(ChromeDir)s\
-csharpexe\*.exe: %(ChromeDir)s\
+csharpexe\*.*: %(ChromeDir)s\
 tangramcomponent\*.dll: %(ChromeDir)s\tangramcomponent\
 tangramcomponent\*.component: %(ChromeDir)s\tangramcomponent\
 #
