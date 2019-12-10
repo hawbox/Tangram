@@ -871,13 +871,28 @@ namespace TangramCLR
 		}
 	};
 
+	public ref class ApplicationContext : public System::Windows::Forms::ApplicationContext
+	{
+	public:
+		ApplicationContext();
+		~ApplicationContext() {};
+	};
+
+	public ref class WpfApplication : public System::Windows::Application
+	{
+	public:
+		WpfApplication();
+		~WpfApplication() {};
+	};
+
 	//[ComSourceInterfacesAttribute(TangramCLR::IManagerExtender::typeid)]	 map<gcroot<>, IWndNode*>	m_mapFrameworkElement;
-	public ref class Tangram : public ApplicationContext
+	public ref class Tangram
 	{
 	public:
 		Tangram(ITangram* pTangram);
 		~Tangram();
 
+		static ApplicationContext^ m_pApplicationContext;
 	private:
 		Tangram();
 		static bool IsAppInit = false;
@@ -911,7 +926,7 @@ namespace TangramCLR
 		static Dictionary<String^, Type^>^ GetFormTypesFromDirectory(String^ directoryPath);
 		static List<String^>^ FindFiles(String^ rootPath, String^ fileSpec, bool recursive);
 		static ChromeWebBrowser^ ActiveBrowser();
-		static ChromeWebBrowser^ GetHostBrowser(Control^ ctrl);
+		static ChromeWebBrowser^ GetHostBrowser(Object^ obj);
 		static WndNode^ GetNodeFromControl(Control^ ctrl);
 		static void UpdateNewTabPageLayout(String^ newTabPageLayout);
 
@@ -1033,9 +1048,9 @@ namespace TangramCLR
 			void set(Form^ frm);
 		}
 
-		static property Tangram^ Context
+		static property ApplicationContext^ Context
 		{
-			Tangram^ get();
+			ApplicationContext^ get();
 		}
 
 		static property Object^ Application

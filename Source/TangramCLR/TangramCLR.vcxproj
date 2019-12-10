@@ -92,7 +92,7 @@
     </LinkKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\chromium_root_80\src\out\tangram_static_release_x64</OutDir>
+    <OutDir>..\..\chromium_root_78\src\out\tangram_static_debug_x64</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <LinkKeyFile>TangramCLR.snk</LinkKeyFile>

@@ -232,9 +232,26 @@ namespace TangramCLR
 		return pObj;
 	}
 
+	ApplicationContext::ApplicationContext()
+	{
+		if (theAppProxy.m_bInitApp == false)
+		{
+			::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, 0, 20191022);
+		}
+	}
+
+	WpfApplication::WpfApplication()
+	{
+		if (theAppProxy.m_bInitApp == false)
+		{
+			::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, 0, 20191022);
+		}
+	}
+
 	Tangram::Tangram()
 	{
 		m_pTangramAppProxy = nullptr;
+		m_pApplicationContext = nullptr;
 	}
 
 	Tangram::Tangram(ITangram* pTangram)
@@ -376,15 +393,11 @@ namespace TangramCLR
 		return IsChromeRunning;
 	}
 
-	Tangram^ Tangram::Context::get()
+	ApplicationContext^ Tangram::Context::get()
 	{
-		if (m_pManager == nullptr)
-			m_pManager = gcnew Tangram();
-		if (theAppProxy.m_bInitApp == false)
-		{
-			::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, 0, 20191022);
-		}
-		return m_pManager;
+		if (m_pApplicationContext == nullptr)
+			m_pApplicationContext = gcnew ApplicationContext();
+		return m_pApplicationContext;
 	}
 
 	Tangram^ Tangram::TangramCore::get()
@@ -703,14 +716,35 @@ namespace TangramCLR
 		return nullptr;
 	}
 
-	ChromeWebBrowser^ Tangram::GetHostBrowser(Control^ ctrl)
+	ChromeWebBrowser^ Tangram::GetHostBrowser(Object^ obj)
 	{
-		if (ctrl == nullptr)
+		if (obj == nullptr)
+		{
+			return nullptr;
+		}
+		IntPtr^ handle = nullptr;
+		if (obj->GetType()->IsSubclassOf(Control::typeid) || obj->GetType() == Control::typeid)
+		{
+			Control^ ctrl = (Control^)obj;
+			handle = ctrl->Handle;
+		}
+		else if (obj->GetType()->IsSubclassOf(System::Windows::Media::Visual::typeid) || 
+			obj->GetType() == System::Windows::Media::Visual::typeid)
+		{
+			System::Windows::Media::Visual^ vis = (System::Windows::Media::Visual^)obj;
+			System::Windows::PresentationSource^ ps = System::Windows::Interop::HwndSource::FromVisual(vis);
+			if (ps != nullptr)
+			{
+				System::Windows::Interop::HwndSource^ hwnd = (System::Windows::Interop::HwndSource^)ps;
+				handle = hwnd->Handle;
+			}	
+		}
+		if (handle == nullptr)
 		{
 			return nullptr;
 		}
 		IWndNode* pWndNode = nullptr;
-		HRESULT hr = theApp.m_pTangram->GetNodeFromHandle((LONGLONG)ctrl->Handle.ToPointer(), &pWndNode);
+		HRESULT hr = theApp.m_pTangram->GetNodeFromHandle((LONGLONG)(handle->ToPointer()), &pWndNode);
 		if (hr != S_OK || pWndNode == nullptr)
 		{
 			return nullptr;

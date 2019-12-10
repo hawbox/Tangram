@@ -1534,7 +1534,10 @@ IDispatch* CTangramCLRProxy::TangramCreateObject(BSTR bstrObjID, HWND hParent, I
 			catch (System::Exception ^ ex)
 			{
 				Debug::WriteLine(L"Tangram WPFControlWrapper Exception 1: " + ex->Message);
-				Debug::WriteLine(L"Tangram WPFControlWrapper Exception 1: " + ex->InnerException->Message);
+				if (ex->InnerException)
+				{
+					Debug::WriteLine(L"Tangram WPFControlWrapper Exception 1: " + ex->InnerException->Message);
+				}
 			}
 		}
 	}
