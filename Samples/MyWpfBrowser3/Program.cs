@@ -12,8 +12,9 @@ namespace MyWpfBrowser
         [STAThread]
         public static void Main()
         {
-            WpfApp app = new WpfApp();
-            app.UpdateNewTabPageLayout("Default_Wpf.xml");
+            WpfApplication app = new WpfApplication();
+            string newTabPageLayout = Helper.LoadResourceFile("MyWpfBrowser.Default_Wpf.xml");
+            Tangram.UpdateNewTabPageLayout(newTabPageLayout);
             app.Run();
         }
     }

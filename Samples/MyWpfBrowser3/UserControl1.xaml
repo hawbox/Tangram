@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MyWpfBrowser"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="1000" d:DesignWidth="800">
     <Grid>
         <TextBlock HorizontalAlignment="Left" Margin="30,80,0,0" TextWrapping="Wrap" Text="You can open the WPF window directly in the browser tab and display it side by side with the web page. This is a bit similar to Silverlight, but in CSharp Browser, this is the real WPF interface and contains all the features of WPF." VerticalAlignment="Top" Height="134" Width="235"/>
         <Label Content="How does WPF work in CSharp Browser?" HorizontalAlignment="Left" Margin="30,30,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
@@ -35,5 +35,11 @@
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
+        <Label Content="Use WPF to build custom New Tab Page." HorizontalAlignment="Left" Margin="30,350,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,400,0,0" TextWrapping="Wrap" Text="CSharp Browser enables developers to use WPF to build your own custom New Tab Page with enterprise-specific content." VerticalAlignment="Top" Width="235"/>
+        <Button Content="Get Started" HorizontalAlignment="Left" Margin="30,488,0,0" VerticalAlignment="Top" Width="97" Height="34" Click="Button_Click" Background="#FF8BEAFF"/>
+        <Label Content="Hybrid Web Page" HorizontalAlignment="Left" Margin="30,550,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,600,0,0" TextWrapping="Wrap" Text="In CSharp Browser, developers have the opportunity to display WPF components into web pages by writing HTML tags." VerticalAlignment="Top" Width="235"/>
+        <Button Content="Get Started" HorizontalAlignment="Left" Margin="30,688,0,0" VerticalAlignment="Top" Width="97" Height="34" Background="#FFFF963E" Click="Button_Click_1"/>
     </Grid>
 </UserControl>
