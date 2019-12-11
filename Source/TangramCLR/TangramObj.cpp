@@ -722,11 +722,11 @@ namespace TangramCLR
 		{
 			return nullptr;
 		}
-		IntPtr^ handle = nullptr;
+		HWND hWnd = nullptr;
 		if (obj->GetType()->IsSubclassOf(Control::typeid) || obj->GetType() == Control::typeid)
 		{
 			Control^ ctrl = (Control^)obj;
-			handle = ctrl->Handle;
+			hWnd = (HWND)(ctrl->Handle.ToPointer());
 		}
 		else if (obj->GetType()->IsSubclassOf(System::Windows::Media::Visual::typeid) || 
 			obj->GetType() == System::Windows::Media::Visual::typeid)
@@ -736,15 +736,20 @@ namespace TangramCLR
 			if (ps != nullptr)
 			{
 				System::Windows::Interop::HwndSource^ hwnd = (System::Windows::Interop::HwndSource^)ps;
-				handle = hwnd->Handle;
+				hWnd = (HWND)(hwnd->Handle.ToPointer());
+				hWnd = ::GetParent(hWnd);
+				if (::IsWindow(hWnd))
+				{
+					hWnd = ::GetParent(hWnd);
+				}
 			}	
 		}
-		if (handle == nullptr)
+		if (hWnd == nullptr)
 		{
 			return nullptr;
 		}
 		IWndNode* pWndNode = nullptr;
-		HRESULT hr = theApp.m_pTangram->GetNodeFromHandle((LONGLONG)(handle->ToPointer()), &pWndNode);
+		HRESULT hr = theApp.m_pTangram->GetNodeFromHandle((LONGLONG)hWnd, &pWndNode);
 		if (hr != S_OK || pWndNode == nullptr)
 		{
 			return nullptr;
