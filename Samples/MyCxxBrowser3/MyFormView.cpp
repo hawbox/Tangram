@@ -57,7 +57,7 @@ void CMyFormView::OnBnClickedButton1()
 	if (pChromeWebBrowser != nullptr)
 	{
 		pChromeWebBrowser->OpenURL(BSTR(_T("https://demo.tangram.dev/mfc.html")),
-			BrowserWndOpenDisposition::NEW_FOREGROUND_TAB, BSTR(""), BSTR(""));
+			BrowserWndOpenDisposition::NEW_FOREGROUND_TAB, BSTR(_T("")), BSTR(_T("")));
 	}
 }
 
