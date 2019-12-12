@@ -240,15 +240,7 @@ BOOL CAppProxy::InitCloudApp(bool bCrashReporting)
 
 CString CAppProxy::GetNTPXml()
 {
-	CString s = _T("<tangram>")
-		_T("<window>")
-		_T("<node id = 'splitter' name = 'container' rows = '1' cols = '2' height = '100,100,' width = '300,500,' borderwidth = '0' splitterwidth = '4' middlecolor = 'RGB(240,240,240)'>")
-		_T("<node name = 'launcher' id = 'ClrCtrl' cnnid = 'hostapp.hostctrl,hostapp' caption = '' borderwidth = '0' />")
-		_T("<node name = 'host' caption = 'host' id = 'hostview' borderwidth = '0' />")
-		_T("</node>")
-		_T("</window>")
-		_T("</tangram>");
-	return s;
+	return _T("");
 }
 
 BOOL CAppProxy::IsBrowserModel(bool bCrashReporting)

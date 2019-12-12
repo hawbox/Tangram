@@ -700,6 +700,7 @@ namespace TangramCommon {
 		virtual CString GetSchemeBaseName() = 0;
 		virtual HICON GetAppIcon(int nIndex) = 0;
 		virtual CChromeBrowserBase* GetChromeBrowserBase(HWND) = 0;
+		virtual IChromeWebBrowser* GetHostBrowser(HWND hNodeWnd) = 0;
 		virtual void AttachNode(void* pNodeEvents) {};
 		virtual void TangramInit() {};
 		virtual ITangramDoc* ConnectTangramDoc(ITangramAppProxy* AppProxy, LONGLONG docID, HWND hView, HWND hFrame, LPCTSTR strDocType) { return nullptr; };

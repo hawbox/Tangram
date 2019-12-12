@@ -476,5 +476,6 @@ private:
 	CString GetSchemeBaseName();
 	HICON GetAppIcon(int nIndex);
 	CChromeBrowserBase* GetChromeBrowserBase(HWND);
+	IChromeWebBrowser* GetHostBrowser(HWND hNodeWnd);
 	void InsertTangramDataMap(int nType, CString strKey, void* pData);
 };

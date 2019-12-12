@@ -7500,6 +7500,27 @@ CChromeBrowserBase* CTangram::GetChromeBrowserBase(HWND hHostWnd)
 	return nullptr;
 }
 
+IChromeWebBrowser* CTangram::GetHostBrowser(HWND hNodeWnd)
+{
+	IWndNode* pWndNode = nullptr;
+	HRESULT hr = g_pTangram->GetNodeFromHandle((LONGLONG)hNodeWnd, &pWndNode);
+	if (hr == S_OK && pWndNode != nullptr)
+	{
+		ICompositor* pCompositor = nullptr;
+		hr = pWndNode->get_Compositor(&pCompositor);
+		if (hr == S_OK && pCompositor != nullptr)
+		{
+			IChromeWebBrowser* pChromeWebBrowser = nullptr;
+			hr = pCompositor->get_HostBrowser(&pChromeWebBrowser);
+			if (hr == S_OK && pChromeWebBrowser != nullptr)
+			{
+				return pChromeWebBrowser;
+			}
+		}
+	}
+	return nullptr;
+}
+
 void CTangram::OnDocumentOnLoadCompleted(CChromeRenderFrameHostBase* pFrameHostBase, HWND hHtmlWnd, void* pVoid)
 {
 	CChromeRenderFrameHostBase* pHost = (CChromeRenderFrameHostBase*)pFrameHostBase;
