@@ -86,6 +86,7 @@ CTangramCLRProxy::CTangramCLRProxy() : ITangramCLRImpl()
 	m_pCurrentPForm = nullptr;
 	m_strCurrentWinFormTemplate = _T("");
 	Forms::Application::EnableVisualStyles();
+	m_pTangramWpfApp = nullptr;
 	m_pPropertyGrid = nullptr;
 	m_pSystemAssembly = nullptr;
 	m_pOnLoad = nullptr;
@@ -1845,7 +1846,13 @@ void CTangramCLRProxy::TangramAction(BSTR bstrXml, IWndNode * pNode)
 				case TangramAppType::APP_ECLIPSE:
 					{
 						if (theApp.m_pTangram && !theApp.m_pTangramImpl->m_bIsEclipseInit)
+						{
 							theApp.m_pTangram->InitEclipseApp();
+							if (theAppProxy.m_bHostApp && theAppProxy.m_pTangramWpfApp)
+							{
+								theApp.ExitJVM();
+							}
+						}
 					}
 					break;
 				}
@@ -1865,6 +1872,14 @@ void CTangramCLRProxy::TangramAction(BSTR bstrXml, IWndNode * pNode)
 			ExportCLRObjInfo(_T(""));
 			ExportAllCLRObjInfo(theApp.m_pTangramImpl->m_strAppFormsPath);
 			ExportAllCLRObjInfo(theApp.m_pTangramImpl->m_strAppCommonFormsPath);
+			return;
+		}
+		if (strXml.CompareNoCase(_T("EndInitEclipseApp")) == 0)
+		{
+			if (m_bHostApp && m_pTangramWpfApp)
+			{
+				theApp.ExitJVM();
+			}
 			return;
 		}
 		CTangramXmlParse m_Parse;
@@ -1991,6 +2006,15 @@ void CTangramCLRApp::OnTangramClose()
 	if (theApp.m_pTangram&&theApp.m_pTangramImpl->m_pCLRProxy){
 		theApp.m_pTangram->put_AppKeyValue(CComBSTR(L"CLRProxy"), CComVariant((LONGLONG)0));
 		theApp.m_pTangram = nullptr;
+	}
+	if (theAppProxy.m_pTangramWpfApp)
+	{
+		WindowCollection^ pWnds = theAppProxy.m_pTangramWpfApp->Windows;
+		int nCount = pWnds->Count;
+		for (int i = 0; i < pWnds->Count; i++) {
+			Window^ pWnd = pWnds[i];
+			pWnd->Close();
+		}
 	}
 	Object^ pPro = (Object^)theAppProxy.m_pPropertyGrid;
 	if (pPro && theAppProxy.m_pPropertyGrid->SelectedObject)

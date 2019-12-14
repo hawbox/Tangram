@@ -49,6 +49,7 @@ public:
 	map<IChromeWebBrowser*, gcroot<ChromeWebBrowser^>>	m_mapChromeWebBrowser;
 
 	gcroot<Form^>										m_pCurrentPForm;
+	gcroot<System::Windows::Application^>				m_pTangramWpfApp;
 	gcroot<PropertyGrid^>								m_pPropertyGrid;
 	gcroot<TangramCLR::TangramProxy^>					m_pTangramProxy;
 	Object^ _getObject(Object^ key);

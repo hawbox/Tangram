@@ -403,15 +403,15 @@ void CTangram::Init()
 	{
 		::SHCreateDirectory(nullptr, m_strAppCommonFormsPath);
 	}
-	g_pTangram->m_mapValInfo[_T("apppath")] = CComVariant(m_strAppPath);
-	g_pTangram->m_mapValInfo[_T("appdatapath")] = CComVariant(m_strAppDataPath);
-	g_pTangram->m_mapValInfo[_T("appdatafile")] = CComVariant(m_strConfigDataFile);
-	g_pTangram->m_mapValInfo[_T("appname")] = CComVariant(m_strExeName);
-	g_pTangram->m_mapValInfo[_T("appkey")] = CComVariant(m_strAppKey);
+	m_mapValInfo[_T("apppath")] = CComVariant(m_strAppPath);
+	m_mapValInfo[_T("appdatapath")] = CComVariant(m_strAppDataPath);
+	m_mapValInfo[_T("appdatafile")] = CComVariant(m_strConfigDataFile);
+	m_mapValInfo[_T("appname")] = CComVariant(m_strExeName);
+	m_mapValInfo[_T("appkey")] = CComVariant(m_strAppKey);
 
 	if (m_nAppID != 9)
 	{
-		g_pTangram->TangramInit();
+		TangramInit();
 		HWND hWnd = ::CreateWindowEx(WS_EX_NOACTIVATE, _T("Tangram Message Window Class"), _T(""), WS_VISIBLE | WS_POPUP, 0, 0, 0, 0, nullptr, nullptr, theApp.m_hInstance, nullptr);
 	}
 
@@ -7579,6 +7579,16 @@ CString CTangram::GetSchemeBaseName()
 	return m_strExeName.MakeLower();
 }
 
+char* CTangram::GetSchemeString(int nType, CString strKey)
+{ 
+	switch (nType)
+	{
+	case 0:
+		return "chrome";
+	}
+	return nullptr; 
+}
+
 void CTangram::InsertTangramDataMap(int nType, CString strKey, void* pData)
 {
 	switch (nType)
@@ -7599,8 +7609,10 @@ void CTangram::InsertTangramDataMap(int nType, CString strKey, void* pData)
 		break;
 	case 1:
 	{
-		if(pData)
+		if (pData)
+		{
 			m_mapTangramWindowProvider[strKey] = (ITangramWindowProvider*)pData;
+		}
 		else
 		{
 			auto it = m_mapTangramWindowProvider.find(strKey);

@@ -244,6 +244,7 @@ namespace TangramCLR
 	{
 		if (theAppProxy.m_bInitApp == false)
 		{
+			theAppProxy.m_pTangramWpfApp = this;
 			::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, 0, 20191022);
 		}
 	}
@@ -541,6 +542,7 @@ namespace TangramCLR
 		::SysFreeString(bstrNtpXml);
 		return strResult;
 	}
+
 	void Tangram::NTPXml::set(String^ strXml)
 	{
 		CString _strXml = strXml;

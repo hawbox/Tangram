@@ -871,14 +871,14 @@ namespace TangramCLR
 		}
 	};
 
-	public ref class ApplicationContext : public System::Windows::Forms::ApplicationContext
+	public ref class ApplicationContext : public Forms::ApplicationContext
 	{
 	public:
 		ApplicationContext();
 		~ApplicationContext() {};
 	};
 
-	public ref class WpfApplication : public System::Windows::Application
+	public ref class WpfApplication : public Windows::Application
 	{
 	public:
 		WpfApplication();

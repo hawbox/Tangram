@@ -113,15 +113,6 @@ group("assert_no_deps") {
   assert_no_deps = [ "//chrome/installer/util:strings" ]
 }
 
-# begin Add by TangramTeam
-copy("tangram_copy") {
-  sources = [ "$root_out_dir/chrome.exe" ]
-  outputs = [ "$root_out_dir/tangramhelper.exe" ]
-
-  public_deps = [ ":reorder_imports" ]
-}
-# end Add by TangramTeam
-
 if (!is_android && !is_mac) {
   group("chrome") {
     public_deps = [
@@ -131,7 +122,6 @@ if (!is_android && !is_mac) {
       ":chrome_initial_utility",
       ":chrome_initial_renderer",
       ":chrome_initial_component",
-      ":tangram_copy",
       # end Add by TangramTeam
     ]
     data_deps = [
@@ -140,8 +130,7 @@ if (!is_android && !is_mac) {
       ":chrome_initial_gpu",
       ":chrome_initial_utility",
       ":chrome_initial_renderer",
-      ":chrome_initial_component",
-      ":tangram_copy",
+      ":chrome_initial_component",      
       # end Add by TangramTeam
     ]
     if (is_win) {

@@ -478,4 +478,5 @@ private:
 	CChromeBrowserBase* GetChromeBrowserBase(HWND);
 	IChromeWebBrowser* GetHostBrowser(HWND hNodeWnd);
 	void InsertTangramDataMap(int nType, CString strKey, void* pData);
+	char* GetSchemeString(int nType, CString strKey);
 };

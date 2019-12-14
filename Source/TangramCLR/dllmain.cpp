@@ -82,11 +82,23 @@ void CTangramCLRApp::ExitJVM()
 					m_pTangramImpl->m_mapTangramWindowProvider.erase(m_pTangramImpl->m_mapTangramWindowProvider.begin());
 			}
 			m_pJVMenv->CallStaticVoidMethod(systemClass, exitMethod, 0);
+			OutputDebugString(
+				_T("\n\n***************For CLR Developer***************\n")
+				_T("***************end Exit Eclipse JVM from CLR***************\n\n")
+			);
 		}
 		catch (...)
 		{
+			OutputDebugString(
+				_T("\n\n***************For CLR Developer catch***************\n")
+				_T("***************end Exit Eclipse JVM from CLR***************\n\n")
+			);
 		}
 		if (m_pJVMenv->ExceptionOccurred()) {
+			OutputDebugString(
+				_T("\n\n***************For CLR Developer ExceptionOccurred***************\n")
+				_T("***************end Exit Eclipse JVM from CLR***************\n\n")
+			);
 			m_pJVMenv->ExceptionDescribe();
 			m_pJVMenv->ExceptionClear();
 		}
