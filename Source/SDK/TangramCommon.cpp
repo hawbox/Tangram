@@ -31,7 +31,7 @@ namespace TangramCommon
 				ITangram* pTangram = nullptr;
 				g_pTangramImpl = _pTangramFunction(&pTangram);
 				m_strProviderID.MakeLower();
-				g_pTangramImpl->InsertTangramDataMap(1, m_strProviderID, this);
+				g_pTangramImpl->InsertTangramDataMap(1, m_strProviderID, static_cast<ITangramWindowProvider*>(this));
 				return true;
 			}
 		}
