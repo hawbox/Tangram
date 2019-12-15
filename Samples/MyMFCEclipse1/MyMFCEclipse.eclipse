@@ -1,0 +1,8 @@
+<obj type="workbench" objid="MyMFCEclipse.host" workbenchkey="foo" showstartup="true" caption="MyMFCEclipse">
+  <window>
+    <node id='splitter' name='splitter' rows='1' cols='2' height='250,' width='350,100,' borderwidth='0' splitterwidth='2' middlecolor='RGB(180,180,180)'>
+      <node id="main_panel" cnnid="MyMFCEclipse.host"></node>
+      <node id="hostview"></node>
+    </node>
+  </window>
+</obj>
