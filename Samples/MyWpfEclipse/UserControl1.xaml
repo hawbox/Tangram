@@ -6,7 +6,35 @@
              xmlns:local="clr-namespace:MyWpfEclipse"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+    <Grid Background="White">
+        <Label Content="How does WPF work in Eclipse?" HorizontalAlignment="Left" Margin="30,30,0,0" VerticalAlignment="Top" FontSize="16" FontWeight="Bold"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,80,0,0" TextWrapping="Wrap" Text="Eclipse for WPF (Eclipse4Wpf for short) enables WPF developers to build their own Eclipse distributions and use WPF components (UserControl) in the Eclipse interface." VerticalAlignment="Top" Height="148" Width="291" FontSize="16"/>
+        <Ellipse HorizontalAlignment="Left" Height="55" Margin="30,228,0,0" Stroke="Black" VerticalAlignment="Top" Width="203" RenderTransformOrigin="0.5,0.5">
+            <Ellipse.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF00FF3A" Offset="0"/>
+                    <GradientStop Color="Red" Offset="1"/>
+                </LinearGradientBrush>
+            </Ellipse.Fill>
+            <Ellipse.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-24.308"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Ellipse.RenderTransform>
+        </Ellipse>
+        <Button Content="Rotated Button" HorizontalAlignment="Left" Margin="178,292,0,0" VerticalAlignment="Top" Width="135" RenderTransformOrigin="0.5,0.5" Height="43" FontSize="16">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="30.713"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+
     </Grid>
 </UserControl>
