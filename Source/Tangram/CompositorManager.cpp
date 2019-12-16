@@ -1827,8 +1827,3 @@ STDMETHODIMP CCompositorManager::get_CurrentDesignNode(IWndNode** pVal)
 
 	return S_OK;
 }
-
-void CCompositorManager::DispatchToOtherBrokers(CString strChannel, CString strData)
-{
-	// TODO
-}

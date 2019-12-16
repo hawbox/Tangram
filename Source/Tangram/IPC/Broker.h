@@ -12,10 +12,9 @@ namespace IPC
 		Broker();
 		virtual ~Broker();
 
-		void AddIPCListener(CString strChannel, EndPoint* pEndPoint);
-		void RemoveIPCListener(CString strChannel, EndPoint* pEndPoint);
-		void DispatchIPCMessage(CString strChannel, CString strData);
-
+		virtual void AddIPCListener(CString strChannel, EndPoint* pEndPoint);
+		virtual void RemoveIPCListener(CString strChannel, EndPoint* pEndPoint);
+		virtual void DispatchIPCMessage(CString strChannel, CString strData);
 		virtual void DispatchToOtherBrokers(CString strChannel, CString strData) = 0;
 
 	private:

@@ -397,6 +397,7 @@ public:
 	TangramThreadInfo* GetThreadInfo(DWORD dwInfo = 0);
 
 	// IPC message
+	void DispatchIPCMessage(CString strChannel, CString strData) override;
 	void DispatchToOtherBrokers(CString strChannel, CString strData) override;
 	IPC::Broker* GetBroker() override;
 	void OnIPCMessageReceived(CString strChannel, CString strData) override;

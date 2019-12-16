@@ -34,8 +34,7 @@ class ATL_NO_VTABLE CCompositorManager :
 	public CComObjectRootBase,
 	public IDispatchImpl<ICompositorManager, &IID_ICompositorManager>,
 	public IConnectionPointContainerImpl <CCompositorManager>,
-	public IConnectionPointImpl<CCompositorManager, &__uuidof(_ITangramObjEvents)>,
-	public IPC::Broker
+	public IConnectionPointImpl<CCompositorManager, &__uuidof(_ITangramObjEvents)>
 {
 	friend CTangram;
 public:
@@ -96,9 +95,6 @@ public:
 	HRESULT Fire_IPCMsg(ICompositor* pSender, BSTR bstrType, BSTR bstrContent, BSTR bstrFeature);
 
 	void OnNodeDocComplete(WPARAM);
-
-	// IPC message
-	void DispatchToOtherBrokers(CString strChannel, CString strData) override;
 
 protected:
 	ULONG InternalAddRef(){ return 1; }
