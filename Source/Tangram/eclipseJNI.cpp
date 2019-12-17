@@ -598,33 +598,8 @@ void cleanupVM(int exitCode) {
 			FreeLibrary((HMODULE)theApp.m_hInstance);
 			return;
 		}
-		else
-		{
-			jclass systemClass = NULL;
-			jmethodID exitMethod = NULL;
-			systemClass = env->FindClass("java/lang/System");
-			try
-			{
-				if (systemClass != NULL) {
-					exitMethod = env->GetStaticMethodID(systemClass, "exit", "(I)V");
-					if (exitMethod != NULL) {
-						if (szArglist) {
-							LocalFree(szArglist);
-						}
-						env->CallStaticVoidMethod(systemClass, exitMethod, exitCode);
-					}
-				}
-			}
-			catch (...)
-			{
-			}
-			if (env->ExceptionOccurred()) {
-				env->ExceptionDescribe();
-				env->ExceptionClear();
-			}
-		}
 	}
-	jvm->DestroyJavaVM();
+	//jvm->DestroyJavaVM();
 }
 
 static int shouldShutdown(JNIEnv * env) {

@@ -1061,7 +1061,7 @@ namespace VisualStudioPlus
 			auto it = m_mapWindowPage.find(::GetParent(m_pTangramPackageProxy->m_hTangramToolWnd));
 			if (it != m_mapWindowPage.end())
 			{
-				m_pCompositorManager = it->second;
+				m_pCompositorManager = (CCompositorManager*)it->second;
 				ICompositor* pCompositor = nullptr;
 				m_pCompositorManager->CreateCompositor(CComVariant((LONGLONG)::GetParent(m_pTangramPackageProxy->m_hTangramToolWnd)), CComVariant((LONGLONG)m_pTangramPackageProxy->m_hTangramToolWnd), CComBSTR("TangramToolBar"), &pCompositor);
 				CString strDataPath = m_strProgramFilePath + _T("\\Tangram\\vsdesigner\\toolwnd.xml");

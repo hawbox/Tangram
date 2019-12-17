@@ -90,6 +90,7 @@
     <LinkIncremental>true</LinkIncremental>
     <LinkKeyFile>
     </LinkKeyFile>
+    <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..\..\chromium_root_78\src\out\tangram_static_debug_x64</OutDir>
@@ -99,17 +100,18 @@
     <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>..\..\chromium_root\src\out\tangram_static_release_x86</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <LinkKeyFile>TangramCLR.snk</LinkKeyFile>
+    <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\..\chromium_root_81\src\out\tangram_static_release_x64</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <LinkKeyFile>TangramCLR.snk</LinkKeyFile>
-    <TargetName>Tangram_CLR_Rt</TargetName>
+    <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
