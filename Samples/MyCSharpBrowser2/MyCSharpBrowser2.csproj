@@ -27,7 +27,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\chromium_root_80\src\out\tangram_static_release_x64\</OutputPath>
+    <OutputPath>..\..\chromium_root_81\src\out\tangram_static_release_x64\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
