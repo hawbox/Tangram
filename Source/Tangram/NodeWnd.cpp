@@ -578,6 +578,20 @@ LRESULT CNodeWnd::OnTabChange(WPARAM wParam, LPARAM lParam)
 				}
 			}
 		}
+		HWND h = ::GetParent(m_hWnd);
+		if (h)
+		{
+			LRESULT lRes = ::SendMessage(h, WM_TANGRAMGETNODE, 0, 0);
+			if (lRes)
+			{
+				CWndNode* pRetNode = (CWndNode*)lRes;
+				if (pRetNode && pRetNode->m_nViewType == Splitter)
+				{
+					CCompositor* pCompositor = pRetNode->m_pTangramNodeCommonData->m_pCompositor;
+					pCompositor->HostPosChanged();
+				}
+			}
+		}
 	}
 	if (nOldPage != wParam)
 	{

@@ -48,12 +48,21 @@ ITangram* GetTangram()
 		HMODULE hModule = ::LoadLibrary(L"tangramcore.dll");
 		if (hModule == nullptr) {
 			TCHAR m_szBuffer[MAX_PATH];
-			if (SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES, NULL, 0, m_szBuffer) ==
-				S_OK) {
+			if (SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES, NULL, 0, m_szBuffer) == S_OK) {
 				ATL::CString m_strProgramFilePath = ATL::CString(m_szBuffer);
 				m_strProgramFilePath += _T("\\Tangram\\Tangramcore.dll");
 				if (::PathFileExists(m_strProgramFilePath)) {
 					hModule = ::LoadLibrary(m_strProgramFilePath);
+				}
+			}
+			if (hModule == nullptr)
+			{
+				::GetModuleFileName(::GetModuleHandle(_T("tangram_clr_rt.dll")), m_szBuffer, MAX_PATH);
+				CString strPath = m_szBuffer;
+				int nPos = strPath.ReverseFind('\\');
+				strPath = strPath.Left(nPos + 1) + _T("TangramCore.dll");
+				if (::PathFileExists(strPath)) {
+					hModule = ::LoadLibrary(strPath);
 				}
 			}
 		}

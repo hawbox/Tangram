@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>TangramCLR</ProjectName>
-    <ProjectGuid>{915E31A1-EC99-4884-97B8-6876B8B5E673}</ProjectGuid>
+    <ProjectGuid>{7B3BE494-B1AE-4341-9D85-2B2399AB3103}</ProjectGuid>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <RootNamespace>TangramCLR</RootNamespace>
     <Keyword>AtlProj</Keyword>
@@ -100,14 +100,14 @@
     <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\chromium_root\src\out\tangram_static_release_x86</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <LinkKeyFile>TangramCLR.snk</LinkKeyFile>
     <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\..\chromium_root_81\src\out\tangram_static_release_x64</OutDir>
+    <OutDir>..\..\chromium_root_80\src\out\tangram_static_release_x64</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <LinkKeyFile>TangramCLR.snk</LinkKeyFile>
@@ -207,10 +207,10 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_32\
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;activeds.lib;ADSIid.Lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if not exist "$(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7\" (
-  mkdir "$(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7"
+      <Command>if not exist "$(windir)\Microsoft.NET\assembly\GAC_64\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7\" (
+  mkdir "$(windir)\Microsoft.NET\assembly\GAC_64\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7"
 )
-copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7\$(TargetName)$(TargetExt)</Command>
+copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7\$(TargetName)$(TargetExt)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -312,10 +312,10 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_32\
       <AdditionalDependencies>activeds.lib;ADSIid.Lib;</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if not exist "$(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7\" (
-  mkdir "$(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7"
+      <Command>if not exist "$(windir)\Microsoft.NET\assembly\GAC_64\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7\" (
+  mkdir "$(windir)\Microsoft.NET\assembly\GAC_64\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7"
 )
-copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7\$(TargetName)$(TargetExt)</Command>
+copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7\$(TargetName)$(TargetExt)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -356,6 +356,7 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
     </ClCompile>
     <ClCompile Include="ErrorCtrl.cpp" />
     <ClCompile Include="Markup.cpp" />
+    <ClCompile Include="NavigateCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -369,6 +370,7 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
     <ClCompile Include="TangramObj.cpp" />
     <ClCompile Include="TangramProxy.cpp" />
     <ClCompile Include="Win32AppForm.cpp" />
+    <ClCompile Include="WizForm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssemblyLocalor.h" />
@@ -380,6 +382,9 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="ErrorCtrl.h" />
     <ClInclude Include="Markup.h" />
+    <ClInclude Include="NavigateCtrl.h">
+      <FileType>CppControl</FileType>
+    </ClInclude>
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TangramClrProxy.h" />
@@ -393,6 +398,9 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
     <ClInclude Include="TangramObj.h" />
     <ClInclude Include="TangramProxy.h" />
     <ClInclude Include="Win32AppForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WizForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
   </ItemGroup>
@@ -410,6 +418,9 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
       <DependentUpon>DefaultNTPCtrl.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ErrorCtrl.resx" />
+    <EmbeddedResource Include="NavigateCtrl.resx">
+      <DependentUpon>NavigateCtrl.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TangramMDIForm.resx">
       <DependentUpon>TangramMDIForm.h</DependentUpon>
     </EmbeddedResource>
@@ -418,6 +429,9 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
     </EmbeddedResource>
     <EmbeddedResource Include="Win32AppForm.resx">
       <DependentUpon>Win32AppForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WizForm.resx">
+      <DependentUpon>WizForm.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

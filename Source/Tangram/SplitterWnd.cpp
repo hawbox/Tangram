@@ -478,6 +478,20 @@ void CSplitterNodeWnd::StopTracking(BOOL bAccept)
 			//::SendMessage(pWebWnd->m_hWnd, WM_LBUTTONDOWN, 0, 0);
 			::SendMessage(::GetParent(pWebWnd->m_hWnd), WM_BROWSERLAYOUT, 0, 2);
 		}
+		HWND h = ::GetParent(m_hWnd);
+		if (h)
+		{
+			LRESULT lRes = ::SendMessage(h, WM_TANGRAMGETNODE, 0, 0);
+			if (lRes)
+			{
+				CWndNode* pRetNode = (CWndNode*)lRes;
+				if (pRetNode && pRetNode->m_nViewType == Splitter)
+				{
+					CCompositor* pCompositor = pRetNode->m_pTangramNodeCommonData->m_pCompositor;
+					pCompositor->HostPosChanged();
+				}
+			}
+		}
 	}
 }
 

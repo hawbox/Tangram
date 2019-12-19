@@ -277,6 +277,41 @@ namespace TangramCLR
 		if (theApp.m_pTangram&& !theApp.m_pTangramImpl->m_bIsEclipseInit)
 			theApp.m_pTangram->InitEclipseApp();
 	}
+	
+	Tangram^ Tangram::GetTangram()
+	{
+		if (theApp.m_pTangram == nullptr)
+		{
+			HMODULE hModule = ::GetModuleHandle(L"tangramcore.dll");
+			if (hModule == nullptr) {
+				TCHAR m_szBuffer[MAX_PATH];
+				if (SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES, NULL, 0, m_szBuffer) ==
+					S_OK) {
+					ATL::CString m_strProgramFilePath = ATL::CString(m_szBuffer);
+					m_strProgramFilePath += _T("\\Tangram\\Tangramcore.dll");
+					if (::PathFileExists(m_strProgramFilePath)) {
+						hModule = ::LoadLibrary(m_strProgramFilePath);
+					}
+				}
+			}
+			if (hModule) {
+				typedef CTangramImpl* (__stdcall* GetTangramImpl)(ITangram**);
+				GetTangramImpl _pTangramImplFunction;
+				_pTangramImplFunction = (GetTangramImpl)GetProcAddress(hModule, "GetTangramImpl");
+				if (_pTangramImplFunction != NULL) {
+					theApp.m_pTangramImpl = _pTangramImplFunction(&theApp.m_pTangram);
+					if (theApp.m_pTangramImpl->m_nAppType == 0)
+						theApp.m_pTangramImpl->m_nAppType = TANGRAM_APP_BROWSERAPP;
+					theApp.m_pTangramImpl->m_pTangramDelegate = (ITangramDelegate*)&theApp;
+					theApp.m_pTangramImpl->m_pTangramAppProxy = (ITangramAppProxy*)&theApp;
+					theApp.m_pTangramImpl->m_pCLRProxy = &theAppProxy;
+				}
+			}
+		}
+		if (m_pManager == nullptr)
+			m_pManager = gcnew Tangram();
+		return m_pManager;
+	}
 
 	Tangram^ Tangram::InitTangramApp(bool bSupportCrashReporting, TangramAppType AppType)
 	{

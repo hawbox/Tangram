@@ -936,12 +936,7 @@ namespace TangramCLR
 
 		static void ExportAllCLRObjInfo();
 
-		static Tangram^ GetTangram()
-		{
-			if (m_pManager == nullptr)
-				m_pManager = gcnew Tangram();
-			return m_pManager;
-		}
+		static Tangram^ GetTangram();
 
 		static Tangram^ InitTangramApp(bool bSupportCrashReporting, TangramAppType AppType);
 

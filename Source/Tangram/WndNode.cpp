@@ -459,6 +459,12 @@ STDMETHODIMP CWndNode::OpenEx(int nRow, int nCol, BSTR bstrKey, BSTR bstrXml, IW
 				::SendMessage(::GetParent(pWebWnd->m_hWnd), WM_BROWSERLAYOUT, 0, 1);
 				::InvalidateRect(::GetParent(pWebWnd->m_hWnd), nullptr, true);
 			}
+			HWND h = ::GetParent(m_pHostWnd->m_hWnd);
+			if (m_nViewType==Splitter)
+			{
+				CCompositor* pCompositor = m_pTangramNodeCommonData->m_pCompositor;
+				pCompositor->HostPosChanged();
+			}
 			return hr;
 		}
 	}
@@ -784,35 +790,52 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 				}
 				else
 				{
-					//auto it = g_pTangram->m_mapTangramWindowProvider.find(m_strCnnID);
 					if (it == g_pTangram->m_mapTangramWindowProvider.end())
 					{
 						if (m_strID.CompareNoCase(_T("TreeView")))
 						{
-							CString strLib = _T("");
-							CString strPath = g_pTangram->m_strAppPath + _T("tangramcomponent\\") + m_strCnnID + _T(".component");
-							CTangramXmlParse m_Parse;
-							if (::PathFileExists(strPath))
+#ifdef _WIN32
+							if (g_pTangram->m_strExeName.CompareNoCase(_T("devenv")) == 0)
 							{
-								if (m_Parse.LoadFile(strPath))
+								CString strLib = g_pTangram->m_strAppPath + _T("PublicAssemblies\\TangramTabbedWnd.dll");
+								if (::PathFileExists(strLib))
 								{
-									strLib = g_pTangram->m_strAppPath + _T("tangramcomponent\\") + m_Parse.attr(_T("lib"), _T(""));
+									::LoadLibrary(strLib);
+									auto it = g_pTangram->m_mapTangramWindowProvider.find(m_strCnnID);
+									if (it != g_pTangram->m_mapTangramWindowProvider.end())
+									{
+										pViewFactoryDisp = it->second;
+									}
 								}
 							}
-							else
+#endif
+							if (pViewFactoryDisp == nullptr)
 							{
-								strPath = g_pTangram->m_strProgramFilePath + _T("\\tangram\\tangramcomponent\\") + m_strCnnID + _T(".component");
-								if (m_Parse.LoadFile(strPath))
+								CString strLib = _T("");
+								CString strPath = g_pTangram->m_strAppPath + _T("tangramcomponent\\") + m_strCnnID + _T(".component");
+								CTangramXmlParse m_Parse;
+								if (::PathFileExists(strPath))
 								{
-									strLib = g_pTangram->m_strProgramFilePath + _T("\\tangram\\tangramcomponent\\") + m_Parse.attr(_T("lib"), _T(""));
+									if (m_Parse.LoadFile(strPath))
+									{
+										strLib = g_pTangram->m_strAppPath + _T("tangramcomponent\\") + m_Parse.attr(_T("lib"), _T(""));
+									}
 								}
-							}
-							if (::PathFileExists(strLib)&&::LoadLibrary(strLib))
-							{
-								auto it = g_pTangram->m_mapTangramWindowProvider.find(m_strCnnID);
-								if (it != g_pTangram->m_mapTangramWindowProvider.end())
+								else
 								{
-									pViewFactoryDisp = it->second;
+									strPath = g_pTangram->m_strProgramFilePath + _T("\\tangram\\tangramcomponent\\") + m_strCnnID + _T(".component");
+									if (m_Parse.LoadFile(strPath))
+									{
+										strLib = g_pTangram->m_strProgramFilePath + _T("\\tangram\\tangramcomponent\\") + m_Parse.attr(_T("lib"), _T(""));
+									}
+								}
+								if (::PathFileExists(strLib)&&::LoadLibrary(strLib))
+								{
+									auto it = g_pTangram->m_mapTangramWindowProvider.find(m_strCnnID);
+									if (it != g_pTangram->m_mapTangramWindowProvider.end())
+									{
+										pViewFactoryDisp = it->second;
+									}
 								}
 							}
 						}

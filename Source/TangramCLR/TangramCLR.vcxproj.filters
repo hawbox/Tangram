@@ -14,7 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
     <Filter Include="Generated Files">
-      <UniqueIdentifier>{b5376aa6-f447-4e77-9447-dc977c174436}</UniqueIdentifier>
+      <UniqueIdentifier>{27ca7e8b-d16c-4373-807f-92467c71bf22}</UniqueIdentifier>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
   </ItemGroup>
@@ -34,28 +34,34 @@
     <ClCompile Include="TangramObj.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TangramNodeCLREvent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TangramProxy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ErrorCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChromeWebBrowser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Markup.cpp">
+    <ClCompile Include="DefaultNTPCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DefaultNTPCtrl.cpp">
+    <ClCompile Include="ErrorCtrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Markup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TangramNewChildForm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TangramNodeCLREvent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Win32AppForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WizForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NavigateCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,16 +81,10 @@
     <ClInclude Include="TangramObj.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TangramNodeCLREvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TangramProxy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TangramMDIForm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ErrorCtrl.h">
+    <ClInclude Include="AssemblyLocalor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BrowserWndOpenDisposition.h">
@@ -93,19 +93,31 @@
     <ClInclude Include="ChromeWebBrowser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DefaultNTPCtrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorCtrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Markup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AssemblyLocalor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DefaultNTPCtrl.h">
+    <ClInclude Include="TangramMDIForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TangramNewChildForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TangramNodeCLREvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Win32AppForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WizForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NavigateCtrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -115,27 +127,18 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="TangramCLR.snk" />
-    <None Include="TangramCLR.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="TangramCLR2COM.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="TangramMDIForm.resx">
-      <Filter>Resource Files</Filter>
-    </EmbeddedResource>
     <EmbeddedResource Include="ErrorCtrl.resx">
       <Filter>Resource Files</Filter>
     </EmbeddedResource>
-    <EmbeddedResource Include="DefaultNTPCtrl.resx">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="TangramCLR.rgs">
       <Filter>Resource Files</Filter>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TangramNewChildForm.resx">
+    </None>
+    <None Include="TangramCLR.snk" />
+    <None Include="TangramCLR2COM.rgs">
       <Filter>Resource Files</Filter>
-    </EmbeddedResource>
+    </None>
   </ItemGroup>
 </Project>
