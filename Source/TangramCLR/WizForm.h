@@ -6,6 +6,7 @@ namespace TangramCLR {
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
 	using namespace System::Windows::Forms;
+	using namespace System::Collections::Generic;
 	using namespace System::Data;
 	using namespace System::Drawing;
 
@@ -28,6 +29,19 @@ namespace TangramCLR {
 			void set(String^ strData);
 		}
 
+		property String^ TemplateID
+		{
+			String^ get()
+			{
+				return m_strTemplateID;
+			};
+			void set(String^ strTemplateID)
+			{
+				m_strTemplateID = strTemplateID;
+			};
+		}
+
+		void InitCustomizeDic(String^ strDicData);
 	protected:
 		/// <summary>
 		/// Clean up any resources being used.
@@ -44,6 +58,7 @@ namespace TangramCLR {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
+		String^ m_strTemplateID = nullptr;
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code

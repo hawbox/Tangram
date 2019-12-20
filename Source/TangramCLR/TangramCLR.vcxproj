@@ -85,7 +85,7 @@
     <_ProjectFileVersion>11.0.51106.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\chromium_root\src\out\tangram_static_debug_x86</OutDir>
+    <OutDir>..\..\..\..\Program Files %28x86%29\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\PublicAssemblies</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <LinkKeyFile>
@@ -100,7 +100,7 @@
     <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>..\..\..\..\Program Files %28x86%29\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\PublicAssemblies</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <LinkKeyFile>TangramCLR.snk</LinkKeyFile>
@@ -159,10 +159,10 @@
       <PreserveSbr>true</PreserveSbr>
     </Bscmake>
     <PostBuildEvent>
-      <Command>if not exist "$(windir)\Microsoft.NET\assembly\GAC_32\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7\" (
-  mkdir "$(windir)\Microsoft.NET\assembly\GAC_32\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7"
+      <Command>if not exist "$(windir)\Microsoft.NET\assembly\GAC_32\Tangram_CLR_rt\v4.0_1.0.1992.1963__1bcc94f26a4807a7\" (
+  mkdir "$(windir)\Microsoft.NET\assembly\GAC_32\Tangram_CLR_rt\v4.0_1.0.1992.1963__1bcc94f26a4807a7"
 )
-copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_32\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7\$(TargetName)$(TargetExt)</Command>
+copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_32\Tangram_CLR_rt\v4.0_1.0.1992.1963__1bcc94f26a4807a7\$(TargetName)$(TargetExt)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

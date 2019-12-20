@@ -600,6 +600,19 @@ namespace TangramCLR
 		}
 	}
 
+	String^ Tangram::WizData::get()
+	{
+		BSTR bstrDataXml = theApp.m_pTangramImpl->m_strNtpDataXml.AllocSysString();
+		String^ strResult = BSTR2STRING(bstrDataXml);
+		::SysFreeString(bstrDataXml);
+		return strResult;
+	}
+
+	void Tangram::WizData::set(String^ strXml)
+	{
+		theApp.m_pTangramImpl->m_strNtpDataXml = strXml;
+	}
+
 	TangramAppProxy^ Tangram::AppProxy::get(String^ strKey)
 	{
 		String^ _strKey = strKey->ToLower()->Trim();
@@ -1310,6 +1323,8 @@ namespace TangramCLR
 	{
 		if (ctrl != nullptr)
 		{
+			if (theApp.m_pTangram == nullptr)
+				GetTangram();
 			LONGLONG hWnd = ctrl->Handle.ToInt64();
 			ICompositorManager* pCompositorManager = nullptr;
 			theApp.m_pTangram->CreateCompositorManager(hWnd, &pCompositorManager);

@@ -72,8 +72,8 @@ ITangram* GetTangram()
 			_pTangramImplFunction = (GetTangramImpl)GetProcAddress(hModule, "GetTangramImpl");
 			if (_pTangramImplFunction != NULL) {
 				theApp.m_pTangramImpl = _pTangramImplFunction(&theApp.m_pTangram);
-				if (theApp.m_pTangramImpl->m_nAppType == 0)
-					theApp.m_pTangramImpl->m_nAppType = TANGRAM_APP_BROWSERAPP;
+					//if (theApp.m_pTangramImpl->m_nAppType == 0)
+					//	theApp.m_pTangramImpl->m_nAppType = TANGRAM_APP_BROWSERAPP;
 				theApp.m_pTangramImpl->m_pTangramDelegate = (ITangramDelegate*)&theApp;
 				theApp.m_pTangramImpl->m_pTangramAppProxy = (ITangramAppProxy*)&theApp;
 			}

@@ -794,9 +794,9 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 					{
 						if (m_strID.CompareNoCase(_T("TreeView")))
 						{
-#ifdef _WIN32
 							if (g_pTangram->m_strExeName.CompareNoCase(_T("devenv")) == 0)
 							{
+#ifdef _WIN32
 								CString strLib = g_pTangram->m_strAppPath + _T("PublicAssemblies\\TangramTabbedWnd.dll");
 								if (::PathFileExists(strLib))
 								{
@@ -807,8 +807,21 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 										pViewFactoryDisp = it->second;
 									}
 								}
-							}
 #endif
+							}
+							else
+							{
+								CString strLib = g_pTangram->m_strAppPath + _T("TangramTabbedWnd.dll");
+								if (::PathFileExists(strLib))
+								{
+									::LoadLibrary(strLib);
+									auto it = g_pTangram->m_mapTangramWindowProvider.find(m_strCnnID);
+									if (it != g_pTangram->m_mapTangramWindowProvider.end())
+									{
+										pViewFactoryDisp = it->second;
+									}
+								}
+							}
 							if (pViewFactoryDisp == nullptr)
 							{
 								CString strLib = _T("");

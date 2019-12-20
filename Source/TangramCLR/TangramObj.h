@@ -904,6 +904,10 @@ namespace TangramCLR
 		static Dictionary<String^, Type^>^ m_pAppFormTypeDic = nullptr;
 		static Dictionary<String^, Type^>^ m_pAppMDIFormTypeDic = nullptr;
 		static Dictionary<Control^, String^>^ m_pControlRelationDic = nullptr;
+		static Dictionary<String^, String^>^ CustomizeDictionary = gcnew Dictionary<String^, String^>();
+#ifndef _WIN64
+		static Dictionary<String^, String^>^ replacementsDictionary = nullptr;
+#endif
 	public:
 		static System::Drawing::Icon^ m_pDefaultIcon = nullptr;
 		static Form^ m_pMainForm = nullptr;
@@ -1037,6 +1041,31 @@ namespace TangramCLR
 		static void BindToCtrl(Control^ source, Control^ target, String^ strXmlData);
 		static void BindToCtrl(String^ ctrlID, String^ AssemblyQualifiedName, Control^ target, int nAnchor, String^ strXmlData);
 
+#ifndef _WIN64
+		static property Dictionary<String^, String^>^ WizDic
+		{
+			Dictionary<String^, String^>^ get()
+			{
+				return replacementsDictionary;
+			};
+			void set(Dictionary<String^, String^>^ Dic)
+			{
+				replacementsDictionary = Dic;
+			};
+		}
+#endif
+
+		static property Dictionary<String^, String^>^ CustomizeDic
+		{
+			Dictionary<String^, String^>^ get()
+			{
+				return CustomizeDictionary;
+			};
+			//void set(Dictionary<String^, String^>^ Dic)
+			//{
+			//	CustomizeDictionary = Dic;
+			//};
+		}
 		static property Form^ MainForm
 		{
 			Form^ get();
@@ -1161,6 +1190,12 @@ namespace TangramCLR
 		}
 
 		static property String^ NTPXml
+		{
+			String^ get();
+			void set(String^ strXml);
+		}
+
+		static property String^ WizData
 		{
 			String^ get();
 			void set(String^ strXml);

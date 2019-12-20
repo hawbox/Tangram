@@ -125,7 +125,7 @@ CString CTangramCLRApp::GetLibPathFromAssemblyQualifiedName(CString strAssemblyQ
 			strLib = strAssemblyQualifiedName.Mid(nPos + 1);
 			strLib.Trim();
 			strObjName.Trim();
-			if (strLib == _T("tangramclr")|| strLib == _T("tangram"))
+			if (strLib == _T("tangram_clr_rt")|| strLib == _T("tangram"))
 			{
 				return strObjName + _T("|") + strLib + _T("|");
 			}
