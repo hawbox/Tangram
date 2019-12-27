@@ -890,15 +890,11 @@ IPC_MESSAGE_ROUTED1(FrameMsg_AdvanceFocusInForm,
 
 // Copies the image at location x, y to the clipboard (if there indeed is an
 // image at that location).
-IPC_MESSAGE_ROUTED2(FrameMsg_CopyImageAt,
-                    int /* x */,
-                    int /* y */)
+IPC_MESSAGE_ROUTED2(FrameMsg_CopyImageAt, int /* x */, int /* y */)
 
 // Saves the image at location x, y to the disk (if there indeed is an
 // image at that location).
-IPC_MESSAGE_ROUTED2(FrameMsg_SaveImageAt,
-                    int /* x */,
-                    int /* y */)
+IPC_MESSAGE_ROUTED2(FrameMsg_SaveImageAt, int /* x */, int /* y */)
 
 // Notify the renderer of our overlay routing token.
 IPC_MESSAGE_ROUTED1(FrameMsg_SetOverlayRoutingToken,
@@ -1000,7 +996,6 @@ IPC_MESSAGE_ROUTED0(FrameHostMsg_Detach)
 // Notifies the browser that a document has been loaded.
 IPC_MESSAGE_ROUTED0(FrameHostMsg_DidFinishDocumentLoad)
 
-
 // Sent when the renderer is done loading a page.
 IPC_MESSAGE_ROUTED0(FrameHostMsg_DidStopLoading)
 
@@ -1024,8 +1019,7 @@ IPC_MESSAGE_ROUTED1(FrameHostMsg_DidChangeLoadProgress,
 IPC_MESSAGE_ROUTED1(FrameHostMsg_OpenURL, FrameHostMsg_OpenURL_Params)
 
 // Notifies the browser that a frame finished loading.
-IPC_MESSAGE_ROUTED1(FrameHostMsg_DidFinishLoad,
-                    GURL /* validated_url */)
+IPC_MESSAGE_ROUTED1(FrameHostMsg_DidFinishLoad, GURL /* validated_url */)
 
 // Initiates a download based on user actions like 'ALT+click'.
 IPC_MESSAGE_ROUTED1(FrameHostMsg_DownloadUrl, FrameHostMsg_DownloadUrl_Params)
@@ -1072,7 +1066,7 @@ IPC_MESSAGE_ROUTED2(FrameHostMsg_UpdateTitle,
 // have a javascript send a native value (string, number, boolean) to the
 // listener in Cpp. (DomAutomationController)
 IPC_MESSAGE_ROUTED1(FrameHostMsg_DomOperationResponse,
-                    std::string  /* json_string */)
+                    std::string /* json_string */)
 
 // Sent by the renderer process to check whether client 3D APIs
 // (Pepper 3D, WebGL) are explicitly blocked.
@@ -1127,8 +1121,7 @@ IPC_MESSAGE_ROUTED1(FrameHostMsg_PepperStartsPlayback,
 
 // Notification sent from a renderer to the browser that a Pepper plugin
 // instance has stopped playback.
-IPC_MESSAGE_ROUTED1(FrameHostMsg_PepperStopsPlayback,
-                    int32_t /* pp_instance */)
+IPC_MESSAGE_ROUTED1(FrameHostMsg_PepperStopsPlayback, int32_t /* pp_instance */)
 
 // Return information about a plugin for the given URL and MIME
 // type. If there is no matching plugin, |found| is false.
@@ -1382,8 +1375,7 @@ IPC_MESSAGE_ROUTED0(FrameHostMsg_CheckCompleted)
 
 // Sent to the browser from a frame proxy to post a message to the frame's
 // active renderer.
-IPC_MESSAGE_ROUTED1(FrameHostMsg_RouteMessageEvent,
-                    FrameMsg_PostMessage_Params)
+IPC_MESSAGE_ROUTED1(FrameHostMsg_RouteMessageEvent, FrameMsg_PostMessage_Params)
 
 // Sent when the renderer displays insecure content in a secure origin.
 IPC_MESSAGE_ROUTED0(FrameHostMsg_DidDisplayInsecureContent)
@@ -1475,16 +1467,17 @@ IPC_MESSAGE_ROUTED2(FrameHostMsg_PrintCrossProcessSubframe,
 // Asks the frame host to notify the owner element in parent process that it
 // should render fallback content.
 IPC_MESSAGE_ROUTED0(FrameHostMsg_RenderFallbackContentInParentProcess)
+
 // begin Add by TangramTeam
 IPC_MESSAGE_ROUTED3(TangramFrameMsg_Message,
-	std::wstring /* channel */,
-	std::wstring /* arg1 */,
-	std::wstring /* arg2 */)
-	IPC_MESSAGE_ROUTED3(TangramFrameHostMsg_Message,
-		std::wstring /* channel*/,
-		std::wstring /* arg1 */,
-		std::wstring /* arg2 */)
-	// end Add by TangramTeam
+                    std::wstring /* routing */,
+                    std::wstring /* param1 */,
+                    std::wstring /* param2 */)
+IPC_MESSAGE_ROUTED3(TangramFrameHostMsg_Message,
+                    std::wstring /* routing */,
+                    std::wstring /* param1 */,
+                    std::wstring /* param2 */)
+// end Add by TangramTeam
 
 // Used to go to the session history entry at the given offset (ie, -1 will
 // return the "back" item). This message affects a view and not just a frame,
@@ -1496,8 +1489,7 @@ IPC_MESSAGE_ROUTED2(FrameHostMsg_GoToEntryAtOffset,
 #if BUILDFLAG(USE_EXTERNAL_POPUP_MENU)
 
 // Message to show/hide a popup menu using native controls.
-IPC_MESSAGE_ROUTED1(FrameHostMsg_ShowPopup,
-                    FrameHostMsg_ShowPopup_Params)
+IPC_MESSAGE_ROUTED1(FrameHostMsg_ShowPopup, FrameHostMsg_ShowPopup_Params)
 IPC_MESSAGE_ROUTED0(FrameHostMsg_HidePopup)
 
 #endif

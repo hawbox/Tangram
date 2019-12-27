@@ -57,8 +57,10 @@ void CLoginWnd::OnBnClickedButton1()
 		CString strUsername;
 		GetDlgItemTextW(IDC_EDIT1, strUsername);
 		BSTR bstrUsername = strUsername.AllocSysString();
-		pThisNode->SendIPCMessage(BSTR(_T("web")), bstrUsername);
+		BSTR bstrMsgId;
+		pThisNode->SendIPCMessage(BSTR(_T("web")), bstrUsername, BSTR(_T("")), BSTR(_T("")), &bstrMsgId);
 		::SysFreeString(bstrUsername);
+		::SysFreeString(bstrMsgId);
 	}
 }
 

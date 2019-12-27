@@ -27,17 +27,17 @@ namespace MyCSharpBrowser
             thisNode.OnIPCMessageReceived += ThisNode_OnIPCMessageReceived;
         }
 
-        private void btnHelloWebPage_Click(object sender, EventArgs e)
+        private void ThisNode_OnIPCMessageReceived(string strFrom, string strTo, string strMsgId, string strPayload, string strExtra)
         {
-            thisNode.SendIPCMessage("web", "Hello Webpage!");
+            if (strTo.Equals("csharp"))
+            {
+                MessageBox.Show(strPayload);
+            }
         }
 
-        private void ThisNode_OnIPCMessageReceived(string strChannel, string strData)
+        private void btnHelloWebPage_Click(object sender, EventArgs e)
         {
-            if (strChannel.Equals("csharp"))
-            {
-                MessageBox.Show(strData);
-            }
+            thisNode.SendIPCMessage("web", "Hello Webpage!", "", "");
         }
     }
 }

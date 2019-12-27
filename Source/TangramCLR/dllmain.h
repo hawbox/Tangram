@@ -102,5 +102,5 @@ private:
 	void __stdcall  OnDocumentComplete(IDispatch* pDocdisp, BSTR bstrUrl);
 	void __stdcall  OnNodeAddInCreated(IDispatch* pAddIndisp, BSTR bstrAddInID, BSTR bstrAddInXml);
 	void __stdcall  OnTabChange(int nActivePage, int nOldPage);
-	void __stdcall  OnIPCMessageReceived(BSTR bstrChannel, BSTR bstrData);
+	void __stdcall  OnIPCMessageReceived(BSTR bstrFrom, BSTR bstrTo, BSTR bstrMsgId, BSTR bstrPayload, BSTR bstrExtra);
 };

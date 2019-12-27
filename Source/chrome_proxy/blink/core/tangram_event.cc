@@ -3,52 +3,74 @@
 
 namespace blink {
 
-TangramEvent* TangramEvent::Create(const AtomicString& event_type,
-                                   const String& message_type,
-                                   const String& param1,
-                                   const String& param2) {
-  return MakeGarbageCollected<TangramEvent>(event_type, message_type, param1, param2);
-}
+  TangramEvent* TangramEvent::Create(const AtomicString& event_type,
+    const String& from,
+    const String& to,
+    const String& msgid,
+    const String& payload,
+    const String& extra) {
+    return MakeGarbageCollected<TangramEvent>(event_type, from, to, msgid, payload, extra);
+  }
 
-String TangramEvent::messageType() {
-  return message_type_;
-}
+  String TangramEvent::from() {
+    return from_;
+  }
 
-void TangramEvent::setMessageType(const String& message_type) {
-  message_type_ = message_type;
-}
+  void TangramEvent::setFrom(const String& from) {
+    from_ = from;
+  }
 
-String TangramEvent::param1() {
-  return param1_;
-}
+  String TangramEvent::to() {
+    return to_;
+  }
 
-void TangramEvent::setParam1(const String& param1) {
-  param1_ = param1;
-}
+  void TangramEvent::setTo(const String& to) {
+    to_ = to;
+  }
 
-String TangramEvent::param2() {
-  return param2_;
-}
+  String TangramEvent::msgid() {
+    return msgid_;
+  }
 
-void TangramEvent::setParam2(const String& param2) {
-  param2_ = param2;
-}
+  void TangramEvent::setMsgid(const String& msgid) {
+    msgid_ = msgid;
+  }
 
-TangramEvent::TangramEvent() : Event("", Bubbles::kNo, Cancelable::kNo) {
+  String TangramEvent::payload() {
+    return payload_;
+  }
 
-}
+  void TangramEvent::setPayload(const String& payload) {
+      payload_ = payload;
+  }
 
-TangramEvent::TangramEvent(const AtomicString& event_type, 
-                           const String& message_type,
-                           const String& param1,
-                           const String& param2) 
-  : Event(event_type, Bubbles::kNo, Cancelable::kNo) {
-  message_type_ = message_type;
-  param1_ = param1;
-  param2_ = param2;
-}
+  String TangramEvent::extra() {
+    return extra_;
+  }
 
-TangramEvent::~TangramEvent() = default;
+  void TangramEvent::setExtra(const String& extra) {
+    extra_ = extra;
+  }
+
+  TangramEvent::TangramEvent() : Event("", Bubbles::kNo, Cancelable::kNo) {
+
+  }
+
+  TangramEvent::TangramEvent(const AtomicString& event_type,
+    const String& from,
+    const String& to,
+    const String& msgid,
+    const String& payload,
+    const String& extra)
+    : Event(event_type, Bubbles::kNo, Cancelable::kNo) {
+    from_ = from;
+    to_ = to;
+    msgid_ = msgid;
+    payload_ = payload;
+    extra_ = extra;
+  }
+
+  TangramEvent::~TangramEvent() = default;
 
 }  // namespace blink
 // end Add by TangramTeam

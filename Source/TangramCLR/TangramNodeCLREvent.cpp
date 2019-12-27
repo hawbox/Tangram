@@ -78,7 +78,7 @@ void CWndNodeCLREvent::OnTabChange(int nActivePage, int nOldPage)
 	m_pWndNode->Fire_OnTabChange(nActivePage, nOldPage);
 }
 
-void CWndNodeCLREvent::OnIPCMessageReceived(BSTR bstrChannel, BSTR bstrData)
+void CWndNodeCLREvent::OnIPCMessageReceived(BSTR bstrFrom, BSTR bstrTo, BSTR bstrMsgId, BSTR bstrPayload, BSTR bstrExtra)
 {
-	m_pWndNode->Fire_OnIPCMessageReceived(BSTR2STRING(bstrChannel), BSTR2STRING(bstrData));
+	m_pWndNode->Fire_OnIPCMessageReceived(BSTR2STRING(bstrFrom), BSTR2STRING(bstrTo), BSTR2STRING(bstrMsgId), BSTR2STRING(bstrPayload), BSTR2STRING(bstrExtra));
 }

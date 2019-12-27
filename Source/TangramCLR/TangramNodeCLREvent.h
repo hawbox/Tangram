@@ -43,5 +43,5 @@ public:
 	void OnDocumentComplete(IDispatch* pDocdisp, BSTR bstrUrl);
 	void OnNodeAddInCreated(IDispatch* pAddIndisp, BSTR bstrAddInID, BSTR bstrAddInXml);
 	void OnTabChange(int nActivePage, int nOldPage);
-	void OnIPCMessageReceived(BSTR bstrChannel, BSTR bstrData);
+	void OnIPCMessageReceived(BSTR bstrFrom, BSTR bstrTo, BSTR bstrMsgId, BSTR bstrPayload, BSTR bstrExtra);
 };

@@ -54,14 +54,20 @@ namespace IPC
 		}
 	}
 
-	void Broker::DispatchIPCMessage(CString strChannel, CString strData)
+	void Broker::DispatchIPCMessage(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra)
 	{
+		// The strFrom must be current Endpoint's Id and the strTo can be 
+		// a Channel name, or a ChannelName@EndpointId.
+
 		map<EndPoint*, int>* mapChannelListeners = nullptr;
-		auto it = m_mapIPCListeners.find(strChannel);
+		CString strFromId = strFrom;
+		CString strToChannel = EndPoint::GetChannelFromAddress(strTo);
+		CString strToId = EndPoint::GetEpIdFromAddress(strTo);
+		auto it = m_mapIPCListeners.find(strToChannel);
 		if (it == m_mapIPCListeners.end())
 		{
 			mapChannelListeners = new map<EndPoint*, int>();
-			m_mapIPCListeners[strChannel] = mapChannelListeners;
+			m_mapIPCListeners[strToChannel] = mapChannelListeners;
 		}
 		else
 		{
@@ -69,8 +75,15 @@ namespace IPC
 		}
 		for (auto it2 : (*mapChannelListeners))
 		{
-			it2.first->OnIPCMessageReceived(strChannel, strData);
+			if (strToId.IsEmpty() && strFromId.CompareNoCase(it2.first->Id()) != 0)
+			{
+				it2.first->OnIPCMessageReceived(strFrom, strTo, strMsgId, strPayload, strExtra);
+			}
+			else if (strToId.CompareNoCase(it2.first->Id()) == 0)
+			{
+				it2.first->OnIPCMessageReceived(strFrom, strTo, strMsgId, strPayload, strExtra);
+			}
 		}
-		DispatchToOtherBrokers(strChannel, strData);
+		DispatchToOtherBrokers(strFrom, strTo, strMsgId, strPayload, strExtra);
 	}
 }

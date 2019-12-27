@@ -6,12 +6,12 @@ typedef sequence<any> ObjectArray;
 ] interface Tangram : EventTarget {
 
 	// Internal API
-	void ipcMessage__(DOMString type, DOMString param1, DOMString param2);
+	void ipcMessage__(DOMString routing, DOMString param1, DOMString param2);
 
 	// Message API
 	void addChannel(DOMString channel);
 	void removeChannel(DOMString channel);
-	void sendMessage(DOMString channel, DOMString data);
+	DOMString sendMessage(DOMString to, DOMString payload, optional DOMString extra = "", optional DOMString msgId = "");
 
 	// Event handler attributes
 	attribute EventHandler onMessageReceived;

@@ -3,6 +3,7 @@
 #include "tangram_event.h"
 #include "tangram_node.h"
 
+#include "base/guid.h"
 #include "third_party/blink/public/web/web_local_frame_client.h"
 #include "third_party/blink/renderer/core/frame/local_dom_window.h"
 #include "third_party/blink/renderer/core/frame/local_frame.h"
@@ -34,21 +35,31 @@ void Tangram::AddedEventListener(const AtomicString& event_type,
 }
 
 // Internal message interface.
-void Tangram::ipcMessage__(const String& type, const String& param1, const String& param2) {
-	ipcMessage(type, param1, param2);
+void Tangram::ipcMessage__(const String& routing, const String& param1, const String& param2) {
+	ipcMessage(routing, param1, param2);
 }
 
 // User level message
 void Tangram::addChannel(const String& channel) {
-  ipcMessage(L"USER_LEVEL_ADD_CHANNEL", channel, L"");
+  ipcMessage(L"ADD_CHANNEL", channel, L"");
 }
 
 void Tangram::removeChannel(const String& channel) {
-  ipcMessage(L"USER_LEVEL_REMOVE_CHANNEL", channel, L"");
+  ipcMessage(L"REMOVE_CHANNEL", channel, L"");
 }
 
-void Tangram::sendMessage(const String& channel, const String& data) {
-  ipcMessage(L"USER_LEVEL_MESSAGE", channel, data);
+String Tangram::sendMessage(const String& to, const String& payload, const String& extra, const String& msgId) {
+	String newMsgId;
+	if (msgId.IsEmpty()) {
+		std::string guid = base::GenerateGUID();
+		newMsgId = String(guid.c_str());
+	}
+	else {
+		newMsgId = msgId;
+	}
+	String routing = createRouting(to, newMsgId);
+  ipcMessage(routing, payload, extra);
+	return newMsgId;
 }
 
 // Define a element
@@ -61,24 +72,24 @@ void Tangram::renderElement(const String& tagName, const String& html) {
   ipcMessage(L"RENDER_ELEMENT", tagName, html);
 }
 
-void Tangram::ipcMessage(const String& type, const String& param1, const String& param2) {
+void Tangram::ipcMessage(const String& routing, const String& param1, const String& param2) {
 	WebLocalFrameImpl* web_local_frame_impl = WebLocalFrameImpl::FromFrame(GetFrame());
 	// Null when opening a new tab.
 	if (web_local_frame_impl != nullptr) {
 		WebLocalFrameClient* web_local_frame_client = web_local_frame_impl->Client();
 		if (web_local_frame_client) {
 			if (is_pending_) {
-				String message = type + "%%%" + param1 + "%%%" + param2;
+				String message = routing + "%%%" + param1 + "%%%" + param2;
 				pending_messages_.push_back(message);
 			}
 			else {
-				WebString webstr = type;
-				std::wstring u16_type = webstr.Utf16();
+				WebString webstr = routing;
+				std::wstring u16_routing = webstr.Utf16();
 				webstr = param1;
 				std::wstring u16_param1 = webstr.Utf16();
 				webstr = param2;
 				std::wstring u16_param2 = webstr.Utf16();
-				web_local_frame_client->SendTangramMessage(u16_type, u16_param1, u16_param2);
+				web_local_frame_client->SendTangramMessage(u16_routing, u16_param1, u16_param2);
 			}
 		}
 	}
@@ -104,7 +115,7 @@ void Tangram::releaseMessage() {
 					stringBuffer = stringBuffer + pending_messages_[i];
 				}
 				WebString bundle = stringBuffer;
-				std::wstring type = L"BUNDLE_MESSAGE";
+				std::wstring type = L"AGGREGATED_MESSAGE";
 				std::wstring param1 = bundle.Utf16();
 				std::wstring param2 = L"";
 				web_local_frame_client->SendTangramMessage(type, param1, param2);
@@ -112,6 +123,11 @@ void Tangram::releaseMessage() {
 			}
 		}
 	}
+}
+
+String Tangram::createRouting(const String& to, const String& msgId)
+{
+	return to + ":" + msgId;
 }
 
 const AtomicString& Tangram::InterfaceName() const {

@@ -130,7 +130,7 @@ public:
 
 	// IPC message
 	IPC::Broker* GetBroker() override;
-	void OnIPCMessageReceived(CString strChannel, CString strData) override;
+	void OnIPCMessageReceived(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra = NULL) override;
 
 	HRESULT Fire_OpenComplete();
 	HRESULT Fire_Destroy();
@@ -139,7 +139,7 @@ public:
 	HRESULT Fire_NodeDocumentComplete(IDispatch * ExtenderDisp, BSTR bstrURL);
 	HRESULT Fire_ControlNotify(IWndNode * sender, LONG NotifyCode, LONG CtrlID, LONGLONG CtrlHandle, BSTR CtrlClassName);
 	HRESULT Fire_TabChange(LONG ActivePage, LONG OldPage);
-	HRESULT Fire_IPCMessageReceived(BSTR bstrChannel, BSTR bstrData);
+	HRESULT Fire_IPCMessageReceived(BSTR bstrFrom, BSTR bstrTo, BSTR bstrMsgId, BSTR bstrPayload, BSTR bstrExtra);
 
 	void Lock(){}
 	void Unlock(){}
@@ -227,7 +227,7 @@ public:
 	STDMETHOD(put_URL)(BSTR newVal);
 
 	STDMETHOD(AddChannel)(BSTR bstrChannel);
-	STDMETHOD(SendIPCMessage)(BSTR bstrChannel, BSTR bstrData);
+	STDMETHOD(SendIPCMessage)(BSTR bstrTo, BSTR bstrPayload, BSTR bstrExtra, BSTR bstrMsgId, BSTR* bstrRet);
 
 	BEGIN_COM_MAP(CWndNode)
 		COM_INTERFACE_ENTRY(IWndNode)

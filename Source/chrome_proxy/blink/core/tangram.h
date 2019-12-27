@@ -42,17 +42,17 @@ class CORE_EXPORT Tangram final : public EventTargetWithInlineData,
   void AddedEventListener(const AtomicString& event_type,
                           RegisteredEventListener&) override;
 
-  DEFINE_ATTRIBUTE_EVENT_LISTENER(MessageReceived, kTangrammsg)
+  DEFINE_ATTRIBUTE_EVENT_LISTENER(MessageReceived, kTangram)
 
   // Internal method
 
-  void ipcMessage__(const String& type, const String& param1, const String& param2);
+  void ipcMessage__(const String& routing, const String& param1, const String& param2);
 
   // User level message
 
   void addChannel(const String& channel);
   void removeChannel(const String& channel);
-  void sendMessage(const String& channel, const String& data);
+  String sendMessage(const String& to, const String& payload, const String& extra, const String& msgId);
 
   // DOM method
 
@@ -61,9 +61,10 @@ class CORE_EXPORT Tangram final : public EventTargetWithInlineData,
 
   // Non-js method
   
-  void ipcMessage(const String& type, const String& param1, const String& param2);
+  void ipcMessage(const String& routing, const String& param1, const String& param2);
   void waitMessage();
   void releaseMessage();
+  String createRouting(const String& to, const String& msgId);
 
   // EventTarget overrides:
   const AtomicString& InterfaceName() const override;

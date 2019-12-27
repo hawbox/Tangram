@@ -1775,16 +1775,10 @@ TangramThreadInfo* CTangram::GetThreadInfo(DWORD ThreadID)
 }
 
 // IPC message
-void CTangram::DispatchIPCMessage(CString strChannel, CString strData)
+void CTangram::DispatchIPCMessage(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra)
 {
 	// All hit
-	this->OnIPCMessageReceived(strChannel, strData);
-	DispatchToOtherBrokers(strChannel, strData);
-}
-
-void CTangram::DispatchToOtherBrokers(CString strChannel, CString strData)
-{
-	// Nothing to do.
+	this->OnIPCMessageReceived(strFrom, strTo, strMsgId, strPayload, strExtra);
 }
 
 IPC::Broker* CTangram::GetBroker()
@@ -1792,11 +1786,11 @@ IPC::Broker* CTangram::GetBroker()
 	return this;
 }
 
-void CTangram::OnIPCMessageReceived(CString strChannel, CString strData)
+void CTangram::OnIPCMessageReceived(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra)
 {
 	if (m_pTangramDelegate != nullptr)
 	{
-		m_pTangramDelegate->TangramIPCMsg(0, _T(""), strChannel, strData);
+		m_pTangramDelegate->TangramIPCMsg(0, _T(""), strTo, strPayload);
 	}
 }
 

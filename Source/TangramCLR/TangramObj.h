@@ -259,11 +259,11 @@ namespace TangramCLR
 			OnTabChange(nActivePage, nOldActivePage);
 		}
 
-		delegate void MessageHandle(String^ strChannel, String^ strData);
+		delegate void MessageHandle(String^ strFrom, String^ strTo, String^ strMsgId, String^ strPayload, String^ strExtra);
 		event MessageHandle^ OnIPCMessageReceived;
-		void Fire_OnIPCMessageReceived(String^ strChannel, String^ strData)
+		void Fire_OnIPCMessageReceived(String^ strFrom, String^ strTo, String^ strMsgId, String^ strPayload, String^ strExtra)
 		{
-			OnIPCMessageReceived(strChannel, strData);
+			OnIPCMessageReceived(strFrom, strTo, strMsgId, strPayload, strExtra);
 		}
 
 		void AddChannel(String^ strChannel)
@@ -271,9 +271,15 @@ namespace TangramCLR
 			m_pWndNode->AddChannel(STRING2BSTR(strChannel));
 		}
 
-		void SendIPCMessage(String^ strChannel, String^ strData)
+		String^ SendIPCMessage(String^ strTo, String^ strPayload, String^ strExtra, String^ strMsgId)
 		{
-			m_pWndNode->SendIPCMessage(STRING2BSTR(strChannel), STRING2BSTR(strData));
+			BSTR bstrRet;
+			HRESULT hr = m_pWndNode->SendIPCMessage(STRING2BSTR(strTo), STRING2BSTR(strPayload), STRING2BSTR(strExtra), STRING2BSTR(strMsgId), &bstrRet);
+			if (hr == S_OK)
+			{
+				return BSTR2STRING(bstrRet);
+			}
+			return "";
 		}
 
 	private:

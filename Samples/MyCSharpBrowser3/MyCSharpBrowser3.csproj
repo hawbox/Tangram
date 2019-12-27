@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{58653D23-0E23-4282-826F-75D8F717E71A}</ProjectGuid>
+    <ProjectGuid>{9A076D3C-321E-47F9-A6BB-6DA479328950}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>MyCSharpBrowser</RootNamespace>
     <AssemblyName>MyCSharpBrowser3</AssemblyName>
@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\chromium_root_78\src\out\tangram_static_debug_x64\</OutputPath>
+    <OutputPath>..\..\chromium_root_79\src\out\tangram_static_debug_x64\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

@@ -3113,8 +3113,11 @@ EXTERN_C const IID IID_IWndNode;
             BSTR bstrChannel) = 0;
         
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE SendIPCMessage( 
-            BSTR bstrChannel,
-            BSTR bstrData) = 0;
+            BSTR bstrTo,
+            BSTR bstrPayload,
+            BSTR bstrExtra,
+            BSTR bstrMsgId,
+            /* [retval][out] */ BSTR *bstrRes) = 0;
         
     };
     
@@ -3497,8 +3500,11 @@ EXTERN_C const IID IID_IWndNode;
         
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *SendIPCMessage )( 
             IWndNode * This,
-            BSTR bstrChannel,
-            BSTR bstrData);
+            BSTR bstrTo,
+            BSTR bstrPayload,
+            BSTR bstrExtra,
+            BSTR bstrMsgId,
+            /* [retval][out] */ BSTR *bstrRes);
         
         END_INTERFACE
     } IWndNodeVtbl;
@@ -3758,8 +3764,8 @@ EXTERN_C const IID IID_IWndNode;
 #define IWndNode_AddChannel(This,bstrChannel)	\
     ( (This)->lpVtbl -> AddChannel(This,bstrChannel) ) 
 
-#define IWndNode_SendIPCMessage(This,bstrChannel,bstrData)	\
-    ( (This)->lpVtbl -> SendIPCMessage(This,bstrChannel,bstrData) ) 
+#define IWndNode_SendIPCMessage(This,bstrTo,bstrPayload,bstrExtra,bstrMsgId,bstrRes)	\
+    ( (This)->lpVtbl -> SendIPCMessage(This,bstrTo,bstrPayload,bstrExtra,bstrMsgId,bstrRes) ) 
 
 #endif /* COBJMACROS */
 

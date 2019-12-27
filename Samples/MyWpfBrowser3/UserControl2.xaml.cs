@@ -34,17 +34,17 @@ namespace MyWpfBrowser
             thisNode.OnIPCMessageReceived += ThisNode_OnIPCMessageReceived;
         }
 
-        private void ThisNode_OnIPCMessageReceived(string strChannel, string strData)
+        private void ThisNode_OnIPCMessageReceived(string strFrom, string strTo, string strMsgId, string strPayload, string strExtra)
         {
-            if (strChannel.Equals("csharp"))
+            if (strTo.Equals("csharp"))
             {
-                MessageBox.Show(strData);
+                MessageBox.Show(strPayload);
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            thisNode.SendIPCMessage("web", "Hello Webpage!");
+            thisNode.SendIPCMessage("web", "Hello Webpage!", "", "");
         }
     }
 }

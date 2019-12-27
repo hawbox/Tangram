@@ -45,7 +45,7 @@ class CORE_EXPORT TangramNode final : public EventTargetWithInlineData,
   void removeChannel(const String& channel);
   void sendMessage(const String& channel, const String& data);
 
-  DEFINE_ATTRIBUTE_EVENT_LISTENER(MessageReceived, kTangrammsg)
+  DEFINE_ATTRIBUTE_EVENT_LISTENER(MessageReceived, kTangram)
 
   // Non-js method
 

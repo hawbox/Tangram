@@ -1964,9 +1964,8 @@ void RenderFrameImpl::Initialize() {
   TRACE_EVENT_CATEGORY_GROUP_ENABLED("rail", &is_tracing_rail);
   if (is_tracing_rail || is_tracing_navigation) {
     int parent_id = RenderFrame::GetRoutingIdForWebFrame(frame_->Parent());
-    TRACE_EVENT2("navigation,rail", "RenderFrameImpl::Initialize",
-                 "id", routing_id_,
-                 "parent", parent_id);
+    TRACE_EVENT2("navigation,rail", "RenderFrameImpl::Initialize", "id",
+                 routing_id_, "parent", parent_id);
   }
 
   // |thread| may be null in tests.
@@ -2138,7 +2137,7 @@ bool RenderFrameImpl::IsPepperAcceptingCompositionEvents() const {
 }
 
 void RenderFrameImpl::PluginCrashed(const base::FilePath& plugin_path,
-                                   base::ProcessId plugin_pid) {
+                                    base::ProcessId plugin_pid) {
   // TODO(jam): dispatch this IPC in RenderFrameHost and switch to use
   // routing_id_ as a result.
   Send(new FrameHostMsg_PluginCrashed(routing_id_, plugin_path, plugin_pid));
@@ -2267,11 +2266,9 @@ bool RenderFrameImpl::OnMessageReceived(const IPC::Message& msg) {
     IPC_MESSAGE_HANDLER(FrameMsg_CopyImageAt, OnCopyImageAt)
     IPC_MESSAGE_HANDLER(FrameMsg_SaveImageAt, OnSaveImageAt)
     IPC_MESSAGE_HANDLER(FrameMsg_AddMessageToConsole, OnAddMessageToConsole)
-    IPC_MESSAGE_HANDLER(FrameMsg_VisualStateRequest,
-                        OnVisualStateRequest)
+    IPC_MESSAGE_HANDLER(FrameMsg_VisualStateRequest, OnVisualStateRequest)
     IPC_MESSAGE_HANDLER(FrameMsg_Reload, OnReload)
-    IPC_MESSAGE_HANDLER(FrameMsg_SetAccessibilityMode,
-                        OnSetAccessibilityMode)
+    IPC_MESSAGE_HANDLER(FrameMsg_SetAccessibilityMode, OnSetAccessibilityMode)
     IPC_MESSAGE_HANDLER(AccessibilityMsg_SnapshotTree,
                         OnSnapshotAccessibilityTree)
     IPC_MESSAGE_HANDLER(FrameMsg_UpdateOpener, OnUpdateOpener)
@@ -2310,9 +2307,9 @@ bool RenderFrameImpl::OnMessageReceived(const IPC::Message& msg) {
 #endif
 #endif
     IPC_MESSAGE_HANDLER(UnfreezableFrameMsg_Delete, OnDeleteFrame)
-	// begin Add by TangramTeam
-	IPC_MESSAGE_HANDLER(TangramFrameMsg_Message, OnTangramMessage)
-	// end Add by TangramTeam
+    // begin Add by TangramTeam
+    IPC_MESSAGE_HANDLER(TangramFrameMsg_Message, OnTangramMessage)
+    // end Add by TangramTeam
 
   IPC_END_MESSAGE_MAP()
 
@@ -2373,8 +2370,8 @@ void RenderFrameImpl::BindNavigationClient(
 }
 
 void RenderFrameImpl::OnBeforeUnload(bool is_reload) {
-  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::OnBeforeUnload",
-               "id", routing_id_);
+  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::OnBeforeUnload", "id",
+               routing_id_);
   // Save the routing_id, as the RenderFrameImpl can be deleted in
   // dispatchBeforeUnloadEvent. See https://crbug.com/666714 for details.
   int routing_id = routing_id_;
@@ -2400,8 +2397,8 @@ void RenderFrameImpl::OnSwapOut(
     int proxy_routing_id,
     bool is_loading,
     const FrameReplicationState& replicated_frame_state) {
-  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::OnSwapOut",
-               "id", routing_id_);
+  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::OnSwapOut", "id",
+               routing_id_);
 
   // Send an UpdateState message before we get deleted.
   SendUpdateState();
@@ -2697,8 +2694,7 @@ RenderFrameImpl::JavaScriptIsolatedWorldRequest::JavaScriptIsolatedWorldRequest(
       callback_(std::move(callback)) {}
 
 RenderFrameImpl::JavaScriptIsolatedWorldRequest::
-    ~JavaScriptIsolatedWorldRequest() {
-}
+    ~JavaScriptIsolatedWorldRequest() {}
 
 void RenderFrameImpl::JavaScriptIsolatedWorldRequest::Completed(
     const blink::WebVector<v8::Local<v8::Value>>& result) {
@@ -2775,8 +2771,8 @@ void RenderFrameImpl::OnSnapshotAccessibilityTree(int callback_id,
                                                   ui::AXMode ax_mode) {
   AXContentTreeUpdate response;
   RenderAccessibilityImpl::SnapshotAccessibilityTree(this, &response, ax_mode);
-  Send(new AccessibilityHostMsg_SnapshotResponse(
-      routing_id_, callback_id, response));
+  Send(new AccessibilityHostMsg_SnapshotResponse(routing_id_, callback_id,
+                                                 response));
 }
 
 void RenderFrameImpl::OnPortalActivated(
@@ -4269,8 +4265,8 @@ blink::WebLocalFrame* RenderFrameImpl::CreateChildFrame(
           frame_owner_properties);
   params.frame_owner_element_type = frame_owner_element_type;
   if (!Send(new FrameHostMsg_CreateChildFrame(params, &params_reply))) {
-    // Allocation of routing id failed, so we can't create a child frame. This can
-    // happen if the synchronous IPC message above has failed.  This can
+    // Allocation of routing id failed, so we can't create a child frame. This
+    // can happen if the synchronous IPC message above has failed.  This can
     // legitimately happen when the browser process has already destroyed
     // RenderProcessHost, but the renderer process hasn't quit yet.
     return nullptr;
@@ -4641,8 +4637,8 @@ void RenderFrameImpl::DidCommitProvisionalLoad(
     blink::WebHistoryCommitType commit_type,
     mojo::ScopedMessagePipeHandle document_interface_broker_blink_handle) {
   TRACE_EVENT2("navigation,rail", "RenderFrameImpl::didCommitProvisionalLoad",
-               "id", routing_id_,
-               "url", GetLoadingUrl().possibly_invalid_spec());
+               "id", routing_id_, "url",
+               GetLoadingUrl().possibly_invalid_spec());
 
   InternalDocumentStateData* internal_data =
       InternalDocumentStateData::FromDocumentLoader(
@@ -4857,8 +4853,7 @@ void RenderFrameImpl::DidReceiveTitle(const blink::WebString& title,
 
     base::string16 title16 = title.Utf16();
     base::string16 shortened_title = title16.substr(0, kMaxTitleChars);
-    Send(new FrameHostMsg_UpdateTitle(routing_id_,
-                                      shortened_title, direction));
+    Send(new FrameHostMsg_UpdateTitle(routing_id_, shortened_title, direction));
   } else {
     // Set process title for sub-frames in traces.
     GURL loading_url = GetLoadingUrl();
@@ -4975,8 +4970,8 @@ void RenderFrameImpl::DidHandleOnloadEvents() {
 
 void RenderFrameImpl::DidFailLoad(const WebURLError& error,
                                   blink::WebHistoryCommitType commit_type) {
-  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didFailLoad",
-               "id", routing_id_);
+  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didFailLoad", "id",
+               routing_id_);
   // TODO(nasko): Move implementation here. No state needed.
   WebDocumentLoader* document_loader = frame_->GetDocumentLoader();
   DCHECK(document_loader);
@@ -4989,8 +4984,8 @@ void RenderFrameImpl::DidFailLoad(const WebURLError& error,
 }
 
 void RenderFrameImpl::DidFinishLoad() {
-  TRACE_EVENT1("navigation,benchmark,rail",
-               "RenderFrameImpl::didFinishLoad", "id", routing_id_);
+  TRACE_EVENT1("navigation,benchmark,rail", "RenderFrameImpl::didFinishLoad",
+               "id", routing_id_);
   if (!frame_->Parent()) {
     TRACE_EVENT_INSTANT0("WebCore,benchmark,rail", "LoadFinished",
                          TRACE_EVENT_SCOPE_PROCESS);
@@ -6125,13 +6120,13 @@ bool RenderFrameImpl::SwapIn() {
 
 void RenderFrameImpl::DidStartLoading() {
   // TODO(dgozman): consider removing this callback.
-  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didStartLoading",
-               "id", routing_id_);
+  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didStartLoading", "id",
+               routing_id_);
 }
 
 void RenderFrameImpl::DidStopLoading() {
-  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didStopLoading",
-               "id", routing_id_);
+  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didStopLoading", "id",
+               routing_id_);
 
   // Any subframes created after this point won't be considered part of the
   // current history navigation (if this was one), so we don't need to track
@@ -6817,8 +6812,7 @@ void RenderFrameImpl::SyncSelectionIfRequired() {
   // Sometimes we get repeated didChangeSelection calls from webkit when
   // the selection hasn't actually changed. We don't want to report these
   // because it will cause us to continually claim the X clipboard.
-  if (selection_text_offset_ != offset ||
-      selection_range_ != range ||
+  if (selection_text_offset_ != offset || selection_range_ != range ||
       selection_text_ != text) {
     selection_text_ = text;
     selection_text_offset_ = offset;
@@ -7310,8 +7304,8 @@ void RenderFrameImpl::PepperInstanceCreated(
     PepperPluginInstanceImpl* instance) {
   active_pepper_instances_.insert(instance);
 
-  Send(new FrameHostMsg_PepperInstanceCreated(
-      routing_id_, instance->pp_instance()));
+  Send(new FrameHostMsg_PepperInstanceCreated(routing_id_,
+                                              instance->pp_instance()));
 }
 
 void RenderFrameImpl::PepperInstanceDeleted(
@@ -7325,10 +7319,8 @@ void RenderFrameImpl::PepperInstanceDeleted(
 
   RenderFrameImpl* const render_frame = instance->render_frame();
   if (render_frame) {
-    render_frame->Send(
-        new FrameHostMsg_PepperInstanceDeleted(
-            render_frame->GetRoutingID(),
-            instance->pp_instance()));
+    render_frame->Send(new FrameHostMsg_PepperInstanceDeleted(
+        render_frame->GetRoutingID(), instance->pp_instance()));
   }
 }
 
@@ -7346,20 +7338,16 @@ void RenderFrameImpl::PepperFocusChanged(PepperPluginInstanceImpl* instance,
 void RenderFrameImpl::PepperStartsPlayback(PepperPluginInstanceImpl* instance) {
   RenderFrameImpl* const render_frame = instance->render_frame();
   if (render_frame) {
-    render_frame->Send(
-        new FrameHostMsg_PepperStartsPlayback(
-            render_frame->GetRoutingID(),
-            instance->pp_instance()));
+    render_frame->Send(new FrameHostMsg_PepperStartsPlayback(
+        render_frame->GetRoutingID(), instance->pp_instance()));
   }
 }
 
 void RenderFrameImpl::PepperStopsPlayback(PepperPluginInstanceImpl* instance) {
   RenderFrameImpl* const render_frame = instance->render_frame();
   if (render_frame) {
-    render_frame->Send(
-        new FrameHostMsg_PepperStopsPlayback(
-            render_frame->GetRoutingID(),
-            instance->pp_instance()));
+    render_frame->Send(new FrameHostMsg_PepperStopsPlayback(
+        render_frame->GetRoutingID(), instance->pp_instance()));
   }
 }
 
@@ -7523,21 +7511,29 @@ float RenderFrameImpl::GetDeviceScaleFactor() {
 }
 
 // begin Add by TangramTeam
-void RenderFrameImpl::OnTangramMessage(std::wstring channel,
-	std::wstring arg1,
-	std::wstring arg2) {
-	blink::Tangram* pTangram = (blink::Tangram*)GetWebFrame()->GetTangram();
-	if (pTangram) {
-		pTangram->DispatchEvent(*blink::TangramEvent::Create(
-			blink::event_type_names::kTangrammsg, String(channel.c_str()),
-			String(arg1.c_str()), String(arg2.c_str())));
-	}
+void RenderFrameImpl::OnTangramMessage(std::wstring routing,
+                                       std::wstring param1,
+                                       std::wstring param2) {
+  blink::Tangram* pTangram = (blink::Tangram*)GetWebFrame()->GetTangram();
+  if (pTangram) {
+    std::wstring from, to, msgId;
+    int nIndex = routing.find(L":");
+    from = routing.substr(0, nIndex);
+    routing = routing.substr(nIndex + 1);
+    nIndex = routing.find(L":");
+    to = routing.substr(0, nIndex);
+    msgId = routing.substr(nIndex + 1);
+    pTangram->DispatchEvent(*blink::TangramEvent::Create(
+        blink::event_type_names::kTangram, String(from.c_str()),
+        String(to.c_str()), String(msgId.c_str()), String(param1.c_str()),
+        String(param2.c_str())));
+  }
 }
 
-void RenderFrameImpl::SendTangramMessage(std::wstring channel,
-	std::wstring arg1,
-	std::wstring arg2) {
-	Send(new TangramFrameHostMsg_Message(routing_id_, channel, arg1, arg2));
+void RenderFrameImpl::SendTangramMessage(std::wstring routing,
+                                         std::wstring param1,
+                                         std::wstring param2) {
+  Send(new TangramFrameHostMsg_Message(routing_id_, routing, param1, param2));
 }
 // end Add by TangramTeam
 

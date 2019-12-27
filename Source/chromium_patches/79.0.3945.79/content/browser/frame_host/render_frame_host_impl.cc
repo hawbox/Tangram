@@ -8001,11 +8001,11 @@ void RenderFrameHostImpl::OpenURL(CString strUrl, CString strDisposition)
 }
 
 void RenderFrameHostImpl::SendTangramMessage(TangramCommon::IPCMsg* pMsg) {
-	if (pMsg->m_strType.CompareNoCase(_T("USER_LEVEL_MESSAGE")) == 0) {
-		Send(new TangramFrameMsg_Message(routing_id_, LPCTSTR(pMsg->m_strType), LPCTSTR(pMsg->m_strKey), LPCTSTR(pMsg->m_strData)));
-	}
-	else if (pMsg->m_strType.CompareNoCase(_T("OPEN_URL")) == 0) {
+	if (pMsg->m_strType.CompareNoCase(_T("OPEN_URL")) == 0) {
 		OpenURL(pMsg->m_strKey, pMsg->m_strData);
+	}
+	else {
+		Send(new TangramFrameMsg_Message(routing_id_, LPCTSTR(pMsg->m_strType), LPCTSTR(pMsg->m_strKey), LPCTSTR(pMsg->m_strData)));
 	}
 }
 // end Add by TangramTeam

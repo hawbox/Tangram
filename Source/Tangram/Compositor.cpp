@@ -3378,7 +3378,7 @@ STDMETHODIMP CCompositor::get_HostBrowser(IChromeWebBrowser** ppChromeWebBrowser
 	return S_FALSE;
 }
 
-void CCompositor::DispatchToOtherBrokers(CString strChannel, CString strData)
+void CCompositor::DispatchToOtherBrokers(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra)
 {
-	g_pTangram->DispatchIPCMessage(strChannel, strData);
+	g_pTangram->DispatchIPCMessage(strFrom, strTo, strMsgId, strPayload, strExtra);
 }

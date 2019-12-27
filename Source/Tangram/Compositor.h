@@ -263,7 +263,7 @@ public:
 	BOOL CreateCompositorManager();
 	CWndNode* OpenXtmlDocument(CTangramXmlParse* pParse, CString strKey, CString	strFile);
 
-	void DispatchToOtherBrokers(CString strChannel, CString strData) override;
+	void DispatchToOtherBrokers(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra = NULL) override;
 
 	STDMETHOD(get_CompositorXML)(BSTR* pVal);
 	STDMETHOD(ModifyHost)(LONGLONG hHostWnd);

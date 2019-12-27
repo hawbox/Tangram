@@ -1,11 +1,15 @@
 [
-	Constructor(DOMString event_type,
-				DOMString message_type,
-				DOMString param1,
-				DOMString param2),
-	Exposed=Window
+  Constructor(DOMString event_type,
+  DOMString from,
+  DOMString to,
+  DOMString msgid,
+  DOMString payload,
+  DOMString extra),
+  Exposed = Window
 ] interface TangramEvent : Event {
-	attribute DOMString messageType;
-	attribute DOMString param1;
-	attribute DOMString param2;
+  attribute DOMString from;
+  attribute DOMString to;
+  attribute DOMString msgid;
+  attribute DOMString payload;
+  attribute DOMString extra;
 };

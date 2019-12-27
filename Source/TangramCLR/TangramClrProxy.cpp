@@ -1965,10 +1965,10 @@ void CTangramNodeEvent::OnTabChange(int nActivePage, int nOldPage)
 		m_pTangramNodeCLREvent->OnTabChange(nActivePage, nOldPage);
 }
 
-void CTangramNodeEvent::OnIPCMessageReceived(BSTR bstrChannel, BSTR bstrData)
+void CTangramNodeEvent::OnIPCMessageReceived(BSTR bstrFrom, BSTR bstrTo, BSTR bstrMsgId, BSTR bstrPayload, BSTR bstrExtra)
 {
 	if (m_pWndNode != nullptr)
-		m_pTangramNodeCLREvent->OnIPCMessageReceived(bstrChannel, bstrData);
+		m_pTangramNodeCLREvent->OnIPCMessageReceived(bstrFrom, bstrTo, bstrMsgId, bstrPayload, bstrExtra);
 }
 
 void CTangramNodeEvent::OnDestroy()

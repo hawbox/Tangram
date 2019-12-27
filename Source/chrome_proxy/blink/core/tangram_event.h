@@ -6,41 +6,51 @@
 
 namespace blink {
 
-class ScriptState;
+  class ScriptState;
 
-class CORE_EXPORT TangramEvent : public Event {
-  DEFINE_WRAPPERTYPEINFO();
+  class CORE_EXPORT TangramEvent : public Event {
+    DEFINE_WRAPPERTYPEINFO();
 
-public:
-  static TangramEvent* Create() { return MakeGarbageCollected<TangramEvent>(); }
+  public:
+    static TangramEvent* Create() { return MakeGarbageCollected<TangramEvent>(); }
 
-  static TangramEvent* Create(const AtomicString& event_type,
-                              const String& message_type,
-                              const String& param1,
-                              const String& param2);
+    static TangramEvent* Create(const AtomicString& event_type,
+      const String& from,
+      const String& to,
+      const String& msgid,
+      const String& payload,
+      const String& extra);
 
-  String messageType();
-  void setMessageType(const String&);
-  String param1();
-  void setParam1(const String&);
-  String param2();
-  void setParam2(const String&);
+    String from();
+    void setFrom(const String&);
+    String to();
+    void setTo(const String&);
+    String msgid();
+    void setMsgid(const String&);
+    String payload();
+    void setPayload(const String&);
+    String extra();
+    void setExtra(const String&);
 
-  ~TangramEvent() override;
+    ~TangramEvent() override;
 
-  TangramEvent();
+    TangramEvent();
 
-  TangramEvent(const AtomicString& event_type, 
-               const String& message_type, 
-               const String& param1,
-               const String& param2);
+    TangramEvent(const AtomicString& event_type,
+      const String& from,
+      const String& to,
+      const String& msgid,
+      const String& payload,
+      const String& extra);
 
-private:
-  String message_type_;
-  String param1_;
-  String param2_;
+  private:
+    String from_;
+    String to_;
+    String msgid_;
+    String payload_;
+    String extra_;
 
-};
+  };
 
 }  // namespace blink
 

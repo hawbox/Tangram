@@ -454,24 +454,37 @@ namespace ChromePlus {
 		return (IPC::Broker*)m_pCompositor;
 	}
 
-	void CHtmlWnd::OnIPCMessageReceived(CString strChannel, CString strData)
+	CString CHtmlWnd::CreateRouting(CString strFrom, CString strTo, CString strMsgId)
 	{
-		SendChromeIPCMessage(L"USER_LEVEL_MESSAGE", strChannel, strData);
+		return strFrom + _T(":") + strTo + _T(":") + strMsgId;
 	}
 
-	void CHtmlWnd::SendChromeIPCMessage(CString strType, CString strParam1, CString strParam2)
+	void CHtmlWnd::LoadRouting(CString strRouting, CString& strTo, CString& strMsgId)
+	{
+		int nIndex = strRouting.Find(_T(":"));
+		strTo = strRouting.Left(nIndex);
+		strMsgId = strRouting.Mid(nIndex + 1);
+	}
+
+	void CHtmlWnd::OnIPCMessageReceived(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra)
+	{
+		CString strRouting = CreateRouting(strFrom, strTo, strMsgId);
+		SendChromeIPCMessage(strRouting, strPayload, strExtra);
+	}
+
+	void CHtmlWnd::SendChromeIPCMessage(CString strRouting, CString strParam1, CString strParam2)
 	{
 		if (m_pChromeRenderFrameHost != nullptr)
 		{
 			TangramCommon::IPCMsg pIPCInfo;
-			pIPCInfo.m_strType = strType;
+			pIPCInfo.m_strType = strRouting;
 			pIPCInfo.m_strKey = strParam1;
 			pIPCInfo.m_strData = strParam2;
 			m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
 		}
 	}
 
-	void CHtmlWnd::OnChromeIPCMessageReceived(std::wstring strType, std::wstring strParam1, std::wstring strParam2)
+	void CHtmlWnd::OnChromeIPCMessageReceived(std::wstring strRouting, std::wstring strParam1, std::wstring strParam2)
 	{
 		// TODO: Not work
 	}
@@ -555,43 +568,39 @@ namespace ChromePlus {
 		}
 	}
 
-	void CHtmlWnd::HandleChromeIPCMessage(CString strType, CString strParam1, CString strParam2)
+	void CHtmlWnd::HandleChromeIPCMessage(CString strRouting, CString strParam1, CString strParam2)
 	{
-		if (strType.CompareNoCase(_T("USER_LEVEL_ADD_CHANNEL")) == 0)
+		if (strRouting.CompareNoCase(_T("ADD_CHANNEL")) == 0)
 		{
 			AddChannelInternal(strParam1);
 		}
-		else if (strType.CompareNoCase(_T("USER_LEVEL_REMOVE_CHANNEL")) == 0)
+		else if (strRouting.CompareNoCase(_T("REMOVE_CHANNEL")) == 0)
 		{
 			// TODO: RemoveChannelInternal
 		}
-		else if (strType.CompareNoCase(_T("USER_LEVEL_MESSAGE")) == 0)
-		{
-			SendIPCMessageInternal(strParam1, strParam2);
-		}
-		else if (strType.CompareNoCase(_T("RENDER_ELEMENT")) == 0)
+		else if (strRouting.CompareNoCase(_T("RENDER_ELEMENT")) == 0)
 		{
 			RenderHTMLElement(strParam1, strParam2);
 		}
-		else if (strType.CompareNoCase(_T("BUNDLE_MESSAGE")) == 0)
+		else if (strRouting.CompareNoCase(_T("AGGREGATED_MESSAGE")) == 0)
 		{
-			HandleBundledMessage(strParam1, strParam2);
+			HandleAggregatedMessage(strParam1, strParam2);
 		}
-		else if (strType.CompareNoCase(_T("LOAD_DOCUMENT_TO_VIEWPORT")) == 0)
-		{
-			LoadDocument2Viewport(strParam1, strParam2);
-		}
-		else if (strType.CompareNoCase(_T("NTP_LOAD")) == 0)
+		else if (strRouting.CompareNoCase(_T("NEW_TAB_PAGE_LOADED")) == 0)
 		{
 			OnNTPLoaded();
+			AddChannelInternal(_T("system"));
 		}
 		else
 		{
-			g_pTangram->m_pTangramDelegate->TangramIPCMsg(m_hWnd, strType, strParam1, strParam2);
+			CString strTo, strMsgId;
+			LoadRouting(strRouting, strTo, strMsgId);
+			SendIPCMessageInternal(strTo, strParam1, strParam2);
+			g_pTangram->m_pTangramDelegate->TangramIPCMsg(m_hWnd, strRouting, strParam1, strParam2);
 		}
 	}
 
-	void CHtmlWnd::HandleBundledMessage(CString strParam1, CString strParam2)
+	void CHtmlWnd::HandleAggregatedMessage(CString strParam1, CString strParam2)
 	{
 		int nTokenPos = 0;
 		CString strToken = strParam1.Tokenize(_T("$$$"), nTokenPos);

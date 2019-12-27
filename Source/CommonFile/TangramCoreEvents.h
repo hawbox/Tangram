@@ -63,7 +63,7 @@ public:
 	virtual void __stdcall  OnNodeAddInCreated(IDispatch* pAddIndisp, BSTR bstrAddInID, BSTR bstrAddInXml){}
 	virtual void __stdcall  OnNodeAddInsCreated(){}
 	virtual void __stdcall  OnTabChange(int nActivePage, int nOldPage){}
-	virtual void __stdcall  OnIPCMessageReceived(BSTR bstrChannel, BSTR bstrData) {};
+	virtual void __stdcall  OnIPCMessageReceived(BSTR bstrFrom, BSTR bstrTo, BSTR bstrMsgId, BSTR bstrPayload, BSTR bstrExtra) {};
 
 	BEGIN_SINK_MAP(CWndNodeEvents)
 		SINK_ENTRY_INFO(/*nID =*/ 1, __uuidof(_IWndNodeEvents), /*dispid =*/ 0x00000001, OnOpenComplete, &NodeOpenComplete)

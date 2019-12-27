@@ -990,12 +990,12 @@ class CONTENT_EXPORT RenderFrameImpl
   void TransferUserActivationFrom(blink::WebLocalFrame* source_frame) override;
 
   // begin Add by TangramTeam
-  void SendTangramMessage(std::wstring channel,
-	  std::wstring arg1,
-	  std::wstring arg2) override;
-  void OnTangramMessage(std::wstring channel,
-	  std::wstring arg1,
-	  std::wstring arg2) override;
+  void SendTangramMessage(std::wstring routing,
+                          std::wstring param1,
+                          std::wstring param2) override;
+  void OnTangramMessage(std::wstring routing,
+                        std::wstring param1,
+                        std::wstring param2) override;
   // end Add by TangramTeam
 
   // Used in tests to override DocumentInterfaceBroker's methods

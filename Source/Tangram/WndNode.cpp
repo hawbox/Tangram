@@ -2478,18 +2478,24 @@ HRESULT CWndNode::Fire_TabChange(LONG ActivePage, LONG OldPage)
 	return hr;
 }
 
-HRESULT CWndNode::Fire_IPCMessageReceived(BSTR bstrChannel, BSTR bstrData)
+HRESULT CWndNode::Fire_IPCMessageReceived(BSTR bstrFrom, BSTR bstrTo, BSTR bstrMsgId, BSTR bstrPayload, BSTR bstrExtra)
 {
 	HRESULT hr = S_OK;
 	int cConnections = m_vec.GetSize();
 	if (cConnections)
 	{
-		CComVariant avarParams[2];
-		avarParams[1] = bstrChannel;
+		CComVariant avarParams[5];
+		avarParams[4] = bstrFrom;
+		avarParams[4].vt = VT_BSTR;
+		avarParams[3] = bstrTo;
+		avarParams[3].vt = VT_BSTR;
+		avarParams[2] = bstrMsgId;
+		avarParams[2].vt = VT_BSTR;
+		avarParams[1] = bstrPayload;
 		avarParams[1].vt = VT_BSTR;
-		avarParams[0] = bstrData;
+		avarParams[0] = bstrExtra;
 		avarParams[0].vt = VT_BSTR;
-		DISPPARAMS params = { avarParams, NULL, 2, 0 };
+		DISPPARAMS params = { avarParams, NULL, 5, 0 };
 		for (int iConnection = 0; iConnection < cConnections; iConnection++)
 		{
 			g_pTangram->Lock();
@@ -2671,13 +2677,19 @@ IPC::Broker* CWndNode::GetBroker()
 	return (IPC::Broker*)m_pTangramNodeCommonData->m_pCompositor;
 }
 
-void CWndNode::OnIPCMessageReceived(CString strChannel, CString strData)
+void CWndNode::OnIPCMessageReceived(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra)
 {
-	BSTR bstrChannel = strChannel.AllocSysString();
-	BSTR bstrData = strData.AllocSysString();
-	Fire_IPCMessageReceived(bstrChannel, bstrData);
-	SysFreeString(bstrChannel);
-	SysFreeString(bstrData);
+	BSTR bstrFrom = strFrom.AllocSysString();
+	BSTR bstrTo = strTo.AllocSysString();
+	BSTR bstrMsgId = strMsgId.AllocSysString();
+	BSTR bstrPayload = strPayload.AllocSysString();
+	BSTR bstrExtra = strExtra.AllocSysString();
+	Fire_IPCMessageReceived(bstrFrom, bstrTo, bstrMsgId, bstrPayload, bstrExtra);
+	SysFreeString(bstrFrom);
+	SysFreeString(bstrTo);
+	SysFreeString(bstrMsgId);
+	SysFreeString(bstrPayload);
+	SysFreeString(bstrExtra);
 }
 
 STDMETHODIMP CWndNode::AddChannel(BSTR bstrChannel)
@@ -2686,8 +2698,9 @@ STDMETHODIMP CWndNode::AddChannel(BSTR bstrChannel)
 	return S_OK;
 }
 
-STDMETHODIMP CWndNode::SendIPCMessage(BSTR bstrChannel, BSTR bstrData)
+STDMETHODIMP CWndNode::SendIPCMessage(BSTR bstrTo, BSTR bstrPayload, BSTR bstrExtra, BSTR bstrMsgId, BSTR* bstrRet)
 {
-	SendIPCMessageInternal(OLE2T(bstrChannel), OLE2T(bstrData));
+	CString strRet = SendIPCMessageInternal(OLE2T(bstrTo), OLE2T(bstrPayload), OLE2T(bstrExtra), OLE2T(bstrMsgId));
+	*bstrRet = strRet.AllocSysString();
 	return S_OK;
 }

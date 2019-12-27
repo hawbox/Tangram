@@ -14,8 +14,8 @@ namespace IPC
 
 		virtual void AddIPCListener(CString strChannel, EndPoint* pEndPoint);
 		virtual void RemoveIPCListener(CString strChannel, EndPoint* pEndPoint);
-		virtual void DispatchIPCMessage(CString strChannel, CString strData);
-		virtual void DispatchToOtherBrokers(CString strChannel, CString strData) = 0;
+		virtual void DispatchIPCMessage(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra = NULL);
+		virtual void DispatchToOtherBrokers(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra = NULL) {};
 
 	private:
 		map<CString, map<EndPoint*, int>*> m_mapIPCListeners; // TODO: Need to removed when destructuring?

@@ -76,17 +76,19 @@ namespace ChromePlus
 		END_COM_MAP()
 
 		// IPC message
+		CString CreateRouting(CString strFrom, CString strTo, CString strMsgId);
+		void LoadRouting(CString strRouting, CString& strTo, CString& strMsgId);
 		IPC::Broker* GetBroker() override;
-		void OnIPCMessageReceived(CString strChannel, CString strData) override;
+		void OnIPCMessageReceived(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra = NULL) override;
 
-		void SendChromeIPCMessage(CString strType, CString strParam1, CString strParam2);
-		void OnChromeIPCMessageReceived(std::wstring strType, std::wstring strParam1, std::wstring strParam2) override;
+		void SendChromeIPCMessage(CString strRouting, CString strParam1, CString strParam2);
+		void OnChromeIPCMessageReceived(std::wstring strRouting, std::wstring strParam1, std::wstring strParam2) override;
 		CChromeBrowserBase* GetChromeBrowserBase(HWND) override;
 
 		void LoadDocument2Viewport(CString strName, CString strXML);
 
-		void HandleChromeIPCMessage(CString strType, CString strParam1, CString strParam2);
-		void HandleBundledMessage(CString strParam1, CString strParam2);
+		void HandleChromeIPCMessage(CString strRouting, CString strParam1, CString strParam2);
+		void HandleAggregatedMessage(CString strParam1, CString strParam2);
 		void HandleSingleMessage(CString strParam);
 		void RenderHTMLElement(CString strRuleName, CString strHTML);
 		void RenderHTMLObjectElement(CString strHTML);

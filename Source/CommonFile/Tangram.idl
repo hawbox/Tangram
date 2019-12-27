@@ -423,7 +423,7 @@ interface IWndNode : IDispatch{
 	[id(110)] HRESULT SetCtrlValueByName(BSTR bstrName, VARIANT_BOOL bFindInChild, BSTR bstrVal);
 	[id(112)] HRESULT NavigateURL(BSTR bstrURL, IDispatch* dispObjforScript);
 	[id(113)] HRESULT AddChannel(BSTR bstrChannel);
-	[id(114)] HRESULT SendIPCMessage(BSTR bstrChannel, BSTR bstrData);
+	[id(114)] HRESULT SendIPCMessage(BSTR bstrTo, BSTR bstrPayload, BSTR bstrExtra, BSTR bstrMsgId, [out, retval] BSTR* bstrRes);
 };
 
 [
