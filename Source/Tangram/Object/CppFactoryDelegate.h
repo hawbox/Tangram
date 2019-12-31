@@ -3,14 +3,11 @@
 #include <stdint.h>
 #include <atomic>
 #include <map>
-
-#include "AbstractFactoryDelegate.h"
+#include "../CommonFile/IRefObject.h"
 
 namespace RefObject
 {
-	class RefObject;
-
-	class CppFactoryDelegate : public AbstractFactoryDelegate
+	class CppFactoryDelegate : public IFactoryDelegate
 	{
 	public:
 		CppFactoryDelegate() {};
@@ -18,11 +15,10 @@ namespace RefObject
 
 		CString GetName() override;
 		uint8_t GetHeaderOfHandle() override;
-		RefObject* Create(CString strConstructString) override;
-		RefObject* GetObjectFromHandle(Handle nHandle) override;
+		IRefObject* Create(CString strConstructString) override;
 
-		void Invoke(RefObject* pObj, CString strMethod) override;
-		void Invoke(RefObject* pObj, CString strMethod, RefObjectParams* pParams) override;
-		void Invoke(RefObject* pObj, CString strMethod, RefObjectParams* pParams, RefObjectCallback* pCallback) override;
+		void Invoke(IRefObject* pObj, CString strMethod) override;
+		void Invoke(IRefObject* pObj, CString strMethod, IRefObjectParams* pParams) override;
+		void Invoke(IRefObject* pObj, CString strMethod, IRefObjectParams* pParams, IRefObjectCallback* pCallback) override;
 	};
 }

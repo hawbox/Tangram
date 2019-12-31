@@ -1,19 +1,13 @@
 #include "..\stdafx.h"
 #include "RefObject.h"
 
-#include "AbstractFactoryDelegate.h"
 #include "RefObjectEventListener.h"
 
 namespace RefObject
 {
-	RefObject::RefObject()
+	RefObject::RefObject(IFactoryDelegate* pFactoryDelegate, uint64_t nRawHandle)
 	{
-		m_pFactoryDelegate = nullptr;
 		m_pRefObjectDelegate = nullptr;
-	}
-
-	RefObject::RefObject(AbstractFactoryDelegate* pFactoryDelegate, uint64_t nRawHandle)
-	{
 		m_pFactoryDelegate = pFactoryDelegate;
 		if (pFactoryDelegate != nullptr)
 		{
@@ -58,7 +52,7 @@ namespace RefObject
 	{
 		if (m_pFactoryDelegate != nullptr)
 		{
-			m_pFactoryDelegate->Invoke(this, strMethod, (RefObjectParams*)pParams);
+			m_pFactoryDelegate->Invoke(this, strMethod, pParams);
 		}
 	}
 
@@ -66,18 +60,18 @@ namespace RefObject
 	{
 		if (m_pFactoryDelegate != nullptr)
 		{
-			m_pFactoryDelegate->Invoke(this, strMethod, (RefObjectParams*)pParams, (RefObjectCallback*)pCallback);
+			m_pFactoryDelegate->Invoke(this, strMethod, pParams, pCallback);
 		}
 	}
 
 	void RefObject::AddEventListener(IRefObjectEventListener* pEvtListener)
 	{
-		m_mapEventListeners[(RefObjectEventListener*)pEvtListener] = 1;
+		m_mapEventListeners[pEvtListener] = 1;
 	}
 
 	void RefObject::RemoveEventListener(IRefObjectEventListener* pEvtListener)
 	{
-		auto it = m_mapEventListeners.find((RefObjectEventListener*)pEvtListener);
+		auto it = m_mapEventListeners.find(pEvtListener);
 		if (it != m_mapEventListeners.end())
 		{
 			m_mapEventListeners.erase(it);

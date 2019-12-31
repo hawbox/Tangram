@@ -557,7 +557,9 @@ void CTangram::Init()
 CTangram::~CTangram()
 {
 	OutputDebugString(_T("------------------Begin Release CTangram------------------------\n"));
-	//delete m_pObjectFactory;
+
+	delete m_pObjectFactory;
+	delete m_pHtmlWndDelegate;
 
 	for (auto it : m_mapTangramDocTemplateInfo)
 	{

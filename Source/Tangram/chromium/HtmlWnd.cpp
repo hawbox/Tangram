@@ -53,6 +53,8 @@ namespace ChromePlus {
 		{
 			delete it.second;
 		}
+		::RefObject::IObjectFactory* pObjectFactory = g_pTangram->m_pObjectFactory;
+		pObjectFactory->Delete(_T("Cpp"), (uint64_t)this);
 	}
 
 	LRESULT CHtmlWnd::OnMouseActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)

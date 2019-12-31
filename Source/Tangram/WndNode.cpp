@@ -44,9 +44,7 @@
 #include "OfficePlus\OfficeAddin.h"
 #include "chromium/BrowserWnd.h"
 #include "chromium/HtmlWnd.h"
-#include "Object/CppFactoryDelegate.h"
-#include "Object/ObjectFactory.h"
-#include "Object/RefObject.h"
+#include "../CommonFile/IRefObject.h"
 
 CWndNode::CWndNode()
 {
@@ -2670,12 +2668,13 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 {
 	if (m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd != nullptr)
 	{
-		::RefObject::ObjectFactory* pObjectFactory = (::RefObject::ObjectFactory*)g_pTangram->m_pObjectFactory;
-		::RefObject::AbstractFactoryDelegate* pFactoryDelegate = pObjectFactory->GetCppFactoryDelegate();
-		uint64_t nRawHandle = (uint64_t)m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd;
-		::RefObject::RefObject* pObj = new ::RefObject::RefObject(pFactoryDelegate, nRawHandle);
-		pObj->AddDelegate(g_pTangram->m_pHtmlWndDelegate);
-		return pObj;
+		::RefObject::IObjectFactory* pObjectFactory = g_pTangram->m_pObjectFactory;
+		::RefObject::IRefObject* pObj = pObjectFactory->Create(_T("Cpp"), (uint64_t)m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd);
+		if (pObj != nullptr)
+		{
+			pObj->AddDelegate(g_pTangram->m_pHtmlWndDelegate);
+			return pObj;
+		}
 	}
 	return nullptr;
 }

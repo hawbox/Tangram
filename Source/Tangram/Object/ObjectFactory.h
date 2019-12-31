@@ -7,7 +7,7 @@
 namespace RefObject
 {
 	class CppFactoryDelegate;
-	class AbstractFactoryDelegate;
+	class IFactoryDelegate;
 
 	class ObjectFactory : public IObjectFactory
 	{
@@ -15,16 +15,18 @@ namespace RefObject
 		ObjectFactory();
 		virtual ~ObjectFactory();
 
-		void AddFactoryDelegate(AbstractFactoryDelegate* pFactoryDelegate);
-		CppFactoryDelegate* GetCppFactoryDelegate();
-
+		void AddFactoryDelegate(IFactoryDelegate* pFactoryDelegate) override;
+		IFactoryDelegate* GetFactoryDelegate(CString strFactoryName) override;
+		IFactoryDelegate* GetFactoryDelegate(uint8_t nFactoryHeader) override;
+		IRefObject* GetObjectFromHandle(Handle nHandle) override;
+		IRefObject* Create(CString strFactoryName, uint64_t nRawHandle) override;
 		IRefObject* Create(CString strFactoryName, CString strConstructString) override;
+		bool Delete(CString strFactoryName, uint64_t nRawHandle) override;
 		IRefObjectParams* CreateParams() override;
 
 	private:
-		CppFactoryDelegate* m_pCppFactoryDelegate;
-
-		map<uint8_t, AbstractFactoryDelegate*> m_mapFactoryDelegateWithHeader;
-		map<CString, AbstractFactoryDelegate*> m_mapFactoryDelegateWithName;
+		map<Handle, IRefObject*> m_mapRefObjects;
+		map<uint8_t, IFactoryDelegate*> m_mapFactoryDelegateWithHeader;
+		map<CString, IFactoryDelegate*> m_mapFactoryDelegateWithName;
 	};
 }

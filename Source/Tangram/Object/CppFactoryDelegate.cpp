@@ -15,19 +15,12 @@ namespace RefObject
 		return 1;
 	}
 
-	RefObject* CppFactoryDelegate::Create(CString strConstructString)
+	IRefObject* CppFactoryDelegate::Create(CString strConstructString)
 	{
 		return nullptr;
 	}
 
-	RefObject* CppFactoryDelegate::GetObjectFromHandle(Handle nHandle)
-	{
-		uint64_t nRawHandle = nHandle.Header;
-		RefObject* pRefObject = (RefObject*)nRawHandle;
-		return pRefObject;
-	}
-
-	void CppFactoryDelegate::Invoke(RefObject* pObj, CString strMethod)
+	void CppFactoryDelegate::Invoke(IRefObject* pObj, CString strMethod)
 	{
 		if (pObj->GetDelegate() != nullptr)
 		{
@@ -35,7 +28,7 @@ namespace RefObject
 		}
 	}
 
-	void CppFactoryDelegate::Invoke(RefObject* pObj, CString strMethod, RefObjectParams* pParams)
+	void CppFactoryDelegate::Invoke(IRefObject* pObj, CString strMethod, IRefObjectParams* pParams)
 	{
 		if (pObj->GetDelegate() != nullptr)
 		{
@@ -43,7 +36,7 @@ namespace RefObject
 		}
 	}
 
-	void CppFactoryDelegate::Invoke(RefObject* pObj, CString strMethod, RefObjectParams* pParams, RefObjectCallback* pCallback)
+	void CppFactoryDelegate::Invoke(IRefObject* pObj, CString strMethod, IRefObjectParams* pParams, IRefObjectCallback* pCallback)
 	{
 		if (pObj->GetDelegate() != nullptr)
 		{

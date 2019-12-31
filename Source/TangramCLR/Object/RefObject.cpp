@@ -62,16 +62,21 @@ namespace RefObject
 
     void RefObjectCallbackWrapper::Invoke(IRefObject* pObj, IRefObjectParams* pParams)
     {
-        RefObject^ obj = gcnew RefObject(pObj);
+        RefObject^ obj = nullptr;
+        if (pObj != nullptr)
+        {
+            Handle nHandle = pObj->GetHandle();
+            obj = gcnew RefObject(nHandle);
+        }
         RefObjectParams^ params = gcnew RefObjectParams(pParams);
         m_pCLRHandle->Invoke(obj, params);
     }
 
     // RefObject
 
-    RefObject::RefObject(IRefObject* pObj)
+    RefObject::RefObject(Handle nHandle)
     {
-        m_pNativeHandle = pObj;
+        m_pNativeHandle = nHandle;
     }
 
     String^ RefObject::GetFactoryName()

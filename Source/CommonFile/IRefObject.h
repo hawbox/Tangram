@@ -2,6 +2,7 @@
 
 namespace RefObject
 {
+	class IFactoryDelegate;
 	class IObjectFactory;
 	class IRefObjectParams;
 	class IRefObjectEventListener;
@@ -9,16 +10,49 @@ namespace RefObject
 	class IRefObjectDelegate;
 	class IRefObject;
 
+	// Any module should hold a RefObject Handle instead of a RefObject pointer. 
+	// RefObject may be deleted, but if using Handle, you can determine whether 
+	// the RefObject corresponding to the Handle exists by calling 
+	// ObjectFactory::GetObjectFromHandle.
 	typedef struct tagHandle
 	{
 		uint8_t Header;
 		uint64_t RawHandle;
+
+		bool operator==(const tagHandle& o) const
+		{
+			return Header == o.Header && RawHandle == o.RawHandle;
+		}
+
+		bool operator<(const tagHandle& o) const
+		{
+			return Header < o.Header || (Header == o.Header && RawHandle < o.RawHandle);
+		}
 	} Handle;
+
+	class IFactoryDelegate
+	{
+	public:
+		virtual CString GetName() = 0;
+		virtual uint8_t GetHeaderOfHandle() = 0;
+		virtual IRefObject* Create(CString strConstructString) = 0;
+
+		// Invoke method
+		virtual void Invoke(IRefObject* pObj, CString strMethod) = 0;
+		virtual void Invoke(IRefObject* pObj, CString strMethod, IRefObjectParams* pParams) = 0;
+		virtual void Invoke(IRefObject* pObj, CString strMethod, IRefObjectParams* pParams, IRefObjectCallback* pCallback) = 0;
+	};
 
 	class IObjectFactory
 	{
 	public:
+		virtual void AddFactoryDelegate(IFactoryDelegate* pFactoryDelegate) = 0;
+		virtual IFactoryDelegate* GetFactoryDelegate(CString strFactoryName) = 0;
+		virtual IFactoryDelegate* GetFactoryDelegate(uint8_t nFactoryHeader) = 0;
+		virtual IRefObject* GetObjectFromHandle(Handle nHandle) = 0;
+		virtual IRefObject* Create(CString strFactoryName, uint64_t nRawHandle) = 0;
 		virtual IRefObject* Create(CString strFactoryName, CString strConstructString) = 0;
+		virtual bool Delete(CString strFactoryName, uint64_t nRawHandle) = 0;
 		virtual IRefObjectParams* CreateParams() = 0;
 	};
 

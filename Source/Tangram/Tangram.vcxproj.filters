@@ -354,9 +354,6 @@
     <ClInclude Include="eclipseUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Object\AbstractFactoryDelegate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Object\CLRFactoryDelegate.h">
       <Filter>Header Files</Filter>
     </ClInclude>

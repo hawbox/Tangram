@@ -65,14 +65,14 @@ namespace RefObject
     public ref class RefObject
     {
     public:
-        RefObject(IRefObject* pObj);
+        RefObject(Handle nHandle);
         ~RefObject() {};
 
         String^ GetFactoryName();
         Handle GetHandle();
         void Invoke(String^ method, RefObjectParams^ params, ICLRRefObjectCallback^ callback);
 
-        IRefObject* m_pNativeHandle;
+        Handle m_pNativeHandle;
     };
 }
 

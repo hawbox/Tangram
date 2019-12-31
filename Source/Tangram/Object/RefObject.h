@@ -6,16 +6,11 @@
 
 namespace RefObject
 {
-	class AbstractFactoryDelegate;
-	class RefObjectEventListener;
-	class RefObjectParams;
-	class RefObjectCallback;
-
 	class RefObject : public IRefObject
 	{
 	public:
-		RefObject();
-		RefObject(AbstractFactoryDelegate* pFactoryDelegate, uint64_t nRawHandle);
+		// Don't call it directly!
+		RefObject(IFactoryDelegate* pFactoryDelegate, uint64_t nRawHandle);
 		virtual ~RefObject() {};
 
 		CString GetFactoryName() override;
@@ -32,9 +27,9 @@ namespace RefObject
 
 	private:
 		Handle m_nHandle = { 0 };
-		AbstractFactoryDelegate* m_pFactoryDelegate;
+		IFactoryDelegate* m_pFactoryDelegate;
 		IRefObjectDelegate* m_pRefObjectDelegate;
 
-		map<RefObjectEventListener*, int> m_mapEventListeners;
+		map<IRefObjectEventListener*, int> m_mapEventListeners;
 	};
 }

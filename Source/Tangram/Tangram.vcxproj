@@ -563,7 +563,6 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     <ClInclude Include="eclipseShm.h" />
     <ClInclude Include="eclipseunicode.h" />
     <ClInclude Include="eclipseUtil.h" />
-    <ClInclude Include="Object\AbstractFactoryDelegate.h" />
     <ClInclude Include="Object\CLRFactoryDelegate.h" />
     <ClInclude Include="Object\CppFactoryDelegate.h" />
     <ClInclude Include="Object\CoreObject.h" />
