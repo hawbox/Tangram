@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TangramCLR;
+using RefObject;
 
 namespace MyCSharpBrowser
 {
-    public partial class Form2 : Form
+    public partial class Form2 : Form, ICLRRefObjectCallback
     {
         private WndNode thisNode;
 
@@ -38,6 +39,11 @@ namespace MyCSharpBrowser
         private void btnHelloWebPage_Click(object sender, EventArgs e)
         {
             String msgId = thisNode.SendIPCMessage("web", "Hello Webpage!", "", "");
+        }
+
+        public void Invoke(RefObject.RefObject obj, RefObjectParams @params)
+        {
+            throw new NotImplementedException();
         }
     }
 }

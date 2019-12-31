@@ -17,7 +17,7 @@ namespace blink {
     static TangramEvent* Create(const AtomicString& event_type,
       const String& from,
       const String& to,
-      const String& msgid,
+      const String& msgId,
       const String& payload,
       const String& extra);
 
@@ -25,8 +25,8 @@ namespace blink {
     void setFrom(const String&);
     String to();
     void setTo(const String&);
-    String msgid();
-    void setMsgid(const String&);
+    String msgId();
+    void setMsgId(const String&);
     String payload();
     void setPayload(const String&);
     String extra();
@@ -39,14 +39,14 @@ namespace blink {
     TangramEvent(const AtomicString& event_type,
       const String& from,
       const String& to,
-      const String& msgid,
+      const String& msgId,
       const String& payload,
       const String& extra);
 
   private:
     String from_;
     String to_;
-    String msgid_;
+    String msgId_;
     String payload_;
     String extra_;
 

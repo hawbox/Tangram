@@ -28,6 +28,7 @@
 #include "HtmlWnd.h"
 #include "BrowserWnd.h"
 #include "../Markup.h" 
+#include "../Object/RefObjectParams.h"
 
 namespace ChromePlus {
 	CHtmlWnd::CHtmlWnd() {
@@ -449,6 +450,16 @@ namespace ChromePlus {
 		}
 	}
 
+	// DOM
+
+	void CHtmlWnd::getElementById(CString strId, ::RefObject::RefObjectCallback* pCallback)
+	{
+		CString strMsgId = SendIPCMessageInternal(_T("system@") + Id(), strId, _T("__getElementById__"), _T(""));
+		m_mapIPCCallback.insert(std::make_pair(strMsgId, pCallback));
+	}
+
+	// IPC
+
 	IPC::Broker* CHtmlWnd::GetBroker()
 	{
 		return (IPC::Broker*)m_pCompositor;
@@ -468,8 +479,19 @@ namespace ChromePlus {
 
 	void CHtmlWnd::OnIPCMessageReceived(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra)
 	{
-		CString strRouting = CreateRouting(strFrom, strTo, strMsgId);
-		SendChromeIPCMessage(strRouting, strPayload, strExtra);
+		auto it = m_mapIPCCallback.find(strMsgId);
+		if (it != m_mapIPCCallback.end())
+		{
+			::RefObject::RefObjectParams* pParams = new ::RefObject::RefObjectParams();
+			pParams->AddParam(strPayload);
+			it->second->Invoke(nullptr, pParams);
+			m_mapIPCCallback.erase(it);
+		}
+		else
+		{
+			CString strRouting = CreateRouting(strFrom, strTo, strMsgId);
+			SendChromeIPCMessage(strRouting, strPayload, strExtra);
+		}
 	}
 
 	void CHtmlWnd::SendChromeIPCMessage(CString strRouting, CString strParam1, CString strParam2)
@@ -595,7 +617,7 @@ namespace ChromePlus {
 		{
 			CString strTo, strMsgId;
 			LoadRouting(strRouting, strTo, strMsgId);
-			SendIPCMessageInternal(strTo, strParam1, strParam2);
+			SendIPCMessageInternal(strTo, strParam1, strParam2, strMsgId);
 			g_pTangram->m_pTangramDelegate->TangramIPCMsg(m_hWnd, strRouting, strParam1, strParam2);
 		}
 	}

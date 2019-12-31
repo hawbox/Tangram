@@ -2,19 +2,21 @@
 #include "ObjectFactory.h"
 
 #include "AbstractFactoryDelegate.h"
-#include "CoreFactoryDelegate.h"
+#include "CppFactoryDelegate.h"
+#include "RefObject.h"
+#include "RefObjectParams.h"
 
-namespace Object
+namespace RefObject
 {
 	ObjectFactory::ObjectFactory()
 	{
-		m_pCoreFactoryDelegate = new CoreFactoryDelegate();
-		AddFactoryDelegate(m_pCoreFactoryDelegate);
+		m_pCppFactoryDelegate = new CppFactoryDelegate();
+		AddFactoryDelegate(m_pCppFactoryDelegate);
 	}
 
 	ObjectFactory::~ObjectFactory() 
 	{
-		delete m_pCoreFactoryDelegate;
+		delete m_pCppFactoryDelegate;
 	}
 
 	void ObjectFactory::AddFactoryDelegate(AbstractFactoryDelegate* pFactoryDelegate)
@@ -22,11 +24,16 @@ namespace Object
 		if (pFactoryDelegate != nullptr)
 		{
 			m_mapFactoryDelegateWithName[pFactoryDelegate->GetName()] = pFactoryDelegate;
-			m_mapFactoryDelegateWithHead[pFactoryDelegate->GetHandleHead()] = pFactoryDelegate;
+			m_mapFactoryDelegateWithHeader[pFactoryDelegate->GetHeaderOfHandle()] = pFactoryDelegate;
 		}
 	}
 
-	RefObject* ObjectFactory::Create(CString strFactoryName, CString strConstructString)
+	CppFactoryDelegate* ObjectFactory::GetCppFactoryDelegate()
+	{
+		return m_pCppFactoryDelegate;
+	}
+
+	IRefObject* ObjectFactory::Create(CString strFactoryName, CString strConstructString)
 	{
 		auto it = m_mapFactoryDelegateWithName.find(strFactoryName);
 		if (it != m_mapFactoryDelegateWithName.end())
@@ -36,8 +43,9 @@ namespace Object
 		return nullptr;
 	}
 
-	CoreFactoryDelegate* ObjectFactory::GetCoreFactoryDelegate()
+	IRefObjectParams* ObjectFactory::CreateParams()
 	{
-		return m_pCoreFactoryDelegate;
+		return new RefObjectParams();
 	}
+
 }

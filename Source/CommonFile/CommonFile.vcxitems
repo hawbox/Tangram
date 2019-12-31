@@ -33,8 +33,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)fm20.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)gchost.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)inc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)IRefObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ivalidator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ivehandler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)IXNode.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)jni.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)jni_md.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)metahost.h" />

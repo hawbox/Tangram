@@ -150,6 +150,11 @@
 
 #define TGM_S_EXCEL_INPUT		1
 
+namespace RefObject
+{
+	class IObjectFactory;
+}
+
 namespace TangramCommon {
 	using namespace std;
 	using namespace ATL;
@@ -563,6 +568,7 @@ namespace TangramCommon {
 			m_strNtpDataXml = _T("");
 			m_pTangramPackageProxy = nullptr;
 			m_strAppCurrentFormTemplatePath = _T("");
+			m_pObjectFactory = nullptr;
 		}
 
 		virtual ~CTangramImpl() {}
@@ -683,6 +689,7 @@ namespace TangramCommon {
 		ITangramWindow*							m_pCreatingTangramWindow = nullptr;
 		OmniboxViewViewsProxy*					m_pCreatingOmniboxViewViews = nullptr;
 		CChromeRenderFrameHostBase*				m_pCreatingChromeRenderFrameHostBase = nullptr;
+		::RefObject::IObjectFactory*			m_pObjectFactory;
 
 		map<CString, IDispatch*>				m_mapObjDic;
 		map<HWND, ICompositorManager*>			m_mapFramePage;

@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TangramCLR;
+using RefObject;
 
 namespace MyCSharpBrowser
 {
-    public partial class Form1 : Form
+    public partial class Form1 : Form, ICLRRefObjectCallback
     {
         private WndNode thisNode;
         public Form1()
@@ -59,7 +60,11 @@ namespace MyCSharpBrowser
             //{
             //    wb.OpenURL("https://demo.tangram.dev/homepage.html", Disposition.NEW_FOREGROUND_TAB, "", "");
             //}
-            String msgId = thisNode.SendIPCMessage("system", "colors-menu", "__getElementById__", "");
+            //String msgId = thisNode.SendIPCMessage("system", "colors-menu", "__getElementById__", "");
+            RefObject.RefObject obj = thisNode.HostNode.GetXObject();
+            RefObjectParams inParams = new RefObjectParams();
+            inParams.AddParam("colors-menu");
+            obj.Invoke("getElementById", inParams, this);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -72,6 +77,11 @@ namespace MyCSharpBrowser
         private void ThisNode_OnIPCMessageReceived(string strFrom, string strTo, string strMsgId, string strPayload, string strExtra)
         {
             MessageBox.Show(strPayload);
+        }
+
+        public void Invoke(RefObject.RefObject obj, RefObjectParams inParams)
+        {
+            MessageBox.Show(inParams.GetParam(0));
         }
     }
 }

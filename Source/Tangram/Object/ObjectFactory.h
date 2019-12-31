@@ -2,27 +2,29 @@
 
 #include <stdint.h>
 #include <map>
+#include "../CommonFile/IRefObject.h"
 
-namespace Object
+namespace RefObject
 {
-	class RefObject;
-	class CoreFactoryDelegate;
+	class CppFactoryDelegate;
 	class AbstractFactoryDelegate;
 
-	class ObjectFactory
+	class ObjectFactory : public IObjectFactory
 	{
 	public:
 		ObjectFactory();
 		virtual ~ObjectFactory();
 
 		void AddFactoryDelegate(AbstractFactoryDelegate* pFactoryDelegate);
-		RefObject* Create(CString strFactoryName, CString strConstructString);
+		CppFactoryDelegate* GetCppFactoryDelegate();
 
-		CoreFactoryDelegate* GetCoreFactoryDelegate();
+		IRefObject* Create(CString strFactoryName, CString strConstructString) override;
+		IRefObjectParams* CreateParams() override;
+
 	private:
-		CoreFactoryDelegate* m_pCoreFactoryDelegate;
+		CppFactoryDelegate* m_pCppFactoryDelegate;
 
-		map<uint8_t, AbstractFactoryDelegate*> m_mapFactoryDelegateWithHead;
+		map<uint8_t, AbstractFactoryDelegate*> m_mapFactoryDelegateWithHeader;
 		map<CString, AbstractFactoryDelegate*> m_mapFactoryDelegateWithName;
 	};
 }

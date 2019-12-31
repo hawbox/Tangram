@@ -1,14 +1,14 @@
 #include "../stdafx.h"
-#include "RefObjectEvent.h"
+#include "RefObjectParams.h"
 
-namespace Object
+namespace RefObject
 {
-	void RefObjectEvent::AddParam(CString strParam)
+	void RefObjectParams::AddParam(CString strParam)
 	{
 		m_vecParams.push_back(strParam);
 	}
 
-	CString RefObjectEvent::GetParam(uint32_t nIndex)
+	CString RefObjectParams::GetParam(uint32_t nIndex)
 	{
 		if (nIndex < m_vecParams.size())
 		{
@@ -17,7 +17,7 @@ namespace Object
 		return _T("");
 	}
 
-	size_t RefObjectEvent::Count()
+	size_t RefObjectParams::Count()
 	{
 		return m_vecParams.size();
 	}

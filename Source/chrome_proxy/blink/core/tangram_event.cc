@@ -6,10 +6,10 @@ namespace blink {
   TangramEvent* TangramEvent::Create(const AtomicString& event_type,
     const String& from,
     const String& to,
-    const String& msgid,
+    const String& msgId,
     const String& payload,
     const String& extra) {
-    return MakeGarbageCollected<TangramEvent>(event_type, from, to, msgid, payload, extra);
+    return MakeGarbageCollected<TangramEvent>(event_type, from, to, msgId, payload, extra);
   }
 
   String TangramEvent::from() {
@@ -28,12 +28,12 @@ namespace blink {
     to_ = to;
   }
 
-  String TangramEvent::msgid() {
-    return msgid_;
+  String TangramEvent::msgId() {
+    return msgId_;
   }
 
-  void TangramEvent::setMsgid(const String& msgid) {
-    msgid_ = msgid;
+  void TangramEvent::setMsgId(const String& msgId) {
+    msgId_ = msgId;
   }
 
   String TangramEvent::payload() {
@@ -59,13 +59,13 @@ namespace blink {
   TangramEvent::TangramEvent(const AtomicString& event_type,
     const String& from,
     const String& to,
-    const String& msgid,
+    const String& msgId,
     const String& payload,
     const String& extra)
     : Event(event_type, Bubbles::kNo, Cancelable::kNo) {
     from_ = from;
     to_ = to;
-    msgid_ = msgid;
+    msgId_ = msgId;
     payload_ = payload;
     extra_ = extra;
   }

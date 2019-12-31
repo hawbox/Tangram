@@ -28,6 +28,7 @@
 #include "Object\ObjectFactory.h"
 #include "IPC\Broker.h"
 #include "IPC\EndPoint.h"
+#include "chromium/HtmlWndDelegate.h"
 
 #pragma once
 //https://github.com/eclipse/rt.equinox.framework/tree/master/features/org.eclipse.equinox.executable.feature/library/win32
@@ -239,6 +240,7 @@ public:
 
 	ChromePlus::CHtmlWnd*					m_pHtmlWndCreated;
 	ChromePlus::CHtmlWnd*					m_pActiveHtmlWnd;
+	ChromePlus::CHtmlWndDelegate*			m_pHtmlWndDelegate;
 
 	CCompositor*							m_pDocTemplateFrame;
 	CTangramDocWnd*							m_pActiveDocWnd;
@@ -261,8 +263,6 @@ public:
 
 	CTangramHtmlTreeWnd*					m_pDocDOMTree;
 	CEclipseWnd*							m_pActiveEclipseWnd;
-
-	//Object::ObjectFactory*					m_pObjectFactory;
 
 	map<CString, CTangramDoc*>				m_mapOpenDoc;
 	map<HWND, CCompositor*>					m_mapBKFrame;

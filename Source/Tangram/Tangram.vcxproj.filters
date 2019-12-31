@@ -127,9 +127,6 @@
     <ClCompile Include="eclipseWinCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Object\CoreFactoryDelegate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Object\ObjectFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -223,7 +220,13 @@
     <ClCompile Include="WPFView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Object\RefObjectEvent.cpp">
+    <ClCompile Include="Object\CppFactoryDelegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\RefObjectParams.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="chromium\HtmlWndDelegate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -357,13 +360,7 @@
     <ClInclude Include="Object\CLRFactoryDelegate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Object\CoreFactoryDelegate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Object\CoreObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\RefCoreObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Object\RefObject.h">
@@ -474,10 +471,19 @@
     <ClInclude Include="WPFView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Object\RefObjectEvent.h">
+    <ClInclude Include="Object\RefObjectEventListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Object\RefObjectEventListener.h">
+    <ClInclude Include="Object\CppFactoryDelegate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\RefObjectParams.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\RefObjectCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="chromium\HtmlWndDelegate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

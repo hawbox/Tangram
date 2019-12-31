@@ -22,6 +22,7 @@
 
 #include "../stdafx.h"
 #include "../IPC/EndPoint.h"
+#include "../Object/RefObjectCallback.h"
 
 namespace ChromePlus
 {
@@ -61,6 +62,10 @@ namespace ChromePlus
 		map<CString, CString>				m_mapWorkBenchInfo;
 		map<CString, CString>				m_mapUserControlsInfo;
 		map<CString, CMDIChildFormInfo*>	m_mapChildFormsInfo;
+
+		// IPC callback
+		map<CString, ::RefObject::RefObjectCallback*>	m_mapIPCCallback;
+
 		BEGIN_MSG_MAP(CHtmlWnd)
 			MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 			MESSAGE_HANDLER(WM_SHOWWINDOW, OnShowWindow)
@@ -74,6 +79,9 @@ namespace ChromePlus
 			COM_INTERFACE_ENTRY(IDispatch)
 			COM_INTERFACE_ENTRY(IChromeWebContent)
 		END_COM_MAP()
+
+		// DOM
+		void getElementById(CString strId, ::RefObject::RefObjectCallback* pCallback);
 
 		// IPC message
 		CString CreateRouting(CString strFrom, CString strTo, CString strMsgId);

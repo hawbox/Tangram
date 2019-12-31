@@ -1,15 +1,17 @@
 #pragma once
 
-namespace Object
-{
-	class RefObjectEvent;
+#include "../CommonFile/IRefObject.h"
 
-	class RefObjectEventListener
+namespace RefObject
+{
+	class RefObjectParams;
+
+	class RefObjectEventListener : public IRefObjectEventListener
 	{
 	public:
 		RefObjectEventListener() {};
 		virtual ~RefObjectEventListener() {};
 
-		virtual void OnEventHandle(CString strEventType, RefObjectEvent* pEvent) = 0;
+		// virtual void OnEventHandle(CString strEventType, RefObjectParams* pParams) = 0;
 	};
 }

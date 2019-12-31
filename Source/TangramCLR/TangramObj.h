@@ -22,6 +22,9 @@
 #pragma once
 #include "TangramClrProxy.h"
 #include <map>
+#include "../CommonFile/IRefObject.h"
+#include "Object/RefObject.h"
+#include "../CommonFile/IXNode.h"
 
 using namespace std;
 using namespace System;
@@ -41,7 +44,6 @@ using System::Runtime::InteropServices::Marshal;
 extern CTangramCLRProxy theAppProxy;
 class CWndNodeCLREvent;
 class CTangramNodeEvent;
-
 
 namespace TangramCLR
 {
@@ -280,6 +282,18 @@ namespace TangramCLR
 				return BSTR2STRING(bstrRet);
 			}
 			return "";
+		}
+
+		::RefObject::RefObject^ GetXObject()
+		{
+			LONGLONG pVal = 0;
+			HRESULT hr = m_pWndNode->GetXObject(&pVal);
+			if (hr == S_OK)
+			{
+				::RefObject::IRefObject* pObj = (::RefObject::IRefObject*)pVal;
+				return gcnew ::RefObject::RefObject(pObj);
+			}
+			return nullptr;
 		}
 
 	private:

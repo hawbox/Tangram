@@ -3119,6 +3119,9 @@ EXTERN_C const IID IID_IWndNode;
             BSTR bstrMsgId,
             /* [retval][out] */ BSTR *bstrRes) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE GetXObject( 
+            /* [retval][out] */ LONGLONG *pVal) = 0;
+        
     };
     
     
@@ -3506,6 +3509,10 @@ EXTERN_C const IID IID_IWndNode;
             BSTR bstrMsgId,
             /* [retval][out] */ BSTR *bstrRes);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetXObject )( 
+            IWndNode * This,
+            /* [retval][out] */ LONGLONG *pVal);
+        
         END_INTERFACE
     } IWndNodeVtbl;
 
@@ -3766,6 +3773,9 @@ EXTERN_C const IID IID_IWndNode;
 
 #define IWndNode_SendIPCMessage(This,bstrTo,bstrPayload,bstrExtra,bstrMsgId,bstrRes)	\
     ( (This)->lpVtbl -> SendIPCMessage(This,bstrTo,bstrPayload,bstrExtra,bstrMsgId,bstrRes) ) 
+
+#define IWndNode_GetXObject(This,pVal)	\
+    ( (This)->lpVtbl -> GetXObject(This,pVal) ) 
 
 #endif /* COBJMACROS */
 

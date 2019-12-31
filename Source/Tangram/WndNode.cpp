@@ -44,7 +44,9 @@
 #include "OfficePlus\OfficeAddin.h"
 #include "chromium/BrowserWnd.h"
 #include "chromium/HtmlWnd.h"
-#include "Object\CoreFactoryDelegate.h"
+#include "Object/CppFactoryDelegate.h"
+#include "Object/ObjectFactory.h"
+#include "Object/RefObject.h"
 
 CWndNode::CWndNode()
 {
@@ -90,7 +92,6 @@ CWndNode::CWndNode()
 	{
 		m_strXmlFileFromVS = g_pTangram->m_pTangramPackageProxy->m_strCurrentXtmlFilePath;
 	}
-	// g_pTangram->m_pObjectFactory->GetCoreFactoryDelegate()->Import(this);
 }
 
 
@@ -2663,11 +2664,20 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 	return S_OK;
 }
 
-// RefCoreObject
+// Object
 
-CString CWndNode::GetRefCoreObjectName()
+::RefObject::IRefObject* CWndNode::GetXObject()
 {
-	return L"Node";
+	if (m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd != nullptr)
+	{
+		::RefObject::ObjectFactory* pObjectFactory = (::RefObject::ObjectFactory*)g_pTangram->m_pObjectFactory;
+		::RefObject::AbstractFactoryDelegate* pFactoryDelegate = pObjectFactory->GetCppFactoryDelegate();
+		uint64_t nRawHandle = (uint64_t)m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd;
+		::RefObject::RefObject* pObj = new ::RefObject::RefObject(pFactoryDelegate, nRawHandle);
+		pObj->AddDelegate(g_pTangram->m_pHtmlWndDelegate);
+		return pObj;
+	}
+	return nullptr;
 }
 
 // IPC message
@@ -2702,5 +2712,12 @@ STDMETHODIMP CWndNode::SendIPCMessage(BSTR bstrTo, BSTR bstrPayload, BSTR bstrEx
 {
 	CString strRet = SendIPCMessageInternal(OLE2T(bstrTo), OLE2T(bstrPayload), OLE2T(bstrExtra), OLE2T(bstrMsgId));
 	*bstrRet = strRet.AllocSysString();
+	return S_OK;
+}
+
+STDMETHODIMP CWndNode::GetXObject(LONGLONG* pVal)
+{
+	::RefObject::IRefObject* pObj = GetXObject();
+	*pVal = (LONGLONG)pObj;
 	return S_OK;
 }

@@ -25,7 +25,7 @@
 #include "CompositorManager.h"
 #include "chromium/BrowserWnd.h"
 #include "IPC/EndPoint.h"
-#include "Object/RefCoreObject.h"
+#include "../CommonFile/IXNode.h"
 
 #pragma once
 
@@ -54,8 +54,8 @@ class ATL_NO_VTABLE CWndNode :
 	public IDispatchImpl<IWndNode, &IID_IWndNode>,
 	public IConnectionPointContainerImpl<CWndNode>,
 	public IConnectionPointImpl<CWndNode, &__uuidof(_IWndNodeEvents)>,
-	public IPC::EndPoint,
-	public Object::RefCoreObject
+	public IXNode,
+	public IPC::EndPoint
 {
 public:
 	CWndNode();
@@ -125,8 +125,8 @@ public:
 	CString GetNames();
 	ChromePlus::CHtmlWnd* GetHtmlWnd();
 
-	// RefCoreObject
-	CString GetRefCoreObjectName() override;
+	// Object
+	IRefObject* GetXObject() override;
 
 	// IPC message
 	IPC::Broker* GetBroker() override;
@@ -228,6 +228,7 @@ public:
 
 	STDMETHOD(AddChannel)(BSTR bstrChannel);
 	STDMETHOD(SendIPCMessage)(BSTR bstrTo, BSTR bstrPayload, BSTR bstrExtra, BSTR bstrMsgId, BSTR* bstrRet);
+	STDMETHOD(GetXObject)(LONGLONG* pVal);
 
 	BEGIN_COM_MAP(CWndNode)
 		COM_INTERFACE_ENTRY(IWndNode)

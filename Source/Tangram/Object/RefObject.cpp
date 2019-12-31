@@ -4,11 +4,12 @@
 #include "AbstractFactoryDelegate.h"
 #include "RefObjectEventListener.h"
 
-namespace Object
+namespace RefObject
 {
 	RefObject::RefObject()
 	{
 		m_pFactoryDelegate = nullptr;
+		m_pRefObjectDelegate = nullptr;
 	}
 
 	RefObject::RefObject(AbstractFactoryDelegate* pFactoryDelegate, uint64_t nRawHandle)
@@ -16,9 +17,8 @@ namespace Object
 		m_pFactoryDelegate = pFactoryDelegate;
 		if (pFactoryDelegate != nullptr)
 		{
-			uint64_t nRaw = nRawHandle & 0xFFFFFFFFFFFFFF;
-			uint64_t nHead = ((uint64_t)pFactoryDelegate->GetHandleHead()) << 56;
-			m_nHandle = nHead | nRaw;
+			uint8_t nHeader = pFactoryDelegate->GetHeaderOfHandle();
+			m_nHandle = { nHeader, nRawHandle };
 		}
 	}
 
@@ -31,9 +31,19 @@ namespace Object
 		return L"";
 	}
 
-	uint64_t RefObject::GetHandle()
+	Handle RefObject::GetHandle()
 	{
 		return m_nHandle;
+	}
+
+	void RefObject::AddDelegate(IRefObjectDelegate* pDelegate)
+	{
+		m_pRefObjectDelegate = pDelegate;
+	}
+
+	IRefObjectDelegate* RefObject::GetDelegate()
+	{
+		return m_pRefObjectDelegate;
 	}
 
 	void RefObject::Invoke(CString strMethod)
@@ -44,33 +54,41 @@ namespace Object
 		}
 	}
 
-	void RefObject::Invoke(CString strMethod, CString strParam1)
+	void RefObject::Invoke(CString strMethod, IRefObjectParams* pParams)
 	{
 		if (m_pFactoryDelegate != nullptr)
 		{
-			m_pFactoryDelegate->Invoke(this, strMethod, strParam1);
+			m_pFactoryDelegate->Invoke(this, strMethod, (RefObjectParams*)pParams);
 		}
 	}
 
-	void RefObject::AddEventListener(RefObjectEventListener* pEvtListener)
+	void RefObject::Invoke(CString strMethod, IRefObjectParams* pParams, IRefObjectCallback* pCallback)
 	{
-		m_mapEventListeners[pEvtListener] = 1;
+		if (m_pFactoryDelegate != nullptr)
+		{
+			m_pFactoryDelegate->Invoke(this, strMethod, (RefObjectParams*)pParams, (RefObjectCallback*)pCallback);
+		}
 	}
 
-	void RefObject::RemoveEventListener(RefObjectEventListener* pEvtListener)
+	void RefObject::AddEventListener(IRefObjectEventListener* pEvtListener)
 	{
-		auto it = m_mapEventListeners.find(pEvtListener);
+		m_mapEventListeners[(RefObjectEventListener*)pEvtListener] = 1;
+	}
+
+	void RefObject::RemoveEventListener(IRefObjectEventListener* pEvtListener)
+	{
+		auto it = m_mapEventListeners.find((RefObjectEventListener*)pEvtListener);
 		if (it != m_mapEventListeners.end())
 		{
 			m_mapEventListeners.erase(it);
 		}
 	}
 
-	void RefObject::DispatchEvent(CString strEventType, RefObjectEvent* pEvent)
+	void RefObject::DispatchEvent(CString strEventType, IRefObjectParams* pParams)
 	{
 		for (auto it = m_mapEventListeners.begin(); it != m_mapEventListeners.end(); ++it)
 		{
-			it->first->OnEventHandle(strEventType, pEvent);
+			it->first->OnEventHandle(strEventType, pParams);
 		}
 	}
 }

@@ -243,12 +243,13 @@ CTangram::CTangram()
 #endif
 	//g_pTangram = m_pTangramImplData;
 	m_mapValInfo[_T("currenteclipeworkBenchid")] = CComVariant(_T(""));
-	//m_pObjectFactory = new Object::ObjectFactory();
+	m_pObjectFactory = new ::RefObject::ObjectFactory();
 	m_TabWndClassInfoDictionary[_T("hostview")] = RUNTIME_CLASS(CNodeWnd);
 	m_TabWndClassInfoDictionary[_T("tangramlistview")] = RUNTIME_CLASS(CTangramListView);
 	m_TabWndClassInfoDictionary[_T("wpfctrl")] = RUNTIME_CLASS(CWPFView);
 	m_TabWndClassInfoDictionary[TGM_SPLITTER] = RUNTIME_CLASS(CSplitterNodeWnd);
 	m_TabWndClassInfoDictionary[_T("tabctrl")] = RUNTIME_CLASS(CTangramTabCtrl);
+	m_pHtmlWndDelegate = new ChromePlus::CHtmlWndDelegate();
 }
 
 BOOL CTangram::CopyFolder(CString strSrcPath, CString strDesPath)

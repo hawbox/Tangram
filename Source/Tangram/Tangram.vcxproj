@@ -357,6 +357,7 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="chromium\HtmlWndDelegate.cpp" />
     <ClCompile Include="IPC\Broker.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -383,7 +384,7 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     <ClCompile Include="eclipseUtil.cpp" />
     <ClCompile Include="eclipseWin.cpp" />
     <ClCompile Include="eclipseWinCommon.cpp" />
-    <ClCompile Include="Object\CoreFactoryDelegate.cpp">
+    <ClCompile Include="Object\CppFactoryDelegate.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -396,7 +397,7 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Object\RefObjectEvent.cpp">
+    <ClCompile Include="Object\RefObjectParams.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -549,6 +550,7 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     <ClInclude Include="CeXDib.h" />
     <ClInclude Include="chromium\HtmlWnd.h" />
     <ClInclude Include="chromium\BrowserWnd.h" />
+    <ClInclude Include="chromium\HtmlWndDelegate.h" />
     <ClInclude Include="IPC\Broker.h" />
     <ClInclude Include="IPC\EndPoint.h" />
     <ClInclude Include="Markup.h" />
@@ -563,12 +565,12 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     <ClInclude Include="eclipseUtil.h" />
     <ClInclude Include="Object\AbstractFactoryDelegate.h" />
     <ClInclude Include="Object\CLRFactoryDelegate.h" />
-    <ClInclude Include="Object\CoreFactoryDelegate.h" />
+    <ClInclude Include="Object\CppFactoryDelegate.h" />
     <ClInclude Include="Object\CoreObject.h" />
-    <ClInclude Include="Object\RefCoreObject.h" />
     <ClInclude Include="Object\RefObject.h" />
     <ClInclude Include="Object\CoreObjectShadowHost.h" />
-    <ClInclude Include="Object\RefObjectEvent.h" />
+    <ClInclude Include="Object\RefObjectCallback.h" />
+    <ClInclude Include="Object\RefObjectParams.h" />
     <ClInclude Include="Object\RefObjectEventListener.h" />
     <ClInclude Include="OfficePlus\AccessPlus\AccessEvents.h" />
     <ClInclude Include="OfficePlus\ProjectPlus\ProjectPlusEvents.h" />
