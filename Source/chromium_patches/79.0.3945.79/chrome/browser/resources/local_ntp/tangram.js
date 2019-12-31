@@ -1,7 +1,8 @@
 tangram.ipcMessage__("NEW_TAB_PAGE_LOADED", "", "");
 
 tangram.onMessageReceived = function (e) {
-    if (e.to == "system" && e.extra == "__getElementById__") {
+    var channel = e.to.substr(0, e.to.indexOf('@'));
+    if (channel == "system" && e.extra == "__getElementById__") {
         var id = e.payload;
         var htmlElement = document.getElementById(id);
         var htmlInnerHTML = htmlElement.innerHTML;
