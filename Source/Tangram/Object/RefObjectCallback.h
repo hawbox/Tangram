@@ -11,7 +11,7 @@ namespace RefObject
     {
     public:
         RefObjectCallback() {};
-        ~RefObjectCallback() {};
+        virtual ~RefObjectCallback() {};
 
         // virtual void Invoke(RefObject* pObj, RefObjectParams* pParams) = 0;
     };

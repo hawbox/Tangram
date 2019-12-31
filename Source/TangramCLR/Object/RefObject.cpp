@@ -16,6 +16,11 @@ namespace RefObject
         m_pNativeHandle = params;
     }
 
+    RefObjectParams::~RefObjectParams()
+    {
+        delete m_pNativeHandle;
+    }
+
     void RefObjectParams::AddParam(String^ param)
     {
         BSTR bstrParam = STRING2BSTR(param);
@@ -66,7 +71,7 @@ namespace RefObject
         if (pObj != nullptr)
         {
             Handle nHandle = pObj->GetHandle();
-            obj = gcnew RefObject(nHandle);
+            obj = gcnew RefObject(gcnew ClrHandle(nHandle));
         }
         RefObjectParams^ params = gcnew RefObjectParams(pParams);
         m_pCLRHandle->Invoke(obj, params);
@@ -74,23 +79,28 @@ namespace RefObject
 
     // RefObject
 
-    RefObject::RefObject(Handle nHandle)
+    RefObject::RefObject(ClrHandle^ clrHandle)
     {
-        m_pNativeHandle = nHandle;
+        m_pNativeHandle = clrHandle;
     }
 
     String^ RefObject::GetFactoryName()
     {
-        CString strFactoryName = m_pNativeHandle->GetFactoryName();
-        BSTR bstrFactoryName = strFactoryName.AllocSysString();
-        String^ factoryName = BSTR2STRING(bstrFactoryName);
-        ::SysFreeString(bstrFactoryName);
-        return factoryName;
+        IRefObject* pObj = GetNativeObjectFromHandle(m_pNativeHandle);
+        if (pObj != nullptr)
+        {
+            CString strFactoryName = pObj->GetFactoryName();
+            BSTR bstrFactoryName = strFactoryName.AllocSysString();
+            String^ factoryName = BSTR2STRING(bstrFactoryName);
+            ::SysFreeString(bstrFactoryName);
+            return factoryName;
+        }
+        return String::Empty;
     }
 
-    Handle RefObject::GetHandle()
+    ClrHandle^ RefObject::GetHandle()
     {
-        return m_pNativeHandle->GetHandle();
+        return m_pNativeHandle;
     }
 
     void RefObject::Invoke(String^ method, RefObjectParams^ params, ICLRRefObjectCallback^ callback)
@@ -99,6 +109,16 @@ namespace RefObject
         CString strMethod = OLE2T(bstrMethod);
         IRefObjectParams* pParams = params->m_pNativeHandle;
         RefObjectCallbackWrapper* pCallbackWrapper = new RefObjectCallbackWrapper(callback);
-        m_pNativeHandle->Invoke(strMethod, pParams, pCallbackWrapper);
+        IRefObject* pObj = GetNativeObjectFromHandle(m_pNativeHandle);
+        if (pObj != nullptr)
+        {
+            pObj->Invoke(strMethod, pParams, pCallbackWrapper);
+        }
+    }
+
+    IRefObject* RefObject::GetNativeObjectFromHandle(ClrHandle^ clrHandle)
+    {
+        Handle nHandle = clrHandle->NativeHandle();
+        return theApp.m_pTangramImpl->m_pObjectFactory->GetObjectFromHandle(nHandle);
     }
 }

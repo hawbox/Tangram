@@ -17,12 +17,9 @@ namespace RefObject
 		for (auto it : m_mapFactoryDelegateWithHeader)
 		{
 			delete it.second;
-			it.second = nullptr;
 		}
-		for (auto it : m_mapFactoryDelegateWithName)
-		{
-			it.second = nullptr;
-		}
+        m_mapFactoryDelegateWithHeader.clear();
+        m_mapFactoryDelegateWithName.clear();
 	}
 
 	void ObjectFactory::AddFactoryDelegate(IFactoryDelegate* pFactoryDelegate)

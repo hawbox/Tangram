@@ -487,6 +487,8 @@ namespace ChromePlus {
 			::RefObject::RefObjectParams* pParams = new ::RefObject::RefObjectParams();
 			pParams->AddParam(strPayload);
 			it->second->Invoke(nullptr, pParams);
+            delete pParams;
+            delete it->second;
 			m_mapIPCCallback.erase(it);
 		}
 		else

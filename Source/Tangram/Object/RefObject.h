@@ -11,7 +11,7 @@ namespace RefObject
 	public:
 		// Don't call it directly!
 		RefObject(IFactoryDelegate* pFactoryDelegate, uint64_t nRawHandle);
-		virtual ~RefObject() {};
+		virtual ~RefObject();
 
 		CString GetFactoryName() override;
 		Handle GetHandle() override;

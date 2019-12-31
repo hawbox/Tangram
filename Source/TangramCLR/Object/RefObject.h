@@ -12,12 +12,30 @@ namespace RefObject
     ref class RefObjectCallback;
     ref class RefObject;
 
+    public ref struct ClrHandle
+    {
+    public:
+        ClrHandle(Handle nHandle)
+        {
+            Header = nHandle.Header;
+            RawHandle = nHandle.RawHandle;
+        }
+
+        Handle NativeHandle()
+        {
+            return { Header, RawHandle };
+        }
+
+        uint8_t Header;
+        uint64_t RawHandle;
+    };
+
     public ref class RefObjectParams
     {
     public:
         RefObjectParams();
         RefObjectParams(IRefObjectParams* params);
-        ~RefObjectParams() {};
+        ~RefObjectParams();
 
         void AddParam(String^ param);
         String^ GetParam(unsigned int index);
@@ -65,14 +83,17 @@ namespace RefObject
     public ref class RefObject
     {
     public:
-        RefObject(Handle nHandle);
+        RefObject(ClrHandle^ clrHandle);
         ~RefObject() {};
 
         String^ GetFactoryName();
-        Handle GetHandle();
+        ClrHandle^ GetHandle();
         void Invoke(String^ method, RefObjectParams^ params, ICLRRefObjectCallback^ callback);
 
-        Handle m_pNativeHandle;
+        ClrHandle^ m_pNativeHandle;
+
+    private:
+        IRefObject* GetNativeObjectFromHandle(ClrHandle^ clrHandle);
     };
 }
 

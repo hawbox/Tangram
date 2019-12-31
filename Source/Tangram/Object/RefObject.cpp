@@ -16,6 +16,15 @@ namespace RefObject
 		}
 	}
 
+    RefObject::~RefObject()
+    {
+        for (auto it : m_mapEventListeners)
+        {
+            delete it.first;
+        }
+        m_mapEventListeners.clear();
+    }
+
 	CString RefObject::GetFactoryName()
 	{
 		if (m_pFactoryDelegate != nullptr)

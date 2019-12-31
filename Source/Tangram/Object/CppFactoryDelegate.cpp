@@ -32,7 +32,7 @@ namespace RefObject
 	{
 		if (pObj->GetDelegate() != nullptr)
 		{
-			pObj->GetDelegate()->Invoke(pObj, strMethod, (IRefObjectParams*)pParams);
+			pObj->GetDelegate()->Invoke(pObj, strMethod, pParams);
 		}
 	}
 
@@ -40,7 +40,7 @@ namespace RefObject
 	{
 		if (pObj->GetDelegate() != nullptr)
 		{
-			pObj->GetDelegate()->Invoke(pObj, strMethod, (IRefObjectParams*)pParams, (IRefObjectCallback*)pCallback);
+			pObj->GetDelegate()->Invoke(pObj, strMethod, pParams, pCallback);
 		}
 	}
 }

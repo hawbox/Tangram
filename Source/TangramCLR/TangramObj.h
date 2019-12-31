@@ -291,7 +291,8 @@ namespace TangramCLR
 			if (hr == S_OK)
 			{
 				::RefObject::IRefObject* pObj = (::RefObject::IRefObject*)pVal;
-				return gcnew ::RefObject::RefObject(pObj);
+                ::RefObject::Handle nHandle = pObj->GetHandle();
+				return gcnew ::RefObject::RefObject(gcnew ::RefObject::ClrHandle(nHandle));
 			}
 			return nullptr;
 		}
