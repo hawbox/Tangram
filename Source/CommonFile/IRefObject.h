@@ -33,8 +33,13 @@ namespace RefObject
 	class IFactoryDelegate
 	{
 	public:
-        IFactoryDelegate() {};
+        IFactoryDelegate() 
+        {
+            m_pObjectFactory = nullptr;
+        };
         virtual ~IFactoryDelegate() {};
+
+        IObjectFactory* m_pObjectFactory;
 
 		virtual CString GetName() = 0;
 		virtual uint8_t GetHeaderOfHandle() = 0;

@@ -26,6 +26,7 @@ namespace RefObject
 	{
 		if (pFactoryDelegate != nullptr)
 		{
+            pFactoryDelegate->m_pObjectFactory = this;
 			m_mapFactoryDelegateWithName[pFactoryDelegate->GetName()] = pFactoryDelegate;
 			m_mapFactoryDelegateWithHeader[pFactoryDelegate->GetHeaderOfHandle()] = pFactoryDelegate;
 		}
