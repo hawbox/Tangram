@@ -484,10 +484,9 @@ namespace ChromePlus {
 		auto it = m_mapIPCCallback.find(strMsgId);
 		if (it != m_mapIPCCallback.end())
 		{
-			::RefObject::RefObjectParams* pParams = new ::RefObject::RefObjectParams();
-			pParams->AddParam(strPayload);
-			it->second->Invoke(nullptr, pParams);
-            delete pParams;
+            ::RefObject::RefObjectParams pParams;
+			pParams.AddParam(strPayload);
+			it->second->Invoke(nullptr, &pParams);
             delete it->second;
 			m_mapIPCCallback.erase(it);
 		}

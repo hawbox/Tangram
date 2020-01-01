@@ -35,13 +35,17 @@ namespace RefObject
     public:
         RefObjectParams();
         RefObjectParams(IRefObjectParams* params);
-        ~RefObjectParams();
+        virtual ~RefObjectParams();
+        !RefObjectParams();
 
         void AddParam(String^ param);
         String^ GetParam(unsigned int index);
         unsigned long long Count();
 
         IRefObjectParams* m_pNativeHandle;
+        
+    private:
+        bool m_bIsNativeHandleNeedDeleted;
     };
 
     public interface class ICLRRefObjectEventListener
@@ -54,7 +58,7 @@ namespace RefObject
     {
     public:
         RefObjectEventListenerWrapper(ICLRRefObjectEventListener^ evtListener);
-        ~RefObjectEventListenerWrapper() {};
+        virtual ~RefObjectEventListenerWrapper() {};
 
         void OnEventHandle(CString strEventType, IRefObjectParams* pParams) override;
 
@@ -72,7 +76,7 @@ namespace RefObject
     {
     public:
         RefObjectCallbackWrapper(ICLRRefObjectCallback^ callback);
-        ~RefObjectCallbackWrapper() {};
+        virtual ~RefObjectCallbackWrapper() {};
 
         void Invoke(IRefObject* pObj, IRefObjectParams* pParams) override;
 
@@ -84,7 +88,7 @@ namespace RefObject
     {
     public:
         RefObject(ClrHandle^ clrHandle);
-        ~RefObject() {};
+        virtual ~RefObject() {};
 
         String^ GetFactoryName();
         ClrHandle^ GetHandle();

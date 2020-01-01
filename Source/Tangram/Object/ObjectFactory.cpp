@@ -107,9 +107,17 @@ namespace RefObject
 		return true;
 	}
 
-	IRefObjectParams* ObjectFactory::CreateParams()
-	{
-		return new RefObjectParams();
-	}
+    IRefObjectParams* ObjectFactory::CreateParams()
+    {
+        RefObjectParams* pParams = new RefObjectParams();
+        long allocReqNum;
+        _CrtIsMemoryBlock(pParams, sizeof(RefObjectParams), &allocReqNum, NULL, NULL);
+        return pParams;
+    }
+
+    void ObjectFactory::DeleteParams(IRefObjectParams* pParams)
+    {
+        delete pParams;
+    }
 
 }

@@ -23,6 +23,7 @@ namespace RefObject
 		IRefObject* Create(CString strFactoryName, CString strConstructString) override;
 		bool Delete(CString strFactoryName, uint64_t nRawHandle) override;
 		IRefObjectParams* CreateParams() override;
+		void DeleteParams(IRefObjectParams* pParams) override;
 
 	private:
 		map<Handle, IRefObject*> m_mapRefObjects;

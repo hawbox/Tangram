@@ -33,6 +33,9 @@ namespace RefObject
 	class IFactoryDelegate
 	{
 	public:
+        IFactoryDelegate() {};
+        virtual ~IFactoryDelegate() {};
+
 		virtual CString GetName() = 0;
 		virtual uint8_t GetHeaderOfHandle() = 0;
 		virtual IRefObject* Create(CString strConstructString) = 0;
@@ -46,6 +49,9 @@ namespace RefObject
 	class IObjectFactory
 	{
 	public:
+        IObjectFactory() {};
+        virtual ~IObjectFactory() {};
+
 		virtual void AddFactoryDelegate(IFactoryDelegate* pFactoryDelegate) = 0;
 		virtual IFactoryDelegate* GetFactoryDelegate(CString strFactoryName) = 0;
 		virtual IFactoryDelegate* GetFactoryDelegate(uint8_t nFactoryHeader) = 0;
@@ -54,11 +60,15 @@ namespace RefObject
 		virtual IRefObject* Create(CString strFactoryName, CString strConstructString) = 0;
 		virtual bool Delete(CString strFactoryName, uint64_t nRawHandle) = 0;
 		virtual IRefObjectParams* CreateParams() = 0;
+        virtual void DeleteParams(IRefObjectParams* pParams) = 0;
 	};
 
 	class IRefObjectParams
 	{
 	public:
+        IRefObjectParams() {};
+        virtual ~IRefObjectParams() {};
+
 		virtual void AddParam(CString strParam) = 0;
 		virtual CString GetParam(uint32_t nIndex) = 0;
 		virtual size_t Count() = 0;
@@ -67,18 +77,27 @@ namespace RefObject
 	class IRefObjectEventListener
 	{
 	public:
+        IRefObjectEventListener() {};
+        virtual ~IRefObjectEventListener() {};
+
 		virtual void OnEventHandle(CString strEventType, IRefObjectParams* pParams) = 0;
 	};
 
 	class IRefObjectCallback
 	{
 	public:
+        IRefObjectCallback() {};
+        virtual ~IRefObjectCallback() {};
+
 		virtual void Invoke(IRefObject* pObj, IRefObjectParams* pParams) = 0;
 	};
 
 	class IRefObjectDelegate
 	{
 	public:
+        IRefObjectDelegate() {};
+        virtual ~IRefObjectDelegate() {};
+
 		virtual void Invoke(IRefObject* pObj, CString strMethod) = 0;
 		virtual void Invoke(IRefObject* pObj, CString strMethod, IRefObjectParams* pParams) = 0;
 		virtual void Invoke(IRefObject* pObj, CString strMethod, IRefObjectParams* pParams, IRefObjectCallback* pCallback) = 0;
@@ -87,6 +106,9 @@ namespace RefObject
 	class IRefObject
 	{
 	public:
+        IRefObject() {};
+        virtual ~IRefObject() {};
+
 		virtual CString GetFactoryName() = 0;
 		virtual Handle GetHandle() = 0;
 		virtual void AddDelegate(IRefObjectDelegate* pDelegate) = 0;

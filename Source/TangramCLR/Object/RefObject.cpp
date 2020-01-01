@@ -9,22 +9,33 @@ namespace RefObject
     RefObjectParams::RefObjectParams()
     {
         m_pNativeHandle = theApp.m_pTangramImpl->m_pObjectFactory->CreateParams();
+        m_bIsNativeHandleNeedDeleted = true;
     }
 
     RefObjectParams::RefObjectParams(IRefObjectParams* params)
     {
         m_pNativeHandle = params;
+        m_bIsNativeHandleNeedDeleted = false;
     }
 
     RefObjectParams::~RefObjectParams()
     {
-        delete m_pNativeHandle;
+        this->!RefObjectParams();
+    }
+
+    RefObjectParams::!RefObjectParams()
+    {
+        if (m_bIsNativeHandleNeedDeleted)
+        {
+            //delete m_pNativeHandle;
+        }
     }
 
     void RefObjectParams::AddParam(String^ param)
     {
         BSTR bstrParam = STRING2BSTR(param);
         CString strParam = OLE2T(bstrParam);
+        ::SysFreeString(bstrParam);
         m_pNativeHandle->AddParam(strParam);
     }
 
@@ -53,9 +64,9 @@ namespace RefObject
     {
         BSTR bstrEventType = strEventType.AllocSysString();
         String^ eventType = BSTR2STRING(bstrEventType);
+        ::SysFreeString(bstrEventType);
         RefObjectParams^ params = gcnew RefObjectParams(pParams);
         m_pCLRHandle->OnEventHandle(eventType, params);
-        ::SysFreeString(bstrEventType);
     }
 
     // RefObjectCallback
@@ -107,6 +118,7 @@ namespace RefObject
     {
         BSTR bstrMethod = STRING2BSTR(method);
         CString strMethod = OLE2T(bstrMethod);
+        ::SysFreeString(bstrMethod);
         IRefObjectParams* pParams = params->m_pNativeHandle;
         RefObjectCallbackWrapper* pCallbackWrapper = new RefObjectCallbackWrapper(callback);
         IRefObject* pObj = GetNativeObjectFromHandle(m_pNativeHandle);
