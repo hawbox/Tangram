@@ -21,6 +21,12 @@ namespace RefObject
 		}
         m_mapFactoryDelegateWithHeader.clear();
         m_mapFactoryDelegateWithName.clear();
+        // TODO: Delete untrackable objects.
+        for (auto it : m_mapRefObjects)
+        {
+            delete it.second;
+        }
+        m_mapRefObjects.clear();
 	}
 
 	void ObjectFactory::AddFactoryDelegate(IFactoryDelegate* pFactoryDelegate)
