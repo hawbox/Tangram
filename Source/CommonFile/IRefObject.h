@@ -28,6 +28,11 @@ namespace RefObject
 		{
 			return Header < o.Header || (Header == o.Header && RawHandle < o.RawHandle);
 		}
+
+        bool IsZero()
+        {
+            return Header == 0 && RawHandle == 0;
+        }
 	} Handle;
 
 	class IFactoryDelegate

@@ -16,6 +16,7 @@ namespace RefObject
 	{
 		for (auto it : m_mapFactoryDelegateWithHeader)
 		{
+            // Tips: https://stackoverflow.com/questions/56642/loader-lock-error
 			delete it.second;
 		}
         m_mapFactoryDelegateWithHeader.clear();

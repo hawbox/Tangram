@@ -26,6 +26,7 @@
 #include "chromium/BrowserWnd.h"
 #include "IPC/EndPoint.h"
 #include "../CommonFile/IXNode.h"
+#include "../CommonFile/IRefObject.h"
 
 #pragma once
 
@@ -114,6 +115,8 @@ public:
 	map<CString, CCompositor*>			m_mapSubFrame;
 	map<CWndNode*, CString>				m_mapExtendNode;
 	CComObject<CWndNodeCollection>*		m_pChildNodeCollection;
+
+    ::RefObject::Handle                 m_hXObject;
 
 	map<ITangramAppProxy*, CTangramWndNodeProxy*> m_mapWndNodeProxy;
 

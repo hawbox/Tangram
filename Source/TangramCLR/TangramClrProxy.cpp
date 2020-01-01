@@ -34,6 +34,8 @@
 #include "AssemblyLocalor.h"
 #include "Win32AppForm.h"
 
+#include "Object/ClrFactoryDelegate.h"
+
 using namespace TangramCLR;
 using namespace System::Windows;
 #pragma managed(push, off)
@@ -123,6 +125,7 @@ CTangramCLRProxy::CTangramCLRProxy() : ITangramCLRImpl()
 		}
 	}
 	TangramCLR::Tangram::GetTangram();
+    theApp.m_pTangramImpl->m_pObjectFactory->AddFactoryDelegate(new ::RefObject::ClrFactoryDelegate());
 }
 
 CTangramCLRProxy::~CTangramCLRProxy()

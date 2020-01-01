@@ -20,6 +20,11 @@ namespace MyCSharpBrowser
             InitializeComponent();
         }
 
+        public void Temp(String param1)
+        {
+            MessageBox.Show(param1);
+        }
+
         private void btnNewTabPageStyle1_Click(object sender, EventArgs e)
         {
             string newTabPageLayout = Helper.LoadResourceFile("MyCSharpBrowser.Style1.xml");

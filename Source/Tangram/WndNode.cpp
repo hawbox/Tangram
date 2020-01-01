@@ -68,6 +68,7 @@ CWndNode::CWndNode()
 	m_strExtenderID = _T("");
 	m_hHostWnd = NULL;
 	m_hChildHostWnd = NULL;
+    m_hXObject = { 0 };
 	m_pDisp = nullptr;
 	m_pVSDocument = nullptr;
 	m_pHostCompositor = nullptr;
@@ -1308,6 +1309,12 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 				}
 			}
 			m_pDisp = g_pTangram->m_pCLRProxy->TangramCreateObject(strTag.AllocSysString(), hParentWnd, this);
+            // Create a corresponding RefObject from the IDispatch object and store its Handle.
+            uint64_t nRawHandle = (uint64_t)m_pDisp;
+            // TODO: ObjectFactory::Delete should be called when the IDispatch object is destructed.
+            ::RefObject::IRefObject* pObj = g_pTangram->m_pObjectFactory->Create(_T("Clr"), nRawHandle);
+            m_hXObject = pObj->GetHandle();
+
 			if (pHtmlWnd&& strUIKey!=_T(""))
 			{
 
@@ -2666,9 +2673,10 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 
 ::RefObject::IRefObject* CWndNode::GetXObject()
 {
-	if (m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd != nullptr)
+	::RefObject::IObjectFactory* pObjectFactory = g_pTangram->m_pObjectFactory;
+    // TODO: Temporary: Determine whether the current node is a web node.
+	if (m_hXObject.IsZero() && m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd != nullptr)
 	{
-		::RefObject::IObjectFactory* pObjectFactory = g_pTangram->m_pObjectFactory;
 		::RefObject::IRefObject* pObj = pObjectFactory->Create(_T("Cpp"), (uint64_t)m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd);
 		if (pObj != nullptr)
 		{
@@ -2676,6 +2684,14 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 			return pObj;
 		}
 	}
+    else
+    {
+        ::RefObject::IRefObject* pObj = pObjectFactory->GetObjectFromHandle(m_hXObject);
+        if (pObj != nullptr)
+        {
+            return pObj;
+        }
+    }
 	return nullptr;
 }
 

@@ -46,7 +46,7 @@ namespace RefObject
         BSTR bstrMethod = strMethod.AllocSysString();
         String^ method = BSTR2STRING(bstrMethod);
         ::SysFreeString(bstrMethod);
-        MethodInfo^ mi = type->GetMethod(method, BindingFlags::Public);
+        MethodInfo^ mi = type->GetMethod(method);
         if (mi != nullptr)
         {
             List<Object^>^ params = gcnew List<Object^>();

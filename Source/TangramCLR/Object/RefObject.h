@@ -92,6 +92,7 @@ namespace RefObject
 
         String^ GetFactoryName();
         ClrHandle^ GetHandle();
+        void Invoke(String^ method, RefObjectParams^ params);
         void Invoke(String^ method, RefObjectParams^ params, ICLRRefObjectCallback^ callback);
 
         ClrHandle^ m_pNativeHandle;

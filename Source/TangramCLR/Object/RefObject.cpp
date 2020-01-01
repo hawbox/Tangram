@@ -114,6 +114,19 @@ namespace RefObject
         return m_pNativeHandle;
     }
 
+    void RefObject::Invoke(String^ method, RefObjectParams^ params)
+    {
+        BSTR bstrMethod = STRING2BSTR(method);
+        CString strMethod = OLE2T(bstrMethod);
+        ::SysFreeString(bstrMethod);
+        IRefObjectParams* pParams = params->m_pNativeHandle;
+        IRefObject* pObj = GetNativeObjectFromHandle(m_pNativeHandle);
+        if (pObj != nullptr)
+        {
+            pObj->Invoke(strMethod, pParams);
+        }
+    }
+
     void RefObject::Invoke(String^ method, RefObjectParams^ params, ICLRRefObjectCallback^ callback)
     {
         BSTR bstrMethod = STRING2BSTR(method);
