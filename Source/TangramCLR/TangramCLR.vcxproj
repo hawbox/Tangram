@@ -376,6 +376,7 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
     <ClCompile Include="TangramObj.cpp" />
     <ClCompile Include="TangramProxy.cpp" />
     <ClCompile Include="Win32AppForm.cpp" />
+    <ClCompile Include="WizCtrl.cpp" />
     <ClCompile Include="WizForm.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -408,6 +409,9 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
     <ClInclude Include="Win32AppForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="WizCtrl.h">
+      <FileType>CppControl</FileType>
+    </ClInclude>
     <ClInclude Include="WizForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -437,6 +441,9 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
     </EmbeddedResource>
     <EmbeddedResource Include="Win32AppForm.resx">
       <DependentUpon>Win32AppForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WizCtrl.resx">
+      <DependentUpon>WizCtrl.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WizForm.resx">
       <DependentUpon>WizForm.h</DependentUpon>

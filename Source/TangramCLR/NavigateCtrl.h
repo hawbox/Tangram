@@ -60,10 +60,16 @@ namespace TangramCLR {
 			// 
 			// NavigateTreeView
 			// 
+			this->NavigateTreeView->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+				static_cast<System::Int32>(static_cast<System::Byte>(192)), static_cast<System::Int32>(static_cast<System::Byte>(192)));
 			this->NavigateTreeView->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->NavigateTreeView->Font = (gcnew System::Drawing::Font(L"Times New Roman", 12, System::Drawing::FontStyle::Bold));
+			this->NavigateTreeView->FullRowSelect = true;
+			this->NavigateTreeView->HideSelection = false;
+			this->NavigateTreeView->HotTracking = true;
 			this->NavigateTreeView->Location = System::Drawing::Point(0, 0);
 			this->NavigateTreeView->Name = L"NavigateTreeView";
+			this->NavigateTreeView->ShowNodeToolTips = true;
 			this->NavigateTreeView->Size = System::Drawing::Size(385, 470);
 			this->NavigateTreeView->TabIndex = 0;
 			this->NavigateTreeView->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &NavigateCtrl::NavigateTreeView_AfterSelect);

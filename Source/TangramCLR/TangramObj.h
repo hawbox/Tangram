@@ -256,10 +256,7 @@ namespace TangramCLR
 
 		delegate void TabChange(int nActivePage, int nOldActivePage);
 		event TabChange^ OnTabChange;
-		void Fire_OnTabChange(int nActivePage, int nOldActivePage)
-		{
-			OnTabChange(nActivePage, nOldActivePage);
-		}
+		void Fire_OnTabChange(int nActivePage, int nOldActivePage);
 
 		delegate void MessageHandle(String^ strFrom, String^ strTo, String^ strMsgId, String^ strPayload, String^ strExtra);
 		event MessageHandle^ OnIPCMessageReceived;
@@ -543,28 +540,21 @@ namespace TangramCLR
 		}
 
 		[BrowsableAttribute(false)]
-		property Compositor^ Frame
+		property Compositor^ Compositor
 		{
-			Compositor^ get()
-			{
-				CComPtr<ICompositor> pTangramFrame;
-				m_pWndNode->get_Compositor(&pTangramFrame);
-
-				Compositor^ pCompositor = theAppProxy._createObject<ICompositor, Compositor>(pTangramFrame);
-				return pCompositor;
-			}
+			TangramCLR::Compositor^ get();
 		}
 
 		[BrowsableAttribute(false)]
-		property Compositor^ HostFrame
+		property TangramCLR::Compositor^ HostFrame
 		{
-			Compositor^ get()
+			TangramCLR::Compositor^ get()
 			{
 				CComPtr<ICompositor> pTangramFrame;
 				m_pWndNode->get_HostCompositor(&pTangramFrame);
 				if (pTangramFrame)
 				{
-					Compositor^ pCompositor = theAppProxy._createObject<ICompositor, Compositor>(pTangramFrame);
+					TangramCLR::Compositor^ pCompositor = theAppProxy._createObject<ICompositor, TangramCLR::Compositor>(pTangramFrame);
 					return pCompositor;
 				}
 				return nullptr;
@@ -847,13 +837,23 @@ namespace TangramCLR
 			void set(String^ iIndex, Object^ newVal);
 		}
 
-			property String^ Name
+		property String^ Name
 		{
 			String^ get()
 			{
 				CComBSTR bstrName("");
 				m_pCompositor->get_Name(&bstrName);
 				return BSTR2STRING(bstrName);
+			}
+		}
+
+		property IntPtr Handle
+		{
+			IntPtr get()
+			{
+				__int64 nHandle;
+				m_pCompositor->get_HWND(&nHandle);
+				return (IntPtr)nHandle;
 			}
 		}
 
@@ -928,10 +928,12 @@ namespace TangramCLR
 		static Dictionary<String^, String^>^ CustomizeDictionary = gcnew Dictionary<String^, String^>();
 #ifndef _WIN64
 		static Dictionary<String^, String^>^ replacementsDictionary = nullptr;
+		static Dictionary<String^, Control^>^ m_pWizCtrlDic = gcnew Dictionary<String^, Control^>();;
 #endif
 	public:
 		static System::Drawing::Icon^ m_pDefaultIcon = nullptr;
 		static Form^ m_pMainForm = nullptr;
+		static Form^ m_pWizForm = nullptr;
 		static Dictionary<String^, Object^>^ m_pTangramCLRObjDic = gcnew Dictionary<String^, Object^>();
 		static Dictionary<String^, TangramAppProxy^>^ m_pTangramAppProxyDic = gcnew Dictionary<String^, TangramAppProxy^>();
 		static Dictionary<Object^, WndNode^>^ m_pFrameworkElementDic = gcnew Dictionary<Object^, WndNode^>();
@@ -953,6 +955,7 @@ namespace TangramCLR
 		static ChromeWebBrowser^ ActiveBrowser();
 		static ChromeWebBrowser^ GetHostBrowser(Object^ obj);
 		static WndNode^ GetNodeFromControl(Control^ ctrl);
+		static void RegComponentForTangram(String^ strIDs, Assembly^ a);
 		static void UpdateNewTabPageLayout(String^ newTabPageLayout);
 
 		TangramCLR::ITangramApp^ m_pTangramAppProxy;
@@ -1072,6 +1075,14 @@ namespace TangramCLR
 			void set(Dictionary<String^, String^>^ Dic)
 			{
 				replacementsDictionary = Dic;
+			};
+		}
+
+		static property Dictionary<String^, Control^>^ WizCtrlDic
+		{
+			Dictionary<String^, Control^>^ get()
+			{
+				return m_pWizCtrlDic;
 			};
 		}
 #endif

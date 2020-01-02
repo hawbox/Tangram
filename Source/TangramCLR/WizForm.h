@@ -16,13 +16,13 @@ namespace TangramCLR {
 	public ref class WizForm : public System::Windows::Forms::Form
 	{
 	public:
-		WizForm(void)
-		{
-			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
-		}
+		static int m_nProjectCount = 0;
+		static bool m_bInitLibInfo = false;
+		static bool m_bSolutionModel = false;
+		String^ m_strAppType=L"";
+		ListView^ m_pWizListView = nullptr;
+
+		WizForm(void);
 
 		property String^ NavigateData
 		{
@@ -42,6 +42,8 @@ namespace TangramCLR {
 		}
 
 		void InitCustomizeDic(String^ strDicData);
+		void FillListView(String^ strXmlData, System::Windows::Forms::ListView^ ctrl);
+
 	protected:
 		/// <summary>
 		/// Clean up any resources being used.

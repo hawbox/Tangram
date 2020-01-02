@@ -70,6 +70,7 @@ BEGIN_MESSAGE_MAP(CNodeWnd, CWnd)
 	ON_MESSAGE(WM_TGM_SETACTIVEPAGE, OnActiveTangramObj)
 
 	ON_MESSAGE(WM_SPLITTERREPOSITION, OnSplitterReposition)
+	ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
 // CNodeWnd diagnostics
@@ -620,36 +621,14 @@ LRESULT CNodeWnd::OnTangramMsg(WPARAM wParam, LPARAM lParam)
 		case 19820911:
 			return CWnd::DefWindowProc(WM_TANGRAMMSG, wParam, lParam);
 			break;
-		case 19920612:
+		case 20191223:
 			if (g_pTangram->m_pCLRProxy)
 			{
-				CString strName = g_pTangram->m_pCLRProxy->m_strObjTypeName;
-				CWndNode* pNode = m_pWndNode->m_pRootObj;
-				CWndNode* pParent = m_pWndNode->m_pParentObj;
-				if (pParent)
+				auto it = g_pTangram->m_mapControlScript.find((IWndNode*)m_pWndNode);
+				if (it != g_pTangram->m_mapControlScript.end())
 				{
-					strName = pParent->m_strName + _T("_") + strName;
+					return (LRESULT)it->second.GetBuffer();
 				}
-				auto it = pNode->m_pTangramNodeCommonData->m_mapLayoutNodes.find(strName);
-				if (it != pNode->m_pTangramNodeCommonData->m_mapLayoutNodes.end())
-				{
-					BOOL bGetNew = false;
-					int nIndex = 0;
-					while (bGetNew == false)
-					{
-						CString strNewName = _T("");
-						strNewName.Format(_T("%s%d"), strName, nIndex);
-						it = pNode->m_pTangramNodeCommonData->m_mapLayoutNodes.find(strNewName);
-						if (it == pNode->m_pTangramNodeCommonData->m_mapLayoutNodes.end())
-						{
-							strName = strNewName;
-							break;
-						}
-						nIndex++;
-					}
-				}
-				m_pWndNode->put_Attribute(CComBSTR(L"name"), strName.AllocSysString());
-				m_pWndNode->m_strName = strName;
 				return 0;
 			}
 			break;
@@ -1214,4 +1193,20 @@ void CNodeWnd::OnSize(UINT nType, int cx, int cy)
 	{
 		::SetWindowPos(m_pXHtmlTree->m_hWnd, NULL, 0, 0, cx, cy,/*SWP_NOREDRAW|*/SWP_NOACTIVATE);
 	}
+}
+
+
+void CNodeWnd::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+	CWnd::OnShowWindow(bShow, nStatus);
+	//if (m_pWndNode->m_nViewType == TabbedWnd)
+	//{
+	//	IWndNode* pNode = nullptr;
+	//	m_pWndNode->GetNode(0, m_pWndNode->m_nActivePage, &pNode);
+	//	CWndNode* _pNode = (CWndNode*)pNode;
+	//	if (_pNode&&_pNode->m_nViewType == Splitter)
+	//	{
+	//		((CSplitterWnd*)_pNode->m_pHostWnd)->RecalcLayout();
+	//	}
+	//}
 }

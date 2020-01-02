@@ -2922,7 +2922,6 @@ LRESULT CCompositor::OnTabChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&
 			}
 		}
 	}
-	HostPosChanged();
 	return DefWindowProc(uMsg, wParam, lParam);
 }
 

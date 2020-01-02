@@ -129,6 +129,24 @@ CString CTangramCLRApp::GetLibPathFromAssemblyQualifiedName(CString strAssemblyQ
 			{
 				return strObjName + _T("|") + strLib + _T("|");
 			}
+			else {
+				HMODULE hModule1 = ::GetModuleHandle(L"tangramwizard.dll");
+				if (hModule1)
+				{
+
+				}
+				HMODULE hModule = ::GetModuleHandle(L"devenv.exe");
+				if (hModule)
+				{
+					TCHAR szPath[MAX_PATH] = { 0 };
+					::GetModuleFileName(hModule, szPath, MAX_PATH);
+					strLib = szPath;
+					nPos = strLib.ReverseFind('\\');
+					strLib = strLib.Left(nPos + 1);
+					strLib+=_T("PublicAssemblies\\tangramwizard");
+					return strObjName + _T("|") + strLib + _T("|");
+				}
+			}
 		}
 	}
 	else

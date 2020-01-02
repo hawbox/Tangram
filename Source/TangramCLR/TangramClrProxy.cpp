@@ -524,7 +524,8 @@ void CTangramCLRProxy::WindowDestroy(HWND hWnd)
 		m_mapForm.erase(it);
 		if (m_mapForm.size() == 0)
 		{
-			::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, theAppProxy.m_bHostApp ? 1 : 0, 20190511);
+			if(::GetModuleHandle(L"devenv.exe")==NULL)
+				::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, theAppProxy.m_bHostApp ? 1 : 0, 20190511);
 		}
 	}
 }
@@ -1498,9 +1499,11 @@ IDispatch* CTangramCLRProxy::TangramCreateObject(BSTR bstrObjID, HWND hParent, I
 				m_pPropertyGrid->ToolbarVisible = false;
 				m_pPropertyGrid->PropertySort = PropertySort::Alphabetical;
 			}
+
 			HWND hWnd = (HWND)pObj->Handle.ToInt64();
 			IDispatch * pDisp = (IDispatch*)(Marshal::GetIUnknownForObject(pObj).ToInt64());
 			_pNode->m_pHostObj = pObj;
+
 			if (pObj->GetType()->IsSubclassOf(Form::typeid))
 			{
 				::SetParent(hWnd, (HWND)hParent);
@@ -1516,12 +1519,13 @@ IDispatch* CTangramCLRProxy::TangramCreateObject(BSTR bstrObjID, HWND hParent, I
 			}
 			if (theApp.m_pTangramImpl->IsMDIClientCompositorNode(pHostNode) == false && bProperty == false)
 			{
-				CString m_strXml = _T("");
-				auto it = theApp.m_pTangramImpl->m_mapControlScript.find(pHostNode);
-				if (it != theApp.m_pTangramImpl->m_mapControlScript.end())
-				{
-					m_strXml = it->second;
-				}
+				CString m_strXml = _T(""); 
+				m_strXml = (LPCTSTR)::SendMessage((HWND)hParent, WM_TANGRAMMSG, 0, 20191223);
+				//auto it = theApp.m_pTangramImpl->m_mapControlScript.find(pHostNode);
+				//if (it != theApp.m_pTangramImpl->m_mapControlScript.end())
+				//{
+				//	m_strXml = it->second;
+				//}
 				CTangramXmlParse m_Parse;
 				if (m_strXml != _T("") && m_Parse.LoadXml(m_strXml))
 					InitTangramNode(pHostNode, pObj, true, &m_Parse);

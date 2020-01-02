@@ -65,6 +65,8 @@ protected:
 	afx_msg LRESULT OnGetTangramObj(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnSplitterReposition(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 };
 
 class CBKWnd : public CWindowImpl<CBKWnd, CWindow>
