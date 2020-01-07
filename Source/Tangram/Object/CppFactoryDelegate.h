@@ -4,6 +4,7 @@
 #include <atomic>
 #include <map>
 #include "../CommonFile/IRefObject.h"
+#include "../CommonFile/IGui.h"
 
 namespace RefObject
 {
@@ -15,7 +16,7 @@ namespace RefObject
 
 		CString GetName() override;
 		uint8_t GetHeaderOfHandle() override;
-		IRefObject* Create(CString strConstructString) override;
+		IRefObject* Create(Gui::INode* pNode) override;
 
 		void Invoke(IRefObject* pObj, CString strMethod) override;
 		void Invoke(IRefObject* pObj, CString strMethod, IRefObjectParams* pParams) override;

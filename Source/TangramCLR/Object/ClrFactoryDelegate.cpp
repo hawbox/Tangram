@@ -20,7 +20,7 @@ namespace RefObject
         return 2;
     }
 
-    IRefObject* ClrFactoryDelegate::Create(CString strConstructString)
+    IRefObject* ClrFactoryDelegate::Create(Gui::INode* pNode)
     {
         return nullptr;
     }

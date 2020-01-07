@@ -2,6 +2,7 @@
 #include "ObjectFactory.h"
 
 #include "CppFactoryDelegate.h"
+#include "../Gui/GridFactoryDelegate.h"
 #include "RefObject.h"
 #include "RefObjectParams.h"
 
@@ -9,8 +10,9 @@ namespace RefObject
 {
 	ObjectFactory::ObjectFactory()
 	{
-		AddFactoryDelegate(new CppFactoryDelegate());
-	}
+        AddFactoryDelegate(new CppFactoryDelegate());
+        AddFactoryDelegate(new Gui::GridFactoryDelegate());
+    }
 
 	ObjectFactory::~ObjectFactory() 
 	{
@@ -87,12 +89,12 @@ namespace RefObject
 		return nullptr;
 	}
 
-	IRefObject* ObjectFactory::Create(CString strFactoryName, CString strConstructString)
+	IRefObject* ObjectFactory::Create(CString strFactoryName, Gui::INode* pNode)
 	{
 		auto it = m_mapFactoryDelegateWithName.find(strFactoryName);
 		if (it != m_mapFactoryDelegateWithName.end())
 		{
-			return it->second->Create(strConstructString);
+			return it->second->Create(pNode);
 		}
 		return nullptr;
 	}

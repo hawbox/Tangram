@@ -96,6 +96,7 @@ event_target_names.json5：
 
 #include "CloudUtilities\TangramComponentInstaller.h"
 #include "Markup.h"
+#include "Gui/Document.h"
 
 using namespace ChromePlus;
 

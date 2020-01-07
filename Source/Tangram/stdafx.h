@@ -142,6 +142,7 @@ typedef vector<CWndNode*> CTangramNodeVector;
 #include "vbe6ext.h"
 #include <afxcview.h>
 #include <afxdlgs.h>
+#include <afxwin.h>
 
 using namespace Office;
 

@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <map>
 #include "../CommonFile/IRefObject.h"
+#include "../CommonFile/IGui.h"
 
 namespace RefObject
 {
@@ -20,7 +21,7 @@ namespace RefObject
 		IFactoryDelegate* GetFactoryDelegate(uint8_t nFactoryHeader) override;
 		IRefObject* GetObjectFromHandle(Handle nHandle) override;
 		IRefObject* Create(CString strFactoryName, uint64_t nRawHandle) override;
-		IRefObject* Create(CString strFactoryName, CString strConstructString) override;
+		IRefObject* Create(CString strFactoryName, Gui::INode* pNode) override;
 		bool Delete(CString strFactoryName, uint64_t nRawHandle) override;
 		IRefObjectParams* CreateParams() override;
 		void DeleteParams(IRefObjectParams* pParams) override;

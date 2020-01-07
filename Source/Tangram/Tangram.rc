@@ -314,7 +314,7 @@ AFX_IDC_HSPLITBAR       CURSOR                  "splith.cur"
 // TEXT
 //
 
-IDR_WIN_DEFAULT_APP_CONFIG               TEXT                    "default.exe.config"
+IDR_WIN_DEFAULT_APP_CONFIG TEXT                    "default.exe.config"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,10 @@
 #pragma once
 
+namespace Gui
+{
+    class INode;
+}
+
 namespace RefObject
 {
 	class IFactoryDelegate;
@@ -48,7 +53,7 @@ namespace RefObject
 
 		virtual CString GetName() = 0;
 		virtual uint8_t GetHeaderOfHandle() = 0;
-		virtual IRefObject* Create(CString strConstructString) = 0;
+		virtual IRefObject* Create(Gui::INode* pNode) = 0;
 
 		// Invoke method
 		virtual void Invoke(IRefObject* pObj, CString strMethod) = 0;
@@ -67,7 +72,7 @@ namespace RefObject
 		virtual IFactoryDelegate* GetFactoryDelegate(uint8_t nFactoryHeader) = 0;
 		virtual IRefObject* GetObjectFromHandle(Handle nHandle) = 0;
 		virtual IRefObject* Create(CString strFactoryName, uint64_t nRawHandle) = 0;
-		virtual IRefObject* Create(CString strFactoryName, CString strConstructString) = 0;
+		virtual IRefObject* Create(CString strFactoryName, Gui::INode* pNode) = 0;
 		virtual bool Delete(CString strFactoryName, uint64_t nRawHandle) = 0;
 		virtual IRefObjectParams* CreateParams() = 0;
         virtual void DeleteParams(IRefObjectParams* pParams) = 0;

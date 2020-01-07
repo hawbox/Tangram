@@ -1,15 +1,20 @@
 #pragma once
 
 #include <stdint.h>
+#include <atomic>
+#include <map>
 #include "../CommonFile/IRefObject.h"
+#include "../CommonFile/IGui.h"
 
-namespace RefObject
+using namespace RefObject;
+
+namespace Gui
 {
-    class ClrFactoryDelegate : public IFactoryDelegate
+    class GridFactoryDelegate : public IFactoryDelegate
     {
     public:
-        ClrFactoryDelegate() {};
-        virtual ~ClrFactoryDelegate() {};
+        GridFactoryDelegate() {};
+        virtual ~GridFactoryDelegate() {};
 
         CString GetName() override;
         uint8_t GetHeaderOfHandle() override;

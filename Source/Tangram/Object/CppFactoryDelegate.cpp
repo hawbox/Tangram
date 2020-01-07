@@ -15,7 +15,7 @@ namespace RefObject
 		return 1;
 	}
 
-	IRefObject* CppFactoryDelegate::Create(CString strConstructString)
+	IRefObject* CppFactoryDelegate::Create(Gui::INode* pNode)
 	{
 		return nullptr;
 	}

@@ -189,7 +189,7 @@ regsvr32 /s "C:\Program Files (x86)\Tangram\$(TargetName)$(TargetExt)"
     </ClCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
-      <AdditionalDependencies>Winhttp.lib;httpapi.lib;bcrypt.lib;crypt32.lib;ComCtl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xmllite.lib;Winhttp.lib;httpapi.lib;bcrypt.lib;crypt32.lib;ComCtl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>.\Tangram.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
@@ -358,6 +358,11 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="chromium\HtmlWndDelegate.cpp" />
+    <ClCompile Include="Gui\Document.cpp" />
+    <ClCompile Include="Gui\Grid.cpp" />
+    <ClCompile Include="Gui\Node.cpp" />
+    <ClCompile Include="Gui\GridFactoryDelegate.cpp" />
+    <ClCompile Include="Gui\WndObject.cpp" />
     <ClCompile Include="IPC\Broker.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -528,6 +533,7 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
   </ItemGroup>
   <ItemGroup>
     <None Include="CollaborationProxy.rgs" />
+    <None Include="default.exe.config" />
     <None Include="LyncExtender.rgs" />
     <None Include="splith.cur" />
     <None Include="splitv.cur" />
@@ -551,6 +557,11 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     <ClInclude Include="chromium\HtmlWnd.h" />
     <ClInclude Include="chromium\BrowserWnd.h" />
     <ClInclude Include="chromium\HtmlWndDelegate.h" />
+    <ClInclude Include="Gui\Document.h" />
+    <ClInclude Include="Gui\Grid.h" />
+    <ClInclude Include="Gui\Node.h" />
+    <ClInclude Include="Gui\GridFactoryDelegate.h" />
+    <ClInclude Include="Gui\WndObject.h" />
     <ClInclude Include="IPC\Broker.h" />
     <ClInclude Include="IPC\EndPoint.h" />
     <ClInclude Include="Markup.h" />

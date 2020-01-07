@@ -229,6 +229,21 @@
     <ClCompile Include="chromium\HtmlWndDelegate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Gui\Document.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\Node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\WndObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\GridFactoryDelegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\Grid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\CommonFile\Tangram.idl">
@@ -265,6 +280,7 @@
     </None>
     <None Include="TangramCore.tlb" />
     <None Include="TangramDoc.htm" />
+    <None Include="default.exe.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CeXDib.h">
@@ -481,6 +497,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="chromium\HtmlWndDelegate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\Document.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\WndObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\GridFactoryDelegate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\Grid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
