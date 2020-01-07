@@ -48,7 +48,6 @@ CTangramNodeCommonData::~CTangramNodeCommonData()
 };
 
 // CCompositorManager
-
 CCompositorManager::CCompositorManager()
 {
 	m_hWnd								= 0;

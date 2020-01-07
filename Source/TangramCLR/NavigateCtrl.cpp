@@ -82,24 +82,25 @@ namespace TangramCLR {
 			String^ strTag = e->Node->Tag->ToString();
 			if (hostnode)
 			{
-				WndNode^ pHostNode = hostnode->HostNode;
-				if (pHostNode == nullptr)
+				WndNode^ pHostNode = nullptr;// hostnode->HostNode;
+				if (bindnode == nullptr)
 				{
-					if (bindnode == nullptr)
+					String^ name = hostnode->Attribute[L"bindnode"];
+					if (String::IsNullOrEmpty(name) == false)
 					{
-						String^ name = hostnode->Attribute[L"bindnode"];
-						if (String::IsNullOrEmpty(name) == false)
+						WndNodeCollection^ pCol = nullptr;
+						hostnode->RootNode->GetNodes(name, bindnode, pCol);
+						if (pCol)
 						{
-							WndNodeCollection^ pCol = nullptr;
-							hostnode->RootNode->GetNodes(name, bindnode, pCol);
-							if (pCol)
-							{
-								delete pCol;
-							}
+							delete pCol;
 						}
 					}
-					if (bindnode != nullptr)
-						pHostNode = bindnode;
+				}
+				if (bindnode != nullptr)
+					pHostNode = bindnode;
+				if (pHostNode == nullptr)
+				{
+					pHostNode = hostnode->HostNode;
 				}
 				if (pHostNode)
 				{
@@ -138,22 +139,24 @@ namespace TangramCLR {
 			String^ strTag = e->Node->Tag->ToString();
 			if (hostnode)
 			{
-				WndNode^ pHostNode = hostnode->HostNode;
+				WndNode^ pHostNode = nullptr; 
+				if (bindnode == nullptr)
+				{
+					String^ name = hostnode->Attribute[L"bindnode"];
+					if (String::IsNullOrEmpty(name) == false)
+					{
+						WndNodeCollection^ pCol = nullptr;
+						hostnode->RootNode->GetNodes(name, bindnode, pCol);
+						if (pCol)
+							delete pCol;
+					}
+				}
+				if (bindnode != nullptr)
+					pHostNode = bindnode;
+				//WndNode^ 
 				if (pHostNode == nullptr)
 				{
-					if (bindnode == nullptr)
-					{
-						String^ name = hostnode->Attribute[L"bindnode"];
-						if (String::IsNullOrEmpty(name) == false)
-						{
-							WndNodeCollection^ pCol = nullptr;
-							hostnode->RootNode->GetNodes(name, bindnode, pCol);
-							if (pCol)
-								delete pCol;
-						}
-					}
-					if (bindnode != nullptr)
-						pHostNode = bindnode;
+					pHostNode = hostnode->HostNode;
 				}
 				if (pHostNode)
 				{

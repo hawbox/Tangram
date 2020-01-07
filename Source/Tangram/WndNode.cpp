@@ -2634,7 +2634,6 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 		CString strURL = OLE2T(newVal);
 		strURL += _T("|");
 		strURL.Replace(_T("||"), _T("|"));
-		//g_pTangram->m_pCurWebNode = this;
 		HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(((CNodeWnd*)m_pHostWnd)->m_hWnd, strURL);
 		((CNodeWnd*)m_pHostWnd)->m_hFormWnd = hBrowser;
 		g_pTangram->m_hParent = NULL;
@@ -2642,9 +2641,8 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 		if (it != g_pTangram->m_mapBrowserWnd.end())
 		{
 			m_pWebBrowser = (CBrowserWnd*)it->second;
-			//m_pWebBrowser->m_pWndNode = this;
 		}
-		//g_pTangram->m_pCurWebNode = nullptr;
+
 		return S_OK;
 	}
 	if (m_pWebBrowser)
@@ -2653,7 +2651,7 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 		m_pWebBrowser = nullptr;
 		CString strURL = OLE2T(newVal);
 		strURL += _T("|");
-		//g_pTangram->m_pCurWebNode = this;
+
 		HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(((CNodeWnd*)m_pHostWnd)->m_hWnd, strURL);
 		((CNodeWnd*)m_pHostWnd)->m_hFormWnd = hBrowser;
 		g_pTangram->m_hParent = NULL;
@@ -2661,9 +2659,7 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 		if (it != g_pTangram->m_mapBrowserWnd.end())
 		{
 			m_pWebBrowser = (CBrowserWnd*)it->second;
-			//m_pWebBrowser->m_pWndNode = this;
 		}
-		//g_pTangram->m_pCurWebNode = nullptr;
 		return S_OK;
 	}
 	return S_OK;

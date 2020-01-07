@@ -24,6 +24,7 @@
 #include "TangramNodeCLREvent.h"
 #include "TangramObj.h"
 #include "ChromeWebBrowser.h"
+#include "WizCtrl.h"
 #include "Markup.h"
 
 using namespace System::Threading;
@@ -110,6 +111,15 @@ namespace TangramCLR
 			return theAppProxy._createObject<ICompositorManager, TangramCLR::CompositorManager>(pCompositorManager);
 		}
 		return nullptr;
+	}
+
+	Compositor^ WndNode::Compositor::get()
+	{
+		CComPtr<ICompositor> pTangramFrame;
+		m_pWndNode->get_Compositor(&pTangramFrame);
+
+		TangramCLR::Compositor^ pCompositor = theAppProxy._createObject<ICompositor, TangramCLR::Compositor>(pTangramFrame);
+		return pCompositor;
 	}
 
 	String^ WndNode::Caption::get()
@@ -230,6 +240,43 @@ namespace TangramCLR
 			}
 		}
 		return pObj;
+	}
+
+	void WndNode::Fire_OnTabChange(int nActivePage, int nOldActivePage)
+	{
+		OnTabChange(nActivePage, nOldActivePage);
+		WndNode^ pActiveNode = nullptr;
+		pActiveNode = GetNode(0, nActivePage);
+		WndNode^ pOldNode = nullptr;
+		pOldNode = GetNode(0, nOldActivePage);
+		//if (pActiveNode != nullptr)
+		//{
+		//	if(pActiveNode->NodeType==WndNodeType::TNT_CLR_Control)
+		//	{ 
+		//		Control^ pControl = static_cast<Control^>(pActiveNode->XObject);
+		//		if (pControl != nullptr)
+		//		{
+
+		//		}
+		//	}
+		//	//if (pActiveNode->Name == L"hostview")
+		//	{
+		//		Compositor^ pCompositor = pActiveNode->Frame;
+		//		ICompositor* _pCompositor = pCompositor->m_pCompositor;
+		//		__int64 nHandle = 0;
+		//		_pCompositor->get_HWND(&nHandle);
+		//		Control^ pCtrl = Control::FromHandle((IntPtr)nHandle);
+		//		if (pCtrl)
+		//		{
+		//			for each (Control ^ ctrl in pCtrl->Controls)
+		//			{
+		//				//Compositor^ compositor = nullptr;
+		//				//ICompositorManager* pManager = pCompositor->Page->m_pCompositorManager;
+		//				::PostMessage((HWND)pCtrl->Handle.ToPointer(), WM_TANGRAMMSG, 0, 20180115);
+		//			}
+		//		}
+		//	}
+		//}
 	}
 
 	ApplicationContext::ApplicationContext()
@@ -824,6 +871,34 @@ namespace TangramCLR
 			ChromeWebBrowser^ pBrowser = gcnew ChromeWebBrowser(pChromeWebBrowser);
 			theAppProxy.m_mapChromeWebBrowser[pChromeWebBrowser] = pBrowser;
 			return pBrowser;
+		}
+	}
+
+	void Tangram::RegComponentForTangram(String^ strIDs, Assembly^ a)
+	{
+		if (a != nullptr /*&& String::IsNullOrEmpty(strIDs) == false*/)
+		{
+			strIDs = strIDs->ToLower();
+			cli::array<Type^>^ pArray = a->GetExportedTypes();
+			for each (Type ^ type in pArray)
+			{
+				if (type->IsSubclassOf(Control::typeid)||type->IsSubclassOf(System::Windows::FrameworkElement::typeid))
+				{
+					String^ strName = type->AssemblyQualifiedName->ToLower();
+					String^ s = strName->Substring(0, strName->IndexOf(", version"))->Replace(" ","");
+					Type^ _pType = nullptr;
+					if (String::IsNullOrEmpty(strIDs))
+					{
+						if (GetTangram()->m_pTangramCLRTypeDic->TryGetValue(s, _pType) == false)
+							GetTangram()->m_pTangramCLRTypeDic->Add(s, type);
+					}
+					else if (strIDs->IndexOf(s) != -1)
+					{
+						if (GetTangram()->m_pTangramCLRTypeDic->TryGetValue(s, _pType) == false)
+							GetTangram()->m_pTangramCLRTypeDic->Add(s, type);
+					}
+				}
+			}
 		}
 	}
 
@@ -1737,7 +1812,7 @@ namespace TangramCLR
 	WndNode^ Compositor::Open(String^  layerName, String^ layerXML)
 	{
 		WndNode^ pRetNode = nullptr;
-    BSTR blayerName = STRING2BSTR(layerName);
+		BSTR blayerName = STRING2BSTR(layerName);
 		BSTR blayerXML = STRING2BSTR(layerXML);		
 		CComPtr<IWndNode> pNode;
 		m_pCompositor->Open(blayerName, blayerXML, &pNode);
