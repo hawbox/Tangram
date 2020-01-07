@@ -2,6 +2,7 @@
 
 namespace Gui
 {
+	class IDocument;
     class INode;
 }
 
@@ -76,6 +77,11 @@ namespace RefObject
 		virtual bool Delete(CString strFactoryName, uint64_t nRawHandle) = 0;
 		virtual IRefObjectParams* CreateParams() = 0;
         virtual void DeleteParams(IRefObjectParams* pParams) = 0;
+
+		//virtual uint8_t GenerateNewFactoryId() = 0;
+		
+		// Gui
+		virtual Gui::IDocument* CreateDocument() = 0;
 	};
 
 	class IRefObjectParams

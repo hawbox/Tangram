@@ -29,6 +29,7 @@
 #include "IPC\Broker.h"
 #include "IPC\EndPoint.h"
 #include "chromium/HtmlWndDelegate.h"
+#include "Gui\XWindows.h"
 
 #pragma once
 //https://github.com/eclipse/rt.equinox.framework/tree/master/features/org.eclipse.equinox.executable.feature/library/win32

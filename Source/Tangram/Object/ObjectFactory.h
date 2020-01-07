@@ -26,6 +26,9 @@ namespace RefObject
 		IRefObjectParams* CreateParams() override;
 		void DeleteParams(IRefObjectParams* pParams) override;
 
+		// Gui
+		Gui::IDocument* CreateDocument() override;
+
 	private:
 		map<Handle, IRefObject*> m_mapRefObjects;
 		map<uint8_t, IFactoryDelegate*> m_mapFactoryDelegateWithHeader;

@@ -676,6 +676,10 @@ LRESULT CNodeWnd::OnTangramMsg(WPARAM wParam, LPARAM lParam)
 		break;
 		default:
 		{
+			if (lParam == 20022017)
+			{
+				break;
+			}
 			CString strCnnID = (LPCTSTR)lParam;
 			if (strCnnID.Find(_T(",")) != -1 && g_pTangram->m_pCLRProxy)
 			{

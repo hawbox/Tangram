@@ -32,5 +32,13 @@ namespace MyCSharpBrowser
         {
             thisNode = Tangram.CreatingNode;
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Gui.Document doc = new Gui.Document();
+            string newXML = Helper.LoadResourceFile("MyCSharpBrowser.NewXML.xml");
+            doc.Load(newXML);
+            doc.CreateWnd(this.Handle);
+        }
     }
 }

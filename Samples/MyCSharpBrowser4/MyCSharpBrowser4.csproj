@@ -167,5 +167,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Style3.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NewXML.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

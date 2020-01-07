@@ -245,6 +245,7 @@ CTangram::CTangram()
 	//g_pTangram = m_pTangramImplData;
 	m_mapValInfo[_T("currenteclipeworkBenchid")] = CComVariant(_T(""));
 	m_pObjectFactory = new ::RefObject::ObjectFactory();
+	m_pXWindows = new ::Gui::XWindows();
 	m_TabWndClassInfoDictionary[_T("hostview")] = RUNTIME_CLASS(CNodeWnd);
 	m_TabWndClassInfoDictionary[_T("tangramlistview")] = RUNTIME_CLASS(CTangramListView);
 	m_TabWndClassInfoDictionary[_T("wpfctrl")] = RUNTIME_CLASS(CWPFView);
@@ -560,6 +561,7 @@ CTangram::~CTangram()
 	OutputDebugString(_T("------------------Begin Release CTangram------------------------\n"));
 
 	delete m_pObjectFactory;
+	delete m_pXWindows;
 	delete m_pHtmlWndDelegate;
 
 	for (auto it : m_mapTangramDocTemplateInfo)

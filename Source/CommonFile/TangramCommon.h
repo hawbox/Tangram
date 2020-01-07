@@ -155,6 +155,11 @@ namespace RefObject
 	class IObjectFactory;
 }
 
+namespace Gui
+{
+	class IXWindows;
+}
+
 namespace TangramCommon {
 	using namespace std;
 	using namespace ATL;
@@ -690,6 +695,7 @@ namespace TangramCommon {
 		OmniboxViewViewsProxy*					m_pCreatingOmniboxViewViews = nullptr;
 		CChromeRenderFrameHostBase*				m_pCreatingChromeRenderFrameHostBase = nullptr;
 		::RefObject::IObjectFactory*			m_pObjectFactory;
+		::Gui::IXWindows*						m_pXWindows;
 
 		map<CString, IDispatch*>				m_mapObjDic;
 		map<HWND, ICompositorManager*>			m_mapFramePage;

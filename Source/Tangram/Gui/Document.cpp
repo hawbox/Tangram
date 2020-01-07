@@ -2,11 +2,15 @@
 #include "Document.h"
 #include "Node.h"
 #include <xmllite.h>
+#include "../TangramCore.h"
+
+extern CTangram* g_pTangram;
 
 namespace Gui
 {
     Document::Document()
     {
+        m_hInvisibleHWnd = 0;
         m_pRootNode = nullptr;
     }
 
@@ -19,6 +23,7 @@ namespace Gui
 
     void Document::CreateWnd(HWND hPWnd)
     {
+        RemoveChildWindows(hPWnd);
         if (m_pRootNode != nullptr)
         {
             m_pRootNode->CreateWnd(hPWnd);
@@ -146,6 +151,25 @@ namespace Gui
             {
                 break;
             }
+        }
+    }
+
+    BOOL CALLBACK RemoveChildWindowProc(_In_ HWND hwnd, _In_ LPARAM lParam)
+    {
+        HWND hInvisibleHWnd = (HWND)lParam;
+        ::SetParent(hwnd, hInvisibleHWnd);
+        return TRUE;
+    }
+
+    void Document::RemoveChildWindows(HWND hPWnd)
+    {
+        if (::IsWindow(hPWnd))
+        {
+            if (!::IsWindow(m_hInvisibleHWnd))
+            {
+                m_hInvisibleHWnd = g_pTangram->m_pXWindows->CreateInvisibleWnd(hPWnd);
+            }
+            ::EnumChildWindows(hPWnd, RemoveChildWindowProc, (LPARAM)m_hInvisibleHWnd);
         }
     }
 }

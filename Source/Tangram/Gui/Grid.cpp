@@ -169,8 +169,8 @@ namespace Gui
     {
         // TODO: Add your message handler code here and/or call default
 
-        //return CSplitterWnd::OnNcHitTest(point);
-        return HTNOWHERE;
+        return CSplitterWnd::OnNcHitTest(point);
+        //return HTNOWHERE;
     }
 
     void Grid::OnSize(UINT nType, int cx, int cy)

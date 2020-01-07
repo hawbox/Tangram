@@ -18,9 +18,25 @@ namespace Gui
 
     IRefObject* GridFactoryDelegate::Create(Gui::INode* pNode)
     {
-        Grid* pGrid = new Grid();
-        int64_t nRow = pNode->GetAttributeAsNumber(_T("row"));
-        int64_t nCol = pNode->GetAttributeAsNumber(_T("col"));
+        CWnd* pParentWnd = CWnd::FromHandle(pNode->GetParentHWND());
+        if (pParentWnd != nullptr)
+        {
+            Grid* pGrid = new Grid();
+            int64_t nRow = pNode->GetAttributeAsNumber(_T("row"));
+            int64_t nCol = pNode->GetAttributeAsNumber(_T("col"));
+            pGrid->CreateStatic(pParentWnd, nRow, nCol);
+            for (int i = 0; i < nRow; i++)
+            {
+                for (int j = 0; j < nCol; j++)
+                {
+                    pGrid->CreateView(i, j, RUNTIME_CLASS(CEditView), CSize(0, 0), NULL);
+                }
+            }
+            RECT rect;
+            pParentWnd->GetClientRect(&rect);
+            pGrid->MoveWindow(&rect);
+            return m_pObjectFactory->Create(GetName(), (uint64_t)pGrid);
+        }
         return nullptr;
     }
 

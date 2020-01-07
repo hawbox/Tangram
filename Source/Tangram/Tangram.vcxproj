@@ -363,6 +363,7 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     <ClCompile Include="Gui\Node.cpp" />
     <ClCompile Include="Gui\GridFactoryDelegate.cpp" />
     <ClCompile Include="Gui\WndObject.cpp" />
+    <ClCompile Include="Gui\XWindows.cpp" />
     <ClCompile Include="IPC\Broker.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -562,6 +563,7 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     <ClInclude Include="Gui\Node.h" />
     <ClInclude Include="Gui\GridFactoryDelegate.h" />
     <ClInclude Include="Gui\WndObject.h" />
+    <ClInclude Include="Gui\XWindows.h" />
     <ClInclude Include="IPC\Broker.h" />
     <ClInclude Include="IPC\EndPoint.h" />
     <ClInclude Include="Markup.h" />

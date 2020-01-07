@@ -25,9 +25,11 @@ namespace Gui
         void AddChildNode(INode* pNode) override;
         INode* GetParentNode() override;
         void SetParentNode(INode* pParentNode) override;
+        HWND GetParentHWND() override;
         void CreateWnd(HWND hPWnd) override;
 
     private:
+        HWND m_hPWnd;
         ::RefObject::Handle m_nHandle;
 
         CString m_strTagName;

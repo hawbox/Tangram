@@ -8,6 +8,7 @@ namespace Gui
 {
     Node::Node()
     {
+        m_hPWnd = 0;
         m_nHandle = { 0 };
         m_strTagName = _T("");
         m_strInnerText = _T("");
@@ -83,8 +84,14 @@ namespace Gui
         m_pParentNode = pParentNode;
     }
 
+    HWND Node::GetParentHWND()
+    {
+        return m_hPWnd;
+    }
+
     void Node::CreateWnd(HWND hPWnd)
     {
+        m_hPWnd = hPWnd;
         if (m_nHandle.IsZero())
         {
             CString strTagName = GetTagName();

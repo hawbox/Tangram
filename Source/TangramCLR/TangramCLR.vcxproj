@@ -355,6 +355,9 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
     </ClCompile>
     <ClCompile Include="ErrorCtrl.cpp" />
+    <ClCompile Include="Gui\Gui.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Markup.cpp" />
     <ClCompile Include="NavigateCtrl.cpp" />
     <ClCompile Include="Object\ClrFactoryDelegate.cpp">
@@ -390,6 +393,7 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
     </ClInclude>
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="ErrorCtrl.h" />
+    <ClInclude Include="Gui\Gui.h" />
     <ClInclude Include="Markup.h" />
     <ClInclude Include="NavigateCtrl.h">
       <FileType>CppControl</FileType>

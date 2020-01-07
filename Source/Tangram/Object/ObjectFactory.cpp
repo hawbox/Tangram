@@ -3,6 +3,7 @@
 
 #include "CppFactoryDelegate.h"
 #include "../Gui/GridFactoryDelegate.h"
+#include "../Gui/Document.h"
 #include "RefObject.h"
 #include "RefObjectParams.h"
 
@@ -129,5 +130,13 @@ namespace RefObject
     {
         delete pParams;
     }
+
+	// Gui
+
+	Gui::IDocument* ObjectFactory::CreateDocument()
+	{
+		Gui::Document* pDocument = new Gui::Document();
+		return pDocument;
+	}
 
 }
