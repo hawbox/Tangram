@@ -1,1 +1,0 @@
-tangram.ipcMessage__("NTP_LOAD", "", "");
