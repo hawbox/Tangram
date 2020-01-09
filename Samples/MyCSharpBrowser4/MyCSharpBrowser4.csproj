@@ -28,15 +28,13 @@
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\chromium_root_81\src\out\tangram_static_release_x64\</OutputPath>
+    <OutputPath>..\..\chromium_root_79\src\out\tangram_static_release_x64\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup />
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,7 +49,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="Tangram_CLR_RT, Version=1.0.1992.1963, Culture=neutral, PublicKeyToken=1bcc94f26a4807a7, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\chromium_root_79\src\out\tangram_static_debug_x64\Tangram_CLR_RT.dll</HintPath>
+      <HintPath>..\..\chromium_root_79\src\out\tangram_static_release_x64\Tangram_CLR_RT.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
