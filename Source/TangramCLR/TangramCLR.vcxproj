@@ -107,7 +107,7 @@
     <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\..\chromium_root_81\src\out\tangram_static_release_x64</OutDir>
+    <OutDir>..\..\chromium_root_79\src\out\tangram_static_release_x64</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <LinkKeyFile>TangramCLR.snk</LinkKeyFile>
@@ -339,7 +339,6 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="ChromeWebBrowser.cpp" />
-    <ClCompile Include="DefaultNTPCtrl.cpp" />
     <ClCompile Include="dllmain.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -359,14 +358,17 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Markup.cpp" />
-    <ClCompile Include="NavigateCtrl.cpp" />
     <ClCompile Include="Object\ClrFactoryDelegate.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Object\RefObject.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -388,16 +390,10 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
     <ClInclude Include="AssemblyLocalor.h" />
     <ClInclude Include="BrowserWndOpenDisposition.h" />
     <ClInclude Include="ChromeWebBrowser.h" />
-    <ClInclude Include="DefaultNTPCtrl.h">
-      <FileType>CppControl</FileType>
-    </ClInclude>
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="ErrorCtrl.h" />
     <ClInclude Include="Gui\Gui.h" />
     <ClInclude Include="Markup.h" />
-    <ClInclude Include="NavigateCtrl.h">
-      <FileType>CppControl</FileType>
-    </ClInclude>
     <ClInclude Include="Object\ClrFactoryDelegate.h" />
     <ClInclude Include="Object\RefObject.h" />
     <ClInclude Include="Resource.h" />
@@ -432,13 +428,7 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
     <None Include="TangramCLR2COM.rgs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DefaultNTPCtrl.resx">
-      <DependentUpon>DefaultNTPCtrl.h</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ErrorCtrl.resx" />
-    <EmbeddedResource Include="NavigateCtrl.resx">
-      <DependentUpon>NavigateCtrl.h</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="TangramMDIForm.resx">
       <DependentUpon>TangramMDIForm.h</DependentUpon>
     </EmbeddedResource>

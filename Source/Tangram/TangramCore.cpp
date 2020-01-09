@@ -560,9 +560,12 @@ CTangram::~CTangram()
 {
 	OutputDebugString(_T("------------------Begin Release CTangram------------------------\n"));
 
-	delete m_pObjectFactory;
-	delete m_pXWindows;
-	delete m_pHtmlWndDelegate;
+	if(m_pXWindows)
+		delete m_pXWindows;
+	if(m_pObjectFactory)
+		delete m_pObjectFactory;
+	if(m_pHtmlWndDelegate)
+		delete m_pHtmlWndDelegate;
 
 	for (auto it : m_mapTangramDocTemplateInfo)
 	{

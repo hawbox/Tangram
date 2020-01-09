@@ -40,9 +40,6 @@
     <ClCompile Include="ChromeWebBrowser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DefaultNTPCtrl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ErrorCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -59,9 +56,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WizForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NavigateCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Object\RefObject.cpp">
@@ -105,9 +99,6 @@
     <ClInclude Include="ChromeWebBrowser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DefaultNTPCtrl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ErrorCtrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -127,9 +118,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WizForm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NavigateCtrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Object\RefObject.h">

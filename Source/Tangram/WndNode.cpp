@@ -44,7 +44,7 @@
 #include "OfficePlus\OfficeAddin.h"
 #include "chromium/BrowserWnd.h"
 #include "chromium/HtmlWnd.h"
-#include "../CommonFile/IRefObject.h"
+#include "IRefObject.h"
 
 CWndNode::CWndNode()
 {
@@ -1313,7 +1313,8 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
             uint64_t nRawHandle = (uint64_t)m_pDisp;
             // TODO: ObjectFactory::Delete should be called when the IDispatch object is destructed.
             ::RefObject::IRefObject* pObj = g_pTangram->m_pObjectFactory->Create(_T("Clr"), nRawHandle);
-            m_hXObject = pObj->GetHandle();
+			if(pObj)
+				m_hXObject = pObj->GetHandle();
 
 			if (pHtmlWnd&& strUIKey!=_T(""))
 			{

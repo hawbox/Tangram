@@ -140,9 +140,14 @@ CTangramCLRProxy::~CTangramCLRProxy()
 
 	if (m_bHostApp)
 	{
+		if (theApp.m_pTangramImpl->m_pObjectFactory)
+		{
+			delete theApp.m_pTangramImpl->m_pObjectFactory;
+			theApp.m_pTangramImpl->m_pObjectFactory = nullptr;
+		}
 		BOOL bUnload = ::FreeLibrary(::GetModuleHandle(_T("TangramCore.dll")));
-		while (bUnload)
-			bUnload = ::FreeLibrary(::GetModuleHandle(_T("TangramCore.dll")));
+		//while (bUnload)
+		//	bUnload = ::FreeLibrary(::GetModuleHandle(_T("TangramCore.dll")));
 	}
 
 	ATLTRACE(_T("Release CTangramCLRProxy :%p\n"), this);

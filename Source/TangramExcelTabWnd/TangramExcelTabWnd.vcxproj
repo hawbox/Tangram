@@ -103,7 +103,11 @@
     <CodeAnalysisRuleAssemblies />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+<<<<<<< HEAD
     <OutDir>..\..\chromium_root_80\src\out\tangram_static_release_x64\tangramcomponent\</OutDir>
+=======
+    <OutDir>..\..\chromium_root_79\src\out\tangram_static_release_x64\tangramcomponent\</OutDir>
+>>>>>>> Support Wizard
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>

@@ -199,10 +199,13 @@ namespace TangramCLR
 
 		IWndNode* m_pWndNode;
 		Object^ m_pHostObj = nullptr;
+		System::Windows::Forms::ListView^ m_pBindListView = nullptr;
+		System::Windows::Forms::TreeView^ m_pBindTreeView = nullptr;
 		TangramCommon::CChromeBrowserProxy* m_pChromeBrowserProxy;
 		CTangramNodeEvent* m_pTangramNodeEvent;
 		CWndNodeCLREvent* m_pTangramNodeCLREvent;
 
+		void NavigateTreeInit();
 		//virtual void CloseForm(Object^ pForm){};
 		//virtual void OnCloseForm(long long hFormWnd){};
 
@@ -281,6 +284,42 @@ namespace TangramCLR
 			return "";
 		}
 
+		property TreeView^ BindTreeView
+		{
+			void set(TreeView^ treeview)
+			{
+				if (m_pBindTreeView == nullptr)
+					m_pBindTreeView = treeview;
+			}
+		}
+
+		property ListView^ BindListView
+		{
+			void set(ListView^ Listview)
+			{
+				if (m_pBindListView == nullptr)
+					m_pBindListView = Listview;
+			}
+		}
+
+		property String^ BindTreeViewData
+		{
+			void set(String^ treeviewData)
+			{
+				if (m_strTreeViewData == nullptr)
+					m_strTreeViewData = treeviewData;
+			}
+		}
+
+		property String^ BindListViewData
+		{
+			void set(String^ listviewData)
+			{
+				if (m_strListViewData == nullptr)
+					m_strListViewData = listviewData;
+			}
+		}
+
 		::RefObject::RefObject^ GetXObject()
 		{
 			LONGLONG pVal = 0;
@@ -295,9 +334,6 @@ namespace TangramCLR
 		}
 
 	private:
-		HWND m_hWnd;
-		Dictionary<String^, MethodInfo^>^ m_pTangramCLRMethodDic = nullptr;
-		Dictionary<String^, Object^>^ m_pTangramPlugInDic = nullptr;
 		void SetNewNode(IWndNode* pNode)
 		{
 			if (m_pWndNode != NULL)
@@ -793,8 +829,19 @@ namespace TangramCLR
 		/// Required designer variable.
 		/// </summary>
 
+		HWND m_hWnd;
+		String^ m_strListViewData = nullptr;
+		String^ m_strTreeViewData = nullptr;
+		WndNode^ bindTreeNode = nullptr;
+		WndNode^ bindListViewNode = nullptr;
+		Dictionary<String^, MethodInfo^>^ m_pTangramCLRMethodDic = nullptr;
+		Dictionary<String^, Object^>^ m_pTangramPlugInDic = nullptr;
+		System::Void LoadNode(TreeNode^ pNode, CTangramXmlParse* pParse);
+
 		WndNodeCollection^ m_pChildNodes;
-	};
+		void OnAfterSelect(System::Object^ sender, System::Windows::Forms::TreeViewEventArgs^ e);
+		void OnNodeMouseDoubleClick(System::Object^ sender, System::Windows::Forms::TreeNodeMouseClickEventArgs^ e);
+};
 
 	public ref class Compositor : public Dictionary<String^, WndNode^>
 	{
@@ -1098,6 +1145,7 @@ namespace TangramCLR
 			//	CustomizeDictionary = Dic;
 			//};
 		}
+
 		static property Form^ MainForm
 		{
 			Form^ get();

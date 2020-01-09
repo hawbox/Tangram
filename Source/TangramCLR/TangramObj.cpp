@@ -300,6 +300,9 @@ namespace TangramCLR
 	{
 		m_pTangramAppProxy = nullptr;
 		m_pApplicationContext = nullptr;
+		//AppDomain^ pAppDomain = AppDomain::CurrentDomain;
+		//pAppDomain->SetupInformation->TargetFrameworkName;
+		//String^ ver = AppDomain::CurrentDomain->SetupInformation->TargetFrameworkName;
 	}
 
 	Tangram::Tangram(ITangram* pTangram)
@@ -1705,6 +1708,177 @@ namespace TangramCLR
 		return nullptr;
 	}
 
+	System::Void WndNode::LoadNode(TreeNode^ pNode, CTangramXmlParse* pParse)
+	{
+		if (pParse)
+		{
+			int nCount = pParse->GetCount();
+			for (int i = 0; i < nCount; i++)
+			{
+				CTangramXmlParse* _pParse = pParse->GetChild(i);
+				if (_pParse)
+				{
+					CString name = _pParse->name();
+					if (name == _T("tangramxml"))
+					{
+						HWND hWnd = (HWND)m_pBindTreeView->Handle.ToPointer();
+
+						ICompositor* pCompositor = nullptr;
+						m_pWndNode->get_Compositor(&pCompositor);
+						CComBSTR bstrName("");
+						pCompositor->get_Name(&bstrName);
+						String^ name = pNode->Name + L".";
+						name += m_pBindTreeView->Name;
+						name += L"." + BSTR2STRING(bstrName);
+						BSTR strName = STRING2BSTR(name->ToLower());
+						TangramCLR::Compositor^ _pCompositor = CompositorManager->CreateCompositor(m_pBindTreeView->Handle, name);
+						_pCompositor->Open(L"default", BSTR2STRING(_pParse->xml()));
+					}
+					else
+					{
+						bool isTreeNode = _pParse->attrBool(_T("treenode"), false);
+						if (isTreeNode)
+						{
+							TreeNode^ pChildNode = pNode->Nodes->Add(BSTR2STRING(_pParse->text()));
+							if (pChildNode)
+							{
+								CString strTagName = name + _T("_tag");
+								CTangramXmlParse* pChild2 = pParse->GetChild(strTagName);
+								if (pChild2)
+								{
+									pChildNode->Tag = BSTR2STRING(pChild2->xml());
+								}
+								LoadNode(pChildNode, pParse->GetChild(i));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	void WndNode::NavigateTreeInit()
+	{
+		if (m_pBindTreeView != nullptr)
+		{
+			m_pBindTreeView->NodeMouseDoubleClick += gcnew System::Windows::Forms::TreeNodeMouseClickEventHandler(this, &TangramCLR::WndNode::OnNodeMouseDoubleClick);
+			m_pBindTreeView->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &TangramCLR::WndNode::OnAfterSelect);
+
+			CString strXml = _T("");
+			if (String::IsNullOrEmpty(m_strTreeViewData) == true)
+				m_strTreeViewData = BSTR2STRING(theApp.m_pTangramImpl->m_strNtpDataXml);
+			if (String::IsNullOrEmpty(m_strTreeViewData) == false)
+			{
+				strXml = STRING2BSTR(m_strTreeViewData);
+				CTangramXmlParse m_Parse;
+				if (m_Parse.LoadXml(strXml) || m_Parse.LoadFile(strXml))
+				{
+					if (this->m_pBindTreeView->Nodes->Count == 0)
+					{
+						LoadNode(m_pBindTreeView->Nodes->Add(BSTR2STRING(m_Parse.text())), &m_Parse);
+					}
+				}
+				m_pBindTreeView->ExpandAll();
+			}
+		}
+	}
+
+	void WndNode::OnNodeMouseDoubleClick(System::Object^ sender, System::Windows::Forms::TreeNodeMouseClickEventArgs^ e)
+	{
+		if (e->Node->Tag)
+		{
+			String^ strTag = e->Node->Tag->ToString();
+
+			{
+				WndNode^ pHostNode = nullptr;// hostnode->HostNode;
+				if (bindTreeNode == nullptr)
+				{
+					String^ name = Attribute[L"bindnode"];
+					if (String::IsNullOrEmpty(name) == false)
+					{
+						WndNodeCollection^ pCol = nullptr;
+						RootNode->GetNodes(name, bindTreeNode, pCol);
+						if (pCol)
+						{
+							delete pCol;
+						}
+					}
+				}
+				if (bindTreeNode != nullptr)
+					pHostNode = bindTreeNode;
+				if (pHostNode == nullptr)
+				{
+					pHostNode = HostNode;
+				}
+				if (pHostNode)
+				{
+					CString strXml = strTag;
+					CTangramXmlParse m_Parse;
+					if (m_Parse.LoadXml(strXml))
+					{
+						CString strAction = m_Parse.attr(_T("action"), _T(""));
+						if (strAction != _T(""))
+						{
+							CTangramXmlParse* pChild = m_Parse.GetChild(strAction);
+							if (pChild)
+							{
+								if (strAction == _T("doubleclick"))
+									pHostNode->Open(BSTR2STRING(m_Parse.name()), BSTR2STRING(pChild->xml()));
+								else if (strAction == _T("openurl"))
+								{
+									TangramCLR::Tangram::CreateBrowser(System::IntPtr::Zero, BSTR2STRING(pChild->attr(_T("url"), _T("")) + _T("|")));
+								}
+							}
+
+						}
+
+					}
+				}
+			}
+		}
+	}
+
+	void WndNode::OnAfterSelect(System::Object^ sender, System::Windows::Forms::TreeViewEventArgs^ e)
+	{
+		if (e->Node->Tag)
+		{
+			String^ strTag = e->Node->Tag->ToString();
+
+			{
+				WndNode^ pHostNode = nullptr;
+				if (bindTreeNode == nullptr)
+				{
+					String^ name = Attribute[L"bindnode"];
+					if (String::IsNullOrEmpty(name) == false)
+					{
+						WndNodeCollection^ pCol = nullptr;
+						RootNode->GetNodes(name, bindTreeNode, pCol);
+						if (pCol)
+							delete pCol;
+					}
+				}
+				if (bindTreeNode != nullptr)
+					pHostNode = bindTreeNode;
+				//WndNode^ 
+				if (pHostNode == nullptr)
+				{
+					pHostNode = HostNode;
+				}
+				if (pHostNode)
+				{
+					CString strXml = strTag;
+					CTangramXmlParse m_Parse;
+					if (m_Parse.LoadXml(strXml))
+					{
+						CTangramXmlParse* pChild = m_Parse.GetChild(_T("afterselected"));
+						if (pChild)
+							pHostNode->Open(BSTR2STRING(m_Parse.name()), BSTR2STRING(pChild->xml()));
+					}
+				}
+			}
+		}
+	}
+
 	Object^ WndNode::ActiveMethod(String^ strMethod, cli::array<Object^, 1>^ p)
 	{
 		Object^ pRetObj = nullptr;
@@ -1844,3 +2018,5 @@ namespace TangramCLR
 		m_pCompositor->put_CompositorData(STRING2BSTR(iIndex), *(VARIANT*)nPtr.ToInt64());
 	}
 }
+
+

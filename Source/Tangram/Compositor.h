@@ -154,6 +154,7 @@ public:
 		MESSAGE_HANDLER(WM_CLOSE, OnClose)
 		MESSAGE_HANDLER(WM_TANGRAMMSG, OnTangramMsg)
 		MESSAGE_HANDLER(WM_TANGRAMDATA, OnGetMe)
+		MESSAGE_HANDLER(WM_DPICHANGED, OnDpiChanged)
 		MESSAGE_HANDLER(WM_WINFORMCREATED, OnFormCreated)
 		MESSAGE_HANDLER(WM_TANGRAMGETXML, OnTangramGetXml)
 	END_MSG_MAP()
@@ -161,6 +162,7 @@ public:
 	void OnFinalMessage(HWND hWnd);
 
 private:
+	LRESULT OnDpiChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& );
 	LRESULT OnGetMe(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnFormCreated(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& );
@@ -276,6 +278,9 @@ public:
 	END_COM_MAP()
 
 	BEGIN_MSG_MAP(CCompositor)
+		MESSAGE_HANDLER(WM_DPICHANGED, OnDpiChanged)
+		MESSAGE_HANDLER(WM_DPICHANGED_BEFOREPARENT, OnBeforeParentDpiChanged)
+		MESSAGE_HANDLER(WM_DPICHANGED_AFTERPARENT, OnAfterParentDpiChanged)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		MESSAGE_HANDLER(WM_HSCROLL, OnHScroll)
 		MESSAGE_HANDLER(WM_VSCROLL, OnHScroll)
@@ -295,6 +300,9 @@ protected:
 	ULONG InternalRelease(){ return 1; }
 
 private:
+	LRESULT OnDpiChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
+	LRESULT OnBeforeParentDpiChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
+	LRESULT OnAfterParentDpiChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnGetMe(UINT, WPARAM, LPARAM, BOOL&);
 	LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL&);
 	LRESULT OnHScroll(UINT, WPARAM, LPARAM, BOOL&);

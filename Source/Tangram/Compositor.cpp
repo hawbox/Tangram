@@ -1374,6 +1374,19 @@ LRESULT CTangramWinFormWnd::OnTangramGetXml(UINT uMsg, WPARAM wParam, LPARAM lPa
 	return DefWindowProc(uMsg, wParam, lParam);
 }
 
+LRESULT CTangramWinFormWnd::OnDpiChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
+{
+	RECT* const prcNewWindow = (RECT*)lParam;
+	::SetWindowPos(m_hWnd,
+		NULL,
+		prcNewWindow->left,
+		prcNewWindow->top,
+		prcNewWindow->right - prcNewWindow->left,
+		prcNewWindow->bottom - prcNewWindow->top,
+		SWP_NOZORDER | SWP_NOACTIVATE);
+	return DefWindowProc(uMsg, wParam, lParam);
+}
+
 LRESULT CTangramWinFormWnd::OnFormCreated(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
 {
 	g_pTangram->m_hFormNodeWnd = nullptr;
@@ -2922,6 +2935,31 @@ LRESULT CCompositor::OnTabChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&
 			}
 		}
 	}
+	return DefWindowProc(uMsg, wParam, lParam);
+}
+
+LRESULT CCompositor::OnDpiChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
+{
+	RECT* const prcNewWindow = (RECT*)lParam;
+	::SetWindowPos(m_hWnd,
+		NULL,
+		prcNewWindow->left,
+		prcNewWindow->top,
+		prcNewWindow->right - prcNewWindow->left,
+		prcNewWindow->bottom - prcNewWindow->top,
+		SWP_NOZORDER | SWP_NOACTIVATE);
+	return DefWindowProc(uMsg, wParam, lParam);
+}
+
+LRESULT CCompositor::OnBeforeParentDpiChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
+{
+	return DefWindowProc(uMsg, wParam, lParam);
+}
+
+LRESULT CCompositor::OnAfterParentDpiChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
+{
+	HostPosChanged();
+	::PostMessage(m_hWnd, WM_TANGRAMMSG, 0, 20180115);
 	return DefWindowProc(uMsg, wParam, lParam);
 }
 

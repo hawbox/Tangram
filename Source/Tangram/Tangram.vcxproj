@@ -103,7 +103,7 @@
     <SourcePath>$(VC_SourcePath);</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\..\chromium_root_81\src\out\tangram_static_release_x64</OutDir>
+    <OutDir>..\..\chromium_root_79\src\out\tangram_static_release_x64</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -357,7 +357,10 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="chromium\HtmlWndDelegate.cpp" />
+    <ClCompile Include="chromium\HtmlWndDelegate.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Gui\Document.cpp" />
     <ClCompile Include="Gui\Grid.cpp" />
     <ClCompile Include="Gui\Node.cpp" />
