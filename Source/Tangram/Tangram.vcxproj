@@ -140,7 +140,7 @@
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
-      <AdditionalDependencies>Winhttp.lib;httpapi.lib;bcrypt.lib;crypt32.lib;ComCtl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xmllite.lib;Winhttp.lib;httpapi.lib;bcrypt.lib;crypt32.lib;ComCtl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>.\Tangram.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
@@ -248,7 +248,7 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
-      <AdditionalDependencies>Winhttp.lib;httpapi.lib;bcrypt.lib;crypt32.lib;ComCtl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xmllite.lib;Winhttp.lib;httpapi.lib;bcrypt.lib;crypt32.lib;ComCtl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>.\Tangram.def</ModuleDefinitionFile>
       <TypeLibraryFile />
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -306,7 +306,7 @@ regsvr32 /s "C:\Program Files (x86)\Tangram\$(TargetName)$(TargetExt)"
     </ClCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
-      <AdditionalDependencies>Winhttp.lib;httpapi.lib;bcrypt.lib;crypt32.lib;ComCtl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xmllite.lib;Winhttp.lib;httpapi.lib;bcrypt.lib;crypt32.lib;ComCtl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>.\Tangram.def</ModuleDefinitionFile>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -361,12 +361,30 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Gui\Document.cpp" />
-    <ClCompile Include="Gui\Grid.cpp" />
-    <ClCompile Include="Gui\Node.cpp" />
-    <ClCompile Include="Gui\GridFactoryDelegate.cpp" />
-    <ClCompile Include="Gui\WndObject.cpp" />
-    <ClCompile Include="Gui\XWindows.cpp" />
+    <ClCompile Include="Gui\Document.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Gui\Grid.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Gui\Node.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Gui\GridFactoryDelegate.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Gui\WndObject.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Gui\XWindows.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="IPC\Broker.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -482,6 +500,7 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     <ClCompile Include="TangramCore.cpp" />
     <ClCompile Include="TangramHtmlTreeExWnd.cpp" />
     <ClCompile Include="TangramHtmlTreeWnd.cpp" />
+    <ClCompile Include="WizDlg.cpp" />
     <ClCompile Include="WndNode.cpp" />
     <ClCompile Include="CompositorManager.cpp" />
     <ClCompile Include="SplitterWnd.cpp" />
@@ -612,6 +631,7 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     <ClInclude Include="TangramApp.h" />
     <ClInclude Include="Compositor.h" />
     <ClInclude Include="TangramCore.h" />
+    <ClInclude Include="WizDlg.h" />
     <ClInclude Include="WndNode.h" />
     <ClInclude Include="CompositorManager.h" />
     <ClInclude Include="SplitterWnd.h" />

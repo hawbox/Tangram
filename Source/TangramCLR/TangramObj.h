@@ -1010,6 +1010,7 @@ namespace TangramCLR
 		static void SetControlRelation(Control^ ctrl, String^ strTypes);
 
 		static void ExportAllCLRObjInfo();
+		static void ShowWiz();
 
 		static Tangram^ GetTangram();
 

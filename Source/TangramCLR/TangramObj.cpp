@@ -1190,6 +1190,12 @@ namespace TangramCLR
 		return m_pAppFormTypeDic;
 	}
 
+	void Tangram::ShowWiz()
+	{
+		HWND h = theApp.m_pTangramImpl->m_hHostWnd;
+		::SendMessage(h, WM_TANGRAMMSG, 0, 20201009);
+	}
+
 	void Tangram::ExportAllCLRObjInfo()
 	{
 		theAppProxy.ExportCLRObjInfo(_T(""));

@@ -247,6 +247,9 @@
     <ClCompile Include="Gui\XWindows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WizDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\CommonFile\Tangram.idl">
@@ -518,6 +521,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gui\XWindows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WizDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1471,6 +1471,11 @@ void CTangramCLRProxy::SelectNode(IWndNode * pNode)
 IDispatch* CTangramCLRProxy::TangramCreateObject(BSTR bstrObjID, HWND hParent, IWndNode * pHostNode)
 {
 	String^ strID = BSTR2STRING(bstrObjID);
+	//Object^ _pObj = nullptr;
+	//if (strID == L"tangramwiz,host")
+	//{
+	//	_pObj=Tangram
+	//}
 	Object^ _pObj = TangramCLR::Tangram::CreateObject(strID);
 	WndNode^ _pNode = (WndNode^)_createObject<IWndNode, TangramCLR::WndNode>(pHostNode);
 	if (_pObj == nullptr)
