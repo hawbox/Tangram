@@ -231,6 +231,9 @@
 
 // begin Add by TangramTeam
 #include "content/browser/renderer_host/render_widget_host_view_aura.h"
+#if defined(COMPONENT_BUILD)
+TangramCommon::CTangramImpl* g_pTangramImpl = nullptr;  // 20200108
+#endif
 // end Add by TangramTeam
 
 using base::TimeDelta;
@@ -995,6 +998,18 @@ RenderFrameHostImpl::RenderFrameHostImpl(
     CSPContext::SetSelf(frame_owner->current_origin());
 
   // begin Add by TangramTeam
+	#if defined(COMPONENT_BUILD)
+	HMODULE hModule = ::GetModuleHandle(L"tangramcore.dll");
+	if (hModule) {
+		typedef TangramCommon::CTangramImpl* (__stdcall* GetTangramImpl)(ITangram**);
+		GetTangramImpl _pTangramFunction;
+		_pTangramFunction = (GetTangramImpl)GetProcAddress(hModule, "GetTangramImpl");
+		if (_pTangramFunction != NULL) {
+			ITangram* pTangram = nullptr;
+			g_pTangramImpl = _pTangramFunction(&pTangram);
+		}
+	}
+	#endif
   if (parent_ == nullptr && g_pTangramImpl)
 	  g_pTangramImpl->m_pCreatingChromeRenderFrameHostBase = this;
   // end Add by TangramTeam

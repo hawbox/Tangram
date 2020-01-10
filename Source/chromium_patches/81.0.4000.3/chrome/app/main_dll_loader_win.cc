@@ -49,7 +49,11 @@
 #include "services/service_manager/sandbox/switches.h"
 
 // begin Add by TangramTeam
+#if defined(COMPONENT_BUILD)
+TangramCommon::CTangramImpl* g_pTangramImpl = nullptr;  // 20200108
+#else
 extern TangramCommon::CTangramImpl* g_pTangramImpl;
+#endif
 // end Add by TangramTeam
 
 namespace {

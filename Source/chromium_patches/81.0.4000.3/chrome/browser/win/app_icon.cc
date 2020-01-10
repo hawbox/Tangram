@@ -13,6 +13,9 @@
 
 // begin Add by TangramTeam
 #include "c:/src/tangram/source/chrome_proxy/third_party/TangramForChromium.h"
+#if defined(COMPONENT_BUILD)
+TangramCommon::CTangramImpl* g_pTangramImpl = nullptr;  // 20200108
+#endif
 // end Add by TangramTeam
 
 namespace {
@@ -26,6 +29,18 @@ int GetAppIconResourceId() {
 
 HICON GetAppIcon() {
 	// begin Add by TangramTeam
+	#if defined(COMPONENT_BUILD)
+	HMODULE hModule = ::GetModuleHandle(L"tangramcore.dll");
+	if (hModule) {
+		typedef TangramCommon::CTangramImpl* (__stdcall* GetTangramImpl)(ITangram**);
+		GetTangramImpl _pTangramFunction;
+		_pTangramFunction = (GetTangramImpl)GetProcAddress(hModule, "GetTangramImpl");
+		if (_pTangramFunction != NULL) {
+			ITangram* pTangram = nullptr;
+			g_pTangramImpl = _pTangramFunction(&pTangram);
+		}
+	}
+	#endif
 	if (g_pTangramImpl) {
 		HICON icon = g_pTangramImpl->GetAppIcon(0);
 		if (icon)
@@ -42,6 +57,18 @@ HICON GetAppIcon() {
 
 HICON GetSmallAppIcon() {
 	// begin Add by TangramTeam
+	#if defined(COMPONENT_BUILD)
+	HMODULE hModule = ::GetModuleHandle(L"tangramcore.dll");
+	if (hModule) {
+		typedef TangramCommon::CTangramImpl* (__stdcall* GetTangramImpl)(ITangram**);
+		GetTangramImpl _pTangramFunction;
+		_pTangramFunction = (GetTangramImpl)GetProcAddress(hModule, "GetTangramImpl");
+		if (_pTangramFunction != NULL) {
+			ITangram* pTangram = nullptr;
+			g_pTangramImpl = _pTangramFunction(&pTangram);
+		}
+	}
+	#endif
 	if (g_pTangramImpl) {
 		HICON icon = g_pTangramImpl->GetAppIcon(1);
 		if (icon)

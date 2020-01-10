@@ -18,6 +18,9 @@
 #include "ui/gfx/win/hwnd_util.h"
 // begin Add by TangramTeam
 #include "c:/src/tangram/source/chrome_proxy/third_party/TangramForChromium.h"
+#if defined(COMPONENT_BUILD)
+TangramCommon::CTangramImpl* g_pTangramImpl = nullptr;//20200108
+#endif
 // end Add by TangramTeam
 
 namespace gfx {
@@ -179,6 +182,18 @@ void WindowImpl::UnregisterClassesAtExit() {
 
 void WindowImpl::Init(HWND parent, const Rect& bounds) {
 	// begin Add by TangramTeam
+	#if defined(COMPONENT_BUILD)
+	HMODULE hModule = ::GetModuleHandle(L"tangramcore.dll");
+	if (hModule) {
+		typedef TangramCommon::CTangramImpl* (__stdcall* GetTangramImpl)(ITangram**);
+		GetTangramImpl _pTangramFunction;
+		_pTangramFunction = (GetTangramImpl)GetProcAddress(hModule, "GetTangramImpl");
+		if (_pTangramFunction != NULL) {
+			ITangram* pTangram = nullptr;
+			g_pTangramImpl = _pTangramFunction(&pTangram);
+		}
+	}
+	#endif
 	if (g_pTangramImpl && ::IsWindow(g_pTangramImpl->m_hParent)) {
 		parent = g_pTangramImpl->m_hParent;
 	}

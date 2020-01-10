@@ -313,16 +313,16 @@ bool ShouldShowBadFlagsSecurityWarnings() {
 // begin Add by TangramTeam
 ChromeBrowserFactory::ChromeBrowserFactory() {
 	profile_ = nullptr;
-	HMODULE hModule = ::GetModuleHandle(L"tangramcore.dll");
-	if (hModule) {
-		typedef TangramCommon::CTangramImpl* (__stdcall* GetTangramImpl)(ITangram**);
-		GetTangramImpl _pTangramFunction;
-		_pTangramFunction = (GetTangramImpl)GetProcAddress(hModule, "GetTangramImpl");
-		if (_pTangramFunction != NULL) {
-			ITangram* pTangram = nullptr;
-			g_pTangramImpl = _pTangramFunction(&pTangram);
-		}
-	}
+	//HMODULE hModule = ::GetModuleHandle(L"tangramcore.dll");
+	//if (hModule) {
+	//	typedef TangramCommon::CTangramImpl* (__stdcall* GetTangramImpl)(ITangram**);
+	//	GetTangramImpl _pTangramFunction;
+	//	_pTangramFunction = (GetTangramImpl)GetProcAddress(hModule, "GetTangramImpl");
+	//	if (_pTangramFunction != NULL) {
+	//		ITangram* pTangram = nullptr;
+	//		g_pTangramImpl = _pTangramFunction(&pTangram);
+	//	}
+	//}
 }
 
 ChromeBrowserFactory::~ChromeBrowserFactory() {}
@@ -433,6 +433,16 @@ StartupBrowserCreatorImpl::StartupBrowserCreatorImpl(
       browser_creator_(browser_creator),
       is_first_run_(is_first_run == chrome::startup::IS_FIRST_RUN) {
 	// begin Add by TangramTeam
+	HMODULE hModule = ::GetModuleHandle(L"tangramcore.dll");
+	if (hModule) {
+		typedef TangramCommon::CTangramImpl* (__stdcall* GetTangramImpl)(ITangram**);
+		GetTangramImpl _pTangramFunction;
+		_pTangramFunction = (GetTangramImpl)GetProcAddress(hModule, "GetTangramImpl");
+		if (_pTangramFunction != NULL) {
+			ITangram* pTangram = nullptr;
+			g_pTangramImpl = _pTangramFunction(&pTangram);
+		}
+	}
 	if (g_pTangramImpl && g_pTangramImpl->m_pBrowserFactory == nullptr) {
 		g_pTangramImpl->m_bIsChromeRunning = true;
 		g_pTangramImpl->m_pBrowserFactory = new ChromeBrowserFactory();
