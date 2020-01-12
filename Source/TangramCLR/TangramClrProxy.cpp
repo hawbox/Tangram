@@ -1,7 +1,7 @@
 /********************************************************************************
 *					Tangram Library - version 10.0.0							*
 *********************************************************************************
-* Copyright (C) 2002-2019 by Tangram Team.   All Rights Reserved.				*
+* Copyright (C) 2002-2020 by Tangram Team.   All Rights Reserved.				*
 *
 * THIS SOURCE FILE IS THE PROPERTY OF TANGRAM TEAM AND IS NOT TO
 * BE RE-DISTRIBUTED BY ANY MEANS WHATSOEVER WITHOUT THE EXPRESSED
@@ -14,7 +14,7 @@
 *
 * CONTACT INFORMATION:
 * mailto:tangramteam@outlook.com
-* https://www.tangramteam.com
+* https://www.tangram.dev
 *
 ********************************************************************************/
 
@@ -1471,12 +1471,13 @@ void CTangramCLRProxy::SelectNode(IWndNode * pNode)
 IDispatch* CTangramCLRProxy::TangramCreateObject(BSTR bstrObjID, HWND hParent, IWndNode * pHostNode)
 {
 	String^ strID = BSTR2STRING(bstrObjID);
-	//Object^ _pObj = nullptr;
-	//if (strID == L"tangramwiz,host")
-	//{
-	//	_pObj=Tangram
-	//}
-	Object^ _pObj = TangramCLR::Tangram::CreateObject(strID);
+	Object^ _pObj = nullptr;
+	if (strID == L"tangramwiz,host")
+	{
+		_pObj = TangramCLR::Tangram::GetTangram()->m_pWizForm;
+	}
+	else
+		_pObj = TangramCLR::Tangram::CreateObject(strID);
 	WndNode^ _pNode = (WndNode^)_createObject<IWndNode, TangramCLR::WndNode>(pHostNode);
 	if (_pObj == nullptr)
 	{

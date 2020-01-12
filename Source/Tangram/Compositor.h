@@ -1,7 +1,7 @@
 /********************************************************************************
 *					Tangram Library - version 10.0.0							*
 *********************************************************************************
-* Copyright (C) 2002-2019 by Tangram Team.   All Rights Reserved.				*
+* Copyright (C) 2002-2020 by Tangram Team.   All Rights Reserved.				*
 *
 * THIS SOURCE FILE IS THE PROPERTY OF TANGRAM TEAM AND IS NOT TO
 * BE RE-DISTRIBUTED BY ANY MEANS WHATSOEVER WITHOUT THE EXPRESSED
@@ -14,7 +14,7 @@
 *
 * CONTACT INFORMATION:
 * mailto:tangramteam@outlook.com
-* https://www.tangramteam.com
+* https://www.tangram.dev
 *
 ********************************************************************************/
 
@@ -155,6 +155,7 @@ public:
 		MESSAGE_HANDLER(WM_TANGRAMMSG, OnTangramMsg)
 		MESSAGE_HANDLER(WM_TANGRAMDATA, OnGetMe)
 		MESSAGE_HANDLER(WM_DPICHANGED, OnDpiChanged)
+		MESSAGE_HANDLER(WM_GETDPISCALEDSIZE, OnGetDPIScaledSize)
 		MESSAGE_HANDLER(WM_WINFORMCREATED, OnFormCreated)
 		MESSAGE_HANDLER(WM_TANGRAMGETXML, OnTangramGetXml)
 	END_MSG_MAP()
@@ -168,6 +169,7 @@ private:
 	LRESULT OnFormCreated(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& );
 	LRESULT OnTangramMsg(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnTangramGetXml(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
+	LRESULT OnGetDPIScaledSize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 };
 
 class CTangramDocWnd :
@@ -279,6 +281,7 @@ public:
 
 	BEGIN_MSG_MAP(CCompositor)
 		MESSAGE_HANDLER(WM_DPICHANGED, OnDpiChanged)
+		MESSAGE_HANDLER(WM_GETDPISCALEDSIZE, OnGetDPIScaledSize)
 		MESSAGE_HANDLER(WM_DPICHANGED_BEFOREPARENT, OnBeforeParentDpiChanged)
 		MESSAGE_HANDLER(WM_DPICHANGED_AFTERPARENT, OnAfterParentDpiChanged)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
@@ -301,6 +304,7 @@ protected:
 
 private:
 	LRESULT OnDpiChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
+	LRESULT OnGetDPIScaledSize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnBeforeParentDpiChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnAfterParentDpiChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnGetMe(UINT, WPARAM, LPARAM, BOOL&);

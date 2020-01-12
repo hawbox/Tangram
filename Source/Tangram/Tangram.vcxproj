@@ -158,17 +158,8 @@
       <PreserveSbr>true</PreserveSbr>
     </Bscmake>
     <PostBuildEvent>
-      <Command>if not exist "C:\Program Files (x86)\Tangram\" (
-  mkdir "C:\Program Files (x86)\Tangram"
-)
-copy "$(OutDir)$(TargetName)$(TargetExt)" "C:\Program Files (x86)\Tangram\$(TargetName)$(TargetExt)"
-
-copy "$(OutDir)LIBEAY32.dll" "C:\Program Files (x86)\Tangram\LIBEAY32.dll"
-copy "$(OutDir)SSLEAY32.dll" "C:\Program Files (x86)\Tangram\SSLEAY32.dll"
-copy "$(OutDir)zlibd1.dll" "C:\Program Files (x86)\Tangram\zlibd1.dll"
-
-regsvr32 /s "C:\Program Files (x86)\Tangram\$(TargetName)$(TargetExt)"
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -500,7 +491,6 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     <ClCompile Include="TangramCore.cpp" />
     <ClCompile Include="TangramHtmlTreeExWnd.cpp" />
     <ClCompile Include="TangramHtmlTreeWnd.cpp" />
-    <ClCompile Include="WizDlg.cpp" />
     <ClCompile Include="WndNode.cpp" />
     <ClCompile Include="CompositorManager.cpp" />
     <ClCompile Include="SplitterWnd.cpp" />
@@ -631,7 +621,6 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
     <ClInclude Include="TangramApp.h" />
     <ClInclude Include="Compositor.h" />
     <ClInclude Include="TangramCore.h" />
-    <ClInclude Include="WizDlg.h" />
     <ClInclude Include="WndNode.h" />
     <ClInclude Include="CompositorManager.h" />
     <ClInclude Include="SplitterWnd.h" />

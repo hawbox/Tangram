@@ -1,7 +1,7 @@
 /********************************************************************************
 *					Tangram Library - version 10.0.0							*
 *********************************************************************************
-* Copyright (C) 2002-2019 by Tangram Team.   All Rights Reserved.				*
+* Copyright (C) 2002-2020 by Tangram Team.   All Rights Reserved.				*
 *
 * THIS SOURCE FILE IS THE PROPERTY OF TANGRAM TEAM AND IS NOT TO
 * BE RE-DISTRIBUTED BY ANY MEANS WHATSOEVER WITHOUT THE EXPRESSED
@@ -14,7 +14,7 @@
 *
 * CONTACT INFORMATION:
 * mailto:tangramteam@outlook.com
-* https://www.tangramteam.com
+* https://www.tangram.dev
 *
 *
 ********************************************************************************/
@@ -883,7 +883,8 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 		::SetWindowLong(hWnd, GWL_ID, nID);
 
 		pTangramDesignView->m_bCreateExternal = true;
-		m_nViewType = TabbedWnd;
+		if(m_nViewType==BlankView)
+			m_nViewType = TabbedWnd;
 		bRet = true;
 	}
 
@@ -909,6 +910,10 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 						m_pWebBrowser = (CBrowserWnd*)it->second;
 						//m_pWebBrowser->m_pWndNode = this;
 					}
+				}
+				else
+				{
+					g_pTangram->m_mapNodeForHtml[this] = strURL;
 				}
 			}
 		}
@@ -2630,6 +2635,11 @@ STDMETHODIMP CWndNode::get_URL(BSTR * pVal)
 
 STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 {
+	if (m_pWebBrowser)
+	{
+		m_pWebBrowser->DestroyWindow();
+		m_pWebBrowser = nullptr;
+	}
 	if (m_pWebBrowser == nullptr)
 	{
 		CString strURL = OLE2T(newVal);
@@ -2646,23 +2656,23 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 
 		return S_OK;
 	}
-	if (m_pWebBrowser)
-	{
-		m_pWebBrowser->DestroyWindow();
-		m_pWebBrowser = nullptr;
-		CString strURL = OLE2T(newVal);
-		strURL += _T("|");
+	//if (m_pWebBrowser)
+	//{
+	//	m_pWebBrowser->DestroyWindow();
+	//	m_pWebBrowser = nullptr;
+	//	CString strURL = OLE2T(newVal);
+	//	strURL += _T("|");
 
-		HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(((CNodeWnd*)m_pHostWnd)->m_hWnd, strURL);
-		((CNodeWnd*)m_pHostWnd)->m_hFormWnd = hBrowser;
-		g_pTangram->m_hParent = NULL;
-		auto it = g_pTangram->m_mapBrowserWnd.find(hBrowser);
-		if (it != g_pTangram->m_mapBrowserWnd.end())
-		{
-			m_pWebBrowser = (CBrowserWnd*)it->second;
-		}
-		return S_OK;
-	}
+	//	HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(((CNodeWnd*)m_pHostWnd)->m_hWnd, strURL);
+	//	((CNodeWnd*)m_pHostWnd)->m_hFormWnd = hBrowser;
+	//	g_pTangram->m_hParent = NULL;
+	//	auto it = g_pTangram->m_mapBrowserWnd.find(hBrowser);
+	//	if (it != g_pTangram->m_mapBrowserWnd.end())
+	//	{
+	//		m_pWebBrowser = (CBrowserWnd*)it->second;
+	//	}
+	//	return S_OK;
+	//}
 	return S_OK;
 }
 

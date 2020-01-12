@@ -4,7 +4,6 @@
 //
 #define IDR_TANGRAMLIB                  101
 #define IDD_TANGRAMLITETABBEDFORMVIEW   101
-#define IDD_WIZ_DIALOG                  102
 #define IDR_TANGRAMCTRL                 108
 #define IDR_TANGRAM                     157
 #define IDR_TANGRAM1                    158
@@ -29,7 +28,6 @@
 #define IDR_WIN_DEFAULT_APP_CONFIG      233
 #define IDC_TemplateTAB                 1000
 #define IDC_TemplateLIST                1001
-#define IDC_LIST_WIZ                    1001
 
 // Next default values for new objects
 // 

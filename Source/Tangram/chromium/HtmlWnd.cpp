@@ -2,7 +2,7 @@
  *					Tangram Library - version 10.0.0
  **
  *********************************************************************************
- * Copyright (C) 2002-2019 by Tangram Team.   All Rights Reserved.
+ * Copyright (C) 2002-2020 by Tangram Team.   All Rights Reserved.
  **
  *
  * THIS SOURCE FILE IS THE PROPERTY OF TANGRAM TEAM AND IS NOT TO
@@ -16,7 +16,7 @@
  *
  * CONTACT INFORMATION:
  * mailto:tangramteam@outlook.com
- * https://www.tangramteam.com
+ * https://www.tangram.dev
  *
  ********************************************************************************/
 

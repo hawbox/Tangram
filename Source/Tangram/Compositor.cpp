@@ -1,7 +1,7 @@
 /********************************************************************************
 *					Tangram Library - version 10.0.0							*
 *********************************************************************************
-* Copyright (C) 2002-2019 by Tangram Team.   All Rights Reserved.				*
+* Copyright (C) 2002-2020 by Tangram Team.   All Rights Reserved.				*
 *
 * THIS SOURCE FILE IS THE PROPERTY OF TANGRAM TEAM AND IS NOT TO
 * BE RE-DISTRIBUTED BY ANY MEANS WHATSOEVER WITHOUT THE EXPRESSED
@@ -14,7 +14,7 @@
 *
 * CONTACT INFORMATION:
 * mailto:tangramteam@outlook.com
-* https://www.tangramteam.com
+* https://www.tangram.dev
 *
 *
 ********************************************************************************/
@@ -1376,15 +1376,34 @@ LRESULT CTangramWinFormWnd::OnTangramGetXml(UINT uMsg, WPARAM wParam, LPARAM lPa
 
 LRESULT CTangramWinFormWnd::OnDpiChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
 {
+	DWORD dwY = HIWORD(wParam);
+	DWORD dwX = LOWORD(wParam);
 	RECT* const prcNewWindow = (RECT*)lParam;
-	::SetWindowPos(m_hWnd,
-		NULL,
-		prcNewWindow->left,
-		prcNewWindow->top,
-		prcNewWindow->right - prcNewWindow->left,
-		prcNewWindow->bottom - prcNewWindow->top,
-		SWP_NOZORDER | SWP_NOACTIVATE);
+	float fScale = (float)dwX / USER_DEFAULT_SCREEN_DPI;
+
+	//::SetWindowPos(m_hWnd,
+	//	NULL,
+	//	prcNewWindow->left,
+	//	prcNewWindow->top,
+	//	prcNewWindow->right - prcNewWindow->left,
+	//	prcNewWindow->bottom - prcNewWindow->top,
+	//	SWP_NOZORDER | SWP_NOACTIVATE);
 	return DefWindowProc(uMsg, wParam, lParam);
+}
+
+LRESULT CTangramWinFormWnd::OnGetDPIScaledSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
+{
+	DWORD dwY = HIWORD(wParam);
+	DWORD dwX = LOWORD(wParam);
+	RECT* const prcNewWindow = (RECT*)lParam;
+	//::SetWindowPos(m_hWnd,
+	//	NULL,
+	//	prcNewWindow->left,
+	//	prcNewWindow->top,
+	//	prcNewWindow->right - prcNewWindow->left,
+	//	prcNewWindow->bottom - prcNewWindow->top,
+	//	SWP_NOZORDER | SWP_NOACTIVATE);
+	return  false;//DefWindowProc(uMsg, wParam, lParam);
 }
 
 LRESULT CTangramWinFormWnd::OnFormCreated(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
@@ -2940,15 +2959,28 @@ LRESULT CCompositor::OnTabChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&
 
 LRESULT CCompositor::OnDpiChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
 {
-	RECT* const prcNewWindow = (RECT*)lParam;
-	::SetWindowPos(m_hWnd,
-		NULL,
-		prcNewWindow->left,
-		prcNewWindow->top,
-		prcNewWindow->right - prcNewWindow->left,
-		prcNewWindow->bottom - prcNewWindow->top,
-		SWP_NOZORDER | SWP_NOACTIVATE);
+	//RECT* const prcNewWindow = (RECT*)lParam;
+	//::SetWindowPos(m_hWnd,
+	//	NULL,
+	//	prcNewWindow->left,
+	//	prcNewWindow->top,
+	//	prcNewWindow->right - prcNewWindow->left,
+	//	prcNewWindow->bottom - prcNewWindow->top,
+	//	SWP_NOZORDER | SWP_NOACTIVATE);
 	return DefWindowProc(uMsg, wParam, lParam);
+}
+
+LRESULT CCompositor::OnGetDPIScaledSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
+{
+	//RECT* const prcNewWindow = (RECT*)lParam;
+	//::SetWindowPos(m_hWnd,
+	//	NULL,
+	//	prcNewWindow->left,
+	//	prcNewWindow->top,
+	//	prcNewWindow->right - prcNewWindow->left,
+	//	prcNewWindow->bottom - prcNewWindow->top,
+	//	SWP_NOZORDER | SWP_NOACTIVATE);
+	return false;// DefWindowProc(uMsg, wParam, lParam);
 }
 
 LRESULT CCompositor::OnBeforeParentDpiChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
@@ -2958,8 +2990,8 @@ LRESULT CCompositor::OnBeforeParentDpiChanged(UINT uMsg, WPARAM wParam, LPARAM l
 
 LRESULT CCompositor::OnAfterParentDpiChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
 {
-	HostPosChanged();
-	::PostMessage(m_hWnd, WM_TANGRAMMSG, 0, 20180115);
+	//HostPosChanged();
+	//::PostMessage(m_hWnd, WM_TANGRAMMSG, 0, 20180115);
 	return DefWindowProc(uMsg, wParam, lParam);
 }
 

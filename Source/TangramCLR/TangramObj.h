@@ -1,7 +1,7 @@
 /********************************************************************************
 *					Tangram Library - version 10.0.0							*
 *********************************************************************************
-* Copyright (C) 2002-2019 by Tangram Team.   All Rights Reserved.				*
+* Copyright (C) 2002-2020 by Tangram Team.   All Rights Reserved.				*
 *
 * THIS SOURCE FILE IS THE PROPERTY OF TANGRAM TEAM AND IS NOT TO
 * BE RE-DISTRIBUTED BY ANY MEANS WHATSOEVER WITHOUT THE EXPRESSED
@@ -14,7 +14,7 @@
 *
 * CONTACT INFORMATION:
 * mailto:tangramteam@outlook.com
-* https://www.tangramteam.com
+* https://www.tangram.dev
 *
 *
 ********************************************************************************/
@@ -980,7 +980,7 @@ namespace TangramCLR
 	public:
 		static System::Drawing::Icon^ m_pDefaultIcon = nullptr;
 		static Form^ m_pMainForm = nullptr;
-		static Form^ m_pWizForm = nullptr;
+		static Control^ m_pWizForm = nullptr;
 		static Dictionary<String^, Object^>^ m_pTangramCLRObjDic = gcnew Dictionary<String^, Object^>();
 		static Dictionary<String^, TangramAppProxy^>^ m_pTangramAppProxyDic = gcnew Dictionary<String^, TangramAppProxy^>();
 		static Dictionary<Object^, WndNode^>^ m_pFrameworkElementDic = gcnew Dictionary<Object^, WndNode^>();
@@ -1010,7 +1010,6 @@ namespace TangramCLR
 		static void SetControlRelation(Control^ ctrl, String^ strTypes);
 
 		static void ExportAllCLRObjInfo();
-		static void ShowWiz();
 
 		static Tangram^ GetTangram();
 

@@ -1,7 +1,7 @@
 /********************************************************************************
 *					Tangram Library - version 10.0.0							*
 *********************************************************************************
-* Copyright (C) 2002-2019 by Tangram Team.   All Rights Reserved.				*
+* Copyright (C) 2002-2020 by Tangram Team.   All Rights Reserved.				*
 *
 * THIS SOURCE FILE IS THE PROPERTY OF TANGRAM TEAM AND IS NOT TO
 * BE RE-DISTRIBUTED BY ANY MEANS WHATSOEVER WITHOUT THE EXPRESSED
@@ -14,7 +14,7 @@
 *
 * CONTACT INFORMATION:
 * mailto:tangramteam@outlook.com
-* https://www.tangramteam.com
+* https://www.tangram.dev
 * 
 *
 ********************************************************************************/
@@ -1166,8 +1166,8 @@ void CNodeWnd::OnWindowPosChanged(WINDOWPOS * lpwndpos)
 			::SetWindowPos(m_hFormWnd, HWND_TOP, 0, 0, lpwndpos->cx, lpwndpos->cy, SWP_NOACTIVATE | SWP_NOREDRAW);
 		else if (m_pWndNode->m_strID.CompareNoCase(_T("hostview")) == 0)
 		{
-			LRESULT lRes = ::SendMessage(m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_hWnd, WM_TANGRAMGETNODE, 0, 0);
-			if (lRes)
+			//LRESULT lRes = ::SendMessage(m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_hWnd, WM_TANGRAMGETNODE, 0, 0);
+			//if (lRes) 
 			{
 				m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->HostPosChanged();
 			}
