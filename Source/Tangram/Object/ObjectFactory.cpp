@@ -11,6 +11,8 @@ namespace RefObject
 {
 	ObjectFactory::ObjectFactory()
 	{
+		m_nUserFactoryId = 200;
+
         AddFactoryDelegate(new CppFactoryDelegate());
         AddFactoryDelegate(new Gui::GridFactoryDelegate());
     }
@@ -130,6 +132,11 @@ namespace RefObject
     {
         delete pParams;
     }
+
+	uint8_t ObjectFactory::GenerateNewFactoryId()
+	{
+		return ++m_nUserFactoryId;
+	}
 
 	// Gui
 

@@ -1,34 +1,10 @@
 #pragma once
 
-#include "IRefObject.h"
-
 namespace Gui
 {
     class IXWindows;
     class IDocument;
     class INode;
-
-    //class IGuiFactoryDelegate : public ::RefObject::IFactoryDelegate
-    //{
-    //public:
-    //    IGuidFactoryDelegate() 
-    //    {
-    //        m_nId = 0;
-    //    };
-    //    virtual ~IGuidFactoryDelegate() {};
-
-    //    uint8_t GetHeaderOfHandle()
-    //    {
-    //        if (m_nId == 0)
-    //        {
-    //            m_nId = m_pObjectFactory->GenerateNewFactoryId();
-    //        }
-    //        return m_nId;
-    //    } override;
-
-    //protected:
-    //    uint8_t m_nId;
-    //};
 
     class IXWindows
     {

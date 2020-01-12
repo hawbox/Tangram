@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Browser.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)IGuiFactoryDelegate.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TabPageWnd.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Tangram.c" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TangramCoreEvents.cpp" />
@@ -30,6 +31,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ChromeRenderDomProxy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)CommonFunction.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IGui.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)IGuiFactoryDelegate.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ipc_message.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)fm20.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)gchost.h" />

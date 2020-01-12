@@ -74,9 +74,12 @@ namespace MyCSharpBrowser
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            thisNode = Tangram.CreatingNode;
-            thisNode.AddChannel("system");
-            thisNode.OnIPCMessageReceived += ThisNode_OnIPCMessageReceived;
+            //thisNode = Tangram.CreatingNode;
+            //if (thisNode != null)
+            //{
+            //    thisNode.AddChannel("system");
+            //    thisNode.OnIPCMessageReceived += ThisNode_OnIPCMessageReceived;
+            //}
         }
 
         private void ThisNode_OnIPCMessageReceived(string strFrom, string strTo, string strMsgId, string strPayload, string strExtra)
