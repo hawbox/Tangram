@@ -245,7 +245,8 @@ CTangram::CTangram()
 	//g_pTangram = m_pTangramImplData;
 	m_mapValInfo[_T("currenteclipeworkBenchid")] = CComVariant(_T(""));
 	m_pObjectFactory = new ::RefObject::ObjectFactory();
-	m_pXWindows = new ::Gui::XWindows();
+	//m_pXWindows = new ::Gui::XWindows();
+	m_pXWindows = nullptr;
 	m_TabWndClassInfoDictionary[_T("hostview")] = RUNTIME_CLASS(CNodeWnd);
 	m_TabWndClassInfoDictionary[_T("tangramlistview")] = RUNTIME_CLASS(CTangramListView);
 	m_TabWndClassInfoDictionary[_T("wpfctrl")] = RUNTIME_CLASS(CWPFView);
@@ -1728,14 +1729,11 @@ void CTangram::ExitInstance()
 	_clearObjects();
 	if (m_mapWindowPage.size())
 	{
-		auto it2 = m_mapWindowPage.begin();
-		while (it2 != m_mapWindowPage.end())
+		for (auto it2 = m_mapWindowPage.begin(); it2 != m_mapWindowPage.end(); ++it2)
 		{
 			delete it2->second;
-			if (m_mapWindowPage.size() == 0)
-				break;
-			it2 = m_mapWindowPage.begin();
 		}
+		m_mapWindowPage.clear();
 	}
 
 	for (auto it : m_mapObjDic)
