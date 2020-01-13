@@ -2137,6 +2137,11 @@ HRESULT CWndNode::Fire_OpenComplete()
 
 HRESULT CWndNode::Fire_Destroy()
 {
+	if (m_pWebBrowser)
+	{
+		m_pWebBrowser->DestroyWindow();
+		m_pWebBrowser = nullptr;
+	}
 	if (m_pRootObj == this)
 	{
 		if (m_pTangramNodeCommonData->m_pCompositor->m_pCompositorManager)

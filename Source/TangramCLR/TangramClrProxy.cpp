@@ -1159,8 +1159,8 @@ void CTangramCLRProxy::OnLoad(System::Object ^ sender, System::EventArgs ^ e)
 			}
 		}
 		HWND hForm = (HWND)pForm->Handle.ToPointer();
-		CMDIChildFormInfo* pInfo = (CMDIChildFormInfo*)::SendMessage(hForm, WM_TANGRAMMSG, 0, 20190602);
-		if (defaultToolStrip&&pInfo)
+		CMDIChildFormInfo* pInfo = (CMDIChildFormInfo*)::SendMessage(hForm, WM_TANGRAMMSG, (WPARAM)0, 20190602);
+		if (pInfo&&defaultToolStrip)
 		{
 			int nIndex = 0;
 			for (auto it : pInfo->m_mapFormsInfo)
@@ -1222,7 +1222,9 @@ void CTangramCLRProxy::OnLoad(System::Object ^ sender, System::EventArgs ^ e)
 					}
 				}
 			}
+			//delete pInfo;
 		}
+		//_pInfo->m_mapFormsInfo.clear();
 	}
 
 
@@ -1330,6 +1332,7 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 						}
 						if (strCaption != _T(""))
 							thisForm->Text = BSTR2STRING(strCaption);
+						thisForm->Tag = BSTR2STRING(m_Parse.name());
 						thisForm->Show();
 						//if (m_pCurrentPForm)
 						//{

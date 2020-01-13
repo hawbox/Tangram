@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../CommonFile/IGui.h";
+#include "../CommonFile/IGui.h"
 
 using namespace System;
 
