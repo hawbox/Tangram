@@ -593,12 +593,6 @@ CTangram::~CTangram()
 				it = m_mapWindowPage.end();
 		}
 	}
-	
-	//for (auto it : m_mapIPCCollection)
-	//{
-	//	delete it.second;
-	//}
-	//m_mapIPCCollection.clear();
 
 	while (m_mapWndNodeCollection.size())
 	{

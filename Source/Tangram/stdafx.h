@@ -117,7 +117,6 @@ class CNodeWnd;
 class CTangram;
 class CCompositor;
 class CHelperWnd;
-class CEventProxy;
 class CEclipseWnd;
 class CTangramDoc;
 class CTangramApp;

@@ -559,8 +559,7 @@ LRESULT CNodeWnd::OnTabChange(WPARAM wParam, LPARAM lParam)
 		{
 			pCompositor->HostPosChanged();
 		}
-		if (_pNode->m_pWebBrowser)
-		{
+		if (_pNode->m_pWebBrowser){
 			g_pTangram->m_pActiveHtmlWnd = _pNode->m_pWebBrowser->m_pVisibleWebWnd;
 		}
 		if (nOldPage != wParam)
@@ -598,7 +597,7 @@ LRESULT CNodeWnd::OnTabChange(WPARAM wParam, LPARAM lParam)
 	{
 		if (pCompositor->m_pWebWnd)
 		{
-			ChromePlus::CHtmlWnd* pWebWnd = pCompositor->m_pWebWnd;
+			CHtmlWnd* pWebWnd = pCompositor->m_pWebWnd;
 			::SendMessage(::GetParent(pWebWnd->m_hWnd), WM_BROWSERLAYOUT, 0, 1);
 		}
 		m_pWndNode->Fire_TabChange(wParam, lParam);
@@ -636,7 +635,7 @@ LRESULT CNodeWnd::OnTangramMsg(WPARAM wParam, LPARAM lParam)
 		{
 			CComBSTR bstrKey("");
 			m_pWndNode->get_Attribute(CComBSTR("name"), &bstrKey);
-			ChromePlus::CHtmlWnd* pHtmlWnd = m_pWndNode->GetHtmlWnd();
+			CHtmlWnd* pHtmlWnd = m_pWndNode->GetHtmlWnd();
 			CString strUIKey = OLE2T(bstrKey);
 			auto it = pHtmlWnd->m_mapUserControlsInfo.find(strUIKey);
 			if (it != pHtmlWnd->m_mapUserControlsInfo.end())
@@ -1110,7 +1109,6 @@ LRESULT CBKWnd::OnWindowPosChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 		lpwndpos->cy = rc.bottom;
 	}
 	lpwndpos->flags |= SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOREDRAW;
-
 	if (::IsWindow(m_hChild))
 	{
 		::SetWindowPos(m_hChild, HWND_BOTTOM, 0, 0, lpwndpos->cx, lpwndpos->cy, SWP_NOREDRAW | SWP_NOACTIVATE);

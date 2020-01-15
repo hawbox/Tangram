@@ -777,6 +777,15 @@ namespace TangramCLR
 		}
 		return nullptr;
 	}
+	
+	void Tangram::CreateBKPage(Form^ form, String^ strID)
+	{
+		Control^ mdiclient = Tangram::GetMDIClient(form);
+		if (mdiclient)
+		{
+			::SendMessage((HWND)form->Handle.ToPointer(), WM_MDICLIENTCREATED, mdiclient->Handle.ToInt64(), (LPARAM)STRING2BSTR(strID));
+		}
+	}
 
 	WndNode^ Tangram::ExtendMDIClient(Form^ pForm, String^ strKey, String^ strXml)
 	{
@@ -1571,7 +1580,7 @@ namespace TangramCLR
 	}
 
 	Object^ Tangram::CreateObject(String^ strObjID)
-	{
+	{ 
 		Object^ m_pObj = nullptr;
 		int nIndex = strObjID->IndexOf(L"<");
 		if (nIndex == 0)
@@ -1615,6 +1624,14 @@ namespace TangramCLR
 									theApp.m_pTangramImpl->m_hMainWnd = (HWND)thisForm->Handle.ToPointer();
 								if (strCaption != _T(""))
 									thisForm->Text = BSTR2STRING(strCaption);
+								if (thisForm->IsMdiContainer)
+								{
+									CString strBKPage = m_Parse.attr(_T("mdibkpageid"), _T(""));
+									if (strBKPage != _T(""))
+									{
+										Tangram::CreateBKPage(thisForm, BSTR2STRING(strBKPage));
+									}
+								}
 								thisForm->Show();
 							}
 							return pObj;

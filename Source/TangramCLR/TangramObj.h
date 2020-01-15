@@ -976,11 +976,11 @@ namespace TangramCLR
 #ifndef _WIN64
 		static Dictionary<String^, String^>^ replacementsDictionary = nullptr;
 		static Dictionary<String^, Control^>^ m_pWizCtrlDic = gcnew Dictionary<String^, Control^>();;
+		static Control^ m_pWizForm = nullptr;
 #endif
 	public:
 		static System::Drawing::Icon^ m_pDefaultIcon = nullptr;
 		static Form^ m_pMainForm = nullptr;
-		static Control^ m_pWizForm = nullptr;
 		static Dictionary<String^, Object^>^ m_pTangramCLRObjDic = gcnew Dictionary<String^, Object^>();
 		static Dictionary<String^, TangramAppProxy^>^ m_pTangramAppProxyDic = gcnew Dictionary<String^, TangramAppProxy^>();
 		static Dictionary<Object^, WndNode^>^ m_pFrameworkElementDic = gcnew Dictionary<Object^, WndNode^>();
@@ -1026,6 +1026,8 @@ namespace TangramCLR
 			}
 			return nullptr;
 		}
+
+		static void CreateBKPage(Form^ form, String^ strID);
 
 		static String^ GetObjAssemblyName(Object ^ obj)
 		{

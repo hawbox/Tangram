@@ -24,6 +24,7 @@
 #include "../IPC/EndPoint.h"
 #include "../Object/RefObjectCallback.h"
 
+class CTangramWinFormWnd;
 namespace ChromePlus
 {
 	class ATL_NO_VTABLE CHtmlWnd :
@@ -50,6 +51,8 @@ namespace ChromePlus
 
 		CCompositor*						m_pCompositor;
 		CTangramDoc*						m_pDoc;
+		CWndNode*							m_pBindNode;
+		CTangramWinFormWnd*					m_pBindWinForm;
 		ITangramAppProxy*					m_pAppProxy;
 		CCompositorManager*					m_pCompositorManager;
 

@@ -478,12 +478,6 @@ namespace ChromePlus {
 				msg.m_strKey = OLE2T(bstrURL);
 				msg.m_strData = strDisposition;
 				m_pVisibleWebWnd->m_pChromeRenderFrameHost->SendTangramMessage(&msg);
-				//IPCMsg* msg = new IPCMsg;
-				//msg->m_strType = L"OPEN_URL";
-				//msg->m_strKey = OLE2T(bstrURL);
-				//msg->m_strData = strDisposition;
-				//m_pVisibleWebWnd->m_pChromeRenderFrameHost->SendTangramMessage(msg);
-				//g_pTangram->m_mapIPCCollection[(__int64)msg] = msg;
 			}
 		}
 		return S_OK;

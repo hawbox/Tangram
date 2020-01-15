@@ -895,13 +895,32 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 			bRet = m_pHostWnd->SubclassWindow(hWnd);
 		if (m_nViewType == BlankView && m_pHostParse != nullptr)
 		{
-			CString strURL = m_pHostParse->attr(_T("url"), _T(""));
-			if (m_pWebBrowser == nullptr && strURL != _T(""))
+			CString _strXml = m_pHostParse->attr(_T("url"), _T(""));
+			if (m_pWebBrowser == nullptr && _strXml != _T(""))
 			{
-				strURL += _T("|");
+				_strXml += _T("|");
+				CString s = _T("");
+				int nPos = _strXml.Find(_T("|"));
+				while (nPos != -1) {
+					CString strURL = _strXml.Left(nPos);
+					int nPos2 = strURL.Find(_T(":"));
+					if (nPos2 != -1)
+					{
+						CString strURLHeader = strURL.Left(nPos2);
+						if (strURLHeader.CompareNoCase(_T("host")) == 0)
+						{
+							strURL = g_pTangram->m_strAppPath + strURL.Mid(nPos2 + 1);
+						}
+					}
+					s += strURL;
+					s += _T("|");
+					_strXml = _strXml.Mid(nPos + 1);
+					nPos = _strXml.Find(_T("|"));
+				}
+
 				if (g_pTangram->m_pBrowserFactory)
 				{
-					HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(hWnd, strURL);
+					HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(hWnd, s);
 					((CNodeWnd*)m_pHostWnd)->m_hFormWnd = hBrowser;
 					g_pTangram->m_hParent = NULL;
 					auto it = g_pTangram->m_mapBrowserWnd.find(hBrowser);
@@ -913,7 +932,7 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 				}
 				else
 				{
-					g_pTangram->m_mapNodeForHtml[this] = strURL;
+					g_pTangram->m_mapNodeForHtml[this] = s;
 				}
 			}
 		}
@@ -2605,10 +2624,29 @@ STDMETHODIMP CWndNode::NavigateURL(BSTR bstrURL, IDispatch * dispObjforScript)
 		return S_OK;
 	if (m_pWebBrowser == nullptr)
 	{
-		CString strURL = OLE2T(bstrURL);
-		strURL += _T("|");
-		//g_pTangram->m_pCurWebNode = this;
-		HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(((CNodeWnd*)m_pHostWnd)->m_hWnd, strURL);
+		CString _strXml = OLE2T(bstrURL);
+		_strXml += _T("|");
+		_strXml.Replace(_T("||"), _T("|"));
+		CString s = _T("");
+		int nPos = _strXml.Find(_T("|"));
+		while (nPos != -1) {
+			CString strURL = _strXml.Left(nPos);
+			int nPos2 = strURL.Find(_T(":"));
+			if (nPos2 != -1)
+			{
+				CString strURLHeader = strURL.Left(nPos2);
+				if (strURLHeader.CompareNoCase(_T("host")) == 0)
+				{
+					strURL = g_pTangram->m_strAppPath + strURL.Mid(nPos2 + 1);
+				}
+			}
+			s += strURL;
+			s += _T("|");
+			_strXml = _strXml.Mid(nPos + 1);
+			nPos = _strXml.Find(_T("|"));
+		}
+
+		HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(((CNodeWnd*)m_pHostWnd)->m_hWnd, s);
 		((CNodeWnd*)m_pHostWnd)->m_hFormWnd = hBrowser;
 		g_pTangram->m_hParent = NULL;
 		auto it = g_pTangram->m_mapBrowserWnd.find(hBrowser);
@@ -2634,6 +2672,7 @@ STDMETHODIMP CWndNode::get_URL(BSTR * pVal)
 	{
 		CString strVal = m_pHostParse->attr(_T("url"), _T(""));
 		*pVal = strVal.AllocSysString();
+		strVal.ReleaseBuffer();
 	}
 	return S_OK;
 }
@@ -2647,10 +2686,29 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 	}
 	if (m_pWebBrowser == nullptr)
 	{
-		CString strURL = OLE2T(newVal);
-		strURL += _T("|");
-		strURL.Replace(_T("||"), _T("|"));
-		HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(((CNodeWnd*)m_pHostWnd)->m_hWnd, strURL);
+		CString _strXml = OLE2T(newVal);
+		_strXml += _T("|");
+		_strXml.Replace(_T("||"), _T("|"));
+		CString s = _T("");
+		int nPos = _strXml.Find(_T("|"));
+		while (nPos != -1) {
+			CString strURL = _strXml.Left(nPos);
+			int nPos2 = strURL.Find(_T(":"));
+			if (nPos2 != -1)
+			{
+				CString strURLHeader = strURL.Left(nPos2);
+				if (strURLHeader.CompareNoCase(_T("host")) == 0)
+				{
+					strURL = g_pTangram->m_strAppPath + strURL.Mid(nPos2 + 1);
+				}
+			}
+			s += strURL;
+			s += _T("|");
+			_strXml = _strXml.Mid(nPos + 1);
+			nPos = _strXml.Find(_T("|"));
+		}
+
+		HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(m_pHostWnd->m_hWnd, s);
 		((CNodeWnd*)m_pHostWnd)->m_hFormWnd = hBrowser;
 		g_pTangram->m_hParent = NULL;
 		auto it = g_pTangram->m_mapBrowserWnd.find(hBrowser);

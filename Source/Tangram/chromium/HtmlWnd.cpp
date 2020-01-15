@@ -35,12 +35,14 @@ namespace ChromePlus {
 		m_pWebWnd = nullptr;
 		m_pDevToolWnd = nullptr;
 		m_pDoc = nullptr;
+		m_pBindWinForm = nullptr;
 		m_pAppProxy = nullptr;
 		m_bDevToolWnd = false;
 		m_strCurKey = _T("");
 		m_strCurXml = _T("");
 		//m_strFormXml = _T("");
 		m_strAppProxyID = _T("");
+		m_pBindNode = nullptr;
 		m_pCompositorManager = nullptr;
 		m_pCompositor = nullptr;
 		m_hHostWnd=m_hExtendWnd = m_hChildWnd = NULL;
@@ -621,6 +623,82 @@ namespace ChromePlus {
 			CString strTo, strMsgId;
 			LoadRouting(strRouting, strTo, strMsgId);
 			SendIPCMessageInternal(strTo, strParam1, strParam2, strMsgId);
+
+			if (strTo.CompareNoCase(_T("totopframe")) == 0)
+			{
+				LoadDocument2Viewport(strMsgId, strParam1);
+				return;
+			}
+			else if (strTo.CompareNoCase(_T("toparentnode")) == 0)
+			{
+				HWND hWnd = ::GetParent(::GetParent(m_hWnd));
+				if (::IsWindow(hWnd))
+				{
+					CWndNode* pNode = nullptr;
+					LRESULT lRes = ::SendMessage(hWnd, WM_TANGRAMGETNODE, 0, 0);
+					HWND _hWnd = (HWND)hWnd;
+					if (lRes)
+						pNode = (CWndNode*)lRes;
+					if (pNode)
+					{
+						IWndNode* _pNode = nullptr;
+						pNode->Open(CComBSTR(strMsgId), CComBSTR(strParam1),&_pNode);
+					}
+				}
+				return;
+			}
+			else if (strTo.CompareNoCase(_T("tobindnode")) == 0)
+			{
+				HWND hWnd = ::GetParent(::GetParent(m_hWnd));
+				if (::IsWindow(hWnd))
+				{
+					if (m_pBindNode == nullptr)
+					{
+						CWndNode* pNode = nullptr;
+						LRESULT lRes = ::SendMessage(hWnd, WM_TANGRAMGETNODE, 0, 0);
+						HWND _hWnd = (HWND)hWnd;
+						if (lRes)
+							pNode = (CWndNode*)lRes;
+						if (pNode)
+						{
+							CComBSTR bstrName("");
+							pNode->get_Attribute(CComBSTR("bindnode"), &bstrName);
+							CString strName = OLE2T(bstrName);
+							if (strName != _T(""))
+							{
+								CComPtr<IWndNodeCollection> pTangramNodeCollection;
+								IWndNode* _pNode = nullptr;
+								long nCount = 0;
+								pNode->m_pRootObj->GetNodes(bstrName, &_pNode, &pTangramNodeCollection, &nCount);
+								if (_pNode)
+								{
+									m_pBindNode = (CWndNode*)_pNode;
+								}
+							}
+						}
+					}
+					if (m_pBindNode)
+					{
+						IWndNode* _pNode = nullptr;
+						m_pBindNode->Open(CComBSTR(strMsgId), CComBSTR(strParam1), &_pNode);
+					}
+				}
+				return;
+			}
+			else if (strTo.CompareNoCase(_T("toparentform")) == 0)
+			{
+				HWND hWnd = ::GetAncestor(m_hWnd, GA_ROOT);
+				if (::IsWindow(hWnd))
+				{
+					m_pBindWinForm = (CTangramWinFormWnd*)::SendMessage(hWnd, WM_TANGRAMDATA, 0, 20190214);
+					if (m_pBindWinForm)
+					{
+						//IWndNode* _pNode = nullptr;
+						//m_pBindNode->Open(CComBSTR(strMsgId), CComBSTR(strParam1), &_pNode);
+					}
+				}
+			}
+
 			g_pTangram->m_pTangramDelegate->TangramIPCMsg(m_hWnd, strRouting, strParam1, strParam2);
 		}
 	}
@@ -799,6 +877,15 @@ namespace ChromePlus {
 				for (int i = 0; i < nCount; i++)
 				{
 					CString strUrl = m_Parse.GetChild(i)->text(); 
+					int nPos2 = strUrl.Find(_T(":"));
+					if (nPos2 != -1)
+					{
+						CString strURLHeader = strUrl.Left(nPos2);
+						if (strURLHeader.CompareNoCase(_T("host")) == 0)
+						{
+							strUrl = g_pTangram->m_strAppPath + strUrl.Mid(nPos2 + 1);
+						}
+					}
 					strUrls = strUrls + strUrl + _T("|");
 				}
 				g_pTangram->m_pBrowserFactory->CreateBrowser(NULL, strUrls);

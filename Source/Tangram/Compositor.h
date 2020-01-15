@@ -23,7 +23,7 @@
 #include "chromium/HtmlWnd.h"
 
 using namespace ChromePlus;
-
+class CBKWnd;
 #define WM_TANGRAMNOTIFY WM_NOTIFY+WM_REFLECT_BASE
 class CTangramCommonCtrl :
 	public CWindowImpl<CTangramCommonCtrl, CWindow>
@@ -143,14 +143,17 @@ public:
 	CString									m_strKey;
 	CString									m_strXml;
 	CString									m_strPath;
+	CString									m_strBKID;
 	CString									m_strChildFormPath;
 	
+	CBKWnd*									m_pBKWnd;
 	CMDIChildFormInfo*						m_pChildFormsInfo;
 
 	map<CString, CString>					m_mapKey;
 	map<CString, TangramDocTemplateInfo*>	m_mapTangramFormsTemplateInfo;
 	map<int, TangramDocTemplateInfo*>		m_mapTangramFormsTemplateInfo2;
 	BEGIN_MSG_MAP(CTangramWinFormWnd)
+		MESSAGE_HANDLER(WM_SIZE, OnSize)
 		MESSAGE_HANDLER(WM_CLOSE, OnClose)
 		MESSAGE_HANDLER(WM_TANGRAMMSG, OnTangramMsg)
 		MESSAGE_HANDLER(WM_TANGRAMDATA, OnGetMe)
@@ -158,11 +161,14 @@ public:
 		MESSAGE_HANDLER(WM_GETDPISCALEDSIZE, OnGetDPIScaledSize)
 		MESSAGE_HANDLER(WM_WINFORMCREATED, OnFormCreated)
 		MESSAGE_HANDLER(WM_TANGRAMGETXML, OnTangramGetXml)
+		MESSAGE_HANDLER(WM_MDICLIENTCREATED, OnMdiClientCreated)
+		MESSAGE_HANDLER(WM_WINDOWPOSCHANGING, OnWindowPosChanging)
 	END_MSG_MAP()
 
 	void OnFinalMessage(HWND hWnd);
 
 private:
+	LRESULT OnSize(UINT, WPARAM, LPARAM, BOOL&);
 	LRESULT OnDpiChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& );
 	LRESULT OnGetMe(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
@@ -170,6 +176,9 @@ private:
 	LRESULT OnTangramMsg(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnTangramGetXml(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnGetDPIScaledSize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
+	LRESULT OnMdiClientCreated(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
+public:
+	LRESULT OnWindowPosChanging(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 };
 
 class CTangramDocWnd :

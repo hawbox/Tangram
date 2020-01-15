@@ -1078,7 +1078,8 @@ CTangramWinFormWnd::CTangramWinFormWnd(void)
 {
 	m_nState = -1;
 	m_bMdiForm = false;
-	m_strChildFormPath = m_strXml = m_strKey = _T("");
+	m_pBKWnd = nullptr;
+	m_strChildFormPath = m_strXml = m_strKey = m_strBKID = _T("");
 	if (g_pTangram->m_pCurMDIChildFormInfo)
 	{
 		m_pChildFormsInfo = new CMDIChildFormInfo();
@@ -1108,6 +1109,16 @@ CTangramWinFormWnd::~CTangramWinFormWnd(void)
 	}
 	if (m_pChildFormsInfo)
 		delete m_pChildFormsInfo;
+}
+
+LRESULT CTangramWinFormWnd::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
+{
+	LRESULT lRes = DefWindowProc(uMsg, wParam, lParam);
+	if (wParam == SIZE_RESTORED && m_pBKWnd)
+	{
+		//::PostMessage(m_hWnd, WM_TANGRAMMSG, 0, 20200115);
+	}
+	return lRes;
 }
 
 LRESULT CTangramWinFormWnd::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
@@ -1314,6 +1325,14 @@ LRESULT CTangramWinFormWnd::OnTangramMsg(UINT uMsg, WPARAM wParam, LPARAM lParam
 		return (LRESULT)m_pChildFormsInfo;
 	}
 	break;
+	case 20200115:
+	{
+		if (m_pBKWnd)
+		{
+			m_pBKWnd->m_pCompositor->HostPosChanged();
+		}
+	}
+	break;
 	}
 	return DefWindowProc(uMsg, wParam, lParam);
 }
@@ -1404,6 +1423,65 @@ LRESULT CTangramWinFormWnd::OnGetDPIScaledSize(UINT uMsg, WPARAM wParam, LPARAM 
 	//	prcNewWindow->bottom - prcNewWindow->top,
 	//	SWP_NOZORDER | SWP_NOACTIVATE);
 	return  false;//DefWindowProc(uMsg, wParam, lParam);
+}
+
+LRESULT CTangramWinFormWnd::OnMdiClientCreated(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
+{
+	CString strID = (LPCTSTR)lParam;
+	if(m_strBKID==_T(""))
+		m_strBKID = strID;
+	if (lParam)
+	{
+		::PostMessage(m_hWnd, WM_MDICLIENTCREATED, wParam, 0);
+	}
+	if (lParam==0&&m_pBKWnd == nullptr&& m_strBKID!=_T(""))
+	{
+		m_pBKWnd = new CBKWnd();
+		HWND hwnd = ::CreateWindowEx(NULL, _T("Tangram Window Class"), _T("mdibk"), WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0, 0, 0, 0, (HWND)wParam, 0, theApp.m_hInstance, nullptr);
+		m_pBKWnd->SubclassWindow(hwnd);
+		m_pBKWnd->m_hChild = ::CreateWindowEx(NULL, _T("Tangram Window Class"), _T(""), WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0, 0, 0, 0, hwnd, 0, theApp.m_hInstance, nullptr);
+		CCompositorManager* pCompositorManager = nullptr;
+		auto it = g_pTangram->m_mapWindowPage.find(m_hWnd);
+		if (it != g_pTangram->m_mapWindowPage.end())
+			pCompositorManager = (CCompositorManager*)it->second;
+		if (pCompositorManager)
+		{
+			ICompositor* pCompositor = nullptr;
+			pCompositorManager->CreateCompositor(CComVariant(0), CComVariant((LONGLONG)m_pBKWnd->m_hChild), CComBSTR(L"ClientFrame"), &pCompositor);
+			CString strXml = _T("");
+			int nPos = m_strBKID.Find(_T(":"));
+			if(nPos==-1)
+				strXml.Format(_T("<mdiclient><window><node name=\"mdiclient\" id=\"clrctrl\" cnnid=\"%s\" /></window></mdiclient>"), m_strBKID);
+			else
+			{
+				m_strBKID = m_strBKID.Mid(nPos + 1);
+				strXml.Format(_T("<mdiclient><window><node name='mdiclient' id='' url='%s' /></window></mdiclient>"), m_strBKID);
+			}
+			IWndNode* pNode = nullptr;
+			pCompositor->Open(CComBSTR(L"default"), strXml.AllocSysString(), &pNode);
+			auto it = pCompositorManager->m_mapCompositor.find((HWND)wParam);
+			if (it != pCompositorManager->m_mapCompositor.end())
+			{
+				it->second->m_pBKWnd=m_pBKWnd;
+			}
+			pCompositorManager->m_pBKFrame = m_pBKWnd->m_pCompositor = (CCompositor*)pCompositor;
+			g_pTangram->m_mapBKFrame[m_pBKWnd->m_hChild] = m_pBKWnd->m_pCompositor;
+		}
+	}
+
+	return  DefWindowProc(uMsg, wParam, lParam);
+}
+
+LRESULT CTangramWinFormWnd::OnWindowPosChanging(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	WINDOWPLACEMENT wndPlacement;
+	GetWindowPlacement(&wndPlacement);
+	if (wndPlacement.showCmd == SW_RESTORE)
+	{
+		::PostMessage(m_hWnd, WM_TANGRAMMSG, 0, 20200115);
+	};
+
+	return DefWindowProc(uMsg, wParam, lParam);
 }
 
 LRESULT CTangramWinFormWnd::OnFormCreated(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
@@ -3132,8 +3210,8 @@ LRESULT CCompositor::OnWindowPosChanging(UINT uMsg, WPARAM wParam, LPARAM lParam
 				lpwndpos->cy = rect.bottom - rect.top;
 				lpwndpos->flags &= ~SWP_HIDEWINDOW;
 				lpwndpos->flags |= SWP_SHOWWINDOW | SWP_NOZORDER;
-				if (m_bTabbedMDIClient == false && m_pBKWnd&&::IsWindow(m_pBKWnd->m_hWnd))
-					::SetWindowPos(m_pBKWnd->m_hWnd, HWND_BOTTOM, 0, 0, lpwndpos->cx, lpwndpos->cy, SWP_NOACTIVATE | SWP_NOREDRAW);
+				//if (m_bTabbedMDIClient == false && m_pBKWnd&&::IsWindow(m_pBKWnd->m_hWnd))
+				//	::SetWindowPos(m_pBKWnd->m_hWnd, HWND_BOTTOM, 0, 0, lpwndpos->cx, lpwndpos->cy, SWP_NOACTIVATE | SWP_NOREDRAW);
 				//begin fix bug for .net Control or Window Form
 				if (m_pBindingNode->m_pParentObj&&m_pBindingNode->m_pParentObj->m_nViewType == Splitter)
 				{

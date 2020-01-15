@@ -1333,6 +1333,14 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 						}
 						if (strCaption != _T(""))
 							thisForm->Text = BSTR2STRING(strCaption);
+						if (thisForm->IsMdiContainer)
+						{
+							CString strBKPage = m_Parse.attr(_T("mdibkpageid"), _T(""));
+							if (strBKPage != _T(""))
+							{
+								TangramCLR::Tangram::CreateBKPage(thisForm, BSTR2STRING(strBKPage));
+							}
+						}
 						thisForm->Tag = BSTR2STRING(m_Parse.name());
 						thisForm->Show();
 						//if (m_pCurrentPForm)
@@ -1475,13 +1483,7 @@ void CTangramCLRProxy::SelectNode(IWndNode * pNode)
 IDispatch* CTangramCLRProxy::TangramCreateObject(BSTR bstrObjID, HWND hParent, IWndNode * pHostNode)
 {
 	String^ strID = BSTR2STRING(bstrObjID);
-	Object^ _pObj = nullptr;
-	if (strID == L"tangramwiz,host")
-	{
-		_pObj = TangramCLR::Tangram::GetTangram()->m_pWizForm;
-	}
-	else
-		_pObj = TangramCLR::Tangram::CreateObject(strID);
+	Object^ _pObj = TangramCLR::Tangram::CreateObject(strID);
 	WndNode^ _pNode = (WndNode^)_createObject<IWndNode, TangramCLR::WndNode>(pHostNode);
 	if (_pObj == nullptr)
 	{
@@ -1536,11 +1538,6 @@ IDispatch* CTangramCLRProxy::TangramCreateObject(BSTR bstrObjID, HWND hParent, I
 			{
 				CString m_strXml = _T(""); 
 				m_strXml = (LPCTSTR)::SendMessage((HWND)hParent, WM_TANGRAMMSG, 0, 20191223);
-				//auto it = theApp.m_pTangramImpl->m_mapControlScript.find(pHostNode);
-				//if (it != theApp.m_pTangramImpl->m_mapControlScript.end())
-				//{
-				//	m_strXml = it->second;
-				//}
 				CTangramXmlParse m_Parse;
 				if (m_strXml != _T("") && m_Parse.LoadXml(m_strXml))
 					InitTangramNode(pHostNode, pObj, true, &m_Parse);
