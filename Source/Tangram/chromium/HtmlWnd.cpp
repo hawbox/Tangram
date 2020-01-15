@@ -642,7 +642,7 @@ namespace ChromePlus {
 					if (pNode)
 					{
 						IWndNode* _pNode = nullptr;
-						pNode->Open(CComBSTR(strMsgId), CComBSTR(strParam1),&_pNode);
+						pNode->Open(CComBSTR(strParam2), CComBSTR(strParam1),&_pNode);
 					}
 				}
 				return;
