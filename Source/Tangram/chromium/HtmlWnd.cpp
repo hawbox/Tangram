@@ -648,7 +648,11 @@ namespace ChromePlus {
 
 	void CHtmlWnd::RenderHTMLElement(CString strRuleName, CString strHTML)
 	{
-		if (strRuleName.CompareNoCase(_T("object")) == 0)
+		if (strRuleName.CompareNoCase(_T("mainWindow")) == 0)
+		{
+			RenderHTMLMainWindowElement(strHTML);
+		}
+		else if (strRuleName.CompareNoCase(_T("object")) == 0)
 		{
 			RenderHTMLObjectElement(strHTML);
 		}
@@ -667,6 +671,37 @@ namespace ChromePlus {
 		else 
 		{
 			g_pTangram->m_pTangramDelegate->TangramRenderHTMLElement(m_hWnd, strRuleName, strHTML);
+		}
+	}
+
+	void CHtmlWnd::RenderHTMLMainWindowElement(CString strHTML)
+	{
+		CTangramXmlParse xmlParse;
+		if (xmlParse.LoadXml(strHTML))
+		{
+			CTangramXmlParse* pMdiChildXmlParse = xmlParse.GetChild(_T("mdichild"));
+			if (pMdiChildXmlParse)
+			{
+				CTangramXmlParse* pMdiClientXmlParse = xmlParse.GetChild(_T("mdiclient"));
+				int nCount = pMdiChildXmlParse->GetCount();
+				if (nCount && pMdiClientXmlParse)
+				{
+					CMDIChildFormInfo* pInfo = new CMDIChildFormInfo();
+					g_pTangram->m_pCurMDIChildFormInfo = pInfo;
+					for (int i = 0; i < nCount; i++)
+					{
+						CString strName = pMdiChildXmlParse->GetChild(i)->name();
+						if (pMdiClientXmlParse->GetChild(strName))
+							pInfo->m_mapFormsInfo[strName] = pMdiChildXmlParse->GetChild(i)->xml();
+					}
+				}
+			}
+			if (g_pTangram->m_pCLRProxy == nullptr)
+				g_pTangram->LoadCLR();
+			if (g_pTangram->m_pCLRProxy)
+			{
+				IDispatch* pDisp = g_pTangram->m_pCLRProxy->CreateCLRObj(xmlParse.xml());
+			}
 		}
 	}
 

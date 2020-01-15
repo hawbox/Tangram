@@ -91,7 +91,7 @@
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\chromium_root_79\src\out\tangram_static_debug_x64</OutDir>
+    <OutDir>..\..\..\..\Users\codemeow\source\repos\TangramWinApp1\TangramShared1\output</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -190,19 +190,7 @@
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
-      <Command>if not exist "C:\Program Files\Tangram\" (
-  mkdir "C:\Program Files\Tangram"
-)
-copy "$(OutDir)$(TargetName)$(TargetExt)" "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
-
-copy "$(OutDir)LIBEAY32.dll" "C:\Program Files\Tangram\LIBEAY32.dll"
-copy "$(OutDir)SSLEAY32.dll" "C:\Program Files\Tangram\SSLEAY32.dll"
-copy "$(OutDir)zlibd1.dll" "C:\Program Files\Tangram\zlibd1.dll"
-
-regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -252,19 +240,7 @@ regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
-      <Command>if not exist "C:\Program Files (x86)\Tangram\" (
-  mkdir "C:\Program Files (x86)\Tangram"
-)
-copy "$(OutDir)$(TargetName)$(TargetExt)" "C:\Program Files (x86)\Tangram\$(TargetName)$(TargetExt)"
-
-copy "$(OutDir)LIBEAY32.dll" "C:\Program Files (x86)\Tangram\LIBEAY32.dll"
-copy "$(OutDir)SSLEAY32.dll" "C:\Program Files (x86)\Tangram\SSLEAY32.dll"
-copy "$(OutDir)zlib1.dll" "C:\Program Files (x86)\Tangram\zlib1.dll"
-
-regsvr32 /s "C:\Program Files (x86)\Tangram\$(TargetName)$(TargetExt)"
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -304,19 +280,7 @@ regsvr32 /s "C:\Program Files (x86)\Tangram\$(TargetName)$(TargetExt)"
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
-      <Command>if not exist "C:\Program Files\Tangram\" (
-  mkdir "C:\Program Files\Tangram"
-)
-copy "$(OutDir)$(TargetName)$(TargetExt)" "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
-
-copy "$(OutDir)LIBEAY32.dll" "C:\Program Files\Tangram\LIBEAY32.dll"
-copy "$(OutDir)SSLEAY32.dll" "C:\Program Files\Tangram\SSLEAY32.dll"
-copy "$(OutDir)zlib1.dll" "C:\Program Files\Tangram\zlib1.dll"
-
-regsvr32 /s "C:\Program Files\Tangram\$(TargetName)$(TargetExt)"
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Boot\Application.cpp">

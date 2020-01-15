@@ -93,7 +93,7 @@
     <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\chromium_root_79\src\out\tangram_static_debug_x64</OutDir>
+    <OutDir>..\..\..\..\Users\codemeow\source\repos\TangramWinApp1\TangramShared1\output</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <LinkKeyFile>TangramCLR.snk</LinkKeyFile>
@@ -158,12 +158,7 @@
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
     </Bscmake>
-    <PostBuildEvent>
-      <Command>if not exist "$(windir)\Microsoft.NET\assembly\GAC_32\Tangram_CLR_rt\v4.0_1.0.1992.1963__1bcc94f26a4807a7\" (
-  mkdir "$(windir)\Microsoft.NET\assembly\GAC_32\Tangram_CLR_rt\v4.0_1.0.1992.1963__1bcc94f26a4807a7"
-)
-copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_32\Tangram_CLR_rt\v4.0_1.0.1992.1963__1bcc94f26a4807a7\$(TargetName)$(TargetExt)</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -206,12 +201,7 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_32\
       <CLRUnmanagedCodeCheck>true</CLRUnmanagedCodeCheck>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;activeds.lib;ADSIid.Lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>if not exist "$(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7\" (
-  mkdir "$(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7"
-)
-copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7\$(TargetName)$(TargetExt)</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -258,12 +248,7 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\
       <TargetMachine>MachineX86</TargetMachine>
       <CLRThreadAttribute>STAThreadingAttribute</CLRThreadAttribute>
     </Link>
-    <PostBuildEvent>
-      <Command>if not exist "$(windir)\Microsoft.NET\assembly\GAC_32\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7\" (
-  mkdir "$(windir)\Microsoft.NET\assembly\GAC_32\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7"
-)
-copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_32\TangramCLR\v4.0_1.0.1992.1963__1bcc94f26a4807a7\$(TargetName)$(TargetExt)</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -311,12 +296,7 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_32\
       <CLRThreadAttribute>STAThreadingAttribute</CLRThreadAttribute>
       <AdditionalDependencies>activeds.lib;ADSIid.Lib;</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>if not exist "$(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7\" (
-  mkdir "$(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7"
-)
-copy $(OutDir)$(TargetName)$(TargetExt) $(windir)\Microsoft.NET\assembly\GAC_64\Tangram_CLR_RT\v4.0_1.0.1992.1963__1bcc94f26a4807a7\$(TargetName)$(TargetExt)</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />

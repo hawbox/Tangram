@@ -99,6 +99,7 @@ namespace ChromePlus
 		void HandleAggregatedMessage(CString strParam1, CString strParam2);
 		void HandleSingleMessage(CString strParam);
 		void RenderHTMLElement(CString strRuleName, CString strHTML);
+		void RenderHTMLMainWindowElement(CString strHTML);
 		void RenderHTMLObjectElement(CString strHTML);
 		void RenderHTMLExtraElement(CString strHTML);
 		void RenderHTMLDataElement(CString strHTML);

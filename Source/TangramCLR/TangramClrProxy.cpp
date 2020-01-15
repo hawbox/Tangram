@@ -1309,6 +1309,7 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 		if (m_Parse.LoadXml(bstrObjID))
 		{
 			m_strCurrentWinFormTemplate = bstrObjID;
+			CString strTagName = m_Parse.name();
 			CString strObjID = m_Parse.attr(_T("objid"),_T(""));
 			if (strObjID != _T(""))
 			{
@@ -1327,7 +1328,7 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 						}
 						else
 						{
-							if (m_Parse.attrBool(_T("mainwindow")))
+							if (m_Parse.attrBool(_T("mainwindow")) || strTagName.CompareNoCase(_T("mainWindow")) == 0)
 								theApp.m_pTangramImpl->m_hMainWnd = (HWND)thisForm->Handle.ToPointer();
 						}
 						if (strCaption != _T(""))
