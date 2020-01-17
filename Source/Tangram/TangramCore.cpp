@@ -5335,18 +5335,26 @@ STDMETHODIMP CTangram::OpenCompositors(LONGLONG hWnd, BSTR bstrFrames, BSTR bstr
 				if (it1.second != ((CCompositorManager*)it->second)->m_pBKFrame)
 				{
 					IWndNode* pNode = nullptr;
-					it1.second->Open(bstrKey, bstrXml, &pNode);
-					if (pNode&&bSave)
-						pNode->put_SaveToConfigFile(true);
-					if (pWnd&&pWnd->m_bMdiForm)
+					CWndNode* pNode2 = it1.second->m_pContainerNode;
+					if (pNode2)
 					{
-						CWndNode* _pNode = (CWndNode*)pNode;
-						CString strXml = _pNode->m_pTangramNodeCommonData->m_pTangramParse->xml();
-						strXml.Replace(_T("/><"), _T("/>\r\n<"));
-						strXml.Replace(_T("/>"), _T("></node>"));
-						CString s = _T("");
-						s.Format(_T("<%s>%s</%s>"), it1.second->m_strCompositorName, strXml, it1.second->m_strCompositorName);
-						_strXml += s;
+						it1.second->Open(CComBSTR(it1.second->m_strCurrentKey), bstrXml, &pNode);
+					}
+					else
+					{
+						it1.second->Open(bstrKey, bstrXml, &pNode);
+						if (pNode&&bSave)
+							pNode->put_SaveToConfigFile(true);
+						if (pWnd&&pWnd->m_bMdiForm)
+						{
+							CWndNode* _pNode = (CWndNode*)pNode;
+							CString strXml = _pNode->m_pTangramNodeCommonData->m_pTangramParse->xml();
+							strXml.Replace(_T("/><"), _T("/>\r\n<"));
+							strXml.Replace(_T("/>"), _T("></node>"));
+							CString s = _T("");
+							s.Format(_T("<%s>%s</%s>"), it1.second->m_strCompositorName, strXml, it1.second->m_strCompositorName);
+							_strXml += s;
+						}
 					}
 				}
 			}

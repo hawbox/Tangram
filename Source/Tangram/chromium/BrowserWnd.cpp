@@ -327,6 +327,11 @@ namespace ChromePlus {
 		case 20190527:
 			return (LRESULT)((IChromeWebBrowser*)this);
 			break;
+		case 1992:
+			{
+				return (LRESULT)m_pBrowser->GetBrowser();
+			}
+			break;
 		case 20190629:
 		{
 			switch (lParam)

@@ -507,6 +507,11 @@ int BrowserViewLayout::GetType() {
 	return (int)browser_->type();
 }
 
+void* BrowserViewLayout::GetBrowser()
+{
+    return browser_;
+}
+
 HWND BrowserViewLayout::GetActiveWebContentWnd()
 {
 	if (browser_view_)

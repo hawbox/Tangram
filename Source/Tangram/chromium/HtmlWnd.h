@@ -51,6 +51,7 @@ namespace ChromePlus
 
 		CCompositor*						m_pCompositor;
 		CTangramDoc*						m_pDoc;
+		CWndNode*							m_pParentNode;
 		CWndNode*							m_pBindNode;
 		CTangramWinFormWnd*					m_pBindWinForm;
 		ITangramAppProxy*					m_pAppProxy;

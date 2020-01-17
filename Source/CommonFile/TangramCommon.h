@@ -563,6 +563,7 @@ namespace TangramCommon {
 			m_hFormNodeWnd = nullptr;
 			m_hMainWnd = nullptr;
 			m_hTangramWnd = nullptr;
+			m_hWebBrowserWndForJS = nullptr;
 			m_pCLRProxy = nullptr;
 			m_hChildHostWnd = nullptr;
 			m_pActiveAppProxy = nullptr;
@@ -612,6 +613,7 @@ namespace TangramCommon {
 		DWORD									m_nAppType;
 		HWND									m_hTemplateWnd;
 		HWND									m_hTemplateChildWnd;
+		HWND									m_hWebBrowserWndForJS;
 		HWND									m_hActiveWnd;
 		HWND									m_hEclipseHideWnd;
 		HWND									m_hMainWnd;
@@ -924,6 +926,7 @@ namespace TangramCommon {
 		CChromeBrowserProxy* m_pProxy;
 
 		virtual int GetType() = 0;
+		virtual void* GetBrowser() = 0;
 		virtual void LayoutBrowser() = 0;
 		virtual void OpenURL(std::wstring strURL,
 			BrowserWndOpenDisposition nPos,

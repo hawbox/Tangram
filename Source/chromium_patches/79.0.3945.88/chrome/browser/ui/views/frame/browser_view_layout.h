@@ -90,6 +90,7 @@ class BrowserViewLayout :
   views::Widget* contents_border_widget() { return contents_border_widget_; }
 
   // begin Add by TangramTeam
+  void* GetBrowser() override;
   int GetType() override;
   void LayoutBrowser() override;
   void OpenURL(std::wstring strURL,

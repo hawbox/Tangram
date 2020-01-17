@@ -3074,6 +3074,14 @@ void RenderFrameHostImpl::OnRunJavaScriptDialog(
   // While a JS message dialog is showing, tabs in the same process shouldn't
   // process input events.
   GetProcess()->SetBlocked(true);
+  // begin Add by TangramTeam
+  HWND hWnd = NULL;
+  if (g_pTangramImpl) {
+      content::RenderWidgetHostViewAura* view = static_cast<content::RenderWidgetHostViewAura*>(GetViewForAccessibility());
+      hWnd = view->AccessibilityGetAcceleratedWidget();
+      g_pTangramImpl->m_hWebBrowserWndForJS = ::GetParent(hWnd);
+  }
+  // end Add by TangramTeam
 
   delegate_->RunJavaScriptDialog(this, message, default_prompt, dialog_type,
                                  reply_msg);

@@ -350,7 +350,7 @@ HWND ChromeBrowserFactory::CreateBrowser(HWND hParent, CString strXml) {
 					StartupTab tab;
 					tab.is_pinned = false;
 					tab.url = GURL(xml.GetData());
-					tabs.push_back(tab);
+                    tabs.push_back(tab);
 				}
 			}
 		}
@@ -362,9 +362,9 @@ HWND ChromeBrowserFactory::CreateBrowser(HWND hParent, CString strXml) {
 					b = true;
 				StartupTab tab;
 				tab.is_pinned = false;
-				CString strUrl = _strXml.Left(nPos);
-				tab.url = GURL(strUrl.GetBuffer());
-				strUrl.ReleaseBuffer();
+				CString strURL = _strXml.Left(nPos);
+				tab.url = GURL(strURL.GetBuffer());
+				strURL.ReleaseBuffer();
 				tabs.push_back(tab);
 				_strXml = _strXml.Mid(nPos + 1);
 				nPos = _strXml.Find(_T("|"));

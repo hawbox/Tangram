@@ -40,6 +40,7 @@ namespace ChromePlus {
 		m_bDevToolWnd = false;
 		m_strCurKey = _T("");
 		m_strCurXml = _T("");
+		m_pParentNode = nullptr;
 		//m_strFormXml = _T("");
 		m_strAppProxyID = _T("");
 		m_pBindNode = nullptr;
@@ -631,19 +632,26 @@ namespace ChromePlus {
 			}
 			else if (strTo.CompareNoCase(_T("toparentnode")) == 0)
 			{
-				HWND hWnd = ::GetParent(::GetParent(m_hWnd));
-				if (::IsWindow(hWnd))
+				if (m_pParentNode == nullptr)
 				{
-					CWndNode* pNode = nullptr;
-					LRESULT lRes = ::SendMessage(hWnd, WM_TANGRAMGETNODE, 0, 0);
-					HWND _hWnd = (HWND)hWnd;
-					if (lRes)
-						pNode = (CWndNode*)lRes;
-					if (pNode)
+					HWND hWnd = ::GetParent(::GetParent(m_hWnd));
+					if (::IsWindow(hWnd))
 					{
-						IWndNode* _pNode = nullptr;
-						pNode->Open(CComBSTR(strParam2), CComBSTR(strParam1),&_pNode);
+						LRESULT lRes = ::SendMessage(hWnd, WM_TANGRAMGETNODE, 0, 0);
+						HWND _hWnd = (HWND)hWnd;
+						if (lRes)
+							m_pParentNode = (CWndNode*)lRes;
 					}
+				}
+				if (m_pParentNode)
+				{
+					IWndNode* _pNode = nullptr;
+					//if (pNode->m_nViewType == BlankView)
+					//{
+					//	pNode->m_pTangramNodeCommonData->m_pCompositor->Open(CComBSTR(strParam2), CComBSTR(strParam1),&_pNode);
+					//}
+					//else if (pNode->m_nViewType == Splitter)
+					m_pParentNode->Open(CComBSTR(strParam2), CComBSTR(strParam1),&_pNode);
 				}
 				return;
 			}

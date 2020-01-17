@@ -1478,7 +1478,7 @@ LRESULT CTangramWinFormWnd::OnWindowPosChanging(UINT uMsg, WPARAM wParam, LPARAM
 	GetWindowPlacement(&wndPlacement);
 	if (wndPlacement.showCmd == SW_RESTORE)
 	{
-		::PostMessage(m_hWnd, WM_TANGRAMMSG, 0, 20200115);
+		::PostMessage(m_hWnd, WM_TANGRAMMSG, 1, 20200115);
 	};
 
 	return DefWindowProc(uMsg, wParam, lParam);
@@ -2623,6 +2623,12 @@ STDMETHODIMP CCompositor::Open(BSTR bstrKey, BSTR bstrXml, IWndNode** ppRetNode)
 			IWndNode* pNode = nullptr;
 			m_pBKWnd->m_pCompositor->Open(CComBSTR(L"default"), CComBSTR(L""), &pNode);
 		}
+	}
+	if (m_pWorkNode->m_pHostCompositor)
+	{
+		IWndNode* pNode = nullptr;
+		m_pWorkNode->m_pHostCompositor->Open(CComBSTR(m_pWorkNode->m_pHostCompositor->m_strCurrentKey), CComBSTR(""), &pNode);
+		CWndNode* pNode2 = (CWndNode*)pNode;
 	}
 	HostPosChanged();
 	for (auto it : m_pWorkNode->m_mapExtendNode)

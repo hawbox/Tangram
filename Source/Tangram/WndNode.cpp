@@ -377,7 +377,32 @@ STDMETHODIMP CWndNode::Open(BSTR bstrKey, BSTR bstrXml, IWndNode * *ppRetNode)
 				{
 					m_pHostCompositor->m_pParentNode = m_pTangramNodeCommonData->m_pCompositor->m_pParentNode;
 				}
-				return  m_pHostCompositor->Open(bstrKey, bstrXml, ppRetNode);
+				HRESULT hr = m_pHostCompositor->Open(bstrKey, bstrXml, ppRetNode);
+				//if (m_pHostCompositor->m_pBindingNode)
+				//{
+					if (m_pWebBrowser/*&&m_strID == _T("hostview")*/)
+					{
+						CWndNode* pRetNode = (CWndNode*)*ppRetNode;
+						CComPtr<IWndNodeCollection> pTangramNodeCollection;
+						IWndNode* _pNode = nullptr;
+						long nCount = 0;
+						pRetNode->m_pRootObj->GetNodes(CComBSTR(m_strName), &_pNode, &pTangramNodeCollection, &nCount);
+						if (_pNode)
+						{
+							CWndNode* pNode2 = (CWndNode*)_pNode;
+							pNode2->m_pWebBrowser = m_pWebBrowser;
+							HWND hWnd = m_pWebBrowser->m_hWnd;
+							HWND h = ::GetParent(hWnd);
+							CNodeWnd* pNodeWnd = (CNodeWnd*)CWnd::FromHandlePermanent(h);
+							pNodeWnd->m_hFormWnd = nullptr;
+							//m_pWebBrowser = nullptr;
+							::SetParent(hWnd, ((CNodeWnd*)pNode2->m_pHostWnd)->m_hWnd);
+							((CNodeWnd*)pNode2->m_pHostWnd)->m_hFormWnd = hWnd;
+							//((CNodeWnd*)m_pHostWnd)->m_hFormWnd = nullptr;
+						}
+					}
+				//}
+				return hr;
 			}
 		}
 	}
@@ -387,6 +412,76 @@ STDMETHODIMP CWndNode::Open(BSTR bstrKey, BSTR bstrXml, IWndNode * *ppRetNode)
 	}
 	return S_OK;
 }
+//
+//STDMETHODIMP CWndNode::Open(BSTR bstrKey, BSTR bstrXml, IWndNode * *ppRetNode)
+//{
+//	switch (m_nViewType)
+//	{
+//	case ActiveX:
+//	case CLRCtrl:
+//	case BlankView:
+//	{
+//		if (m_nViewType == BlankView)
+//		{
+//			if (m_pParentObj && m_pParentObj->m_nViewType == Splitter)
+//			{
+//				HRESULT hr =  m_pParentObj->OpenEx(m_nRow, m_nCol, bstrKey, bstrXml, ppRetNode);
+//				return hr;
+//			}
+//		}
+//		if (m_pTangramNodeCommonData->m_pCompositorManager)
+//		{
+//			if (m_nViewType == BlankView && m_pParentObj && m_pParentObj->m_nViewType == Splitter)
+//			{
+//				return m_pParentObj->OpenEx(m_nRow, m_nCol, bstrKey, bstrXml, ppRetNode);
+//			}
+//			if (m_pHostCompositor == nullptr)
+//			{
+//				CString strName = m_strNodeName;
+//				strName += _T("_Frame");
+//
+//				if (m_nViewType == BlankView)
+//				{
+//					RECT rc;
+//					::GetClientRect(m_pHostWnd->m_hWnd, &rc);
+//					m_hHostWnd = ::CreateWindowEx(NULL, L"Tangram Window Class", NULL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, rc.right, rc.bottom, m_pHostWnd->m_hWnd, NULL, AfxGetInstanceHandle(), NULL);
+//				}
+//				else
+//				{
+//					m_hHostWnd = ::GetWindow(m_pHostWnd->m_hWnd, GW_CHILD);
+//				}
+//				ICompositor* pCompositor = nullptr;
+//				m_pTangramNodeCommonData->m_pCompositorManager->CreateCompositor(CComVariant(0), CComVariant((long)m_hHostWnd), strName.AllocSysString(), &pCompositor);
+//				if (pCompositor)
+//					m_pHostCompositor = (CCompositor*)pCompositor;
+//			}
+//			if (m_pHostCompositor && ::IsWindow(m_hHostWnd))
+//			{
+//				m_pHostCompositor->m_pContainerNode = this;
+//				if (m_pTangramNodeCommonData->m_pCompositor->m_pParentNode)
+//				{
+//					m_pHostCompositor->m_pParentNode = m_pTangramNodeCommonData->m_pCompositor->m_pParentNode;
+//				}
+//				HRESULT hr = m_pHostCompositor->Open(bstrKey, bstrXml, ppRetNode);
+//				if (m_pHostCompositor->m_pBindingNode)
+//				{
+//					if (m_pWebBrowser/*&&m_strID == _T("hostview")*/)
+//					{
+//						::SetParent(((CNodeWnd*)m_pHostWnd)->m_hFormWnd, ((CNodeWnd*)m_pHostCompositor->m_pBindingNode->m_pHostWnd)->m_hWnd);
+//						((CNodeWnd*)m_pHostCompositor->m_pBindingNode->m_pHostWnd)->m_hFormWnd = ((CNodeWnd*)m_pHostWnd)->m_hFormWnd;
+//						((CNodeWnd*)m_pHostWnd)->m_hFormWnd = nullptr;
+//					}
+//				}
+//				return hr;
+//			}
+//		}
+//	}
+//	break;
+//	case Splitter:
+//		break;
+//	}
+//	return S_OK;
+//}
 
 STDMETHODIMP CWndNode::OpenEx(int nRow, int nCol, BSTR bstrKey, BSTR bstrXml, IWndNode * *ppRetNode)
 {
@@ -2158,7 +2253,8 @@ HRESULT CWndNode::Fire_Destroy()
 {
 	if (m_pWebBrowser)
 	{
-		m_pWebBrowser->DestroyWindow();
+		if(::IsChild(m_pHostWnd->m_hWnd,m_pWebBrowser->m_hWnd))
+			m_pWebBrowser->DestroyWindow();
 		m_pWebBrowser = nullptr;
 	}
 	if (m_pRootObj == this)
