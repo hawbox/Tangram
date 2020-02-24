@@ -211,6 +211,8 @@ public:
 	CTangram();
 	virtual ~CTangram();
 
+	bool									m_bAppInitFromWeb;
+
 	int										m_nRef;
 	int										m_nAppID;
 	int 									launchMode;
@@ -232,20 +234,22 @@ public:
 	TCHAR									m_szBuffer[MAX_PATH];
 
 	LPCTSTR									m_lpszSplitterClass;
-
+	CString									m_strAppXml;
+	CString									m_strMainWndXml;
 	CImageList								m_DocImageList;
 	CImageList								m_DocTemplateImageList;
 
 	//.NET Version 4: 
 	ICLRRuntimeHost*						m_pClrHost;
 
-	ChromePlus::CHtmlWnd*					m_pHtmlWndCreated;
-	ChromePlus::CHtmlWnd*					m_pActiveHtmlWnd;
-	ChromePlus::CHtmlWndDelegate*			m_pHtmlWndDelegate;
+	CHtmlWnd*								m_pHtmlWndCreated;
+	CHtmlWnd*								m_pActiveHtmlWnd;
+	CHtmlWndDelegate*						m_pHtmlWndDelegate;
 
 	CCompositor*							m_pDocTemplateFrame;
 	CTangramDocWnd*							m_pActiveDocWnd;
 	CTangramMDIMainWnd*						m_pMDIMainWnd;
+	CTangramWinFormWnd*						m_pActiveTangramWinFormWnd;
 	CTangramDocTemplate*					m_pActiveTemplate;
 	CTangramMDIChildWnd*					m_pActiveMDIChildWnd;
 	TangramDocTemplateInfo*					m_pTangramDocTemplateInfo;
@@ -265,6 +269,8 @@ public:
 	CTangramHtmlTreeWnd*					m_pDocDOMTree;
 	CEclipseWnd*							m_pActiveEclipseWnd;
 
+	map<CString, int>						m_mapEventDic;
+	map<CString, long>						m_mapIPCMsgIndexDic;
 	map<CString, CTangramDoc*>				m_mapOpenDoc;
 	map<HWND, CCompositor*>					m_mapBKFrame;
 	map<HWND, CTangramDocWnd*>				m_mapMDTFrame;
@@ -367,6 +373,7 @@ public:
 	void Lock() {}
 	void Unlock() {}
 	void TangramInit();
+	void TangramInitFromeWeb();
 	void EclipseInit();
 	void ExitInstance();
 	void InitTangramDocManager();
@@ -414,6 +421,7 @@ public:
 	virtual void ConnectDocTemplate(LPCTSTR strType, LPCTSTR strExt, void* pTemplate);
 	virtual ITangramDoc* ConnectTangramDoc(ITangramAppProxy* AppProxy, LONGLONG docID, HWND hView, HWND hFrame, LPCTSTR strDocType);
 	ICompositor* ConnectCompositorManager(HWND, CString, ICompositorManager* pCompositorManager, CompositorInfo*);
+	IChromeWebPage* GetWebPageFromForm(HWND);
 
 	void _addObject(void* pThis, IUnknown* pUnknown)
 	{
@@ -471,7 +479,7 @@ private:
 
 	void ChromeTabCreated(CChromeTab* pTab);
 	void OnRenderProcessCreated(CChromeRenderProcess* pProcess);
-	void OnDocumentOnLoadCompleted(CChromeRenderFrameHostBase*, HWND hHtmlWnd, void*);
+	void OnDocumentOnLoadCompleted(CChromeRenderFrameHost*, HWND hHtmlWnd, void*);
 	void ChromeChildProcessCreated(CChromeChildProcessHostImpl*	pChromeChildProcessHostImpl);
 	void OnSubBrowserWndCreated(HWND hParent, HWND hBrowser);
 	CString GetProcessPath(const char* _ver, CString process_type);
@@ -481,4 +489,5 @@ private:
 	IChromeWebBrowser* GetHostBrowser(HWND hNodeWnd);
 	void InsertTangramDataMap(int nType, CString strKey, void* pData);
 	char* GetSchemeString(int nType, CString strKey);
+	long GetIPCMsgIndex(CString strMsgID);
 };

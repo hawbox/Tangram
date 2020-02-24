@@ -45,15 +45,16 @@ protected:
 	int				m_nActiveIndex;
 	CWndNode*		m_pWndNode;
 	CImageList		m_ImageList;
-	DECLARE_MESSAGE_MAP()
-public:
-	void FillListViewBySolution();
+
 	virtual void OnInitialUpdate();
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
+
+	DECLARE_MESSAGE_MAP()
 	afx_msg int OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message);
 	afx_msg void OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg LRESULT OnActiveTangramPage(WPARAM wParam, LPARAM lParam);
-
+public:
+	void FillListViewBySolution();
 	void InitTabCtrl(CTangramTabCtrl* pTabCtrl);
 	void ChangeTemplate(int nItem);
 };

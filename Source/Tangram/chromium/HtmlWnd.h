@@ -29,9 +29,9 @@ namespace ChromePlus
 {
 	class ATL_NO_VTABLE CHtmlWnd :
 		public CWindowImpl<CHtmlWnd, CWindow>,
-		public CChromeRenderFrameHostProxyBase,
+		public CChromeRenderFrameHostProxy,
 		public CComObjectRootEx<CComSingleThreadModel>,
-		public IDispatchImpl<IChromeWebContent, &_uuidof(IChromeWebContent)>,
+		public IDispatchImpl<IChromeWebPage, &_uuidof(IChromeWebPage)>,
 		public IPC::EndPoint
 	{
 	public:
@@ -39,10 +39,11 @@ namespace ChromePlus
 		~CHtmlWnd() override;
 
 		BOOL								m_bDevToolWnd;
+		bool								m_bWebContentVisible;
 
-		HWND								m_hHostWnd;
 		HWND								m_hChildWnd;
 		HWND								m_hExtendWnd;
+		HWND								m_hWebHostWnd;
 
 		CString								m_strURL;
 		CString								m_strCurKey;
@@ -65,6 +66,8 @@ namespace ChromePlus
 		map<CString, CString>				m_mapeclipsesInfo;
 		map<CString, CString>				m_mapWorkBenchInfo;
 		map<CString, CString>				m_mapUserControlsInfo;
+		map<HWND, CTangramWinFormWnd*>		m_mapWinForm;
+		map<HWND, CTangramWinFormWnd*>		m_mapSubWinForm;
 		map<CString, CMDIChildFormInfo*>	m_mapChildFormsInfo;
 
 		// IPC callback
@@ -81,25 +84,27 @@ namespace ChromePlus
 
 		BEGIN_COM_MAP(CHtmlWnd)
 			COM_INTERFACE_ENTRY(IDispatch)
-			COM_INTERFACE_ENTRY(IChromeWebContent)
+			COM_INTERFACE_ENTRY(IChromeWebPage)
 		END_COM_MAP()
 
+		STDMETHOD(get_HostWnd)(LONGLONG* Val);
+		STDMETHOD(put_HostWnd)(LONGLONG newVal);
+		STDMETHOD(CreateForm)(BSTR bstrKey, LONGLONG hParent, IDispatch** pRetForm);
 		// DOM
 		void getElementById(CString strId, ::RefObject::RefObjectCallback* pCallback);
 
 		// IPC message
-		CString CreateRouting(CString strFrom, CString strTo, CString strMsgId);
-		void LoadRouting(CString strRouting, CString& strTo, CString& strMsgId);
 		IPC::Broker* GetBroker() override;
 		void OnIPCMessageReceived(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra = NULL) override;
 
-		void SendChromeIPCMessage(CString strRouting, CString strParam1, CString strParam2);
-		void OnChromeIPCMessageReceived(std::wstring strRouting, std::wstring strParam1, std::wstring strParam2) override;
+		void SendChromeIPCMessage(CString strId, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5);
 		CChromeBrowserBase* GetChromeBrowserBase(HWND) override;
 
 		void LoadDocument2Viewport(CString strName, CString strXML);
 
-		void HandleChromeIPCMessage(CString strRouting, CString strParam1, CString strParam2);
+		CString FindToken(CString pszContent, CString pszDelimiter, int& nStart);
+
+		void HandleChromeIPCMessage(CString strId, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5);
 		void HandleAggregatedMessage(CString strParam1, CString strParam2);
 		void HandleSingleMessage(CString strParam);
 		void RenderHTMLElement(CString strRuleName, CString strHTML);
@@ -109,11 +114,16 @@ namespace ChromePlus
 		void RenderHTMLDataElement(CString strHTML);
 		void RenderHTMLDocElement(CString strHTML);
 		void OnNTPLoaded();
+		void OnWinFormCreated(HWND);
+
 	protected:
 		ULONG InternalAddRef() { return 1; }
 		ULONG InternalRelease() { return 1; }
 
 	private:
+		CString m_strDocXml;
+		IWndNode* GetParentNode() { return (IWndNode*)m_pParentNode; }
+		ICompositor* GetCompositor() { return (ICompositor*)m_pCompositor; }
 		void Show(CString strID);
 		void OnFinalMessage(HWND hWnd) override;
 		LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL&);

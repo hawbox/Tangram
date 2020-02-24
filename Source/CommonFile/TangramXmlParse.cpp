@@ -1,7 +1,7 @@
 /********************************************************************************
 *					Tangram Library - version 10.0.0							*
 *********************************************************************************
-* Copyright (C) 2002-2019 by Tangram Team.   All Rights Reserved.				*
+* Copyright (C) 2002-2020 by Tangram Team.   All Rights Reserved.				*
 *
 * THIS SOURCE FILE IS THE PROPERTY OF TANGRAM TEAM AND IS NOT TO
 * BE RE-DISTRIBUTED BY ANY MEANS WHATSOEVER WITHOUT THE EXPRESSED
@@ -143,7 +143,7 @@ CTangramXmlParse* CTangramXmlParse::AddTabNode(CString strName, CString strCnnID
 			strStyle = _T("19");
 	}
 	CTangramXmlParse* pNode = AddNode(_T("node"));
-	pNode->put_attr(_T("id"), strObjID);
+	pNode->put_attr(_T("nodetype"), strObjID);
 	pNode->put_attr(_T("name"), strName);
 	pNode->put_attr(_T("cnnid"), strCnnID);
 	pNode->put_attr(_T("tabstyle"), strStyle);
@@ -177,7 +177,7 @@ CTangramXmlParse* CTangramXmlParse::AddSplitterNode(int nRows, int nCols, CStrin
 		CString strCols = _T("");
 		if (pNode)
 		{
-			pNode->put_attr(_T("id"), CString(_T("splitter")));
+			pNode->put_attr(_T("nodetype"), CString(_T("splitter")));
 			pNode->put_attr(_T("name"), strName);
 			CString strVal = _T("");
 			strVal.Format(_T("%d"), nRows);
@@ -217,7 +217,7 @@ CTangramXmlParse* CTangramXmlParse::AddSplitterNode(int nRows, int nCols, CStrin
 BOOL CTangramXmlParse::ModifyNode(int nRow, int nCol, CString strName, CString strXml)
 {
 	int nIndex = 0;
-	CString strID = this->attr(_T("id"), _T(""));
+	CString strID = this->attr(_T("nodetype"), _T(""));
 	if (strID == _T(""))
 		return FALSE;
 	int nCount = GetCount();

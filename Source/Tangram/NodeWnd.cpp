@@ -15,7 +15,7 @@
 * CONTACT INFORMATION:
 * mailto:tangramteam@outlook.com
 * https://www.tangram.dev
-* 
+*
 *
 ********************************************************************************/
 
@@ -66,6 +66,7 @@ BEGIN_MESSAGE_MAP(CNodeWnd, CWnd)
 	ON_WM_WINDOWPOSCHANGING()
 	ON_MESSAGE(WM_TABCHANGE, OnTabChange)
 	ON_MESSAGE(WM_TANGRAMMSG, OnTangramMsg)
+	ON_MESSAGE(WM_TANGRAMDATA, OnTangramData)
 	ON_MESSAGE(WM_TANGRAMGETNODE, OnGetTangramObj)
 	ON_MESSAGE(WM_TGM_SETACTIVEPAGE, OnActiveTangramObj)
 
@@ -115,11 +116,27 @@ BOOL CNodeWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwSty
 			else if (g_pTangram->m_pMDIMainWnd && pCompositor->m_nCompositorType == CompositorType::MDIClientCompositor && pCompositor->m_pBindingNode)
 			{
 				RECT rc = { 0,0,0,0 };
-				if (::SendMessage(g_pTangram->m_pMDIMainWnd->m_hWnd, WM_QUERYAPPPROXY, (WPARAM)& rc, 19921989) == 19921989)
+				if (::SendMessage(g_pTangram->m_pMDIMainWnd->m_hWnd, WM_QUERYAPPPROXY, (WPARAM)&rc, 19921989) == 19921989)
 				{
 					::SetWindowPos(pCompositor->m_pWorkNode->m_pHostWnd->m_hWnd, m_hWnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,  /*SWP_NOSENDCHANGING| SWP_NOZORDER |*/ SWP_NOACTIVATE | SWP_FRAMECHANGED);
 				}
 			}
+		}
+		if (pCompositor->m_pWebPageWnd)
+		{
+			IPCMsg pIPCInfo;
+			pIPCInfo.m_strId = _T("Tangram_WndNode_Created");
+			pIPCInfo.m_strParam1 = m_pWndNode->m_strWebObjID;
+			CString strHandle = _T("");
+			strHandle.Format(_T("%d"), m_hWnd);
+			pIPCInfo.m_strParam2 = strHandle;
+			strHandle.Format(_T("%d"), m_pWndNode->m_nViewType);
+			pIPCInfo.m_strParam3 = strHandle;
+			strHandle.Format(_T("%d"), pCompositor->m_hWnd);
+			pIPCInfo.m_strParam4 = strHandle;
+			//strHandle.Format(_T("%d"), m_pRootObj->m_pHostWnd->m_hWnd);
+			pIPCInfo.m_strParam5 = _T("wndnode");
+			pCompositor->m_pWebPageWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
 		}
 		return bRet;
 	}
@@ -143,10 +160,13 @@ LRESULT CNodeWnd::OnSplitterReposition(WPARAM wParam, LPARAM lParam)
 	return CWnd::DefWindowProc(WM_SPLITTERREPOSITION, wParam, lParam);
 }
 
-int CNodeWnd::OnMouseActivate(CWnd * pDesktopWnd, UINT nHitTest, UINT message)
+int CNodeWnd::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message)
 {
+	if (g_pTangram->m_pCLRProxy)
+		g_pTangram->m_pCLRProxy->HideMenuStripPopup();
 	if (g_pTangram->m_pActiveHtmlWnd)
 	{
+		::PostMessage(g_pTangram->m_pActiveHtmlWnd->m_hWnd, WM_TANGRAMMSG, 20190331, 0);
 		g_pTangram->m_pActiveHtmlWnd = nullptr;
 	}
 
@@ -213,11 +233,27 @@ int CNodeWnd::OnMouseActivate(CWnd * pDesktopWnd, UINT nHitTest, UINT message)
 	}
 	g_pTangram->m_pCompositor = m_pWndNode->m_pTangramNodeCommonData->m_pCompositor;
 
+	CHtmlWnd* pHtmlWnd = g_pTangram->m_pCompositor->m_pWebPageWnd;
+	CString strID = m_pWndNode->m_strWebObjID;// m_pHostParse->attr(_T("id"), _T(""));
+
 	if ((m_pWndNode->m_nViewType == ActiveX || m_pWndNode->m_nViewType == CLRCtrl))
 	{
+		if (pHtmlWnd)
+		{
+			IPCMsg pIPCInfo;
+			pIPCInfo.m_strId = _T("Tangram_WndNode_OnMouseActivate");
+			pIPCInfo.m_strParam1 = strID;
+			CString strHandle = _T("");
+			strHandle.Format(_T("%d"), m_hWnd);
+			pIPCInfo.m_strParam2 = strHandle;
+			strHandle.Format(_T("%d"), m_pWndNode->m_nViewType);
+			pIPCInfo.m_strParam3 = strHandle;
+			strHandle.Format(_T("%d"), pCompositor->m_hWnd);
+			pIPCInfo.m_strParam4 = strHandle;
+			pIPCInfo.m_strParam5 = _T("wndnode");
+			pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+		}
 		return MA_NOACTIVATE;
-		// CWnd::OnMouseActivate(pDesktopWnd, nHitTest, message);
-		//return MA_ACTIVATE;
 	}
 
 	if (b && m_bCreateExternal == false && m_pWndNode->m_strID.CompareNoCase(_T("hostview")))
@@ -286,12 +322,30 @@ int CNodeWnd::OnMouseActivate(CWnd * pDesktopWnd, UINT nHitTest, UINT message)
 	}
 
 	if (m_bCreateExternal == false)
+	{
+		if (pHtmlWnd)
+		{
+			IPCMsg pIPCInfo;
+			pIPCInfo.m_strId = _T("Tangram_WndNode_OnMouseActivate");
+			pIPCInfo.m_strParam1 = strID;
+			CString strHandle = _T("");
+			strHandle.Format(_T("%d"), m_hWnd);
+			pIPCInfo.m_strParam2 = strHandle;
+			strHandle.Format(_T("%d"), m_pWndNode->m_nViewType);
+			pIPCInfo.m_strParam3 = strHandle;
+			strHandle.Format(_T("%d"), pCompositor->m_hWnd);
+			pIPCInfo.m_strParam4 = strHandle;
+			//strHandle.Format(_T("%d"), m_pRootObj->m_pHostWnd->m_hWnd);
+			pIPCInfo.m_strParam5 = _T("wndnode");
+			pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+		}
 		return MA_ACTIVATEANDEAT;
+	}
 	else
 		return CWnd::OnMouseActivate(pDesktopWnd, nHitTest, message);
 }
 
-BOOL CNodeWnd::OnEraseBkgnd(CDC * pDC)
+BOOL CNodeWnd::OnEraseBkgnd(CDC* pDC)
 {
 	CCompositor* pCompositor = m_pWndNode->m_pTangramNodeCommonData->m_pCompositor;
 	BOOL bInDesignState = pCompositor->m_bDesignerState;
@@ -301,13 +355,10 @@ BOOL CNodeWnd::OnEraseBkgnd(CDC * pDC)
 	if (m_pWndNode->m_strID.CompareNoCase(_T("HostView")) == 0)
 	{
 		HWND hWnd = pCompositor->m_hWnd;
-		if (pCompositor->m_bDesignerState)
-		{
-		}
 		if (::IsWindow(hWnd) && !::IsWindowVisible(hWnd))
 		{
-			pCompositor->HostPosChanged();
-			return true;
+			//pCompositor->HostPosChanged();
+			return false;
 		}
 	}
 	else if ((m_pWndNode->m_nViewType == ActiveX || m_pWndNode->m_nViewType == CLRCtrl) && m_pWndNode->m_pDisp == nullptr)
@@ -482,7 +533,7 @@ BOOL CNodeWnd::OnEraseBkgnd(CDC * pDC)
 	return true;
 }
 
-BOOL CNodeWnd::PreTranslateMessage(MSG * pMsg)
+BOOL CNodeWnd::PreTranslateMessage(MSG* pMsg)
 {
 	if (m_pXHtmlTree)
 	{
@@ -504,12 +555,22 @@ BOOL CNodeWnd::PreTranslateMessage(MSG * pMsg)
 				hr = g_pTangram->m_pCLRProxy->ProcessCtrlMsg(::GetWindow(m_hWnd, GW_CHILD), bShiftKey ? true : false);
 				if (hr == S_OK)
 					return true;
+				return false;
 			}
 			else
 			{
 				pMsg->hwnd = 0;
 				return true;
 			}
+		}
+	}
+	else
+	{
+		if (m_pWndNode->m_nViewType == CLRCtrl)
+		{
+			if (g_pTangram->m_pCLRProxy->ProcessFormMsg(m_hWnd, pMsg, 0))
+				return true;
+			return false;
 		}
 	}
 	if (IsDialogMessage(pMsg))
@@ -559,7 +620,7 @@ LRESULT CNodeWnd::OnTabChange(WPARAM wParam, LPARAM lParam)
 		{
 			pCompositor->HostPosChanged();
 		}
-		if (_pNode->m_pWebBrowser){
+		if (_pNode->m_pWebBrowser) {
 			g_pTangram->m_pActiveHtmlWnd = _pNode->m_pWebBrowser->m_pVisibleWebWnd;
 		}
 		if (nOldPage != wParam)
@@ -595,10 +656,9 @@ LRESULT CNodeWnd::OnTabChange(WPARAM wParam, LPARAM lParam)
 	}
 	if (nOldPage != wParam)
 	{
-		if (pCompositor->m_pWebWnd)
+		if (pCompositor->m_pWebPageWnd)
 		{
-			CHtmlWnd* pWebWnd = pCompositor->m_pWebWnd;
-			::SendMessage(::GetParent(pWebWnd->m_hWnd), WM_BROWSERLAYOUT, 0, 1);
+			::SendMessage(::GetParent(pCompositor->m_pWebPageWnd->m_hWnd), WM_BROWSERLAYOUT, 0, 2);
 		}
 		m_pWndNode->Fire_TabChange(wParam, lParam);
 		m_pWndNode->m_pTangramNodeCommonData->m_pCompositorManager->Fire_TabChange(m_pWndNode, wParam, lParam);
@@ -606,6 +666,78 @@ LRESULT CNodeWnd::OnTabChange(WPARAM wParam, LPARAM lParam)
 
 	LRESULT lRes = CWnd::DefWindowProc(WM_TABCHANGE, wParam, lParam);
 	return lRes;
+}
+
+LRESULT CNodeWnd::OnTangramData(WPARAM wParam, LPARAM lParam)
+{
+	if (lParam == 20200204)
+	{
+		BindWebObj* pObj = (BindWebObj*)wParam;
+		CHtmlWnd* m_pHtmlWnd = m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd;
+		auto it = m_pHtmlWnd->m_mapBindWebObj.find(pObj->m_strBindObjName);
+		if (it != m_pHtmlWnd->m_mapBindWebObj.end())
+		{
+			delete it->second;
+			m_pHtmlWnd->m_mapBindWebObj.erase(it);
+		}
+		m_pHtmlWnd->m_mapBindWebObj[pObj->m_strBindObjName] = pObj;
+		IPCMsg pIPCInfo;
+		pIPCInfo.m_strId = _T("Tangram_WndNode_Created");
+		pIPCInfo.m_strParam1 = pObj->m_strBindObjName;
+		CString strHandle = _T("");
+		strHandle.Format(_T("%d"), pObj->m_hWnd);
+		pIPCInfo.m_strParam2 = strHandle;
+		pIPCInfo.m_strParam3 = _T("Tangram_WndNode_Created");;
+		pIPCInfo.m_strParam4 = pObj->m_strBindObjName;
+		pIPCInfo.m_strParam5 = _T("");
+		m_pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+
+		if (g_pTangram->m_pCLRProxy)
+		{
+			if (pObj->m_strBindData != _T(""))
+			{
+				IDispatch* pCtrl = g_pTangram->m_pCLRProxy->GetCtrlFromHandle(pObj->m_hWnd);
+				if (pCtrl)
+				{
+					CString strEvents = pObj->m_strBindData;
+					strEvents.MakeLower();
+					strEvents.Trim();
+					int nPos = strEvents.Find(_T("|"));
+					if (nPos == -1)
+					{
+						auto it = g_pTangram->m_mapEventDic.find(strEvents);
+						if (it != g_pTangram->m_mapEventDic.end())
+						{
+							g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
+						}
+					}
+					else
+					{
+						while (nPos != -1)
+						{
+							CString strEvent = strEvents.Left(nPos);
+							strEvents = strEvents.Mid(nPos + 1);
+							nPos = strEvents.Find(_T("|"));
+							auto it = g_pTangram->m_mapEventDic.find(strEvent);
+							if (it != g_pTangram->m_mapEventDic.end())
+							{
+								g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
+							}
+							if (nPos == -1)
+							{
+								auto it = g_pTangram->m_mapEventDic.find(strEvents);
+								if (it != g_pTangram->m_mapEventDic.end())
+								{
+									g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return CWnd::DefWindowProc(WM_TANGRAMDATA, wParam, lParam);
 }
 
 LRESULT CNodeWnd::OnTangramMsg(WPARAM wParam, LPARAM lParam)
@@ -620,57 +752,19 @@ LRESULT CNodeWnd::OnTangramMsg(WPARAM wParam, LPARAM lParam)
 		case 19820911:
 			return CWnd::DefWindowProc(WM_TANGRAMMSG, wParam, lParam);
 			break;
-		case 20191223:
-			if (g_pTangram->m_pCLRProxy)
-			{
-				auto it = g_pTangram->m_mapControlScript.find((IWndNode*)m_pWndNode);
-				if (it != g_pTangram->m_mapControlScript.end())
-				{
-					return (LRESULT)it->second.GetBuffer();
-				}
-				return 0;
-			}
-			break;
 		case 20190602:
 		{
-			CComBSTR bstrKey("");
-			m_pWndNode->get_Attribute(CComBSTR("name"), &bstrKey);
-			CHtmlWnd* pHtmlWnd = m_pWndNode->GetHtmlWnd();
-			CString strUIKey = OLE2T(bstrKey);
-			auto it = pHtmlWnd->m_mapUserControlsInfo.find(strUIKey);
-			if (it != pHtmlWnd->m_mapUserControlsInfo.end())
+			CTangramWinFormWnd* pTangramWinFormWnd = (CTangramWinFormWnd*)::SendMessage(m_hWnd, WM_TANGRAMDATA, 0, 20190214);
+			if (pTangramWinFormWnd)
+				return (LRESULT)pTangramWinFormWnd->m_pChildFormsInfo;
+			return 0;
+		}
+		case 20200128:
+		{
+			if (m_pWndNode && m_pWndNode->m_pWebBrowser)
 			{
-				g_pTangram->m_pCLRProxy->m_strCurrentWinFormTemplate = it->second;
-				g_pTangram->m_mapControlScript[m_pWndNode] = it->second;
+				::SetWindowPos(m_pWndNode->m_pWebBrowser->m_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOREDRAW);
 			}
-			else
-			{
-				it = pHtmlWnd->m_mapFormsInfo.find(strUIKey);
-				if (it != pHtmlWnd->m_mapFormsInfo.end())
-					g_pTangram->m_pCLRProxy->m_strCurrentWinFormTemplate = it->second;
-			}
-			auto itX = pHtmlWnd->m_mapFormsInfo.find(strUIKey);
-			if (itX != pHtmlWnd->m_mapFormsInfo.end())
-			{
-				auto it2 = pHtmlWnd->m_mapChildFormsInfo.find(strUIKey);
-				if (it2 != pHtmlWnd->m_mapChildFormsInfo.end())
-				{
-					CTangramWinFormWnd* pTangramWinFormWnd = (CTangramWinFormWnd*)::SendMessage(m_hWnd, WM_TANGRAMDATA, 0, 20190214);
-					if (pTangramWinFormWnd && pTangramWinFormWnd->m_pChildFormsInfo == nullptr)
-					{
-						pTangramWinFormWnd->m_pChildFormsInfo = new CMDIChildFormInfo();
-						auto it = pHtmlWnd->m_mapFormsInfo.find(strUIKey);
-						if (it != pHtmlWnd->m_mapFormsInfo.end())
-							pTangramWinFormWnd->m_strXml = it->second;
-						for (auto it : it2->second->m_mapFormsInfo)
-						{
-							pTangramWinFormWnd->m_pChildFormsInfo->m_mapFormsInfo[it.first] = it.second;
-						}
-					}
-					return (LRESULT)it2->second;
-				}
-			}
-			return (LRESULT)::GetWindowLongPtr(m_hWnd, GWLP_USERDATA);
 		}
 		break;
 		default:
@@ -887,8 +981,10 @@ LRESULT CNodeWnd::OnTangramMsg(WPARAM wParam, LPARAM lParam)
 		}
 		return 0;
 	}
-	if (lParam == 20191031)
+	if (lParam == 20191031 || lParam == 20200130)
 		return CWnd::DefWindowProc(WM_TANGRAMMSG, wParam, lParam);
+	if (lParam == 20200208)
+		return 0;
 	CString str = (LPCTSTR)lParam;
 	IWndNode* _pNode = nullptr;
 	CWndNode* pOldNode = (CWndNode*)m_pWndNode;
@@ -1022,7 +1118,7 @@ LRESULT CNodeWnd::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		case WM_SETFOCUS:
 		case WM_CONTEXTMENU:
 		case WM_LBUTTONDOWN:
-		//case WM_NOTIFY:
+			//case WM_NOTIFY:
 		case WM_RBUTTONDOWN:
 		case WM_LBUTTONUP:
 		case WM_RBUTTONUP:
@@ -1089,7 +1185,7 @@ LRESULT CBKWnd::OnMdiClientCreated(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 		ICompositor* pCompositor = nullptr;
 		pCompositorManager->CreateCompositor(CComVariant(0), CComVariant((LONGLONG)m_hChild), CComBSTR(L"ClientFrame"), &pCompositor);
 		CString strXml = _T("");
-		strXml.Format(_T("<mdiclient><window><node name=\"mdiclient\" id=\"activex\" cnnid=\"%s\" /></window></mdiclient>"), m_strURL);
+		strXml.Format(_T("<mdiclient><window><node name=\"mdiclient\" nodetype=\"activex\" cnnid=\"%s\" /></window></mdiclient>"), m_strURL);
 		IWndNode* pNode = nullptr;
 		pCompositor->Open(CComBSTR(L"default"), strXml.AllocSysString(), &pNode);
 		m_pCompositor = (CCompositor*)pCompositor;
@@ -1116,14 +1212,14 @@ LRESULT CBKWnd::OnWindowPosChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	return DefWindowProc(uMsg, wParam, lParam);
 }
 
-void CNodeWnd::OnWindowPosChanging(WINDOWPOS * lpwndpos)
+void CNodeWnd::OnWindowPosChanging(WINDOWPOS* lpwndpos)
 {
 	CWnd::OnWindowPosChanging(lpwndpos);
 	if (m_bCreateExternal)
 		Invalidate(true);
 }
 
-void CNodeWnd::OnWindowPosChanged(WINDOWPOS * lpwndpos)
+void CNodeWnd::OnWindowPosChanged(WINDOWPOS* lpwndpos)
 {
 	if (m_pWndNode && m_pWndNode->m_nViewType == CLRCtrl && m_pWndNode->m_hHostWnd)
 	{
@@ -1158,17 +1254,15 @@ void CNodeWnd::OnWindowPosChanged(WINDOWPOS * lpwndpos)
 	}
 
 	if (m_pWndNode->m_pWebBrowser)
-		::SetWindowPos(m_pWndNode->m_pWebBrowser->m_hWnd, HWND_TOP, -12, 0, lpwndpos->cx + 24, lpwndpos->cy + 12, SWP_NOACTIVATE | SWP_NOREDRAW);
-	else{
-		if (m_hFormWnd) 
+	{
+		::SetWindowPos(m_pWndNode->m_pWebBrowser->m_hWnd, HWND_TOP, 0, 0, lpwndpos->cx, lpwndpos->cy, SWP_NOACTIVATE | SWP_NOREDRAW);
+	}
+	else {
+		if (m_hFormWnd)
 			::SetWindowPos(m_hFormWnd, HWND_TOP, 0, 0, lpwndpos->cx, lpwndpos->cy, SWP_NOACTIVATE | SWP_NOREDRAW);
 		else if (m_pWndNode->m_strID.CompareNoCase(_T("hostview")) == 0)
 		{
-			//LRESULT lRes = ::SendMessage(m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_hWnd, WM_TANGRAMGETNODE, 0, 0);
-			//if (lRes) 
-			{
-				m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->HostPosChanged();
-			}
+			m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->HostPosChanged();
 		}
 	}
 	if (m_pWndNode->m_strID.CompareNoCase(_T("hostview")) && (m_bCreateExternal == false && m_pWndNode->m_pDisp == NULL) && m_pWndNode != m_pWndNode->m_pRootObj)

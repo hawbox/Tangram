@@ -68,10 +68,8 @@ namespace TangramCLR {
 			this->NewTemplateListView->Location = System::Drawing::Point(39, 52);
 			this->NewTemplateListView->MultiSelect = false;
 			this->NewTemplateListView->Name = L"NewTemplateListView";
-			this->NewTemplateListView->Size = System::Drawing::Size(703, 444);
+			this->NewTemplateListView->Size = System::Drawing::Size(1085, 706);
 			this->NewTemplateListView->TabIndex = 0;
-			this->NewTemplateListView->View = System::Windows::Forms::View::LargeIcon;
-
 			this->NewTemplateListView->UseCompatibleStateImageBehavior = false;
 			this->NewTemplateListView->DoubleClick += gcnew System::EventHandler(this, &TangramNewChildForm::NewTemplateListView_DoubleClick);
 			// 
@@ -79,10 +77,12 @@ namespace TangramCLR {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(12, 25);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(780, 581);
+			this->ClientSize = System::Drawing::Size(1162, 843);
 			this->Controls->Add(this->NewTemplateListView);
 			this->Name = L"TangramNewChildForm";
+			this->ShowInTaskbar = false;
 			this->Text = L"TangramNewChildForm";
+			this->TopMost = true;
 			this->ResumeLayout(false);
 
 		}

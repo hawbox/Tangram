@@ -102,8 +102,8 @@ public:
 	CString				m_strCaption;
 	CString				m_strTemplatePath;
 	CString				m_strXml;
-	CCompositor*			m_pCompositor;
-	map<HWND, CString> m_mapDesignableWnd;
+	CCompositor*		m_pCompositor;
+	map<HWND, CString>	m_mapDesignableWnd;
 
 	CTangramDocTemplate* m_pDocTemplate;
 	BEGIN_MSG_MAP(CTangramMDIChildWnd)
@@ -139,6 +139,7 @@ public:
 	CTangramWinFormWnd(void);
 	virtual ~CTangramWinFormWnd(void);
 	int										m_nState;
+	long									m_nTangramNodeHandle = 0;
 	BOOL									m_bMdiForm;
 	CString									m_strKey;
 	CString									m_strXml;
@@ -147,13 +148,15 @@ public:
 	CString									m_strChildFormPath;
 	
 	CBKWnd*									m_pBKWnd;
+	CHtmlWnd*								m_pOwnerHtmlWnd;
+	CHtmlWnd*								m_pParentHtmlWnd;
 	CMDIChildFormInfo*						m_pChildFormsInfo;
+	map<CString, BindWebObj*>				m_mapBindWebObj;
 
 	map<CString, CString>					m_mapKey;
 	map<CString, TangramDocTemplateInfo*>	m_mapTangramFormsTemplateInfo;
 	map<int, TangramDocTemplateInfo*>		m_mapTangramFormsTemplateInfo2;
 	BEGIN_MSG_MAP(CTangramWinFormWnd)
-		MESSAGE_HANDLER(WM_SIZE, OnSize)
 		MESSAGE_HANDLER(WM_CLOSE, OnClose)
 		MESSAGE_HANDLER(WM_TANGRAMMSG, OnTangramMsg)
 		MESSAGE_HANDLER(WM_TANGRAMDATA, OnGetMe)
@@ -163,12 +166,13 @@ public:
 		MESSAGE_HANDLER(WM_TANGRAMGETXML, OnTangramGetXml)
 		MESSAGE_HANDLER(WM_MDICLIENTCREATED, OnMdiClientCreated)
 		MESSAGE_HANDLER(WM_WINDOWPOSCHANGING, OnWindowPosChanging)
+		MESSAGE_HANDLER(WM_MOUSEACTIVATE, OnMouseActivate)
+		MESSAGE_HANDLER(WM_ACTIVATE, OnActivate)
 	END_MSG_MAP()
 
 	void OnFinalMessage(HWND hWnd);
 
 private:
-	LRESULT OnSize(UINT, WPARAM, LPARAM, BOOL&);
 	LRESULT OnDpiChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& );
 	LRESULT OnGetMe(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
@@ -177,8 +181,9 @@ private:
 	LRESULT OnTangramGetXml(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnGetDPIScaledSize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
 	LRESULT OnMdiClientCreated(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL&);
-public:
 	LRESULT OnWindowPosChanging(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnMouseActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 };
 
 class CTangramDocWnd :
@@ -231,22 +236,26 @@ public:
 	BOOL											m_bDetached;
 	BOOL											m_bDesignerState;
 	BOOL											m_bMDIChild;
-	BOOL											m_bChromeFrame;
 	CompositorType									m_nCompositorType;
 
 	HWND											m_hPWnd;
 	HWND											m_hHostWnd;
+	RECT											m_OldRect;
 	CString											m_strLastKey;
 	CString											m_strAsynKeys;
 	CString											m_strCompositorName;
 	CString											m_strCurrentKey;
 	CString											m_strCurrentXml;
+	CString											m_strHostWebBrowserNodeName = _T("");
 	CEclipseWnd*									m_pWorkBenchFrame;
 	CTangramDocTemplate*							m_pTangramDocTemplate;
 	map<ITangramAppProxy*, CCompositorProxy*>		m_mapCompositorProxy;
 
-	ChromePlus::CHtmlWnd*							m_pWebWnd;
+	IPCMsg*											m_pCurrentIPCMsg;
 	CBKWnd*											m_pBKWnd;
+	CHtmlWnd*										m_pWebPageWnd;
+	CWndNode*										m_pHostWebBrowserNode = nullptr;
+	CBrowserWnd*									m_pHostWebBrowserWnd = nullptr;
 	CCompositorManager*								m_pCompositorManager;
 	CWndNode*										m_pParentNode;
 	CWndNode*										m_pWorkNode;
@@ -344,6 +353,7 @@ private:
 	STDMETHOD(get_CompositorType)(CompositorType* pVal);
 	STDMETHOD(get_Name)(BSTR* pVal);
 	STDMETHOD(get_HostBrowser)(IChromeWebBrowser** ppChromeWebBrowser);
+	STDMETHOD(get_HostWebPage)(IChromeWebPage** ppChromeWebPage);
 
 	STDMETHOD(Attach)(void);
 	STDMETHOD(Detach)(void);

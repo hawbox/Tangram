@@ -137,6 +137,7 @@ typedef jint(JNICALL *JNI_GetCreatedJavaVMs_)(JavaVM **, jsize, jsize *);
 
 CTangram::CTangram()
 {
+	m_pCurrentIPCMsg = nullptr;
 	m_pClrHost = nullptr;
 	m_nJVMVersion = JNI_VERSION_10;
 	g_pTangram = this;
@@ -149,6 +150,7 @@ CTangram::CTangram()
 	m_bAdmin = false;
 	m_bCanClose = false;
 	m_bFrameDefaultState = true;
+	m_bAppInitFromWeb = false;
 	m_bDeleteCompositorManager = false;
 	m_bFirstDocCreated = false;
 	m_bEnableProcessFormTabKey = false;
@@ -156,9 +158,10 @@ CTangram::CTangram()
 	m_pActiveHtmlWnd = nullptr;
 	m_bCreatingDevTool = false;
 	m_bOMNIBOXPOPUPVISIBLE = false;
+	m_pActiveTangramWinFormWnd = nullptr;
 	m_pHtmlWndCreated = nullptr;
-	//m_pTangramMainDllLoader = nullptr;
-	m_strDefaultXml = _T("<default><window><node name=\"tangram\" id=\"HostView\"/></window></default>");
+	m_strAppXml = _T("");
+	m_strDefaultXml = _T("<default><window><node name=\"tangram\" nodetype=\"HostView\"/></window></default>");
 	m_bNewFile = FALSE;
 	m_nRef = 4;
 	m_nAppID = -1;
@@ -204,6 +207,7 @@ CTangram::CTangram()
 	m_strExeName = _T("");
 	m_strAppName = _T("Tangram System");
 	m_strAppKey = _T("");
+	m_strMainWndXml = _T("");
 	m_strCurrentKey = _T("");
 	m_strCurrentAppID = _T("");
 	m_strConfigFile = _T("");
@@ -253,6 +257,19 @@ CTangram::CTangram()
 	m_TabWndClassInfoDictionary[TGM_SPLITTER] = RUNTIME_CLASS(CSplitterNodeWnd);
 	m_TabWndClassInfoDictionary[_T("tabctrl")] = RUNTIME_CLASS(CTangramTabCtrl);
 	m_pHtmlWndDelegate = new ChromePlus::CHtmlWndDelegate();
+	m_mapEventDic[_T("textchanged")] = 1;
+	m_mapEventDic[_T("keydown")] = 2;
+	m_mapEventDic[_T("onclick")] = 3;
+
+	m_mapIPCMsgIndexDic[IPC_NODE_CREARED_ID] = IPC_NODE_CREARED;
+	m_mapIPCMsgIndexDic[IPC_NODE_ONMOUSEACTIVATE_ID] = IPC_NODE_ONMOUSEACTIVATE;
+	m_mapIPCMsgIndexDic[IPC_WINFORM_TREEVIEW_NODE_ONAFTERSELECT_ID] = IPC_WINFORM_TREEVIEW_NODE_ONAFTERSELECT;
+	m_mapIPCMsgIndexDic[IPC_MDIWINFORM_ACTIVEMDICHILD_ID] = IPC_MDIWINFORM_ACTIVEMDICHILD;
+	m_mapIPCMsgIndexDic[IPC_BIND_CLR_CTRL_EVENT_ID] = IPC_BIND_CLR_CTRL_EVENT;
+	m_mapIPCMsgIndexDic[IPC_BUTTON_CLICK_EVENT_ID] = IPC_BUTTON_CLICK_EVENT;
+	m_mapIPCMsgIndexDic[IPC_TANGRAM_CREATE_WIN_FORM_MESSAGE_ID] = IPC_TANGRAM_CREATE_WIN_FORM_MESSAGE;
+	m_mapIPCMsgIndexDic[IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE_ID] = IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE;
+	m_mapIPCMsgIndexDic[CREATE_CHILD_TANGRAM_NODE_ID] = CREATE_CHILD_TANGRAM_NODE;
 }
 
 BOOL CTangram::CopyFolder(CString strSrcPath, CString strDesPath)
@@ -696,7 +713,7 @@ void CTangram::ExportComponentInfo()
 			for (int i = 0; i < nCount; i++)
 			{
 				CTangramXmlParse* pParse = m_Parse.GetChild(i);
-				CString strID = pParse->attr(_T("id"), _T(""));
+				CString strID = pParse->attr(TGM_NODE_TYPE, _T(""));
 				CString strXml = pParse->GetChild(0)->xml();
 				if (strID == _T("xmlRibbon"))
 				{
@@ -1510,6 +1527,67 @@ void CTangram::TangramLoad()
 	}
 }
 
+void CTangram::TangramInitFromeWeb()
+{
+	CHtmlWnd* pHtmlWnd = nullptr;
+	CBrowserWnd* pWnd = nullptr;
+	auto it = m_mapBrowserWnd.find(m_hHostBrowserWnd);
+	if (it != m_mapBrowserWnd.end())
+	{
+		pWnd = (CBrowserWnd*)it->second;
+		pHtmlWnd = pWnd->m_pVisibleWebWnd;
+	}
+
+	CTangramXmlParse m_Parse;
+	if (m_Parse.LoadXml(m_strAppXml))
+	{
+		CTangramXmlParse* pParse = m_Parse.GetChild(_T("ntp"));
+		if(pParse)
+			m_strNtpXml = m_Parse[_T("ntp")].xml();
+		if (pWnd->m_pVisibleWebWnd)
+		{
+			pParse = m_Parse.GetChild(_T("urls"));
+			if (pParse)
+			{
+				CString strUrls = _T("");
+				int nCount = pParse->GetCount();
+				for (int i = 0; i < nCount; i++)
+				{
+					CString strURL = pParse->GetChild(i)->attr(_T("url"), _T(""));
+					int nPos2 = strURL.Find(_T(":"));
+					if (nPos2 != -1)
+					{
+						CString strURLHeader = strURL.Left(nPos2);
+						if (strURLHeader.CompareNoCase(_T("host")) == 0)
+						{
+							strURL = g_pTangram->m_strAppPath + strURL.Mid(nPos2 + 1);
+						}
+					}
+					if (strURL != _T(""))
+					{
+						strUrls += strURL;
+						if (i < nCount - 1)
+							strUrls += _T("|");
+					}
+				}
+				if (strUrls != _T(""))
+				{
+					CString strDisposition = _T("");
+					strDisposition.Format(_T("%d"), NEW_BACKGROUND_TAB);
+					if (pWnd->m_pVisibleWebWnd->m_pChromeRenderFrameHost)
+					{
+						IPCMsg msg;
+						msg.m_strId = L"ADD_URL";
+						msg.m_strParam1 = strUrls;
+						msg.m_strParam2 = strDisposition;
+						pWnd->m_pVisibleWebWnd->m_pChromeRenderFrameHost->SendTangramMessage(&msg);
+					}
+				}
+			}
+		}
+	}
+}
+
 void CTangram::TangramInit()
 {
 	if (m_bTangramInit)
@@ -1597,7 +1675,7 @@ void CTangram::TangramInit()
 			int nCount = m_Parse.GetCount();
 			for (int i = 0; i < nCount; i++) {
 				CTangramXmlParse* pParse = m_Parse.GetChild(i);
-				CString strID = pParse->attr(_T("id"), _T(""));
+				CString strID = pParse->attr(TGM_NODE_TYPE, _T(""));
 				CString strXml = pParse->GetChild(0)->xml();
 				if (strID == _T("xmlRibbon")) {
 					CString strPath = m_strAppCommonDocPath + _T("OfficeRibbon\\") + m_strExeName + _T("\\ribbon.xml");
@@ -1994,6 +2072,23 @@ void CTangram::AttachNode(void* pNodeEvents)
 	CWndNodeEvents*	m_pCLREventConnector = (CWndNodeEvents*)pNodeEvents;
 	CWndNode* pNode = (CWndNode*)m_pCLREventConnector->m_pWndNode;
 	pNode->m_pCLREventConnector = m_pCLREventConnector;
+}
+
+long CTangram::GetIPCMsgIndex(CString strMsgID)
+{
+	auto it = m_mapIPCMsgIndexDic.find(strMsgID);
+	if (it != m_mapIPCMsgIndexDic.end())
+		return it->second;
+	else
+		return 0;
+}
+
+IChromeWebPage* CTangram::GetWebPageFromForm(HWND hForm)
+{
+	auto it = m_mapFormWebPage.find(hForm);
+	if (it != m_mapFormWebPage.end())
+		return it->second;
+	return nullptr;
 }
 
 ICompositor* CTangram::ConnectCompositorManager(HWND hFrame, CString _strFrameName, ICompositorManager* _pCompositorManager, CompositorInfo* pInfo)
@@ -2583,8 +2678,6 @@ CWndNode* CTangram::OpenEx(long hWnd, CString strExXml, CString strXml)
 			pWnd->ModifyStyle(0, WS_CLIPSIBLINGS);
 		else
 			pWnd->ModifyStyle(0, WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
-
-		_pCompositor->m_bChromeFrame = strName == _T("Chrome Extended Window Class");
 	}
 
 	CWndNode *pRootNode = nullptr;
@@ -3454,8 +3547,8 @@ STDMETHODIMP CTangram::put_AppKeyValue(BSTR bstrKey, VARIANT newVal)
 
 			if (::IsWindow(m_hHostWnd))
 			{
-				::DestroyWindow(m_hHostWnd);
-				m_hHostWnd = NULL;
+				//::DestroyWindow(m_hHostWnd);
+				//m_hHostWnd = NULL;
 			}
 
 			if (m_hCBTHook)
@@ -7144,7 +7237,7 @@ STDMETHODIMP CTangram::InitCLRApp(BSTR strInitXml, LONGLONG* llHandle)
 //				for (int i = 0; i < nCount; i++)
 //				{
 //					CTangramXmlParse* pParse = m_Parse.GetChild(i);
-//					CString strID = pParse->attr(_T("id"),_T(""));
+//					CString strID = pParse->attr(TGM_NODE_TYPE,_T(""));
 //					CString strXml = pParse->GetChild(0)->xml();
 //					if (strID == _T("xmlRibbon"))
 //					{
@@ -7382,6 +7475,9 @@ __declspec(dllexport) void __stdcall  SetMainDllLoader(CTangramMainDllLoader* pL
 	case TANGRAM_APP_WILLCLOSE:
 		::PostQuitMessage(0);
 		break;
+	case TANGRAM_APP_BROWSERAPP:
+		::PostQuitMessage(0);
+		break;
 	}
 }
 
@@ -7530,10 +7626,9 @@ IChromeWebBrowser* CTangram::GetHostBrowser(HWND hNodeWnd)
 	return nullptr;
 }
 
-void CTangram::OnDocumentOnLoadCompleted(CChromeRenderFrameHostBase* pFrameHostBase, HWND hHtmlWnd, void* pVoid)
+void CTangram::OnDocumentOnLoadCompleted(CChromeRenderFrameHost* pFrameHostBase, HWND hHtmlWnd, void* pVoid)
 {
-	CChromeRenderFrameHostBase* pHost = (CChromeRenderFrameHostBase*)pFrameHostBase;
-
+	CChromeRenderFrameHost* pHost = (CChromeRenderFrameHost*)pFrameHostBase;
 	HWND hPWnd = ::GetParent(hHtmlWnd);
 	auto it = g_pTangram->m_mapHtmlWnd.find(hHtmlWnd);
 	if (it != g_pTangram->m_mapHtmlWnd.end())
@@ -7541,7 +7636,7 @@ void CTangram::OnDocumentOnLoadCompleted(CChromeRenderFrameHostBase* pFrameHostB
 		((CHtmlWnd*)it->second)->m_pChromeRenderFrameHost = pFrameHostBase;
 		// Set m_pProxy to CChromeRenderFrameHostProxyBase
 		// TODO: Not work
-		pFrameHostBase->m_pProxy = (CChromeRenderFrameHostProxyBase*)it->second;
+		pFrameHostBase->m_pProxy = (CChromeRenderFrameHostProxy*)it->second;
 		if (pVoid)
 		{
 		}

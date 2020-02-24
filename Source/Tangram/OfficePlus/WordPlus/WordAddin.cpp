@@ -102,7 +102,7 @@ namespace OfficePlus
 					if (it != pWordDoc->m_mapDocUIInfo.end())
 						strXml = it->second;
 					else
-						strXml = _T("<Document><window><node name=\"Start\" id=\"HostView\"/></window></Document>");
+						strXml = _T("<Document><window><node name=\"Start\" nodetype=\"HostView\"/></window></Document>");
 					IWndNode* pNode = nullptr;
 					pWordDoc->m_pCompositor->Open(CComBSTR(L"Default"), strXml.AllocSysString(), &pNode);
 					CWndNode* _pNode = (CWndNode*)pNode;

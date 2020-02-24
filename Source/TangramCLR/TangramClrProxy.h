@@ -33,6 +33,34 @@ using namespace TangramCLR;
 
 class CTangramWPFObjWrapper;
 
+class CMenuHelperWnd :
+	public CWindowImpl<CMenuHelperWnd, CWindow>
+{
+public:
+	CMenuHelperWnd(void)
+	{
+	};
+
+	~CMenuHelperWnd(void) {};
+	HWND m_hOwner = nullptr;
+	gcroot<ToolStripDropDownMenu^> m_pToolStripDropDownMenu = nullptr;
+	BEGIN_MSG_MAP(CHelperWnd)
+		MESSAGE_HANDLER(WM_SHOWWINDOW, OnShowWindow)
+		MESSAGE_HANDLER(WM_CHAR, OnSysKeyDown)
+	END_MSG_MAP()
+	void OnFinalMessage(HWND hWnd);
+	LRESULT OnShowWindow(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnSysKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+};
+
+class FormInfo
+{
+public:
+	FormInfo();
+	~FormInfo();
+	map<int, gcroot<ToolStripMenuItem^>> m_mapShortcutItem;
+};
+
 class CTangramCLRProxy : public ITangramCLRImpl
 {
 public: 
@@ -41,14 +69,24 @@ public:
 
 	bool												m_bHostApp;
 	bool												m_bInitApp = false;
+	HWND												m_hCreatingCLRWnd = nullptr;
 	gcroot<String^>										m_strExtendableTypes;
 	map<CString, gcroot<Assembly^>>						m_mapAssembly;
 	map<HWND, gcroot<Form^>>							m_mapDesigningForm;
+	map<HWND, gcroot<MenuStrip^>>						m_mapFormMenuStrip;
+	map<HWND, FormInfo*>								m_mapFormInfo;
+	map<HWND, gcroot<MenuStrip^>>						m_mapFormMenuStrip2;
+	map<HWND, gcroot<ChromeWebPage^>>					m_mapChromeWebPage;
 	map<HWND, CompositorInfo*>							m_mapCompositorInfo;
 	map<HWND, CTangramWPFObjWrapper*>					m_mapWpfControlWrapper;
+	map<HWND, CMenuHelperWnd*>							m_mapMenuHelperWnd;
+	map<HWND, CMenuHelperWnd*>							m_mapVisibleMenuHelperWnd;
 	map<IChromeWebBrowser*, gcroot<ChromeWebBrowser^>>	m_mapChromeWebBrowser;
+	map<HWND, CString>									m_mapEventBindInfo;
 
+	CMenuHelperWnd*										m_pWorkingMenuHelperWnd = nullptr;
 	gcroot<Form^>										m_pCurrentPForm;
+	//gcroot<InputLanguage^>								m_pCurInputLanguage = nullptr;
 	gcroot<System::Windows::Application^>				m_pTangramWpfApp;
 	gcroot<PropertyGrid^>								m_pPropertyGrid;
 	gcroot<TangramCLR::TangramProxy^>					m_pTangramProxy;
@@ -79,8 +117,10 @@ public:
 	IDispatch* CreateCLRObj(CString bstrObjID);
 	IDispatch* CreateFormAsMdiChild(BSTR bstrObjID, IDispatch* pMdiParent);
 	void TangramAction(BSTR bstrXml, IWndNode* pNode);
+	void _GetMenuInfo(FormInfo*, ToolStripMenuItem^);
 private:
 	map<HWND, gcroot<Form^>>				m_mapForm;
+	map<HWND, CString>						m_mapUIData;
 	gcroot<Hashtable^>						m_htObjects;
 	gcroot<Object^>							m_pTangramObj;
 	gcroot<Assembly^>						m_pSystemAssembly;
@@ -119,6 +159,11 @@ private:
 	void* Extend(CString strKey, CString strData, CString strFeatures);
 	bool IsSupportDesigner();
 	HICON GetAppIcon(int nIndex);
+	void OnWinFormActivate(HWND, int nState);
+	void OnWebPageCreated(HWND, CChromeRenderFrameHostProxy*, IChromeWebPage*, int nState);
+	void HideMenuStripPopup();
+	bool PreWindowPosChanging(HWND hWnd, WINDOWPOS* lpwndpos, int nType);
+	bool BindCtrlEventForBrowser(HWND hWebPage, HWND hWnd, int nEventType, CString strBindID);
 
 	void WindowCreated(LPCTSTR strClassName, LPCTSTR strName, HWND hPWnd, HWND hWnd);
 	void WindowDestroy(HWND hWnd);
@@ -126,7 +171,10 @@ private:
 	Object^ InitTangramCtrl(Form^ pForm, Control^ pCtrl, bool bSave, CTangramXmlParse* pParse);
 	Object^ InitTangramNode(IWndNode* pNode, Control^ pCtrl, bool bSave, CTangramXmlParse* pParse);
 	void SetObjectProperty(IDispatch* pObj, BSTR bstrPropertyName, BSTR bstrPropertyValue);
+	IDispatch* CreateWinForm(HWND hParent, BSTR strXML);
 
+	void CtrlInit(int nType, Control^ treeview, ICompositorManager* pCompositorManager);
+	System::Void LoadNode(TreeView^ pTreeView, TreeNode^ pNode, ICompositorManager* pCompositorManager, CTangramXmlParse* pParse);
 	static void OnLoad(Object ^sender, EventArgs ^e);
 	static void OnMdiChildActivate(Object ^sender, EventArgs ^e);
 	static void OnApplicationExit(Object ^sender, EventArgs ^e);
@@ -138,6 +186,9 @@ private:
 	static void OnControlRemoved(Object ^sender, ControlEventArgs ^e);
 	static void OnHandleDestroyed(Object ^sender, EventArgs ^e);
 	static void OnClick(Object ^sender, EventArgs ^e);
+	static void OnNodeMouseDoubleClick(System::Object^ sender, System::Windows::Forms::TreeNodeMouseClickEventArgs^ e);
+	static void OnTextChanged(System::Object^ sender, System::EventArgs^ e);
+	static void OnKeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e);
 };
 
 class CTangramWPFObjWrapper : public CTangramWPFObj

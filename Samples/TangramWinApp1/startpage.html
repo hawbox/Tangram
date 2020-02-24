@@ -1,0 +1,234 @@
+﻿<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Your Second Cloud Form Application</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <link href="assets/github-markdown.css" rel="stylesheet" type="text/css">
+    <style>
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+    </style>
+    <script type="text/javascript">
+        SendMessage = function () {
+            if (tangram) {
+                tangram.sendMessage("toparentnode", document.getElementById("toparentnode").outerHTML, "key", "");
+            }
+        }
+        SendMessage2 = function () {
+            if (tangram) {
+                tangram.sendMessage("toparentnode", document.getElementById("toparentnode2").outerHTML, "key2", "");
+            }
+        }
+        SendMessage3 = function () {
+            if (tangram) {
+                tangram.sendMessage("CREATE_FORM", "subform", document.getElementById("testform").outerHTML, "", "", "");
+            }
+        }
+        SendMessage4 = function () {
+            if (tangram) {
+                tangram.sendMessage("CREATE_FORM", "subdlgform", document.getElementById("testform").outerHTML, "1", "", "");
+            }
+        }
+    </script>
+</head>
+<body>
+    <define tagName="doc"></define>
+    <define tagName="object"></define>
+
+    <article class="markdown-body">
+        <h1><a class="md-header-anchor"></a><span>Show a Windows Form</span></h1>
+        <input type="button" value="Send Message" onclick="SendMessage()" />
+        <input type="button" value="Send Message2" onclick="SendMessage2()" />
+        <input type="button" value="CreateForm" onclick="SendMessage3()" />
+        <input type="button" value="CreateModalForm" onclick="SendMessage4()" />
+        First name: <input type="text" name="fname"><br>
+        Last name: <input type="text" name="lname"><br>
+    </article>
+    <object type="winform" objid="TangramWinApp1.Form1,host" uikey="form1" caption="test child form1">
+        <mainpanel>
+            <default>
+                <window>
+                    <node nodetype='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </default>
+        </mainpanel>
+        <panel1 htmlname="test3">
+        </panel1>
+        <treeView1>
+            <uidata key="ntpdata" treenode="true" width="0" height="0" text="Welcome to the World of Tangram!">
+                <featurelist treenode="true" text="Feature Lists">
+                    <node1 treenode="true" text="Welcome to the New Cloud-Desktop Mixed World"></node1>
+                    <node1_tag action="openurl" onafterselect="xxx">
+                    </node1_tag>
+                    <node2 treenode="true" text="ChromeRuntime Support"></node2>
+                    <node2_tag target="test1" onafterselect="yyy">
+                    </node2_tag>
+                    <node3 treenode="true" text="JavaRuntime Support"></node3>
+                    <node3_tag action="doubleclick" target="test3">
+                    </node3_tag>
+                    <node4 treenode="true" text="CLR Support"></node4>
+                    <node4_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node4_tag>
+                    <node5 treenode="true" text="COM Support"></node5>
+                    <node5_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node5_tag>
+                    <node6 treenode="true" text="C++ Support"></node6>
+                    <node6_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node6_tag>
+                    <node7 treenode="true" text="Office Support"></node7>
+                    <node7_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node7_tag>
+                </featurelist>
+                <Samples treenode="true" text="Samples for Tangram">
+                    <sample1 treenode="true" text="Tangram Sample1(doubleclick me)"></sample1>
+                    <sample1_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample1.html"></openurl>
+                    </sample1_tag>
+                    <sample2 treenode="true" text="Tangram Sample2(doubleclick me)"></sample2>
+                    <sample2_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample2.html"></openurl>
+                    </sample2_tag>
+                    <sample3 treenode="true" text="Tangram Sample3(doubleclick me)"></sample3>
+                    <sample3_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample3.html"></openurl>
+                    </sample3_tag>
+                    <sample4 treenode="true" text="Tangram Sample4(doubleclick me)"></sample4>
+                    <sample4_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample4.html"></openurl>
+                    </sample4_tag>
+                </Samples>
+            </uidata>
+            <default>
+                <window>
+                    <node nodetype='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </default>
+        </treeView1>
+    </object>
+    <test id="testform" type="winform" objid="TangramWinApp1.Form1,host" uikey="form1" caption="test child form1">
+        <mainpanel>
+            <default>
+                <window>
+                    <node nodetype='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </default>
+        </mainpanel>
+        <panel1 htmlname="test3">
+        </panel1>
+        <treeView1>
+            <uidata key="ntpdata" treenode="true" width="0" height="0" text="Welcome to the World of Tangram!">
+                <featurelist treenode="true" text="Feature Lists">
+                    <node1 treenode="true" text="Welcome to the New Cloud-Desktop Mixed World"></node1>
+                    <node1_tag action="openurl" onafterselect="xxx">
+                    </node1_tag>
+                    <node2 treenode="true" text="ChromeRuntime Support"></node2>
+                    <node2_tag target="test1" onafterselect="yyy">
+                    </node2_tag>
+                    <node3 treenode="true" text="JavaRuntime Support"></node3>
+                    <node3_tag action="doubleclick" target="test3">
+                    </node3_tag>
+                    <node4 treenode="true" text="CLR Support"></node4>
+                    <node4_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node4_tag>
+                    <node5 treenode="true" text="COM Support"></node5>
+                    <node5_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node5_tag>
+                    <node6 treenode="true" text="C++ Support"></node6>
+                    <node6_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node6_tag>
+                    <node7 treenode="true" text="Office Support"></node7>
+                    <node7_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node7_tag>
+                </featurelist>
+                <Samples treenode="true" text="Samples for Tangram">
+                    <sample1 treenode="true" text="Tangram Sample1(doubleclick me)"></sample1>
+                    <sample1_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample1.html"></openurl>
+                    </sample1_tag>
+                    <sample2 treenode="true" text="Tangram Sample2(doubleclick me)"></sample2>
+                    <sample2_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample2.html"></openurl>
+                    </sample2_tag>
+                    <sample3 treenode="true" text="Tangram Sample3(doubleclick me)"></sample3>
+                    <sample3_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample3.html"></openurl>
+                    </sample3_tag>
+                    <sample4 treenode="true" text="Tangram Sample4(doubleclick me)"></sample4>
+                    <sample4_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample4.html"></openurl>
+                    </sample4_tag>
+                </Samples>
+            </uidata>
+            <default>
+                <window>
+                    <node nodetype='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </default>
+        </treeView1>
+    </test>
+
+    <toparentnode id="toparentnode">
+        <window>
+            <node nodetype='splitter' name='properties' masterrow='0' mastercol='1' rows='3' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                <node name='tangramtabctrl_Page2' caption='tangramtabctrl_Page1'></node>
+                <node name='htest' nodetype=""></node>
+                <node name='test2'></node>
+                <node name='test3' nodetype=""></node>
+                <node name='propertiesView' nodetype=''></node>
+                <node name='test11'></node>
+            </node>
+        </window>
+    </toparentnode>
+    <toparentnode id="toparentnode2">
+        <window>
+            <node nodetype='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                <node name='tangramtabctrl_Page2' caption='tangramtabctrl_Page1'></node>
+                <node name='htest' nodetype=""></node>
+            </node>
+        </window>
+    </toparentnode>
+    <doc>
+        <window>
+            <node nodetype="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="29">
+                <node name="winform" caption="Tangram for WinForm Developer" nodetype="" cnnid=""></node>
+                <node name="mfc" caption="Tangram for MFC/C++ Developer" nodetype="hostview" cnnid=""></node>
+                <node name="eclipse" caption="Tangram for Eclipse" nodetype="" cnnid=""></node>
+            </node>
+        </window>
+    </doc>
+</body>
+</html>

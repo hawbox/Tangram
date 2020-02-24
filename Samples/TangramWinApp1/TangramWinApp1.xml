@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TangramWinApp1>
+  <window>
+    <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="19">
+      <node id='splitter' name='splitter' rows='1' cols='2' height='250,' width='400,100,' caption="Tangram Solution for TangramWinApp1">
+        <node id="clrctrl" cnnid="tangramclr.NavigateCtrl,tangram_clr_rt"></node>
+        <node id="hostview"></node>
+      </node>
+      <node name="winform" caption="About TangramWinApp1" id="" cnnid="tangramwizard.abouttangramteam,tangramwizard"></node>
+    </node>
+  </window>
+</TangramWinApp1>

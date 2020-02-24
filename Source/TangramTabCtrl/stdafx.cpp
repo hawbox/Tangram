@@ -1,7 +1,7 @@
 /********************************************************************************
 *					Tangram Library - version 10.0.0							*
 *********************************************************************************
-* Copyright (C) 2002-2019 by Tangram Team.   All Rights Reserved.				*
+* Copyright (C) 2002-2020 by Tangram Team.   All Rights Reserved.				*
 *
 * THIS SOURCE FILE IS THE PROPERTY OF TANGRAM TEAM AND IS NOT TO
 * BE RE-DISTRIBUTED BY ANY MEANS WHATSOEVER WITHOUT THE EXPRESSED
@@ -18,5 +18,5 @@
 *
 ********************************************************************************/
 #include "stdafx.h"
-//#include "tangramCommon.cpp"
-#include "TangramAppDelegate.cpp"
+#include "tangramCommon.cpp"
+//#include "TangramAppDelegate.cpp"

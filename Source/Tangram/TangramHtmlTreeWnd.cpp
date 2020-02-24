@@ -3743,7 +3743,7 @@ CString	CTangramHtmlTreeWnd::GetSelectedNodeInfo(CString strPropertys)
 							str1 = str1.Left(nPos2);
 							CString strFormat = _T("");
 							if(m_bNoHandle==false)
-								strFormat.Format(_T("<%s handle=\"%d\" id=\"%s\">%s</%s>"),strProperty,it.second->m_hItem,it.second->m_strTangramItemID,str1,strProperty);
+								strFormat.Format(_T("<%s handle=\"%d\" nodetype=\"%s\">%s</%s>"),strProperty,it.second->m_hItem,it.second->m_strTangramItemID,str1,strProperty);
 							else
 								strFormat.Format(_T("<%s>%s</%s>"),strProperty,str1,strProperty);
 							strVal += strFormat;
@@ -4802,7 +4802,7 @@ HTREEITEM	CTangramHtmlTreeWnd::InsertXmlItem(CTangramXmlParse *pElement, HTREEIT
 			if (xhtd.m_bWaitingFor)
 			{
 				xhtd.m_strTangramDataURL = pElement->attr(_T("url"),_T(""));
-				xhtd.m_strTangramItemID = pElement->attr(_T("id"),_T(""));
+				xhtd.m_strTangramItemID = pElement->attr(TGM_NODE_TYPE,_T(""));
 			}
 			//if (strNodeName == _T("window"))
 			//{

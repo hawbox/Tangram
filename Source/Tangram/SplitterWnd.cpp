@@ -104,7 +104,7 @@ CSplitterNodeWnd::CSplitterNodeWnd()
 	m_pWndNode = nullptr;
 	m_pHostNode = nullptr;
 	m_nHostWidth = m_nHostHeight = 0;
-	m_nNeedRefreshCol = -1;
+	m_nMasterRow = m_nMasterCol = m_nNeedRefreshCol = -1;
 	m_Vmin = m_Vmax = m_Hmin = m_Hmax = 0;
 }
 
@@ -468,16 +468,15 @@ void CSplitterNodeWnd::StopTracking(BOOL bAccept)
 			g_pTangram->put_AppKeyValue(CComBSTR(L"TangramDesignerXml"), CComVariant(bstrXml));
 		}
 		ChromePlus::CHtmlWnd* pWebWnd = nullptr;
-		if (pCompositor->m_pWebWnd)
+		if (pCompositor->m_pWebPageWnd)
 		{
-			pWebWnd = pCompositor->m_pWebWnd;
+			pWebWnd = pCompositor->m_pWebPageWnd;
 		}
-		else if(g_pTangram->m_pDesignWindowNode&&g_pTangram->m_pDesignWindowNode->m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd)
-			pWebWnd = g_pTangram->m_pDesignWindowNode->m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd;
+		else if(g_pTangram->m_pDesignWindowNode&&g_pTangram->m_pDesignWindowNode->m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd)
+			pWebWnd = g_pTangram->m_pDesignWindowNode->m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd;
 		pCompositor->HostPosChanged();
 		if (pWebWnd)
 		{
-			//::SendMessage(pWebWnd->m_hWnd, WM_LBUTTONDOWN, 0, 0);
 			::SendMessage(::GetParent(pWebWnd->m_hWnd), WM_BROWSERLAYOUT, 0, 2);
 		}
 		HWND h = ::GetParent(m_hWnd);
@@ -512,7 +511,9 @@ void CSplitterNodeWnd::TangramLayoutRowCol(CSplitterWnd::CRowColInfo* pInfoArray
 {
 	ASSERT(pInfoArray != NULL);
 	ASSERT(nMax > 0);
-	ASSERT(nSizeSplitter > 0);
+	if (nSizeSplitter < 0)
+		nSizeSplitter = 0;
+	//ASSERT(nSizeSplitter > 0);
 
 	CSplitterWnd::CRowColInfo* pInfo;
 	CSplitterWnd::CRowColInfo* pInfoHost = nullptr;
@@ -747,7 +748,8 @@ void CSplitterNodeWnd::_RecalcLayout()
 			{
 				int cyRow = m_pRowInfo[row].nCurSize;
 				CWnd* pWnd = GetPane(row, col);
-				TangramDeferClientPos(&layout, pWnd, x, y, cxCol, cyRow, FALSE);
+				if(pWnd)
+					TangramDeferClientPos(&layout, pWnd, x, y, cxCol, cyRow, FALSE);
 				y += cyRow + m_cySplitterGap;
 			}
 			x += cxCol + m_cxSplitterGap;
@@ -847,11 +849,60 @@ BOOL CSplitterNodeWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWO
 	m_pWndNode->m_nRows = m_pWndNode->m_pHostParse->attrInt(TGM_ROWS, 0);
 	m_pWndNode->m_nCols = m_pWndNode->m_pHostParse->attrInt(TGM_COLS, 0);
 
+	m_nMasterRow = m_pWndNode->m_pHostParse->attrInt(L"masterrow", -1);
+	m_nMasterCol = m_pWndNode->m_pHostParse->attrInt(L"mastercol", -1);
+
 	if (nID == 0)
 		nID = 1;
 
 	if (CreateStatic(pParentWnd, m_pWndNode->m_nRows, m_pWndNode->m_nCols, dwStyle, nID))
 	{
+		CHtmlWnd* pHtmlWnd = m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd;
+		if (pHtmlWnd)
+		{
+			if (m_pWndNode == m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_pWorkNode)
+			{
+				IPCMsg pIPCInfo;
+				pIPCInfo.m_strId = IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE_ID;
+				pIPCInfo.m_strParam1 = m_pWndNode->m_strWebObjID;
+				CString strHandle = _T("");
+				strHandle.Format(_T("%d"), m_hWnd);
+				pIPCInfo.m_strParam2 = strHandle;
+				strHandle.Format(_T("%d"), m_pWndNode->m_nViewType);
+				pIPCInfo.m_strParam3 = strHandle;
+				strHandle.Format(_T("%d"), m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_hWnd);
+				pIPCInfo.m_strParam4 = strHandle;
+				pIPCInfo.m_strParam5 = _T("wndnode");
+				pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+			}
+			IPCMsg pIPCInfo;
+			pIPCInfo.m_strId = _T("Tangram_WndNode_Created");
+			pIPCInfo.m_strParam1 = m_pWndNode->m_strWebObjID;
+			CString strHandle = _T("");
+			strHandle.Format(_T("%d"), m_hWnd);
+			pIPCInfo.m_strParam2 = strHandle;
+			strHandle.Format(_T("%d"), m_pWndNode->m_nViewType);
+			pIPCInfo.m_strParam3 = strHandle;
+			strHandle.Format(_T("%d"), m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_hWnd);
+			pIPCInfo.m_strParam4 = strHandle;
+			pIPCInfo.m_strParam5 = _T("wndnode");
+			pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+			if (m_pWndNode->m_pParentObj)
+			{
+				IPCMsg pIPCInfo;
+				pIPCInfo.m_strId = CREATE_CHILD_TANGRAM_NODE_ID;
+				pIPCInfo.m_strParam1 = m_pWndNode->m_strWebObjID;
+				CString strHandle = _T("");
+				strHandle.Format(_T("%d"), m_hWnd);
+				pIPCInfo.m_strParam2 = strHandle;
+				pIPCInfo.m_strParam3 = m_pWndNode->m_pParentObj->m_strWebObjID;
+				strHandle.Format(_T("%d"), m_pWndNode->m_pParentObj->m_pHostWnd->m_hWnd);
+				pIPCInfo.m_strParam4 = strHandle;
+				strHandle.Format(_T("%d"), m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_pWorkNode->m_pHostWnd->m_hWnd);
+				pIPCInfo.m_strParam5 = strHandle;
+				pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+			}
+		}
 		CString strWidth = m_pWndNode->m_pHostParse->attr(TGM_WIDTH, _T(""));
 		strWidth += _T(",");
 		CString strHeight = m_pWndNode->m_pHostParse->attr(TGM_HEIGHT, _T(""));
@@ -939,7 +990,18 @@ BOOL CSplitterNodeWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWO
 		}
 		if (pHostNode&&::IsChild(m_hWnd, pHostNode->m_pHostWnd->m_hWnd))
 			m_pHostNode = pHostNode;
-
+		if (m_pHostNode == nullptr)
+		{
+			if (m_nMasterCol != -1 && m_nMasterRow != -1)
+			{
+				IWndNode* pNode = nullptr;
+				m_pWndNode->GetNode(m_nMasterRow, m_nMasterCol, &pNode);
+				if (pNode)
+				{
+					m_pHostNode = (CWndNode*)pNode;
+				}
+			}
+		}
 		_RecalcLayout();
 
 		return true;
@@ -1041,16 +1103,19 @@ void CSplitterNodeWnd::OnDrawSplitter(CDC* pDC, ESplitType nType, const CRect& r
 	}
 	// fall through...
 	case splitBar:
-
 	{
 		pDC->FillSolidRect(rect, rgbMiddle);
-		pDC->FillSolidRect(rect, rgbMiddle);
-		//if((rect.bottom - rect.top) > (rect.right - rect.left))
-		//{
-		//}
-		//else
-		//{
-		//}
+		//pDC->FillSolidRect(rect, rgbMiddle);
+		if((rect.bottom - rect.top) > (rect.right - rect.left))
+		{
+			rect.bottom -= 1;
+			rect.top += 1;
+		}
+		else
+		{
+			rect.right -= 1;
+			rect.left += 1;
+		}
 	}
 	break;
 

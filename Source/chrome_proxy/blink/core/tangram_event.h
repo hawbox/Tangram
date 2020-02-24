@@ -15,41 +15,64 @@ namespace blink {
     static TangramEvent* Create() { return MakeGarbageCollected<TangramEvent>(); }
 
     static TangramEvent* Create(const AtomicString& event_type,
-      const String& from,
-      const String& to,
-      const String& msgId,
-      const String& payload,
-      const String& extra);
+      const String& eventId,
+      const String& param1,
+      const String& param2,
+      const String& param3,
+      const String& param4,
+      const String& param5,
+      const long handleSource,
+      const long handleTarget);
 
-    String from();
-    void setFrom(const String&);
-    String to();
-    void setTo(const String&);
-    String msgId();
-    void setMsgId(const String&);
-    String payload();
-    void setPayload(const String&);
-    String extra();
-    void setExtra(const String&);
+    static TangramEvent* Create(const AtomicString& event_type,
+      const String& eventId,
+      const String& param1,
+      const long handleSource,
+      const String& param3,
+      const long handleTarget,
+      const String& param5);
+
+    String eventId();
+    void setEventId(const String&);
+    String param1();
+    void setParam1(const String&);
+    String param2();
+    void setParam2(const String&);
+    String param3();
+    void setParam3(const String&);
+    String param4();
+    void setParam4(const String&);
+    String param5();
+    void setParam5(const String&);
+
+    long handleSource();
+    void setHandleSource(const long);
+    long handleTarget();
+    void setHandleTarget(const long);
 
     ~TangramEvent() override;
 
     TangramEvent();
 
     TangramEvent(const AtomicString& event_type,
-      const String& from,
-      const String& to,
-      const String& msgId,
-      const String& payload,
-      const String& extra);
+      const String& eventId,
+      const String& param1,
+      const String& param2,
+      const String& param3,
+      const String& param4,
+      const String& param5,
+      const long handleSource,
+      const long handleTarget);
 
   private:
-    String from_;
-    String to_;
-    String msgId_;
-    String payload_;
-    String extra_;
-
+    String eventId_;
+    String param1_;
+    String param2_;
+    String param3_;
+    String param4_;
+    String param5_;
+    long handleSource_;
+    long handleTarget_;
   };
 
 }  // namespace blink

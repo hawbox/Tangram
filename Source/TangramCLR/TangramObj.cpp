@@ -479,6 +479,22 @@ namespace TangramCLR
 		return IsChromeRunning;
 	}
 
+	ChromeWebBrowser^ Tangram::HostWebBrowser::get()
+	{
+		if (theApp.m_pTangram)
+		{
+			IChromeWebBrowser* pWebBrowser = nullptr;
+			theApp.m_pTangram->get_HostChromeBrowserWnd(&pWebBrowser);
+			if (pWebBrowser)
+			{
+				auto it = theAppProxy.m_mapChromeWebBrowser.find(pWebBrowser);
+				if (it != theAppProxy.m_mapChromeWebBrowser.end())
+					return it->second;
+			}
+		}
+		return nullptr;
+	}
+
 	ApplicationContext^ Tangram::Context::get()
 	{
 		if (m_pApplicationContext == nullptr)
@@ -652,15 +668,12 @@ namespace TangramCLR
 
 	String^ Tangram::WizData::get()
 	{
-		BSTR bstrDataXml = theApp.m_pTangramImpl->m_strNtpDataXml.AllocSysString();
-		String^ strResult = BSTR2STRING(bstrDataXml);
-		::SysFreeString(bstrDataXml);
-		return strResult;
+		return TangramCLR::Tangram::m_strWizData;
 	}
 
 	void Tangram::WizData::set(String^ strXml)
 	{
-		theApp.m_pTangramImpl->m_strNtpDataXml = strXml;
+		TangramCLR::Tangram::m_strWizData = strXml;
 	}
 
 	TangramAppProxy^ Tangram::AppProxy::get(String^ strKey)
@@ -1579,6 +1592,69 @@ namespace TangramCLR
 		return nullptr;
 	}
 
+	Form^ Tangram::CreateForm(IWin32Window^ parent, String^ strObjID)
+	{
+		Object^ m_pObj = nullptr;
+		int nIndex = strObjID->IndexOf(L"<");
+		if (nIndex == 0)
+		{
+			CTangramXmlParse m_Parse;
+			CString strXml = strObjID;
+			if (m_Parse.LoadXml(strXml) || m_Parse.LoadFile(strXml))
+			{
+				CString strType = m_Parse.attr(_T("type"), _T(""));
+				if (strType.CompareNoCase(_T("winform")) == 0)
+				{
+					CString strID = m_Parse.attr(_T("objid"), _T(""));
+					CString strName = m_Parse.name();
+					if (strID != _T(""))
+					{
+						CTangramXmlParse* pChild3 = m_Parse.GetChild(_T("mdichild"));
+						if (pChild3)
+						{
+							CTangramXmlParse* pChild4 = m_Parse.GetChild(_T("mdiclient"));
+							int nCount = pChild3->GetCount();
+							if (nCount && pChild4)
+							{
+								CMDIChildFormInfo* pInfo = new CMDIChildFormInfo();
+								theApp.m_pTangramImpl->m_pCurMDIChildFormInfo = pInfo;
+								for (int i = 0; i < nCount; i++)
+								{
+									CString strName = pChild3->GetChild(i)->name();
+									if (pChild4->GetChild(strName))
+										pInfo->m_mapFormsInfo[strName] = pChild3->GetChild(i)->xml();
+								}
+							}
+						}
+						Object^ pObj = CreateObject(BSTR2STRING(strID));
+						if (pObj != nullptr)
+						{
+							if (pObj->GetType()->IsSubclassOf(Form::typeid))
+							{
+								CString strCaption = m_Parse.attr(_T("caption"), _T(""));
+								Form^ thisForm = (Form^)pObj;
+								if (strCaption != _T(""))
+									thisForm->Text = BSTR2STRING(strCaption);
+								if (thisForm->IsMdiContainer)
+								{
+									CString strBKPage = m_Parse.attr(_T("mdibkpageid"), _T(""));
+									if (strBKPage != _T(""))
+									{
+										Tangram::CreateBKPage(thisForm, BSTR2STRING(strBKPage));
+									}
+								}
+								thisForm->Show(parent);
+							}
+							return (Form^)pObj;
+						}
+					}
+				}
+			}
+			return nullptr;
+		}
+		return nullptr;
+	}
+
 	Object^ Tangram::CreateObject(String^ strObjID)
 	{ 
 		Object^ m_pObj = nullptr;
@@ -1783,7 +1859,7 @@ namespace TangramCLR
 
 			CString strXml = _T("");
 			if (String::IsNullOrEmpty(m_strTreeViewData) == true)
-				m_strTreeViewData = BSTR2STRING(theApp.m_pTangramImpl->m_strNtpDataXml);
+				m_strTreeViewData = TangramCLR::Tangram::m_strWizData;
 			if (String::IsNullOrEmpty(m_strTreeViewData) == false)
 			{
 				strXml = STRING2BSTR(m_strTreeViewData);
@@ -1963,10 +2039,14 @@ namespace TangramCLR
 
 	CompositorManager::~CompositorManager()
 	{
-		m_pTangramClrEvent->DispEventUnadvise(m_pCompositorManager);
-		LONGLONG nValue = (LONGLONG)m_pCompositorManager;
-		theAppProxy._removeObject(nValue);
-		delete m_pTangramClrEvent;
+		if (m_pTangramClrEvent)
+		{
+			m_pTangramClrEvent->DispEventUnadvise(m_pCompositorManager);
+			LONGLONG nValue = (LONGLONG)m_pCompositorManager;
+			theAppProxy._removeObject(nValue);
+			delete m_pTangramClrEvent;
+			m_pTangramClrEvent = nullptr;
+		}
 	}
 
 	void CompositorManager::OpenCompositors(String^ strFrames, String^ strKey, String^ bstrXml, bool bSaveToConfigFile)
@@ -1998,6 +2078,26 @@ namespace TangramCLR
 		m_pCompositorManager->get_CompositorManagerXML(&bstrXML);
 		String^ strXML = BSTR2STRING(bstrXML);
 		return strXML;
+	}
+
+	void Compositor::SendMessage(String^ strFrom, String^ strTo, String^ strMsgId, String^ strMsgContent, String^ strExtra)
+	{
+		if (m_pCompositor)
+		{
+			__int64 nHandle;
+			m_pCompositor->get_HWND(&nHandle);
+			HWND hWnd = (HWND)nHandle;
+			IPCMsg msg;
+			msg.m_strId = L"MESSAGE";
+			msg.m_strParam1 = strFrom;
+			msg.m_strParam2 = strTo;
+			msg.m_strParam3 = strMsgId;
+			msg.m_strParam4 = strMsgContent;
+			msg.m_strParam5 = strExtra;
+			theApp.m_pTangramImpl->m_pCurrentIPCMsg = &msg;
+			::SendMessage(hWnd, WM_TANGRAMDATA, (WPARAM)&msg, 20200203);
+		}
+		theApp.m_pTangramImpl->m_pCurrentIPCMsg = nullptr;
 	}
 
 	WndNode^ Compositor::Open(String^  layerName, String^ layerXML)

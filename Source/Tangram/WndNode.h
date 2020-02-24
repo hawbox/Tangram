@@ -80,12 +80,20 @@ public:
 	HWND								m_hChildHostWnd;
 
 	CString 							m_strID;
+	CString 							m_strWebObjID = _T("");
 	CString 							m_strURL;
 	CString								m_strKey;
 	CString								m_strName;
 	CString 							m_strCnnID;
 	CString 							m_strCaption;
 	CString 							m_strXmlFileFromVS;
+
+	CString								m_strLastIPCMsgID = _T("");
+	CString								m_strLastIPCParam1 = _T("");
+	CString								m_strLastIPCParam2 = _T("");
+	CString								m_strLastIPCParam3 = _T("");
+	CString								m_strLastIPCParam4 = _T("");
+	CString								m_strLastIPCParam5 = _T("");
 
 	CString								m_strNodeName;
 	CString 							m_strExtenderID;
@@ -100,7 +108,7 @@ public:
 	ITangramWindow*						m_pTangramWindow;
 	CMDIChildFormInfo*					m_pChildFormsInfo;
 	CTangramNodeCommonData*				m_pTangramNodeCommonData;
-	ChromePlus::CBrowserWnd*			m_pWebBrowser;
+	CBrowserWnd*						m_pWebBrowser;
 	CWnd*								m_pHostWnd;
 	CCompositor*						m_pHostCompositor;
 	CRuntimeClass*						m_pObjClsInfo;
@@ -126,7 +134,7 @@ public:
 	BOOL	AddChildNode(CWndNode* pNode);
 	BOOL	RemoveChildNode(CWndNode* pNode);
 	CString GetNames();
-	ChromePlus::CHtmlWnd* GetHtmlWnd();
+	CHtmlWnd* GetHtmlWnd();
 
 	// Object
 	IRefObject* GetXObject() override;

@@ -72,7 +72,7 @@ public:
 	virtual bool BrowserAppStart() { 
 		return false; 
 	};
-	virtual bool OnTangramPreTranslateMessage(MSG* pMsg) { return false; };
+	virtual bool OnTangramPreTranslateMessage(MSG* pMsg);
 
 	void InitTangramApp(bool bCrashReporting);
 	void ExitJVM();

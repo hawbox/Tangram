@@ -121,8 +121,8 @@ void CTangramListCtrl::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 	else
 	{
-		CString strXml = _T("<tangram><window><node name=\"start\" id=\"hostview\" /></window></tangram>"); 
-		//_T("<tangram><window><node name=\"listviewhost\", id=\"hostview\"></node></window></tangram>");
+		CString strXml = _T("<tangram><window><node name=\"start\" nodetype=\"hostview\" /></window></tangram>"); 
+		//_T("<tangram><window><node name=\"listviewhost\", nodetype=\"hostview\"></node></window></tangram>");
 		m_pTangramTabCtrl->m_pCompositor->Open(CComBSTR("defaultListView"), CComBSTR(strXml), &pNode);
 	}
 
@@ -259,9 +259,8 @@ void CTangramListCtrl::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 		::GetClassName(pCompositor->m_hWnd, g_pTangram->m_szBuffer, MAX_PATH);
 		CString strName = g_pTangram->m_szBuffer;
-		pCompositor->m_bChromeFrame = strName == _T("Chrome Extended Window Class");
 		CString strKey = pCompositor->m_strLastKey;
-		if (pCompositor->m_pWebWnd)
+		if (pCompositor->m_pWebPageWnd)
 		{
 			if (strKey == _T(""))
 			{
@@ -285,9 +284,8 @@ void CTangramListCtrl::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 		{
 			::GetClassName(pCompositor->m_hWnd, g_pTangram->m_szBuffer, MAX_PATH);
 			CString strName = g_pTangram->m_szBuffer;
-			pCompositor->m_bChromeFrame = strName == _T("Chrome Extended Window Class");
 			CString strKey = pCompositor->m_strLastKey;
-			if (pCompositor->m_bChromeFrame)
+			if (pCompositor->m_pWebPageWnd)
 			{
 				if (strKey == _T(""))
 				{

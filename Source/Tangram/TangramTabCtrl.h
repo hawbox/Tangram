@@ -29,14 +29,13 @@ class CTangramListCtrl : public CListCtrl
 public:
 	CTangramListCtrl();
 	virtual ~CTangramListCtrl();
-	int		m_nListViewIndex;
-	int		m_nListViewSelectedIndex;
+	int					m_nListViewIndex;
+	int					m_nListViewSelectedIndex;
 	CString				m_strDir;
 	CString				m_strSubDir;
 	CTangramTabCtrl*	m_pTangramTabCtrl;
 protected:
 	DECLARE_MESSAGE_MAP()
-public:
 	afx_msg void OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult);
 };
@@ -53,22 +52,20 @@ public:
 	int					m_nImageIndex;
 	CString				m_strFilter;
 	CWndNode*			m_pWndNode;
-	CCompositor*			m_pCompositor;
+	CCompositor*		m_pCompositor;
 	CTangramListView*	m_pTangramListView;
 	CTangramListCtrl	m_ListCtrl;
 	IWebBrowser2*		m_pWebBrowser2;
+	void RePosition();
+	void FillListCtrl();
+	virtual BOOL Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID);
 protected:
 	DECLARE_MESSAGE_MAP()
-public:
-	virtual BOOL Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID);
 	virtual void PostNcDestroy();
 	afx_msg int OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message);
 	afx_msg void OnTcnSelchange(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
 	afx_msg LRESULT OnInitialUpdate(WPARAM wParam, LPARAM lParam);
-
-	void RePosition();
-	void FillListCtrl();
 };
 
 

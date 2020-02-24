@@ -144,7 +144,7 @@ namespace OfficePlus
 		//					strXml.Format(_T("<sheet><default><sheet><window>%s</window></sheet></default></sheet>"), strSheetXml);
 		//				else
 		//				{
-		//					strXml.Format(_T("<sheet><default><sheet><window><node name=\"Start\" id=\"hostview\" /></window></sheet><taskpane><window>%s</window></taskpane></default></sheet>"), strTaskPaneXml);
+		//					strXml.Format(_T("<sheet><default><sheet><window><node name=\"Start\" nodetype=\"hostview\" /></window></sheet><taskpane><window>%s</window></taskpane></default></sheet>"), strTaskPaneXml);
 		//				}
 		//			}
 		//			CComQIPtr<Excel::CustomProperties> pCustomProperties(result.pdispVal);
@@ -212,7 +212,7 @@ namespace OfficePlus
 						strTemplate = _T("<sheet><window><node name=\"start\" /></window></sheet>");
 					else
 					{
-						strTemplate = _T("<sheet><window><node name=\"start\" id=\"hostview\" /></window></sheet>");
+						strTemplate = _T("<sheet><window><node name=\"start\" nodetype=\"hostview\" /></window></sheet>");
 					}
 				}
 				CTangramXmlParse m_Parse;
@@ -242,7 +242,7 @@ namespace OfficePlus
 								strTemplate = _T("<sheet><window><node name=\"start\" /></window></sheet>");
 							else
 							{
-								strTemplate = _T("<sheet><window><node name=\"start\" id=\"hostview\" /></window></sheet>");
+								strTemplate = _T("<sheet><window><node name=\"start\" nodetype=\"hostview\" /></window></sheet>");
 							}
 						}
 						CTangramXmlParse m_Parse2;

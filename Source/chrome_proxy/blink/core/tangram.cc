@@ -1,26 +1,36 @@
-// begin Add by TangramTeam
+﻿// begin Add by TangramTeam
 #include "tangram.h"
-#include "tangram_event.h"
 #include "tangram_node.h"
+#include "tangram_event.h"
+#include "tangram_window.h"
+#include "tangram_winform.h"
+#include "tangram_compositor.h"
+#include <stdlib.h>
+#include <string>
+#include <iostream>
 
 #include "base/guid.h"
-#include "third_party/blink/public/web/web_local_frame_client.h"
-#include "third_party/blink/renderer/core/frame/local_dom_window.h"
-#include "third_party/blink/renderer/core/frame/local_frame.h"
-#include "third_party/blink/renderer/core/frame/web_local_frame_impl.h"
 #include "third_party/blink/renderer/core/dom/document.h"
 #include "third_party/blink/renderer/core/html/html_element.h"
 #include "third_party/blink/renderer/core/html/html_head_element.h"
-
+#include "third_party/blink/renderer/core/frame/local_frame.h"
+#include "third_party/blink/renderer/core/frame/local_dom_window.h"
+#include "third_party/blink/public/web/web_local_frame_client.h"
+#include "third_party/blink/renderer/core/frame/web_local_frame_impl.h"
 #include "third_party/blink/renderer/bindings/core/v8/v8_general_callback.h"
+
+using namespace std;
 
 namespace blink {
 
 Tangram::Tangram(LocalFrame* frame) : DOMWindowClient(frame) {
 	is_pending_ = false;
+	web_local_frame_client = nullptr;
 }
 
-Tangram::~Tangram() {}
+Tangram::~Tangram() {
+	clearData();
+}
 
 void Tangram::Trace(blink::Visitor* visitor) {
   EventTargetWithInlineData::Trace(visitor);
@@ -34,65 +44,67 @@ void Tangram::AddedEventListener(const AtomicString& event_type,
                                                 registered_listener);
 }
 
-// Internal message interface.
-void Tangram::ipcMessage__(const String& routing, const String& param1, const String& param2) {
-	ipcMessage(routing, param1, param2);
-}
-
 // User level message
 void Tangram::addChannel(const String& channel) {
-  ipcMessage(L"ADD_CHANNEL", channel, L"");
+	sendMessage(L"ADD_CHANNEL", channel, L"", L"", L"", L"");
 }
 
 void Tangram::removeChannel(const String& channel) {
-  ipcMessage(L"REMOVE_CHANNEL", channel, L"");
+	sendMessage(L"REMOVE_CHANNEL", channel, L"", L"", L"", L"");
 }
 
-String Tangram::sendMessage(const String& to, const String& payload, const String& extra, const String& msgId) {
-	String newMsgId;
-	if (msgId.IsEmpty()) {
-		std::string guid = base::GenerateGUID();
-		newMsgId = String(guid.c_str());
+void Tangram::sendMessage(const String& id, const String& param1, const String& param2, const String& param3, const String& param4, const String& param5) {
+	if (web_local_frame_client) {
+		if (is_pending_) {
+			String message = id + "%%%" + param1 + "%%%" + param2 + "%%%" + param3 + "%%%" + param4 + "%%%" + param5;
+			pending_messages_.push_back(message);
+		}
+		else {
+			WebString webstr = id;
+			std::wstring u16_id = webstr.Utf16();
+			webstr = param1;
+			std::wstring u16_param1 = webstr.Utf16();
+			webstr = param2;
+			std::wstring u16_param2 = webstr.Utf16();
+			webstr = param3;
+			std::wstring u16_param3 = webstr.Utf16();
+			webstr = param4;
+			std::wstring u16_param4 = webstr.Utf16();
+			webstr = param5;
+			std::wstring u16_param5 = webstr.Utf16();
+			web_local_frame_client->SendTangramMessage(u16_id, u16_param1, u16_param2, u16_param3, u16_param4, u16_param5);
+		}
 	}
-	else {
-		newMsgId = msgId;
+}
+
+void Tangram::sendNodeMessage(const String& id, const String& param1, const String& param2, const String& param3, const String& param4, const String& param5) {
+	Element* const tangramelement = DomWindow()->document()->getElementById(WTF::AtomicString(id));
+	if (tangramelement&&web_local_frame_client) {
+		WebString webstr = id;
+		wstring u16_id = webstr.Utf16();
+		WTF::AtomicString handle = tangramelement->getAttribute("hwnd");
+		webstr = handle;
+		wstring u16_handle = webstr.Utf16();
+		webstr = param2;
+		wstring u16_param2 = webstr.Utf16();
+		webstr = param3;
+		std::wstring u16_param3 = webstr.Utf16();
+		webstr = param4;
+		std::wstring u16_param4 = webstr.Utf16();
+		//webstr = param5;
+		//std::wstring u16_param5 = webstr.Utf16();
+		web_local_frame_client->SendTangramMessage(L"TANGRAM_NODE_MESSAGE", u16_id, u16_handle, u16_param2, u16_param3, u16_param4);
 	}
-	String routing = createRouting(to, newMsgId);
-  ipcMessage(routing, payload, extra);
-	return newMsgId;
 }
 
 // Define a element
 void Tangram::defineElement(const String& tagName, const String& html) {
-  ipcMessage(L"DEFINE_ELEMENT", tagName, html);
+	sendMessage(L"DEFINE_ELEMENT", tagName, html, L"", L"", L"");
 }
 
 // Render an element.
 void Tangram::renderElement(const String& tagName, const String& html) {
-  ipcMessage(L"RENDER_ELEMENT", tagName, html);
-}
-
-void Tangram::ipcMessage(const String& routing, const String& param1, const String& param2) {
-	WebLocalFrameImpl* web_local_frame_impl = WebLocalFrameImpl::FromFrame(GetFrame());
-	// Null when opening a new tab.
-	if (web_local_frame_impl != nullptr) {
-		WebLocalFrameClient* web_local_frame_client = web_local_frame_impl->Client();
-		if (web_local_frame_client) {
-			if (is_pending_) {
-				String message = routing + "%%%" + param1 + "%%%" + param2;
-				pending_messages_.push_back(message);
-			}
-			else {
-				WebString webstr = routing;
-				std::wstring u16_routing = webstr.Utf16();
-				webstr = param1;
-				std::wstring u16_param1 = webstr.Utf16();
-				webstr = param2;
-				std::wstring u16_param2 = webstr.Utf16();
-				web_local_frame_client->SendTangramMessage(u16_routing, u16_param1, u16_param2);
-			}
-		}
-	}
+	sendMessage(L"RENDER_ELEMENT", tagName, html, L"", L"", L"");
 }
 
 void Tangram::waitMessage() {
@@ -101,33 +113,207 @@ void Tangram::waitMessage() {
 
 void Tangram::releaseMessage() {
 	is_pending_ = false;
-	WebLocalFrameImpl* web_local_frame_impl = WebLocalFrameImpl::FromFrame(GetFrame());
-	// Null when opening a new tab.
-	if (web_local_frame_impl != nullptr) {
-		WebLocalFrameClient* web_local_frame_client = web_local_frame_impl->Client();
-		if (web_local_frame_client) {
-			if (pending_messages_.size() > 0) {
-				String stringBuffer = "";
-				for (wtf_size_t i = 0; i < pending_messages_.size(); i++) {
-					if (i > 0) {
-						stringBuffer = stringBuffer + "$$$";
-					}
-					stringBuffer = stringBuffer + pending_messages_[i];
+	if (web_local_frame_client) {
+		if (pending_messages_.size() > 0) {
+			String stringBuffer = "";
+			for (wtf_size_t i = 0; i < pending_messages_.size(); i++) {
+				if (i > 0) {
+					stringBuffer = stringBuffer + "$$$";
 				}
-				WebString bundle = stringBuffer;
-				std::wstring type = L"AGGREGATED_MESSAGE";
-				std::wstring param1 = bundle.Utf16();
-				std::wstring param2 = L"";
-				web_local_frame_client->SendTangramMessage(type, param1, param2);
-				pending_messages_.clear();
+				stringBuffer = stringBuffer + pending_messages_[i];
 			}
+			WebString bundle = stringBuffer;
+			std::wstring type = L"AGGREGATED_MESSAGE";
+			std::wstring param1 = bundle.Utf16();
+			web_local_frame_client->SendTangramMessage(type, param1, L"", L"", L"", L"");
+			pending_messages_.clear();
 		}
 	}
 }
 
-String Tangram::createRouting(const String& to, const String& msgId)
+void Tangram::setVal(const String& strKey, const String& val)
 {
-	return to + ":" + msgId;
+	WebString webstr = strKey;
+	auto it = m_mapVal.find(webstr.Utf16());
+	if (it != m_mapVal.end())
+	{
+		m_mapVal.erase(it);
+	}
+	m_mapVal[webstr.Utf16()] = val;
+}
+
+String Tangram::getVal(const String& strKey)
+{
+	WebString webstr = strKey;
+	auto it = m_mapVal.find(webstr.Utf16());
+	if (it != m_mapVal.end())
+	{
+		return it->second;
+	}
+	return "";
+}
+
+void Tangram::clearData()
+{
+	m_mapVal.erase(m_mapVal.begin(), m_mapVal.end());
+}
+
+void Tangram::setControlVal(const String& CtrlID, long CtrlHandle, const String& strVal)
+{
+	long nHandle = 0;
+	if (CtrlID != "")
+	{
+		Element* const tangramelement = DomWindow()->document()->getElementById(WTF::AtomicString(CtrlID));
+		if (tangramelement)
+		{
+			WTF::AtomicString handle = tangramelement->getAttribute("hwnd");
+			if (handle != "")
+			{
+				WebString webstr = handle;
+				std::wstring u16_handle = webstr.Utf16();
+				nHandle = _wtoi(u16_handle.c_str());
+			}
+		}
+	}
+	else
+		nHandle = CtrlHandle;
+	if (nHandle)
+	{
+		if (web_local_frame_client) {
+			WebString webstr = strVal;
+			std::wstring _val = webstr.Utf16();
+			webstr = CtrlID;
+			std::wstring _strCtrlID = webstr.Utf16();
+			web_local_frame_client->SendTangramMessage(L"TANGRAM_CTRL_VALUE_MESSAGE", _strCtrlID, nHandle, 0, _val, L"");
+		}
+	}
+}
+
+void Tangram::BindControlEvent(const String& CtrlID, long CtrlHandle, long EventID, const String& strBindID)
+{
+	long nHandle = 0;
+	if (CtrlID != "")
+	{
+		Element* const tangramelement = DomWindow()->document()->getElementById(WTF::AtomicString(CtrlID));
+		if (tangramelement)
+		{
+			WTF::AtomicString handle = tangramelement->getAttribute("hwnd");
+			if (handle != "")
+			{
+				WebString webstr = handle;
+				std::wstring u16_handle = webstr.Utf16();
+				nHandle = _wtoi(u16_handle.c_str());
+			}
+		}
+	}
+	else
+		nHandle = CtrlHandle;
+	if (nHandle)
+	{
+		if (web_local_frame_client) {
+			WebString webstr = strBindID;
+			std::wstring _strBindID = webstr.Utf16();
+			webstr = CtrlID;
+			std::wstring _strCtrlID = webstr.Utf16();
+			web_local_frame_client->SendTangramMessage(L"TANGRAM_CTRL_BIND_MESSAGE", _strCtrlID, nHandle, EventID, _strBindID, L"");
+		}
+	}
+}
+
+TangramWinform* Tangram::createWinForm(const String& strFormXml, const long FormType)
+{
+	TangramWinform* form = TangramWinform::Create(DomWindow()->GetFrame(), strFormXml); 
+	form->nHandle = (long)form;
+	form->web_local_frame_client = web_local_frame_client;
+	m_mapWinForm[form->nHandle] = form;
+	if (web_local_frame_client) {
+		WebString webstr = strFormXml;
+		std::wstring _strFormXml = webstr.Utf16();
+		web_local_frame_client->SendTangramMessage(L"TANGRAM_CREATE_WIN_FORM_MESSAGE", _strFormXml, form->nHandle, FormType, L"", L"");
+	}
+	return form;
+}
+
+TangramNode* Tangram::createTangramNode(const long nHandle, const String& strNodeName)
+{
+	TangramNode* node = TangramNode::Create(DomWindow()->GetFrame(), strNodeName);
+	node->nHandle = nHandle;
+	node->web_local_frame_client = web_local_frame_client;
+	m_mapTangramNode[nHandle] = node;
+	WebString webstr = strNodeName;
+	m_mapTangramNode2[webstr.Utf16()] = node;
+	//wstring s = L"大家好|123|是";
+	//std::wstringstream ss;
+	//ss.str(s);
+	//std::vector<std::wstring> elems;
+	//std::wstring item;
+	//while (std::getline(ss, item, L'|')) {
+	//	elems.push_back(item);
+	//}
+
+	return node;
+}
+
+TangramWindow* Tangram::createTangramWindow(const long nHandle, const String& strWndName)
+{
+	TangramWindow* window = TangramWindow::Create(DomWindow()->GetFrame(), strWndName);
+	window->windowhandle_ = nHandle;
+	window->web_local_frame_client = web_local_frame_client;
+	m_mapTangramWindow[nHandle] = window;
+	WebString webstr = strWndName;
+	m_mapTangramWindow2[webstr.Utf16()] = window;
+
+	window->m_pHostNode = TangramNode::Create(DomWindow()->GetFrame(), strWndName);
+	window->m_pHostNode->nHandle = nHandle;
+	window->m_pHostNode->web_local_frame_client = web_local_frame_client;
+	m_mapTangramNode[nHandle] = window->m_pHostNode;
+	m_mapTangramNode2[webstr.Utf16()] = window->m_pHostNode;
+
+
+	//wstring s = L"xxx|123|yyy";
+	//std::wstringstream ss;
+	//ss.str(s);
+	//std::vector<std::wstring> elems;
+	//std::wstring item;
+	//while (std::getline(ss, item, L'|')) {
+	//	elems.push_back(item);
+	//}
+
+	return window;
+}
+
+TangramNode* Tangram::getNode(const String& nodeName)
+{
+	WebString webstr = nodeName;
+	auto it = m_mapTangramNode2.find(webstr.Utf16());
+	if (it != m_mapTangramNode2.end())
+		return it->second;
+	return nullptr;
+}
+
+TangramNode* Tangram::getNode(const long nodeHandle)
+{
+	auto it = m_mapTangramNode.find(nodeHandle);
+	if (it != m_mapTangramNode.end())
+		return it->second;
+	return nullptr;
+}
+
+TangramWindow* Tangram::getWindow(const String& wndName)
+{
+	WebString webstr = wndName;
+	auto it = m_mapTangramWindow2.find(webstr.Utf16());
+	if (it != m_mapTangramWindow2.end())
+		return it->second;
+	return nullptr;
+}
+
+TangramWindow* Tangram::getWindow(const long wndHandle)
+{
+	auto it = m_mapTangramWindow.find(wndHandle);
+	if (it != m_mapTangramWindow.end())
+		return it->second;
+	return nullptr;
 }
 
 const AtomicString& Tangram::InterfaceName() const {

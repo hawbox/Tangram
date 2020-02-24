@@ -1,0 +1,807 @@
+  TangramCLR.ErrorCtrl.resources - Embedded, ContainedInManifestFile, 
+  TangramCLR.TangramMDIForm.resources - Embedded, ContainedInManifestFile, 
+  TangramCLR.TangramNewChildForm.resources - Embedded, ContainedInManifestFile, 
+  TangramCLR.Win32AppForm.resources - Embedded, ContainedInManifestFile, 
+  TangramCLR.WizCtrl.resources - Embedded, ContainedInManifestFile, 
+  TangramCLR.WizForm.resources - Embedded, ContainedInManifestFile, 
+ImageRuntimeVersion: v4.0.30319
+Assembly Tangram_CLR_RT, Version=1.0.1992.1963, Culture=neutral, PublicKeyToken=1bcc94f26a4807a7: 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
+	hash=None, flags=None
+Assembly PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=None, flags=None
+Assembly System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
+	hash=None, flags=None
+Assembly WindowsFormsIntegration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
+	hash=None, flags=None
+Class TangramCLR.ChromeWebBrowser: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(IChromeWebBrowser*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    IChromeWebBrowser* m_pChromeWebBrowserHost : Public
+  Methods:
+    OpenURL(String, Disposition, String, String): PrivateScope, Public, HideBySig
+Struct Disposition: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    Disposition UNKNOWN = 0 : Public, Static, Literal, HasDefault
+    Disposition CURRENT_TAB = 1 : Public, Static, Literal, HasDefault
+    Disposition SINGLETON_TAB = 2 : Public, Static, Literal, HasDefault
+    Disposition NEW_FOREGROUND_TAB = 3 : Public, Static, Literal, HasDefault
+    Disposition NEW_BACKGROUND_TAB = 4 : Public, Static, Literal, HasDefault
+    Disposition NEW_POPUP = 5 : Public, Static, Literal, HasDefault
+    Disposition NEW_WINDOW = 6 : Public, Static, Literal, HasDefault
+    Disposition SAVE_TO_DISK = 7 : Public, Static, Literal, HasDefault
+    Disposition OFF_THE_RECORD = 8 : Public, Static, Literal, HasDefault
+    Disposition IGNORE_ACTION = 9 : Public, Static, Literal, HasDefault
+    Disposition SWITCH_TO_TAB = 10 : Public, Static, Literal, HasDefault
+Class TangramCLR.ErrorCtrl: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Windows.Forms.UserControl
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String ErrorInfoText 'set' : 
+  Methods:
+    set_ErrorInfoText(String): PrivateScope, Public, HideBySig, SpecialName
+Class Gui.Document: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Fields:
+    Gui.IDocument* m_pNativeHandle : Public
+  Methods:
+    Load(String): PrivateScope, Public, HideBySig
+    CreateWnd(ValueType IntPtr IsBoxed): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class RefObject.ClrHandle: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(RefObject.tagHandle): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    Byte Header : Public
+    UInt64 RawHandle : Public
+  Methods:
+    NativeHandle(tagHandle*): PrivateScope, Public, HideBySig
+Class RefObject.RefObjectParams: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(RefObject.IRefObjectParams*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Fields:
+    RefObject.IRefObjectParams* m_pNativeHandle : Public
+  Methods:
+    AddParam(String): PrivateScope, Public, HideBySig
+    GetParam(UInt32): PrivateScope, Public, HideBySig
+    Count(): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Interface RefObject.ICLRRefObjectEventListener: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, BeforeFieldInit
+  Methods:
+    OnEventHandle(String, RefObjectParams): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Struct RefObject.RefObjectEventListenerWrapper: AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
+Interface RefObject.ICLRRefObjectCallback: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, BeforeFieldInit
+  Methods:
+    Invoke(RefObject, RefObjectParams): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Struct RefObject.RefObjectCallbackWrapper: AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
+Class RefObject.RefObject: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(RefObject.ClrHandle): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Fields:
+    RefObject.ClrHandle m_pNativeHandle : Public
+  Methods:
+    GetFactoryName(): PrivateScope, Public, HideBySig
+    GetHandle(): PrivateScope, Public, HideBySig
+    Invoke(String, RefObjectParams, ICLRRefObjectCallback): PrivateScope, Public, HideBySig
+    Invoke(String, RefObjectParams): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class TangramCLR.TangramAppProxy: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Fields:
+    TangramCommon.ITangramAppProxy* m_pTangramAppProxy : Public
+  Methods:
+    Init(): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class TangramCLR.WndNodeCollection: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(IWndNodeCollection*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.Collections.IEnumerable
+    System.IDisposable
+  Properties:
+    Int32 NodeCount 'get ' : 
+    TangramCLR.WndNode Item [Int32] 'get ' : 
+  Methods:
+    GetEnumerator(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    get_Item(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_NodeCount(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class TangramCLR.WndNode: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(IWndNode*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Fields:
+    IWndNode* m_pWndNode : Public
+    System.Object m_pHostObj : Public
+    System.Windows.Forms.ListView m_pBindListView : Public
+    System.Windows.Forms.TreeView m_pBindTreeView : Public
+    TangramCommon.CChromeBrowserProxy* m_pChromeBrowserProxy : Public
+    CTangramNodeEvent* m_pTangramNodeEvent : Public
+    CWndNodeCLREvent* m_pTangramNodeCLREvent : Public
+  Properties:
+    System.String Attribute [System.String] 'get set' : 
+    Int64 Handle 'get ' : 
+    TangramCLR.WndNodeType NodeType 'get ' : 
+    Int32 Cols 'get ' : 
+    Int32 Rows 'get ' : 
+    Int32 Vmax 'get set' : 
+    Int32 Vmin 'get set' : 
+    Int32 Hmax 'get set' : 
+    Int32 Hmin 'get set' : 
+    Int32 Row  'get ' : 
+    Int32 Col  'get ' : 
+    TangramCLR.WndNode HostNode 'get ' : 
+    TangramCLR.WndNode ParentNode 'get ' : 
+    TangramCLR.WndNode RootNode 'get ' : 
+    TangramCLR.WndNodeCollection Objects [TangramCLR.WndNodeType] 'get ' : 
+    TangramCLR.WndNodeCollection ChildNodes 'get ' : 
+    System.Object PlugIn [System.String] 'get ' : 
+    TangramCLR.Compositor HostFrame 'get ' : 
+    TangramCLR.Compositor Compositor 'get ' : 
+    Int32 ActivePage 'get set' : 
+    System.Object Tag 'get set' : 
+    System.Object Extender 'get set' : 
+    System.Drawing.Color rgbRightBottom 'get set' : 
+    System.Drawing.Color rgbLeftTop 'get set' : 
+    System.Drawing.Color rgbMiddle 'get set' : 
+    System.Object XObject 'get ' : 
+    System.String ExternalObjID 'get set' : 
+    System.String URL 'get set' : 
+    System.String Name 'get set' : 
+    TangramCLR.CompositorManager CompositorManager 'get ' : 
+    Boolean SaveToConfigFile 'set' : 
+    System.String Caption 'get set' : 
+    System.String BindListViewData 'set' : 
+    System.String BindTreeViewData 'set' : 
+    System.Windows.Forms.ListView BindListView 'set' : 
+    System.Windows.Forms.TreeView BindTreeView 'set' : 
+  Events:
+    MessageHandle OnIPCMessageReceived: SpecialName
+    TabChange OnTabChange: SpecialName
+    DocumentComplete OnDocumentComplete: SpecialName
+    Destroy OnDestroy: SpecialName
+    OpenComplete OnOpenComplete: SpecialName
+    RootNodeCreated OnRootNodeCreated: SpecialName
+    NodeAddInsCreated OnNodeAddInsCreated: SpecialName
+    NodeAddInCreated OnNodeAddInCreated: SpecialName
+  Methods:
+    set_Vmin(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_Vmax(): PrivateScope, Public, HideBySig, SpecialName
+    set_Vmax(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_Rows(): PrivateScope, Public, HideBySig, SpecialName
+    get_Cols(): PrivateScope, Public, HideBySig, SpecialName
+    get_NodeType(): PrivateScope, Public, HideBySig, SpecialName
+    get_Handle(): PrivateScope, Public, HideBySig, SpecialName
+    get_Attribute(String): PrivateScope, Public, HideBySig, SpecialName
+    set_Attribute(String, String): PrivateScope, Public, HideBySig, SpecialName
+    GetNode(Int32, Int32): PrivateScope, Public, HideBySig
+    GetNodes(String, WndNode&, WndNodeCollection&): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+    NavigateTreeInit(): PrivateScope, Public, HideBySig
+    add_OnNodeAddInCreated(NodeAddInCreated): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnNodeAddInCreated(NodeAddInCreated): PrivateScope, Public, HideBySig, SpecialName
+    Fire_NodeAddInCreated(WndNode, Object, String, String): PrivateScope, Public, HideBySig
+    add_OnNodeAddInsCreated(NodeAddInsCreated): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnNodeAddInsCreated(NodeAddInsCreated): PrivateScope, Public, HideBySig, SpecialName
+    Fire_NodeAddInsCreated(WndNode): PrivateScope, Public, HideBySig
+    add_OnRootNodeCreated(RootNodeCreated): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnRootNodeCreated(RootNodeCreated): PrivateScope, Public, HideBySig, SpecialName
+    Fire_RootNodeCreated(IntPtr, String, WndNode): PrivateScope, Public, HideBySig
+    add_OnOpenComplete(OpenComplete): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnOpenComplete(OpenComplete): PrivateScope, Public, HideBySig, SpecialName
+    Fire_OpenComplete(WndNode): PrivateScope, Public, HideBySig
+    add_OnDestroy(Destroy): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnDestroy(Destroy): PrivateScope, Public, HideBySig, SpecialName
+    Fire_OnDestroy(WndNode): PrivateScope, Public, HideBySig
+    add_OnDocumentComplete(DocumentComplete): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnDocumentComplete(DocumentComplete): PrivateScope, Public, HideBySig, SpecialName
+    Fire_OnDocumentComplete(WndNode, Object, String): PrivateScope, Public, HideBySig
+    add_OnTabChange(TabChange): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnTabChange(TabChange): PrivateScope, Public, HideBySig, SpecialName
+    Fire_OnTabChange(Int32, Int32): PrivateScope, Public, HideBySig
+    add_OnIPCMessageReceived(MessageHandle): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnIPCMessageReceived(MessageHandle): PrivateScope, Public, HideBySig, SpecialName
+    Fire_OnIPCMessageReceived(String, String, String, String, String): PrivateScope, Public, HideBySig
+    AddChannel(String): PrivateScope, Public, HideBySig
+    SendIPCMessage(String, String, String, String): PrivateScope, Public, HideBySig
+    set_BindTreeView(TreeView): PrivateScope, Public, HideBySig, SpecialName
+    set_BindListView(ListView): PrivateScope, Public, HideBySig, SpecialName
+    set_BindTreeViewData(String): PrivateScope, Public, HideBySig, SpecialName
+    set_BindListViewData(String): PrivateScope, Public, HideBySig, SpecialName
+    GetXObject(): PrivateScope, Public, HideBySig
+    Init(): PrivateScope, Public, HideBySig
+    ActiveMethod(String, Object[]): PrivateScope, Public, HideBySig
+    Open(String, String): PrivateScope, Public, HideBySig
+    OpenChild(Int32, Int32, String, String): PrivateScope, Public, HideBySig
+    get_Caption(): PrivateScope, Public, HideBySig, SpecialName
+    set_Caption(String): PrivateScope, Public, HideBySig, SpecialName
+    set_SaveToConfigFile(Boolean(HasFieldMarshal)): PrivateScope, Public, HideBySig, SpecialName
+    get_CompositorManager(): PrivateScope, Public, HideBySig, SpecialName
+    get_Name(): PrivateScope, Public, HideBySig, SpecialName
+    set_Name(String): PrivateScope, Public, HideBySig, SpecialName
+    get_URL(): PrivateScope, Public, HideBySig, SpecialName
+    set_URL(String): PrivateScope, Public, HideBySig, SpecialName
+    get_ExternalObjID(): PrivateScope, Public, HideBySig, SpecialName
+    set_ExternalObjID(String): PrivateScope, Public, HideBySig, SpecialName
+    get_XObject(): PrivateScope, Public, HideBySig, SpecialName
+    get_rgbMiddle(): PrivateScope, Public, HideBySig, SpecialName
+    set_rgbMiddle(Color): PrivateScope, Public, HideBySig, SpecialName
+    get_rgbLeftTop(): PrivateScope, Public, HideBySig, SpecialName
+    set_rgbLeftTop(Color): PrivateScope, Public, HideBySig, SpecialName
+    get_rgbRightBottom(): PrivateScope, Public, HideBySig, SpecialName
+    set_rgbRightBottom(Color): PrivateScope, Public, HideBySig, SpecialName
+    get_Extender(): PrivateScope, Public, HideBySig, SpecialName
+    set_Extender(Object): PrivateScope, Public, HideBySig, SpecialName
+    get_Tag(): PrivateScope, Public, HideBySig, SpecialName
+    set_Tag(Object): PrivateScope, Public, HideBySig, SpecialName
+    get_ActivePage(): PrivateScope, Public, HideBySig, SpecialName
+    set_ActivePage(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_Compositor(): PrivateScope, Public, HideBySig, SpecialName
+    get_HostFrame(): PrivateScope, Public, HideBySig, SpecialName
+    get_PlugIn(String): PrivateScope, Public, HideBySig, SpecialName
+    get_ChildNodes(): PrivateScope, Public, HideBySig, SpecialName
+    get_Objects(WndNodeType): PrivateScope, Public, HideBySig, SpecialName
+    get_RootNode(): PrivateScope, Public, HideBySig, SpecialName
+    get_ParentNode(): PrivateScope, Public, HideBySig, SpecialName
+    get_HostNode(): PrivateScope, Public, HideBySig, SpecialName
+    get_Col(): PrivateScope, Public, HideBySig, SpecialName
+    get_Row(): PrivateScope, Public, HideBySig, SpecialName
+    get_Hmin(): PrivateScope, Public, HideBySig, SpecialName
+    set_Hmin(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_Hmax(): PrivateScope, Public, HideBySig, SpecialName
+    set_Hmax(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_Vmin(): PrivateScope, Public, HideBySig, SpecialName
+Class TangramCLR.WndNode+NodeAddInCreated: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(WndNode, Object, String, String): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(WndNode, Object, String, String, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.WndNode+NodeAddInsCreated: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(WndNode): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(WndNode, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.WndNode+RootNodeCreated: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(IntPtr, String, WndNode): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(IntPtr, String, WndNode, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.WndNode+OpenComplete: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(WndNode): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(WndNode, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.WndNode+Destroy: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(WndNode): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(WndNode, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.WndNode+DocumentComplete: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(WndNode, Object, String): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(WndNode, Object, String, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.WndNode+TabChange: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int32, Int32): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(Int32, Int32, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.WndNode+MessageHandle: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(String, String, String, String, String): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(String, String, String, String, String, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.Compositor: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Collections.Generic.Dictionary`2[System.String,TangramCLR.WndNode]
+    Void .ctor(ICompositor*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Fields:
+    ICompositor* m_pCompositor : Public
+  Properties:
+    TangramCLR.CompositorManager Page 'get ' : 
+    TangramCLR.WndNodeCollection RootNodes 'get ' : 
+    TangramCLR.WndNode Node [System.Object] 'get ' : 
+    IntPtr Handle 'get ' : 
+    System.String Name 'get ' : 
+    System.Object FrameData [System.String] 'get set' : 
+  Methods:
+    Open(String, String): PrivateScope, Public, HideBySig
+    Attach(Boolean(HasFieldMarshal)): PrivateScope, Public, HideBySig
+    get_FrameData(String): PrivateScope, Public, HideBySig, SpecialName
+    set_FrameData(String, Object): PrivateScope, Public, HideBySig, SpecialName
+    get_Name(): PrivateScope, Public, HideBySig, SpecialName
+    get_Handle(): PrivateScope, Public, HideBySig, SpecialName
+    get_Node(Object): PrivateScope, Public, HideBySig, SpecialName
+    get_RootNodes(): PrivateScope, Public, HideBySig, SpecialName
+    get_Page(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class TangramCLR.ApplicationContext: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Windows.Forms.ApplicationContext
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class TangramCLR.WpfApplication: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Windows.Application
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Methods:
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class TangramCLR.Tangram: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(ITangram*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Fields:
+    TangramCLR.ITangramApp m_pTangramAppProxy : Public
+    TangramCLR.ApplicationContext m_pApplicationContext : Public, Static
+    System.Drawing.Icon m_pDefaultIcon : Public, Static
+    System.Windows.Forms.Form m_pMainForm : Public, Static
+    System.Collections.Generic.Dictionary`2[System.String,System.Object] m_pTangramCLRObjDic : Public, Static
+    System.Collections.Generic.Dictionary`2[System.String,TangramCLR.TangramAppProxy] m_pTangramAppProxyDic : Public, Static
+    System.Collections.Generic.Dictionary`2[System.Object,TangramCLR.WndNode] m_pFrameworkElementDic : Public, Static
+    TangramAppInit pOnAppInit : Public, Static
+  Properties:
+    System.String AppKeyValue [System.String] 'get set' : 
+    System.String WizData 'get set' : 
+    System.String NTPXml 'get set' : 
+    System.String AppDataPath 'get ' : 
+    System.String AppFormsPath 'get ' : 
+    System.String AppCommonFormsPath 'get ' : 
+    TangramCLR.WorkBenchWindow ActiveWorkBenchWindow 'get ' : 
+    TangramCLR.TangramAppProxy AppProxy [System.String] 'get ' : 
+    TangramCLR.Tangram RemoteTangram [System.String] 'get ' : 
+    System.Collections.Generic.Dictionary`2[System.String,TangramCLR.TangramAppProxy] TangramAppProxyDictionary 'get ' : 
+    TangramCLR.Compositor ActiveEclipseTopFrame 'get ' : 
+    TangramCLR.WndNode CreatingNode 'get ' : 
+    System.String CurrentDesigningTangramXml 'get ' : 
+    TangramCLR.Tangram TangramCore 'get ' : 
+    TangramCLR.TangramAppType AppType 'get set' : 
+    Boolean SupportCrashReporting 'get set' : 
+    Boolean BrowserModel 'set' : 
+    System.Drawing.Icon DefaultIcon 'get ' : 
+    Boolean BuiltInBrowserModel 'get ' : 
+    System.Object Application 'get set' : 
+    TangramCLR.ApplicationContext Context 'get ' : 
+    System.Windows.Forms.Form MainForm 'get set' : 
+    System.Collections.Generic.Dictionary`2[System.String,System.String] CustomizeDic 'get ' : 
+  Events:
+    FormNodeCreated OnFormNodeCreated: SpecialName
+    TangramRenderHTMLElement OnTangramRenderHTMLElement: SpecialName
+    TangramIPCMsg OnTangramIPCMsg: SpecialName
+    AppMsgLoop OnAppMsgLoop: SpecialName
+    OpenComplete OnOpenComplete: SpecialName
+    GetAppIcon OnGetAppIcon: SpecialName
+    EclipseAppInit OnEclipseAppInit: SpecialName
+    TangramAppInit OnAppInit: SpecialName
+    CloudAppIdle OnCloudAppIdle: SpecialName
+    Close OnClose: SpecialName
+  Methods:
+    Fire_OnOpenComplete(IntPtr, String, WndNode): PrivateScope, Public, Static, HideBySig
+    add_OnAppMsgLoop(AppMsgLoop): PrivateScope, Public, Static, HideBySig, SpecialName
+    remove_OnAppMsgLoop(AppMsgLoop): PrivateScope, Public, Static, HideBySig, SpecialName
+    Fire_OnAppMsgLoop(IntPtr, IntPtr, IntPtr, IntPtr): PrivateScope, Public, Static, HideBySig
+    add_OnTangramIPCMsg(TangramIPCMsg): PrivateScope, Public, Static, HideBySig, SpecialName
+    remove_OnTangramIPCMsg(TangramIPCMsg): PrivateScope, Public, Static, HideBySig, SpecialName
+    Fire_OnTangramIPCMsg(IntPtr, String, String, String): PrivateScope, Public, Static, HideBySig
+    add_OnTangramRenderHTMLElement(TangramRenderHTMLElement): PrivateScope, Public, Static, HideBySig, SpecialName
+    remove_OnTangramRenderHTMLElement(TangramRenderHTMLElement): PrivateScope, Public, Static, HideBySig, SpecialName
+    Fire_OnTangramRenderHTMLElement(IntPtr, String, String): PrivateScope, Public, Static, HideBySig
+    add_OnFormNodeCreated(FormNodeCreated): PrivateScope, Public, Static, HideBySig, SpecialName
+    remove_OnFormNodeCreated(FormNodeCreated): PrivateScope, Public, Static, HideBySig, SpecialName
+    Fire_OnFormNodeCreated(String, Form, WndNode): PrivateScope, Public, Static, HideBySig
+    get_AppKeyValue(String): PrivateScope, Public, HideBySig, SpecialName
+    set_AppKeyValue(String, String): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+    ComputeHash(String): PrivateScope, Public, Static, HideBySig
+    CreateCompositorManager(Control, Object): PrivateScope, Public, Static, HideBySig
+    CreateObject(String): PrivateScope, Public, Static, HideBySig
+    GetType(String): PrivateScope, Public, Static, HideBySig
+    ActiveMethod(String, String, Object[]): PrivateScope, Public, Static, HideBySig
+    ActiveObjectMethod(Object, String, Object[]): PrivateScope, Public, Static, HideBySig
+    StartApplication(String, String): PrivateScope, Public, Static, HideBySig
+    RemoteActiveWorkBenchWindow(String): PrivateScope, Public, Static, HideBySig
+    GetMDIClient(Form): PrivateScope, Public, Static, HideBySig
+    ExtendMDIClient(Form, String, String): PrivateScope, Public, Static, HideBySig
+    InitAppFormTypeDic(): PrivateScope, Public, Static, HideBySig
+    GetFormTypesFromAssembly(String): PrivateScope, Public, Static, HideBySig
+    GetFormTypesFromDirectory(String): PrivateScope, Public, Static, HideBySig
+    FindFiles(String, String, Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig
+    ActiveBrowser(): PrivateScope, Public, Static, HideBySig
+    GetHostBrowser(Object): PrivateScope, Public, Static, HideBySig
+    GetNodeFromControl(Control): PrivateScope, Public, Static, HideBySig
+    RegComponentForTangram(String, Assembly): PrivateScope, Public, Static, HideBySig
+    UpdateNewTabPageLayout(String): PrivateScope, Public, Static, HideBySig
+    SetControlRelation(Control, String): PrivateScope, Public, Static, HideBySig
+    ExportAllCLRObjInfo(): PrivateScope, Public, Static, HideBySig
+    GetTangram(): PrivateScope, Public, Static, HideBySig
+    InitTangramApp(Boolean(HasFieldMarshal), TangramAppType): PrivateScope, Public, Static, HideBySig
+    InitEclipse(): PrivateScope, Public, Static, HideBySig
+    GetWndNodeFromObj(Object): PrivateScope, Public, Static, HideBySig
+    CreateBKPage(Form, String): PrivateScope, Public, Static, HideBySig
+    GetObjAssemblyName(Object): PrivateScope, Public, Static, HideBySig
+    LoadCLRResource(Object, String): PrivateScope, Public, Static, HideBySig
+    BindToCtrl(String, String, Control, Int32, String): PrivateScope, Public, Static, HideBySig
+    BindToCtrl(Control, Control, String): PrivateScope, Public, Static, HideBySig
+    get_CustomizeDic(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_MainForm(): PrivateScope, Public, Static, HideBySig, SpecialName
+    set_MainForm(Form): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_Context(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_Application(): PrivateScope, Public, Static, HideBySig, SpecialName
+    set_Application(Object): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_BuiltInBrowserModel(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_DefaultIcon(): PrivateScope, Public, Static, HideBySig, SpecialName
+    set_BrowserModel(Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_SupportCrashReporting(): PrivateScope, Public, Static, HideBySig, SpecialName
+    set_SupportCrashReporting(Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_AppType(): PrivateScope, Public, Static, HideBySig, SpecialName
+    set_AppType(TangramAppType): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_TangramCore(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_CurrentDesigningTangramXml(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_CreatingNode(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_ActiveEclipseTopFrame(): PrivateScope, Public, Static, HideBySig, SpecialName
+    CreateBrowser(IntPtr, String): PrivateScope, Public, Static, HideBySig
+    get_TangramAppProxyDictionary(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_RemoteTangram(String): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_AppProxy(String): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_ActiveWorkBenchWindow(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_AppCommonFormsPath(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_AppFormsPath(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_AppDataPath(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_NTPXml(): PrivateScope, Public, Static, HideBySig, SpecialName
+    set_NTPXml(String): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_WizData(): PrivateScope, Public, Static, HideBySig, SpecialName
+    set_WizData(String): PrivateScope, Public, Static, HideBySig, SpecialName
+    add_OnClose(Close): PrivateScope, Public, Static, HideBySig, SpecialName
+    remove_OnClose(Close): PrivateScope, Public, Static, HideBySig, SpecialName
+    Fire_OnClose(): PrivateScope, Public, Static, HideBySig
+    add_OnCloudAppIdle(CloudAppIdle): PrivateScope, Public, Static, HideBySig, SpecialName
+    remove_OnCloudAppIdle(CloudAppIdle): PrivateScope, Public, Static, HideBySig, SpecialName
+    Fire_OnCloudAppIdle(): PrivateScope, Public, Static, HideBySig
+    add_OnAppInit(TangramAppInit): PrivateScope, Public, Static, HideBySig, SpecialName
+    remove_OnAppInit(TangramAppInit): PrivateScope, Public, Static, HideBySig, SpecialName
+    raise_OnAppInit(): PrivateScope, Public, Static, HideBySig, SpecialName
+    Fire_OnAppInit(): PrivateScope, Public, Static, HideBySig
+    add_OnEclipseAppInit(EclipseAppInit): PrivateScope, Public, Static, HideBySig, SpecialName
+    remove_OnEclipseAppInit(EclipseAppInit): PrivateScope, Public, Static, HideBySig, SpecialName
+    Fire_OnEclipseAppInit(): PrivateScope, Public, Static, HideBySig
+    add_OnGetAppIcon(GetAppIcon): PrivateScope, Public, Static, HideBySig, SpecialName
+    remove_OnGetAppIcon(GetAppIcon): PrivateScope, Public, Static, HideBySig, SpecialName
+    Fire_OnGetAppIcon(Int32): PrivateScope, Public, Static, HideBySig
+    add_OnOpenComplete(OpenComplete): PrivateScope, Public, Static, HideBySig, SpecialName
+    remove_OnOpenComplete(OpenComplete): PrivateScope, Public, Static, HideBySig, SpecialName
+Class TangramCLR.Tangram+Close: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.Tangram+CloudAppIdle: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.Tangram+TangramAppInit: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.Tangram+EclipseAppInit: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.Tangram+GetAppIcon: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int32): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(Int32, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.Tangram+OpenComplete: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(IntPtr, String, WndNode): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(IntPtr, String, WndNode, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.Tangram+AppMsgLoop: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(IntPtr, IntPtr, IntPtr, IntPtr): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(IntPtr, IntPtr, IntPtr, IntPtr, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.Tangram+TangramIPCMsg: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(IntPtr, String, String, String): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(IntPtr, String, String, String, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.Tangram+TangramRenderHTMLElement: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(IntPtr, String, String): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(IntPtr, String, String, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.Tangram+FormNodeCreated: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(String, Form, WndNode): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(String, Form, WndNode, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.CompositorManager: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Collections.Generic.Dictionary`2[System.String,TangramCLR.Compositor]
+    Void .ctor(ICompositorManager*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.Windows.Forms.IWin32Window
+    System.IDisposable
+  Fields:
+    ICompositorManager* m_pCompositorManager : Public
+  Properties:
+    TangramCLR.Compositor Compositors [System.Object] 'get ' : 
+    System.Object Extender [System.String] 'get set' : 
+    System.String CompositorName [IntPtr] 'get ' : 
+    System.String CompositorName [System.Windows.Forms.Control] 'get ' : 
+    IntPtr Handle 'get ' : 
+  Events:
+    CompositorManagerLoad OnCompositorManagerLoad: SpecialName
+    TabChange OnTabChange: SpecialName
+    Destroy OnDestroy: SpecialName
+    IPCMsg OnIPCMsg: SpecialName
+    DocumentComplete OnDocumentComplete: SpecialName
+  Methods:
+    get_Handle(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_CompositorName(IntPtr): PrivateScope, Public, HideBySig, SpecialName
+    get_CompositorName(Control): PrivateScope, Public, HideBySig, SpecialName
+    get_Extender(String): PrivateScope, Public, HideBySig, SpecialName
+    set_Extender(String, Object): PrivateScope, Public, HideBySig, SpecialName
+    get_Compositors(Object): PrivateScope, Public, HideBySig, SpecialName
+    GetWndNode(String, String): PrivateScope, Public, HideBySig
+    CreateCompositor(IntPtr, String): PrivateScope, Public, HideBySig
+    CreateCompositor(Control, String): PrivateScope, Public, HideBySig
+    OpenCompositors(String, String, String, Boolean(HasFieldMarshal)): PrivateScope, Public, HideBySig
+    add_OnDocumentComplete(DocumentComplete): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnDocumentComplete(DocumentComplete): PrivateScope, Public, HideBySig, SpecialName
+    Fire_OnDocumentComplete(CompositorManager, Object, String): PrivateScope, Public, HideBySig
+    add_OnIPCMsg(IPCMsg): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnIPCMsg(IPCMsg): PrivateScope, Public, HideBySig, SpecialName
+    Fire_OnIPCMsg(Compositor, String, String, String): PrivateScope, Public, HideBySig
+    add_OnDestroy(Destroy): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnDestroy(Destroy): PrivateScope, Public, HideBySig, SpecialName
+    Fire_OnDestroy(WndNode): PrivateScope, Public, HideBySig
+    add_OnTabChange(TabChange): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnTabChange(TabChange): PrivateScope, Public, HideBySig, SpecialName
+    Fire_OnTabChange(WndNode, Int32, Int32): PrivateScope, Public, HideBySig
+    add_OnCompositorManagerLoad(CompositorManagerLoad): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnCompositorManagerLoad(CompositorManagerLoad): PrivateScope, Public, HideBySig, SpecialName
+    Fire_OnCompositorManagerLoad(CompositorManager): PrivateScope, Public, HideBySig
+    GetPageXML(): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class TangramCLR.CompositorManager+DocumentComplete: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(CompositorManager, Object, String): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(CompositorManager, Object, String, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.CompositorManager+IPCMsg: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Compositor, String, String, String): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(Compositor, String, String, String, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.CompositorManager+Destroy: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(WndNode): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(WndNode, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.CompositorManager+TabChange: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(WndNode, Int32, Int32): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(WndNode, Int32, Int32, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.CompositorManager+CompositorManagerLoad: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(CompositorManager): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(CompositorManager, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.EclipseView: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(IEclipseCtrl*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    IEclipseCtrl* m_pCtrl : Public
+  Properties:
+    IntPtr Handle 'get ' : 
+  Methods:
+    get_Handle(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    Open(String, String, String): PrivateScope, Public, HideBySig
+Class TangramCLR.WorkBenchWindow: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(IWorkBenchWindow*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.Collections.IEnumerable
+    System.IDisposable
+  Properties:
+    Int32 NodeCount 'get ' : 
+    TangramCLR.EclipseView Item [Int32] 'get ' : 
+  Methods:
+    Active(): PrivateScope, Public, HideBySig
+    SWTExtend(String, String): PrivateScope, Public, HideBySig
+    SWTExtendInView(Int32, String, String): PrivateScope, Public, HideBySig
+    GetEnumerator(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    CloseTangramUI(): PrivateScope, Public, HideBySig
+    get_Item(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_NodeCount(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class TangramCLR.TangramChromeObjProxy: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Fields:
+    TangramCLR.WndNode m_pWndNode : Public
+  Methods:
+    Create(IntPtr): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    OnTangramFunction(Object[]): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    OnJSExtInvokeHandler(String, Object[]): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Interface TangramCLR.ITangramEventObjProxy: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, BeforeFieldInit
+Interface TangramCLR.ITangramWndNodeProxy: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, BeforeFieldInit
+  Methods:
+    OnOpenComplete(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnDestroy(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnNodeAddInCreated(Object, String, String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnNodeAddInsCreated(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnNodeDocumentComplete(Object, String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnControlNotify(WndNode, Int32 IsLong, Int32 IsLong, IntPtr, String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnTabChange(Int32 IsLong, Int32 IsLong): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Interface TangramCLR.ICompositorManagerProxy: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, BeforeFieldInit
+  Methods:
+    OnCompositorManagerLoaded(CompositorManager, String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnNodeCreated(WndNode): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnAddInCreated(WndNode, Object, String, String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnBeforeOpenXml(String, IntPtr): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnOpenXmlComplete(String, IntPtr, WndNode): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnDestroy(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnNodeMouseActivate(WndNode): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnClrControlCreated(WndNode, Control, String, IntPtr): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnTabChange(WndNode, Int32 IsLong, Int32 IsLong): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnControlNotify(WndNode, Int32 IsLong, Int32 IsLong, IntPtr, String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnTangramEvent(ITangramEventObjProxy): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Interface TangramCLR.ICompositorProxy: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, BeforeFieldInit
+  Methods:
+    OnExtend(WndNode, String, String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Interface TangramCLR.ITangramApp: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, BeforeFieldInit
+  Methods:
+    TangramClose(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnTangramNodeInit(WndNode): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnCompositorCreated(Compositor): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnCompositorManagerCreated(CompositorManager): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnOpenComplete(IntPtr, String, WndNode): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    OnTangramEvent(ITangramEventObjProxy): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Class TangramCLR.TangramNewChildForm: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Windows.Forms.Form
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    System.Windows.Forms.Form m_pParent : Public
+  Methods:
+    GetListView(): PrivateScope, Public, HideBySig
+Class AssemblyLocalor: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    Init(): PrivateScope, Public, Static, HideBySig
+    CurrentDomain_AssemblyResolve(Object, ResolveEventArgs): PrivateScope, Public, Static, HideBySig
+    CurrentDomain_AssemblyLoad(Object, AssemblyLoadEventArgs): PrivateScope, Public, Static, HideBySig
+Class TangramCLR.Win32AppForm: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Windows.Forms.Form
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Struct TangramCLR.WndNodeType: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    TangramCLR.WndNodeType TNT_Blank = 1 : Public, Static, Literal, HasDefault
+    TangramCLR.WndNodeType TNT_ActiveX = 2 : Public, Static, Literal, HasDefault
+    TangramCLR.WndNodeType TNT_Splitter = 4 : Public, Static, Literal, HasDefault
+    TangramCLR.WndNodeType TNT_Tabbed = 8 : Public, Static, Literal, HasDefault
+    TangramCLR.WndNodeType TNT_CLR_Control = 16 : Public, Static, Literal, HasDefault
+    TangramCLR.WndNodeType TNT_CLR_Form = 32 : Public, Static, Literal, HasDefault
+    TangramCLR.WndNodeType TNT_CLR_Window = 64 : Public, Static, Literal, HasDefault
+    TangramCLR.WndNodeType TNT_View = 128 : Public, Static, Literal, HasDefault
+Struct TangramCLR.TangramAppType: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    TangramCLR.TangramAppType APP_WIN32 = 500 : Public, Static, Literal, HasDefault
+    TangramCLR.TangramAppType APP_BROWSER = 1000 : Public, Static, Literal, HasDefault
+    TangramCLR.TangramAppType APP_ECLIPSE = 2000 : Public, Static, Literal, HasDefault
+    TangramCLR.TangramAppType APP_BROWSER_ECLIPSE = 3000 : Public, Static, Literal, HasDefault
+    TangramCLR.TangramAppType APP_BROWSERAPP = 4000 : Public, Static, Literal, HasDefault
+    TangramCLR.TangramAppType APP_OTHER = 0 : Public, Static, Literal, HasDefault
+Class TangramCLR.WizCtrl: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Windows.Forms.UserControl
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Events:
+    WizFinish OnWizFinish: SpecialName
+  Methods:
+    add_OnWizFinish(WizFinish): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnWizFinish(WizFinish): PrivateScope, Public, HideBySig, SpecialName
+    Fire_OnWizFinish(Int32): PrivateScope, Public, HideBySig
+Class TangramCLR.WizCtrl+WizFinish: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Int32): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(Int32, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class TangramCLR.WizForm: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Windows.Forms.Form
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    System.String m_strAppType : Public
+    System.Windows.Forms.ListView m_pWizListView : Public
+    Int32 m_nProjectCount : Public, Static
+    Boolean m_bInitLibInfo : Public, Static
+    Boolean m_bSolutionModel : Public, Static
+  Properties:
+    System.String TemplateID 'get set' : 
+    System.String NavigateData 'set' : 
+  Methods:
+    set_NavigateData(String): PrivateScope, Public, HideBySig, SpecialName
+    get_TemplateID(): PrivateScope, Public, HideBySig, SpecialName
+    set_TemplateID(String): PrivateScope, Public, HideBySig, SpecialName
+    InitCustomizeDic(String): PrivateScope, Public, HideBySig
+    FillListView(String, ListView): PrivateScope, Public, HideBySig

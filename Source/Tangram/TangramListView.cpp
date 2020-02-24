@@ -956,7 +956,7 @@ void CTangramListView::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 					HWND hWnd = ::GetParent(m_pTangramTabCtrl->m_hWnd);
 					pCompositorManager = m_pWndNode->m_pTangramNodeCommonData->m_pCompositorManager;
 					pCompositorManager->CreateCompositor(CComVariant(0), CComVariant((__int64)hWnd), CComBSTR(L"CLRFrame"), &m_pCompositor);
-					CString strXml = _T("<Tangram><window><node name='node' id='hostview'/></window></Tangram>");
+					CString strXml = _T("<Tangram><window><node name='node' nodetype='hostview'/></window></Tangram>");
 					m_pCompositor->Open(CComBSTR("default"), CComBSTR(strXml), &pNode);
 				}
 				//if (m_pCompositor)
@@ -967,7 +967,7 @@ void CTangramListView::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 				//	{
 				//		pVSAddin->m_strSelectedPrj = it->second->m_strPrjFullPath;
 				//		CString strURL = _T("res://") + g_pTangram->m_strProgramFilePath + _T("\\Tangram\\TangramInit.dll/UPDATEPRJ.htm");
-				//		CString strXml = _T("<Tangram><window><node id='splitter' name='node' rows='2' cols='1' width='30,' height='168,157,'><node id='tangramtabctrl' name='tabctrl' cnnid='tangramtabbedwnd.tabbedcomponent.1' tabstyle='18' activepage='0'><node name='Page0' id='activex' caption='Update Current Project for Tangram Support'/></node><node name='Splitter01' id='hostview'/></node></window></Tangram>");
+				//		CString strXml = _T("<Tangram><window><node nodetype='splitter' name='node' rows='2' cols='1' width='30,' height='168,157,'><node nodetype='tangramtabctrl' name='tabctrl' cnnid='tangramtabbedwnd.tabbedcomponent.1' tabstyle='18' activepage='0'><node name='Page0' id='activex' caption='Update Current Project for Tangram Support'/></node><node name='Splitter01' id='hostview'/></node></window></Tangram>");
 				//		CTangramXmlParse m_Parse;
 				//		if (m_Parse.LoadXml(strXml))
 				//		{
@@ -992,7 +992,7 @@ void CTangramListView::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 				//	else
 				//	{
 				//		pVSAddin->m_strSelectedPrj = _T("");
-				//		//CString strXml = _T("<Tangram><window><node name='node' id='hostview'/></window></Tangram>");
+				//		//CString strXml = _T("<Tangram><window><node name='node' nodetype='hostview'/></window></Tangram>");
 				//		m_pCompositor->Open(CComBSTR("default"), CComBSTR(""), &pNode);
 				//	}
 				//}

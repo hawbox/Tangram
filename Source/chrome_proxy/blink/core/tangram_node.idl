@@ -1,3 +1,4 @@
+
 [
 	Exposed = Window,
 	NoInterfaceObject
@@ -6,8 +7,41 @@
 	// Message API
 	void addChannel(DOMString channel);
 	void removeChannel(DOMString channel);
-	void sendMessage(DOMString channel, DOMString data);
+	void sendMessage(DOMString id, DOMString param1, DOMString param2, DOMString param3, DOMString param4, DOMString param5);
+
+	// Data Dictionary:
+	void setVal(DOMString strKey, DOMString strVal);
+	DOMString getVal(DOMString strKey);
+	void clearData();
+
+	//Control Bind Api:
+	void setControlVal(DOMString CtrlID, long CtrlHandle, DOMString strVal);
+	void BindControlEvent(DOMString CtrlID, long CtrlHandle, long EventID, DOMString strBindID);
+
+	//Node API
+	TangramNode getChild(long nIndex);
+	TangramNode getChild(DOMString strName);
+
+	readonly attribute DOMString name;
+	readonly attribute long row;
+	readonly attribute long col;
+	readonly attribute long rows;
+	readonly attribute long cols;
+	readonly attribute long nodehandle;
+
+	readonly attribute TangramWindow parentWindow;
+	readonly attribute TangramWinform parentForm;
 	// Event handler attributes
 	attribute EventHandler onMessageReceived;
-
+	attribute EventHandler onTangramNodeCreated;
+	attribute EventHandler onNodeMouseActivate;
+	attribute EventHandler onMdiChildActivate;
+	attribute EventHandler onTreeViewNodeAfterSelect;
+	attribute EventHandler onTreeViewNodeMouseDoubleClick;
+	attribute EventHandler onListViewItemSelectionChanged;
+	attribute EventHandler onFormButtonClick;
+	attribute EventHandler onFormMenuItemClick;
+	attribute EventHandler onWinFormCreated;
+	attribute EventHandler onWinFormClosed;
+	attribute EventHandler onBindCLRCtrlEvent;
 };

@@ -39,20 +39,24 @@ namespace ChromePlus {
 		CBrowserWnd();
 		~CBrowserWnd() override;
 
+		bool		m_bTabChange;
+		int			m_heightfix;
 		float		m_fdevice_scale_factor;
 		HWND		m_hDrawWnd;
+		HWND		m_hOldTab;
 		CString		m_strCurKey;
-		//CWndNode*	m_pWndNode;
+		CWndNode*	m_pParentNode;
 		CHtmlWnd*	m_pVisibleWebWnd;
 
 		LRESULT BrowserLayout();
 
+		STDMETHOD(AddURLs)(BSTR bstrURLs);
 		STDMETHOD(OpenURL)(BSTR bstrURL, BrowserWndOpenDisposition nDisposition, BSTR bstrKey, BSTR bstrXml);
 		BEGIN_MSG_MAP(CBrowserWnd)
 			MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 			MESSAGE_HANDLER(WM_ACTIVATE, OnActivate)
-			MESSAGE_HANDLER(WM_TABCHANGE, OnChromeTabChange)
 			MESSAGE_HANDLER(WM_TANGRAMMSG, OnTangramMsg)
+			MESSAGE_HANDLER(WM_TABCHANGE, OnChromeTabChange)
 			MESSAGE_HANDLER(WM_MOUSEACTIVATE, OnMouseActivate)
 			MESSAGE_HANDLER(WM_BROWSERLAYOUT, OnBrowserLayout)
 			MESSAGE_HANDLER(WM_WINDOWPOSCHANGING, OnWindowPosChanging)
@@ -67,14 +71,14 @@ namespace ChromePlus {
 		ULONG InternalAddRef() { return 1; }
 		ULONG InternalRelease() { return 1; }
 	private:
-		void UpdateContentRect(RECT& rc, int nTopFix) override;
+		void UpdateContentRect(HWND hContentWnd, RECT& rc, int nTopFix) override;
 		void ActiveChromeTab(HWND hActive, HWND hOldWnd) override;
 
 		void OnFinalMessage(HWND hWnd) override;
 		LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 		LRESULT OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-		LRESULT OnBrowserLayout(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 		LRESULT OnTangramMsg(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+		LRESULT OnBrowserLayout(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 		LRESULT OnChromeTabChange(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 		LRESULT OnMouseActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 		LRESULT OnWindowPosChanging(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);

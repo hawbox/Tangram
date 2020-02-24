@@ -863,6 +863,9 @@ namespace TangramCLR
 
 	public:
 		WndNode^ Open(String^ layerName, String^ layerXML);
+
+		void SendMessage(String^ strFrom, String^ strTo, String^ strMsgId, String^ strMsgContent, String^ strExtra);
+		
 		void Attach(bool bAttach)
 		{
 			if (m_pCompositor)
@@ -973,12 +976,13 @@ namespace TangramCLR
 		static Dictionary<String^, Type^>^ m_pAppMDIFormTypeDic = nullptr;
 		static Dictionary<Control^, String^>^ m_pControlRelationDic = nullptr;
 		static Dictionary<String^, String^>^ CustomizeDictionary = gcnew Dictionary<String^, String^>();
+	public:
 #ifndef _WIN64
 		static Dictionary<String^, String^>^ replacementsDictionary = nullptr;
 		static Dictionary<String^, Control^>^ m_pWizCtrlDic = gcnew Dictionary<String^, Control^>();;
 		static Control^ m_pWizForm = nullptr;
 #endif
-	public:
+		static String^ m_strWizData = L"";
 		static System::Drawing::Icon^ m_pDefaultIcon = nullptr;
 		static Form^ m_pMainForm = nullptr;
 		static Dictionary<String^, Object^>^ m_pTangramCLRObjDic = gcnew Dictionary<String^, Object^>();
@@ -988,6 +992,7 @@ namespace TangramCLR
 		static String^ ComputeHash(String^ source);
 		static CompositorManager^ CreateCompositorManager(Control^ ctrl, Object^ ExternalObj);
 		static Object^ CreateObject(String^ ObjID);
+		static Form^ CreateForm(IWin32Window^ parent, String^ ObjID);
 		static Type^ GetType(String^ ObjID);
 		static Object^ ActiveMethod(String^ strObjID, String^ strMethod, cli::array<Object^, 1>^ p);
 		static Object^ ActiveObjectMethod(Object^ pObj, String^ strMethod, cli::array<Object^, 1>^ p);
@@ -1152,6 +1157,11 @@ namespace TangramCLR
 		{
 			Form^ get();
 			void set(Form^ frm);
+		}
+
+		static property ChromeWebBrowser^ HostWebBrowser
+		{
+			ChromeWebBrowser^ get();
 		}
 
 		static property ApplicationContext^ Context

@@ -5,16 +5,49 @@ typedef sequence<any> ObjectArray;
 	NoInterfaceObject 
 ] interface Tangram : EventTarget {
 
-	// Internal API
-	void ipcMessage__(DOMString routing, DOMString param1, DOMString param2);
-
 	// Message API
 	void addChannel(DOMString channel);
 	void removeChannel(DOMString channel);
-	DOMString sendMessage(DOMString to, DOMString payload, optional DOMString extra = "", optional DOMString msgId = "");
+	void sendMessage(DOMString id, DOMString param1, DOMString param2, 
+		[DefaultValue = Undefined] optional DOMString param3, 
+		[DefaultValue = Undefined] optional DOMString param4, 
+		[DefaultValue = Undefined] optional DOMString param5);
+	void sendNodeMessage(DOMString domid, DOMString param1, DOMString param2, 
+		[DefaultValue = Undefined] optional DOMString param3, 
+		[DefaultValue = Undefined] optional DOMString param4, 
+		[DefaultValue = Undefined] optional DOMString param5);
 
+	// Data Dictionary:
+	void setVal(DOMString strKey, DOMString strVal);
+	DOMString getVal(DOMString strKey);
+	void clearData();
+
+	//Control Bind Api:
+	void setControlVal(DOMString CtrlID, long CtrlHandle, DOMString strVal);
+	void BindControlEvent(DOMString CtrlID, long CtrlHandle, long EventID, DOMString strBindID);
+
+	//TangramNode API
+	TangramNode getNode(DOMString nodeName);
+	TangramNode getNode(long nodeHandle);
+	TangramWindow getWindow(DOMString wndName);
+	TangramWindow getWindow(long wndHandle);
+
+	//TangramWinForm API
+	TangramWinform createWinForm(DOMString strFormXml, long FormType);
 	// Event handler attributes
 	attribute EventHandler onMessageReceived;
+	attribute EventHandler onTangramNodeCreated;
+	attribute EventHandler onTangramWindowCreated;
+	attribute EventHandler onNodeMouseActivate;
+	attribute EventHandler onMdiChildActivate;
+	attribute EventHandler onTreeViewNodeAfterSelect;
+	attribute EventHandler onTreeViewNodeMouseDoubleClick;
+	attribute EventHandler onListViewItemSelectionChanged;
+	attribute EventHandler onFormButtonClick;
+	attribute EventHandler onFormMenuItemClick;
+	attribute EventHandler onWinFormCreated;
+	attribute EventHandler onWinFormClosed;
+	attribute EventHandler onBindCLRCtrlEvent;
 
 	// DOM API
 	void defineElement(DOMString tagName, DOMString html);

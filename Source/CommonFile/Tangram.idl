@@ -37,6 +37,7 @@ interface ITangramTreeView;
 interface IEclipseCtrl;
 interface ITangramDoc;
 interface IVSDocument;
+interface IChromeWebPage;
 interface IChromeWebBrowser;
 interface IWndNodeCollection;
 
@@ -608,6 +609,7 @@ interface ICompositor : IDispatch{
 	[propget, id(11)] HRESULT CompositorType([out, retval] CompositorType* pVal);
 	[propget, id(12)] HRESULT Name([out, retval] BSTR* pVal);
 	[propget, id(13)] HRESULT HostBrowser([out, retval] IChromeWebBrowser** ppChromeWebBrowser);
+	[propget, id(14)] HRESULT HostWebPage([out, retval] IChromeWebPage** ppChromeWebPage);
 
 	[id(101), helpstring("method Detach")] HRESULT Detach(void);
 	[id(102), helpstring("method Attach")] HRESULT Attach(void);
@@ -705,6 +707,7 @@ interface IWorkBenchWindow : IDispatch {
 ]
 interface IChromeWebBrowser : IDispatch {
 	[id(101)] HRESULT OpenURL(BSTR bstrURL, BrowserWndOpenDisposition nDisposition, BSTR bstrKey, BSTR bstrXml);
+	[id(102)] HRESULT AddURLs(BSTR bstrURLs);
 	//[id(104)] HRESULT ExtendEx(BSTR bstrKey, BSTR bstrXml, [out, retval] IWndNode** ppNode);
 	//[id(105)] HRESULT ExtendInView(int nIndex, BSTR bstrKey, BSTR bstrXml, [out, retval] IWndNode** ppRetNode);
 };
@@ -716,8 +719,10 @@ interface IChromeWebBrowser : IDispatch {
 	nonextensible,
 	pointer_default(unique)
 ]
-interface IChromeWebContent : IDispatch {
-	//[id(101)] HRESULT OpenURL(BSTR bstrURL, BrowserWndOpenDisposition nDisposition, BSTR bstrKey, BSTR bstrXml, IDispatch* pDisp);
+interface IChromeWebPage : IDispatch {
+	[propget, id(1)] HRESULT HostWnd([out, retval] LONGLONG* pVal);
+	[propput, id(1)] HRESULT HostWnd([in] LONGLONG newVal);
+	[id(101)] HRESULT CreateForm(BSTR bstrKey, LONGLONG hParent, [out, retval]IDispatch** pRetForm);
 };
 
 [

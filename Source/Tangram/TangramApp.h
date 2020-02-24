@@ -51,6 +51,27 @@ public:
 	void OnFinalMessage(HWND hWnd);
 };
 
+class CWebHelperWnd :
+	public CWindowImpl<CWebHelperWnd, CWindow>
+{
+public:
+	CWebHelperWnd(void)
+	{
+		m_hWebHost = nullptr;
+	};
+
+	~CWebHelperWnd(void) {};
+
+	HWND m_hWebHost;
+	BEGIN_MSG_MAP(CHelperWnd)
+		MESSAGE_HANDLER(WM_SHOWWINDOW, OnShowWindow)
+		MESSAGE_HANDLER(WM_WINDOWPOSCHANGING, OnWindowPosChanging)
+	END_MSG_MAP()
+	void OnFinalMessage(HWND hWnd);
+	LRESULT OnShowWindow(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnWindowPosChanging(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+};
+
 class CTangramApp :
 	public CWinApp,
 	public CComObjectRootBase,

@@ -38,6 +38,8 @@ public:
 	int m_nHostWidth, m_nHostHeight;
 	int m_Vmin,m_Vmax,m_Hmin,m_Hmax;
 	int m_nNeedRefreshCol;
+	int m_nMasterRow;
+	int m_nMasterCol;
 	COLORREF		rgbLeftTop;
 	COLORREF		rgbMiddle;
 	COLORREF		rgbRightBottom;

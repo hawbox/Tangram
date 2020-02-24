@@ -2,7 +2,7 @@
  *					Tangram Library - version 10.0.0
  **
  *********************************************************************************
- * Copyright (C) 2002-2019 by Tangram Team.   All Rights Reserved.
+ * Copyright (C) 2002-2020 by Tangram Team.   All Rights Reserved.
  **
  *
  * THIS SOURCE FILE IS THE PROPERTY OF TANGRAM TEAM AND IS NOT TO
@@ -32,6 +32,25 @@
 #define TANGRAM_CONST_NEWDOC			19631222
 #define TANGRAM_CONST_PANE_FIRST		20022017
 #define TANGRAM_CHROME_APP_INIT			20190501
+
+#define IPC_NODE_CREARED								20200221
+#define IPC_NODE_CREARED_ID								_T("Tangram_WndNode_Created")
+#define IPC_NODE_ONMOUSEACTIVATE						20200222
+#define IPC_NODE_ONMOUSEACTIVATE_ID						_T("Tangram_WndNode_OnMouseActivate")
+#define IPC_WINFORM_TREEVIEW_NODE_ONAFTERSELECT			20200223
+#define IPC_WINFORM_TREEVIEW_NODE_ONAFTERSELECT_ID		_T("WinForm_TreeView_Node_OnAfterSelect")
+#define IPC_MDIWINFORM_ACTIVEMDICHILD					20200224
+#define IPC_MDIWINFORM_ACTIVEMDICHILD_ID				_T("MdiWinForm_ActiveMdiChild")
+#define IPC_BIND_CLR_CTRL_EVENT							20200225
+#define IPC_BIND_CLR_CTRL_EVENT_ID						_T("BIND_CLR_CTRL_EVENT")
+#define IPC_BUTTON_CLICK_EVENT							20200226
+#define IPC_BUTTON_CLICK_EVENT_ID						_T("WINFORM_BUTTON_CLICK")
+#define IPC_TANGRAM_CREATE_WIN_FORM_MESSAGE				20200227
+#define IPC_TANGRAM_CREATE_WIN_FORM_MESSAGE_ID			_T("TANGRAM_CREATE_WIN_FORM_MESSAGE")
+#define IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE		20200228
+#define IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE_ID	_T("IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE")
+#define CREATE_CHILD_TANGRAM_NODE               		20200229
+#define CREATE_CHILD_TANGRAM_NODE_ID	                _T("CREATE_CHILD_TANGRAM_NODE")
 
 #define TANGRAM_APP_WIN32				500
 #define TANGRAM_APP_BROWSER				1000
@@ -129,7 +148,7 @@
 
 #define TGM_NAME				_T("name")
 #define TGM_CAPTION				_T("caption")
-#define TGM_NODE_TYPE			_T("id")
+#define TGM_NODE_TYPE			_T("nodetype")
 #define TGM_CNN_ID				_T("cnnid")
 #define TGM_HEIGHT				_T("height")
 #define TGM_WIDTH				_T("width")
@@ -178,18 +197,23 @@ namespace TangramCommon {
 	class CTangramBrowserFactory;
 	class CChromeRenderProcessProxy;
 	class CChromeWebContentProxyBase;
-	class CChromeRenderFrameHostBase;
+	class CChromeRenderFrameHost;
 	class CChromeChildProcessHostImpl;
-	class CChromeRenderFrameHostProxyBase;
+	class CChromeRenderFrameHostProxy;
 	class CChromeChildProcessHostImplProxy;
 
 	class ITangramCLRImpl;
 	class ITangramAppProxy;
 
 	typedef struct {
-		CString m_strType;
-		CString m_strKey;
-		CString m_strData;
+		CString m_strId = _T("");
+		CString m_strParam1 = _T("");
+		CString m_strParam2 = _T("");
+		CString m_strParam3 = _T("");
+		CString m_strParam4 = _T("");
+		CString m_strParam5 = _T("");
+		long m_nHandleFrom = 0;
+		long m_nHandleTo = 0;
 	} IPCMsg;
 
 	typedef struct
@@ -220,6 +244,17 @@ namespace TangramCommon {
 		CString strExt;
 		CString strfilterName;
 	} DocTemplateInfo;
+
+	typedef struct 
+	{
+		int nType = -1;
+		HWND m_hWnd = NULL;
+		CString m_strBindObjName = _T("");
+		CString m_strBindData = _T("");
+		IWndNode* m_pNode = nullptr;
+		IDispatch* m_pObjDisp = nullptr;
+		LPARAM lParam = 0;
+	} BindWebObj;
 
 	typedef struct
 	{
@@ -511,6 +546,11 @@ namespace TangramCommon {
 			m_strObjTypeName = _T("");
 		}
 
+		int					m_nCreatingFormType = 0;
+		long				m_lTangramNodeHandle = 0;
+		HWND				m_hCreatingFormParent = 0;
+		CChromeRenderFrameHostProxy* m_pWorkingProxy = 0;
+
 		CString				m_strObjTypeName;
 		CString				m_strCurrentWinFormTemplate;
 
@@ -548,6 +588,12 @@ namespace TangramCommon {
 		virtual void* Extend(CString strKey, CString strData, CString strFeatures) { return nullptr; }
 		virtual bool IsSupportDesigner() { return false; }
 		virtual HICON GetAppIcon(int nIndex) = 0;
+		virtual void OnWinFormActivate(HWND, int nState) = 0;
+		virtual IDispatch* CreateWinForm(HWND hParent, BSTR strXML) = 0;
+		virtual void OnWebPageCreated(HWND, CChromeRenderFrameHostProxy*, IChromeWebPage* pChromeWebContent, int nState) = 0;
+		virtual void HideMenuStripPopup() = 0;
+		virtual bool PreWindowPosChanging(HWND hWnd, WINDOWPOS* lpwndpos, int nType) = 0;
+		virtual bool BindCtrlEventForBrowser(HWND hWebPage, HWND hWnd, int nEventType, CString strBindID) = 0;
 	};
 
 	class CTangramImpl {
@@ -563,7 +609,6 @@ namespace TangramCommon {
 			m_hFormNodeWnd = nullptr;
 			m_hMainWnd = nullptr;
 			m_hTangramWnd = nullptr;
-			m_hWebBrowserWndForJS = nullptr;
 			m_pCLRProxy = nullptr;
 			m_hChildHostWnd = nullptr;
 			m_pActiveAppProxy = nullptr;
@@ -571,7 +616,6 @@ namespace TangramCommon {
 			m_pTangramAppProxy = nullptr;
 			m_pCurMDIChildFormInfo = nullptr;
 			m_strNtpXml = _T("");
-			m_strNtpDataXml = _T("");
 			m_pTangramPackageProxy = nullptr;
 			m_strAppCurrentFormTemplatePath = _T("");
 			m_pObjectFactory = nullptr;
@@ -613,7 +657,6 @@ namespace TangramCommon {
 		DWORD									m_nAppType;
 		HWND									m_hTemplateWnd;
 		HWND									m_hTemplateChildWnd;
-		HWND									m_hWebBrowserWndForJS;
 		HWND									m_hActiveWnd;
 		HWND									m_hEclipseHideWnd;
 		HWND									m_hMainWnd;
@@ -657,7 +700,6 @@ namespace TangramCommon {
 		CString									m_strNewDocXml;
 		CString									m_strStartXml;
 		CString									m_strNtpXml;
-		CString									m_strNtpDataXml;
 
 		CString 								m_strConfigFile;
 		CString									m_strWinAppConfigFile;
@@ -680,6 +722,7 @@ namespace TangramCommon {
 		CStringA								m_strBridgeJavaClass;
 		CString									m_strStartJarPath;
 
+		IPCMsg*									m_pCurrentIPCMsg;
 		ITangramCLRImpl*						m_pCLRProxy;
 		ITangramAppProxy*						m_pActiveAppProxy;
 		ITangramAppProxy*						m_pTangramAppProxy;
@@ -695,7 +738,7 @@ namespace TangramCommon {
 		CTangramBrowserFactory*					m_pBrowserFactory = nullptr;
 		ITangramWindow*							m_pCreatingTangramWindow = nullptr;
 		OmniboxViewViewsProxy*					m_pCreatingOmniboxViewViews = nullptr;
-		CChromeRenderFrameHostBase*				m_pCreatingChromeRenderFrameHostBase = nullptr;
+		CChromeRenderFrameHost*					m_pCreatingChromeRenderFrameHostBase = nullptr;
 		::RefObject::IObjectFactory*			m_pObjectFactory;
 		::Gui::IXWindows*						m_pXWindows;
 
@@ -708,33 +751,26 @@ namespace TangramCommon {
 		map<CString, ITangram*>					m_mapRemoteTangramCore;
 		map<IWndNode*, CString>					m_mapControlScript;
 		map<CString, void*>						m_mapExcludedObjects;
-		map<CString, HWND>						m_mapTangramDesignedWindows;
 		map<CString, ITangramAppProxy*>			m_mapTangramAppProxy;
 		map<CString, ITangramWindowProvider*>	m_mapTangramWindowProvider;
 		map<int, TangramDocTemplateInfo*>		m_mapTangramDocTemplateInfo;
 		map<CString, TangramDocTemplateInfo*>	m_mapTangramDocTemplateInfo2;
 		map<CString, TangramDocTemplateInfo*>	m_mapTangramFormsTemplateInfo;
 		map<int, TangramDocTemplateInfo*>		m_mapTangramFormsTemplateInfo2;
-		map<HWND, IChromeWebContent*>			m_mapHtmlWnd;
+		map<HWND, CChromeRenderFrameHostProxy*>	m_mapHtmlWnd;
+		map<HWND, IChromeWebPage*>				m_mapFormWebPage;
 		map<HWND, IChromeWebBrowser*>			m_mapBrowserWnd;
 		map<HWND, IWorkBenchWindow*>			m_mapWorkBenchWnd;
 		map<void*, IUnknown*>					m_mapObjects;
 		map<IDispatch*, CString>				m_mapObjEventDic;
 		map<CString, CString>					m_mapJavaNativeInfo;
 		map<CString, CString>					m_mapCreatingWorkBenchInfo;
-		map<CString, CString>					m_mapFormsInfo;
-		map<CString, CString>					m_mapAtlMFCsInfo;
-		map<CString, CString>					m_mapStartupsInfo;
-		map<CString, CString>					m_mapeclipsesInfo;
-		map<CString, CString>					m_mapWorkBenchInfo;
-		map<CString, CString>					m_mapUserControlsInfo;
-		map<CString, CMDIChildFormInfo*>		m_mapChildFormsInfo;
 
 		virtual void BrowserAppStart() = 0;
 		virtual ICompositor* ConnectCompositorManager(HWND, CString, ICompositorManager* pCompositorManager, CompositorInfo*) { return nullptr; }
 		virtual void OnSubBrowserWndCreated(HWND hParent, HWND hBrowser) = 0;
 		virtual void OnRenderProcessCreated(CChromeRenderProcess* pProcess) = 0;
-		virtual void OnDocumentOnLoadCompleted(CChromeRenderFrameHostBase*,	HWND hHtmlWnd, void*) = 0;
+		virtual void OnDocumentOnLoadCompleted(CChromeRenderFrameHost*,	HWND hHtmlWnd, void*) = 0;
 		virtual void ChromeTabCreated(CChromeTab* pTab) = 0;
 		virtual CString GetProcessPath(const char* _ver, CString process_type) = 0;
 		virtual CString GetSchemeBaseName() = 0;
@@ -754,6 +790,8 @@ namespace TangramCommon {
 		virtual void ExportComponentInfo() {}
 		virtual void ConnectDocTemplate(LPCTSTR strType, LPCTSTR strExt, void* pTemplate) {}
 		virtual void InsertTangramDataMap(int nType, CString strKey, void* pData) {}
+		virtual IChromeWebPage* GetWebPageFromForm(HWND) { return nullptr; }
+		virtual long GetIPCMsgIndex(CString strMsgID) { return 0; }
 	};
 
 	class ITangramDelegate {
@@ -943,7 +981,7 @@ namespace TangramCommon {
 		CChromeBrowserBase* m_pBrowser;
 		OmniboxViewViewsProxy* m_pOmniboxViewViews;
 
-		virtual void UpdateContentRect(RECT& rc, int nTopFix) = 0;
+		virtual void UpdateContentRect(HWND hWebContent, RECT& rc, int nTopFix) = 0;
 		virtual void ActiveChromeTab(HWND hActive, HWND hOldWnd) = 0;
 	};
 
@@ -955,7 +993,7 @@ namespace TangramCommon {
 
 		CChromeWebContentProxyBase* m_pProxy;
 
-		virtual CChromeRenderFrameHostBase* GetMainRenderFrameHost() = 0;
+		virtual CChromeRenderFrameHost* GetMainRenderFrameHost() = 0;
 	};
 
 	class CChromeWebContentProxyBase {
@@ -967,28 +1005,39 @@ namespace TangramCommon {
 		CChromeWebContentBase* m_pWebContent;
 	};
 
-	class CChromeRenderFrameHostBase {
+	class CChromeRenderFrameHost {
 	public:
-		CChromeRenderFrameHostBase() {
+		CChromeRenderFrameHost() {
 			m_pProxy = nullptr;
 		}
 
-		virtual ~CChromeRenderFrameHostBase() {}
+		virtual ~CChromeRenderFrameHost() {}
 
-		CChromeRenderFrameHostProxyBase* m_pProxy;
+		CChromeRenderFrameHostProxy* m_pProxy;
 
+		virtual void ShowWebPage(bool bShow) = 0;
 		virtual void SendTangramMessage(IPCMsg*) = 0;
 	};
 
-	class CChromeRenderFrameHostProxyBase {
+	class CChromeRenderFrameHostProxy {
 	public:
-		CChromeRenderFrameHostProxyBase() { m_pChromeRenderFrameHost = nullptr; }
+		CChromeRenderFrameHostProxy() { m_pChromeRenderFrameHost = nullptr; }
 
-		virtual ~CChromeRenderFrameHostProxyBase() {}
-
-		CChromeRenderFrameHostBase* m_pChromeRenderFrameHost;
-		virtual void OnChromeIPCMessageReceived(std::wstring strType, std::wstring strParam1, std::wstring strParam2) {}
+		virtual ~CChromeRenderFrameHostProxy() 
+		{
+			for (auto it = m_mapBindWebObj.begin(); it != m_mapBindWebObj.end(); it++)
+			{
+				delete it->second;
+			}
+			m_mapBindWebObj.erase(m_mapBindWebObj.begin(), m_mapBindWebObj.end());
+		}
+		map<CString, BindWebObj*>	m_mapBindWebObj;
+		CChromeRenderFrameHost* m_pChromeRenderFrameHost;
+		virtual void SendChromeIPCMessage(CString strId, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5) = 0;
 		virtual CChromeBrowserBase* GetChromeBrowserBase(HWND) = 0;
+		virtual void OnWinFormCreated(HWND) = 0;
+		virtual IWndNode* GetParentNode() = 0;
+		virtual ICompositor* GetCompositor() = 0;
 	};
 
 	class CChromeRendererFrameBase {

@@ -17,15 +17,13 @@ namespace TangramCLR {
 	}
 
 	System::Void WizForm::WizForm_Load(System::Object^ sender, System::EventArgs^ e) {
-		HWND hWnd = (HWND)this->Handle.ToPointer();
-		//::SetWindowLongPtr(hWnd, GWL_STYLE, ::GetWindowLongPtr(hWnd, GWL_STYLE) & ~(WS_SYSMENU));
 	}
 
 	void WizForm::NavigateData::set(String^ strData)
 	{
 		if (String::IsNullOrEmpty(strData)==false)
 		{
-			theApp.m_pTangramImpl->m_strNtpDataXml = strData;
+			TangramCLR::Tangram::m_strWizData = strData;
 		}
 	}
 
@@ -67,7 +65,9 @@ namespace TangramCLR {
 					System::Drawing::Icon^ pIcon = gcnew System::Drawing::Icon(BSTR2STRING(_strPath));
 					pImageList->Images->Add(pIcon);
 				}
-				ctrl->Items->Add(BSTR2STRING(pChild->name()), i)->Tag = BSTR2STRING(pChild->xml());
+				CString strName = pChild->name();
+				strName.Replace(_T("_"), _T(" "));
+				ctrl->Items->Add(BSTR2STRING(strName), i)->Tag = BSTR2STRING(pChild->xml());
 			}
 			if (ctrl->Items->Count > 0)
 			{

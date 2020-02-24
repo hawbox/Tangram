@@ -226,11 +226,11 @@ typedef interface IChromeWebBrowser IChromeWebBrowser;
 #endif 	/* __IChromeWebBrowser_FWD_DEFINED__ */
 
 
-#ifndef __IChromeWebContent_FWD_DEFINED__
-#define __IChromeWebContent_FWD_DEFINED__
-typedef interface IChromeWebContent IChromeWebContent;
+#ifndef __IChromeWebPage_FWD_DEFINED__
+#define __IChromeWebPage_FWD_DEFINED__
+typedef interface IChromeWebPage IChromeWebPage;
 
-#endif 	/* __IChromeWebContent_FWD_DEFINED__ */
+#endif 	/* __IChromeWebPage_FWD_DEFINED__ */
 
 
 #ifndef __IOfficeObject_FWD_DEFINED__
@@ -348,6 +348,7 @@ extern "C"{
 
 /* interface __MIDL_itf_Tangram_0000_0000 */
 /* [local] */ 
+
 
 
 
@@ -5581,6 +5582,9 @@ EXTERN_C const IID IID_ICompositor;
         virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_HostBrowser( 
             /* [retval][out] */ IChromeWebBrowser **ppChromeWebBrowser) = 0;
         
+        virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_HostWebPage( 
+            /* [retval][out] */ IChromeWebPage **ppChromeWebPage) = 0;
+        
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE Detach( void) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE Attach( void) = 0;
@@ -5739,6 +5743,10 @@ EXTERN_C const IID IID_ICompositor;
             ICompositor * This,
             /* [retval][out] */ IChromeWebBrowser **ppChromeWebBrowser);
         
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HostWebPage )( 
+            ICompositor * This,
+            /* [retval][out] */ IChromeWebPage **ppChromeWebPage);
+        
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *Detach )( 
             ICompositor * This);
         
@@ -5861,6 +5869,9 @@ EXTERN_C const IID IID_ICompositor;
 
 #define ICompositor_get_HostBrowser(This,ppChromeWebBrowser)	\
     ( (This)->lpVtbl -> get_HostBrowser(This,ppChromeWebBrowser) ) 
+
+#define ICompositor_get_HostWebPage(This,ppChromeWebPage)	\
+    ( (This)->lpVtbl -> get_HostWebPage(This,ppChromeWebPage) ) 
 
 #define ICompositor_Detach(This)	\
     ( (This)->lpVtbl -> Detach(This) ) 
@@ -6805,6 +6816,9 @@ EXTERN_C const IID IID_IChromeWebBrowser;
             BSTR bstrKey,
             BSTR bstrXml) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE AddURLs( 
+            BSTR bstrURLs) = 0;
+        
     };
     
     
@@ -6870,6 +6884,10 @@ EXTERN_C const IID IID_IChromeWebBrowser;
             BSTR bstrKey,
             BSTR bstrXml);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *AddURLs )( 
+            IChromeWebBrowser * This,
+            BSTR bstrURLs);
+        
         END_INTERFACE
     } IChromeWebBrowserVtbl;
 
@@ -6909,6 +6927,9 @@ EXTERN_C const IID IID_IChromeWebBrowser;
 #define IChromeWebBrowser_OpenURL(This,bstrURL,nDisposition,bstrKey,bstrXml)	\
     ( (This)->lpVtbl -> OpenURL(This,bstrURL,nDisposition,bstrKey,bstrXml) ) 
 
+#define IChromeWebBrowser_AddURLs(This,bstrURLs)	\
+    ( (This)->lpVtbl -> AddURLs(This,bstrURLs) ) 
+
 #endif /* COBJMACROS */
 
 
@@ -6920,54 +6941,65 @@ EXTERN_C const IID IID_IChromeWebBrowser;
 #endif 	/* __IChromeWebBrowser_INTERFACE_DEFINED__ */
 
 
-#ifndef __IChromeWebContent_INTERFACE_DEFINED__
-#define __IChromeWebContent_INTERFACE_DEFINED__
+#ifndef __IChromeWebPage_INTERFACE_DEFINED__
+#define __IChromeWebPage_INTERFACE_DEFINED__
 
-/* interface IChromeWebContent */
+/* interface IChromeWebPage */
 /* [unique][nonextensible][dual][uuid][object] */ 
 
 
-EXTERN_C const IID IID_IChromeWebContent;
+EXTERN_C const IID IID_IChromeWebPage;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
     
     MIDL_INTERFACE("19631222-1992-0612-1965-060120180903")
-    IChromeWebContent : public IDispatch
+    IChromeWebPage : public IDispatch
     {
     public:
+        virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_HostWnd( 
+            /* [retval][out] */ LONGLONG *pVal) = 0;
+        
+        virtual /* [id][propput] */ HRESULT STDMETHODCALLTYPE put_HostWnd( 
+            /* [in] */ LONGLONG newVal) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CreateForm( 
+            BSTR bstrKey,
+            LONGLONG hParent,
+            /* [retval][out] */ IDispatch **pRetForm) = 0;
+        
     };
     
     
 #else 	/* C style interface */
 
-    typedef struct IChromeWebContentVtbl
+    typedef struct IChromeWebPageVtbl
     {
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            IChromeWebContent * This,
+            IChromeWebPage * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            IChromeWebContent * This);
+            IChromeWebPage * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            IChromeWebContent * This);
+            IChromeWebPage * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
-            IChromeWebContent * This,
+            IChromeWebPage * This,
             /* [out] */ UINT *pctinfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
-            IChromeWebContent * This,
+            IChromeWebPage * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
-            IChromeWebContent * This,
+            IChromeWebPage * This,
             /* [in] */ REFIID riid,
             /* [size_is][in] */ LPOLESTR *rgszNames,
             /* [range][in] */ UINT cNames,
@@ -6975,7 +7007,7 @@ EXTERN_C const IID IID_IChromeWebContent;
             /* [size_is][out] */ DISPID *rgDispId);
         
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
-            IChromeWebContent * This,
+            IChromeWebPage * This,
             /* [annotation][in] */ 
             _In_  DISPID dispIdMember,
             /* [annotation][in] */ 
@@ -6993,12 +7025,26 @@ EXTERN_C const IID IID_IChromeWebContent;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HostWnd )( 
+            IChromeWebPage * This,
+            /* [retval][out] */ LONGLONG *pVal);
+        
+        /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_HostWnd )( 
+            IChromeWebPage * This,
+            /* [in] */ LONGLONG newVal);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CreateForm )( 
+            IChromeWebPage * This,
+            BSTR bstrKey,
+            LONGLONG hParent,
+            /* [retval][out] */ IDispatch **pRetForm);
+        
         END_INTERFACE
-    } IChromeWebContentVtbl;
+    } IChromeWebPageVtbl;
 
-    interface IChromeWebContent
+    interface IChromeWebPage
     {
-        CONST_VTBL struct IChromeWebContentVtbl *lpVtbl;
+        CONST_VTBL struct IChromeWebPageVtbl *lpVtbl;
     };
 
     
@@ -7006,28 +7052,37 @@ EXTERN_C const IID IID_IChromeWebContent;
 #ifdef COBJMACROS
 
 
-#define IChromeWebContent_QueryInterface(This,riid,ppvObject)	\
+#define IChromeWebPage_QueryInterface(This,riid,ppvObject)	\
     ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
 
-#define IChromeWebContent_AddRef(This)	\
+#define IChromeWebPage_AddRef(This)	\
     ( (This)->lpVtbl -> AddRef(This) ) 
 
-#define IChromeWebContent_Release(This)	\
+#define IChromeWebPage_Release(This)	\
     ( (This)->lpVtbl -> Release(This) ) 
 
 
-#define IChromeWebContent_GetTypeInfoCount(This,pctinfo)	\
+#define IChromeWebPage_GetTypeInfoCount(This,pctinfo)	\
     ( (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo) ) 
 
-#define IChromeWebContent_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+#define IChromeWebPage_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
     ( (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo) ) 
 
-#define IChromeWebContent_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+#define IChromeWebPage_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
     ( (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId) ) 
 
-#define IChromeWebContent_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+#define IChromeWebPage_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
     ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) ) 
 
+
+#define IChromeWebPage_get_HostWnd(This,pVal)	\
+    ( (This)->lpVtbl -> get_HostWnd(This,pVal) ) 
+
+#define IChromeWebPage_put_HostWnd(This,newVal)	\
+    ( (This)->lpVtbl -> put_HostWnd(This,newVal) ) 
+
+#define IChromeWebPage_CreateForm(This,bstrKey,hParent,pRetForm)	\
+    ( (This)->lpVtbl -> CreateForm(This,bstrKey,hParent,pRetForm) ) 
 
 #endif /* COBJMACROS */
 
@@ -7037,7 +7092,7 @@ EXTERN_C const IID IID_IChromeWebContent;
 
 
 
-#endif 	/* __IChromeWebContent_INTERFACE_DEFINED__ */
+#endif 	/* __IChromeWebPage_INTERFACE_DEFINED__ */
 
 
 #ifndef __IOfficeObject_INTERFACE_DEFINED__

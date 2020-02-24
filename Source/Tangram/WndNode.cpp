@@ -100,7 +100,29 @@ void CWndNode::InitWndNode()
 	ASSERT(m_pTangramNodeCommonData != nullptr);
 	m_nHeigh = m_pHostParse->attrInt(TGM_HEIGHT, 0);
 	m_nWidth = m_pHostParse->attrInt(TGM_WIDTH, 0);
-
+	if (m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd)
+	{
+		m_strWebObjID = m_pHostParse->attr(_T("id"), _T(""));
+		if (m_strWebObjID == _T(""))
+		{
+			m_strWebObjID = g_pTangram->GetNewGUID();
+			m_strWebObjID.Replace(_T("-"), _T(""));
+		}
+		if (m_strWebObjID != _T(""))
+		{
+			BindWebObj* pObj = new BindWebObj;
+			pObj->nType = 1;
+			pObj->m_pNode = this;
+			pObj->m_strBindObjName = m_strWebObjID;
+			auto it = m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.find(m_strWebObjID);
+			if (it != m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.end())
+			{
+				m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.erase(it);
+				delete it->second;
+			}
+			m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj[m_strWebObjID] = pObj;
+		}
+	}
 	m_nActivePage = m_pHostParse->attrInt(TGM_ACTIVE_PAGE, 0);
 	m_strCaption = m_pHostParse->attr(TGM_CAPTION, _T(""));
 	m_strName = m_pHostParse->attr(TGM_NAME, _T(""));
@@ -257,7 +279,7 @@ CString CWndNode::_GetNames(CWndNode * pNode)
 	return strRet;
 }
 
-ChromePlus::CHtmlWnd* CWndNode::GetHtmlWnd()
+CHtmlWnd* CWndNode::GetHtmlWnd()
 {
 	if (m_pRootObj)
 	{
@@ -378,30 +400,33 @@ STDMETHODIMP CWndNode::Open(BSTR bstrKey, BSTR bstrXml, IWndNode * *ppRetNode)
 					m_pHostCompositor->m_pParentNode = m_pTangramNodeCommonData->m_pCompositor->m_pParentNode;
 				}
 				HRESULT hr = m_pHostCompositor->Open(bstrKey, bstrXml, ppRetNode);
-				//if (m_pHostCompositor->m_pBindingNode)
-				//{
-					if (m_pWebBrowser/*&&m_strID == _T("hostview")*/)
+				if (m_pWebBrowser)
+				{
+					CWndNode* pRetNode = (CWndNode*)*ppRetNode;
+					CComPtr<IWndNodeCollection> pTangramNodeCollection;
+					IWndNode* _pNode = nullptr;
+					long nCount = 0;
+					pRetNode->m_pRootObj->GetNodes(CComBSTR(m_strName), &_pNode, &pTangramNodeCollection, &nCount);
+					if (_pNode)
 					{
-						CWndNode* pRetNode = (CWndNode*)*ppRetNode;
-						CComPtr<IWndNodeCollection> pTangramNodeCollection;
-						IWndNode* _pNode = nullptr;
-						long nCount = 0;
-						pRetNode->m_pRootObj->GetNodes(CComBSTR(m_strName), &_pNode, &pTangramNodeCollection, &nCount);
-						if (_pNode)
-						{
-							CWndNode* pNode2 = (CWndNode*)_pNode;
-							pNode2->m_pWebBrowser = m_pWebBrowser;
-							HWND hWnd = m_pWebBrowser->m_hWnd;
-							HWND h = ::GetParent(hWnd);
-							CNodeWnd* pNodeWnd = (CNodeWnd*)CWnd::FromHandlePermanent(h);
-							pNodeWnd->m_hFormWnd = nullptr;
-							//m_pWebBrowser = nullptr;
-							::SetParent(hWnd, ((CNodeWnd*)pNode2->m_pHostWnd)->m_hWnd);
-							((CNodeWnd*)pNode2->m_pHostWnd)->m_hFormWnd = hWnd;
-							//((CNodeWnd*)m_pHostWnd)->m_hFormWnd = nullptr;
-						}
+						CWndNode* pNode2 = (CWndNode*)_pNode;
+						pNode2->m_pWebBrowser = m_pWebBrowser;
+						CWndNode* pOldParent = m_pWebBrowser->m_pParentNode;
+						m_pWebBrowser->m_pParentNode = pNode2;
+						m_pHostCompositor->m_pHostWebBrowserNode = pNode2;
+						m_pHostCompositor->m_strHostWebBrowserNodeName = m_strName;
+						m_pHostCompositor->m_pHostWebBrowserWnd = m_pWebBrowser;
+						HWND hWnd = m_pWebBrowser->m_hWnd;
+						HWND h = ::GetParent(hWnd);
+						CNodeWnd* pNodeWnd = (CNodeWnd*)CWnd::FromHandlePermanent(h);
+						pNodeWnd->m_hFormWnd = nullptr;
+						::SetParent(hWnd, ((CNodeWnd*)pNode2->m_pHostWnd)->m_hWnd);
+						((CNodeWnd*)pNode2->m_pHostWnd)->m_hFormWnd = hWnd;
+						if (pOldParent && pOldParent != pNode2)
+							pOldParent->m_pWebBrowser = nullptr;
+						::PostMessage(pNode2->m_pHostWnd->m_hWnd, WM_TANGRAMMSG, 0, 20200128);
 					}
-				//}
+				}
 				return hr;
 			}
 		}
@@ -412,76 +437,6 @@ STDMETHODIMP CWndNode::Open(BSTR bstrKey, BSTR bstrXml, IWndNode * *ppRetNode)
 	}
 	return S_OK;
 }
-//
-//STDMETHODIMP CWndNode::Open(BSTR bstrKey, BSTR bstrXml, IWndNode * *ppRetNode)
-//{
-//	switch (m_nViewType)
-//	{
-//	case ActiveX:
-//	case CLRCtrl:
-//	case BlankView:
-//	{
-//		if (m_nViewType == BlankView)
-//		{
-//			if (m_pParentObj && m_pParentObj->m_nViewType == Splitter)
-//			{
-//				HRESULT hr =  m_pParentObj->OpenEx(m_nRow, m_nCol, bstrKey, bstrXml, ppRetNode);
-//				return hr;
-//			}
-//		}
-//		if (m_pTangramNodeCommonData->m_pCompositorManager)
-//		{
-//			if (m_nViewType == BlankView && m_pParentObj && m_pParentObj->m_nViewType == Splitter)
-//			{
-//				return m_pParentObj->OpenEx(m_nRow, m_nCol, bstrKey, bstrXml, ppRetNode);
-//			}
-//			if (m_pHostCompositor == nullptr)
-//			{
-//				CString strName = m_strNodeName;
-//				strName += _T("_Frame");
-//
-//				if (m_nViewType == BlankView)
-//				{
-//					RECT rc;
-//					::GetClientRect(m_pHostWnd->m_hWnd, &rc);
-//					m_hHostWnd = ::CreateWindowEx(NULL, L"Tangram Window Class", NULL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, rc.right, rc.bottom, m_pHostWnd->m_hWnd, NULL, AfxGetInstanceHandle(), NULL);
-//				}
-//				else
-//				{
-//					m_hHostWnd = ::GetWindow(m_pHostWnd->m_hWnd, GW_CHILD);
-//				}
-//				ICompositor* pCompositor = nullptr;
-//				m_pTangramNodeCommonData->m_pCompositorManager->CreateCompositor(CComVariant(0), CComVariant((long)m_hHostWnd), strName.AllocSysString(), &pCompositor);
-//				if (pCompositor)
-//					m_pHostCompositor = (CCompositor*)pCompositor;
-//			}
-//			if (m_pHostCompositor && ::IsWindow(m_hHostWnd))
-//			{
-//				m_pHostCompositor->m_pContainerNode = this;
-//				if (m_pTangramNodeCommonData->m_pCompositor->m_pParentNode)
-//				{
-//					m_pHostCompositor->m_pParentNode = m_pTangramNodeCommonData->m_pCompositor->m_pParentNode;
-//				}
-//				HRESULT hr = m_pHostCompositor->Open(bstrKey, bstrXml, ppRetNode);
-//				if (m_pHostCompositor->m_pBindingNode)
-//				{
-//					if (m_pWebBrowser/*&&m_strID == _T("hostview")*/)
-//					{
-//						::SetParent(((CNodeWnd*)m_pHostWnd)->m_hFormWnd, ((CNodeWnd*)m_pHostCompositor->m_pBindingNode->m_pHostWnd)->m_hWnd);
-//						((CNodeWnd*)m_pHostCompositor->m_pBindingNode->m_pHostWnd)->m_hFormWnd = ((CNodeWnd*)m_pHostWnd)->m_hFormWnd;
-//						((CNodeWnd*)m_pHostWnd)->m_hFormWnd = nullptr;
-//					}
-//				}
-//				return hr;
-//			}
-//		}
-//	}
-//	break;
-//	case Splitter:
-//		break;
-//	}
-//	return S_OK;
-//}
 
 STDMETHODIMP CWndNode::OpenEx(int nRow, int nCol, BSTR bstrKey, BSTR bstrXml, IWndNode * *ppRetNode)
 {
@@ -506,12 +461,11 @@ STDMETHODIMP CWndNode::OpenEx(int nRow, int nCol, BSTR bstrKey, BSTR bstrXml, IW
 			{
 				_pCompositor->m_pParentNode = m_pTangramNodeCommonData->m_pCompositor->m_pParentNode;
 			}
-			if (m_pTangramNodeCommonData->m_pCompositor->m_bChromeFrame)
+			if (m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd)
 			{
-				_pCompositor->m_bChromeFrame = true;
+				_pCompositor->m_pWebPageWnd = m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd;
 				if (pWindowNode->m_strID == _T("hostview"))
 					m_pTangramNodeCommonData->m_pCompositor->m_pSubCompositor = _pCompositor;
-				_pCompositor->m_pWebWnd = (ChromePlus::CHtmlWnd*)::GetWindowLongPtr(m_pTangramNodeCommonData->m_pCompositor->m_hWnd, GWLP_USERDATA);
 			}
 			pWindowNode->m_pHostCompositor->m_pDoc = m_pTangramNodeCommonData->m_pCompositor->m_pDoc;
 		}
@@ -522,7 +476,9 @@ STDMETHODIMP CWndNode::OpenEx(int nRow, int nCol, BSTR bstrKey, BSTR bstrXml, IW
 			{
 				::SetWindowLong(pWindowNode->m_pCurrentExNode->m_pHostWnd->m_hWnd, GWL_ID, 1);
 			}
+
 			HRESULT hr = pWindowNode->m_pHostCompositor->Open(bstrKey, bstrXml, ppRetNode);
+
 			long dwID = AFX_IDW_PANE_FIRST + nRow * 16 + nCol;
 			if (hr != S_OK)
 			{
@@ -530,10 +486,10 @@ STDMETHODIMP CWndNode::OpenEx(int nRow, int nCol, BSTR bstrKey, BSTR bstrXml, IW
 					::SetWindowLong(pWindowNode->m_pCurrentExNode->m_pHostWnd->m_hWnd, GWL_ID, dwID);
 				else
 					::SetWindowLong(pWindowNode->m_pHostWnd->m_hWnd, GWL_ID, dwID);
-				ChromePlus::CHtmlWnd* pWebWnd = pWindowNode->m_pHostCompositor->m_pWebWnd;
+				CHtmlWnd* pWebWnd = pWindowNode->m_pHostCompositor->m_pWebPageWnd;
 				if (pWebWnd)
 				{
-					::SendMessage(::GetParent(pWebWnd->m_hWnd), WM_BROWSERLAYOUT, 0, 1);
+					::SendMessage(::GetParent(pWebWnd->m_hWnd), WM_BROWSERLAYOUT, 0, 2);
 					::InvalidateRect(::GetParent(pWebWnd->m_hWnd), nullptr, true);
 				}
 				return S_OK;
@@ -544,14 +500,14 @@ STDMETHODIMP CWndNode::OpenEx(int nRow, int nCol, BSTR bstrKey, BSTR bstrXml, IW
 			m_mapExtendNode[pWindowNode] = strKey;
 			pWindowNode->m_pCurrentExNode = pRootNode;
 			::SetWindowLongPtr(pRootNode->m_pHostWnd->m_hWnd, GWLP_ID, dwID);
-			ChromePlus::CHtmlWnd* pWebWnd = pWindowNode->m_pHostCompositor->m_pWebWnd;
+			ChromePlus::CHtmlWnd* pWebWnd = pWindowNode->m_pHostCompositor->m_pWebPageWnd;
 			if (pWebWnd)
 			{
 				if (pWindowNode->m_pHostCompositor->m_pBindingNode)
-					pWebWnd->m_hHostWnd = pWindowNode->m_pHostCompositor->m_pBindingNode->m_pHostWnd->m_hWnd;
+					pWebWnd->m_hWebHostWnd = pWindowNode->m_pHostCompositor->m_pBindingNode->m_pHostWnd->m_hWnd;
 				else
-					pWebWnd->m_hHostWnd = NULL;
-				::SendMessage(::GetParent(pWebWnd->m_hWnd), WM_BROWSERLAYOUT, 0, 1);
+					pWebWnd->m_hWebHostWnd = NULL;
+				::SendMessage(::GetParent(pWebWnd->m_hWnd), WM_BROWSERLAYOUT, 0, 2);
 				::InvalidateRect(::GetParent(pWebWnd->m_hWnd), nullptr, true);
 			}
 			HWND h = ::GetParent(m_pHostWnd->m_hWnd);
@@ -659,7 +615,7 @@ STDMETHODIMP CWndNode::put_Attribute(BSTR bstrKey, BSTR bstrVal)
 	{
 		CString strID = OLE2T(bstrKey);
 		CString strVal = OLE2T(bstrVal);
-		if (strID.CompareNoCase(_T("id")))
+		if (strID.CompareNoCase(TGM_NODE_TYPE))
 			m_strID = strVal;
 		ATLTRACE(_T("Modify CWndNode Attribute: ID: %s Value: %s\n"), strID, strVal);
 		CCompositor* pCompositor = nullptr;
@@ -697,7 +653,7 @@ STDMETHODIMP CWndNode::put_Attribute(BSTR bstrKey, BSTR bstrVal)
 				}
 				pOldNode->m_strID = _T("");
 				if (pOldNode->m_pRootObj == g_pTangram->m_pDesignWindowNode->m_pRootObj)
-					pOldNode->m_pHostParse->put_attr(_T("id"), _T(""));
+					pOldNode->m_pHostParse->put_attr(TGM_NODE_TYPE, _T(""));
 				ATLTRACE(_T("Modify CWndNode HostView Attribute: ID:%s Value: %s\n"), strID, strVal);
 				pOldNode->m_pHostWnd->Invalidate();
 				g_pTangram->UpdateWndNode(g_pTangram->m_pDesignWindowNode->m_pRootObj);
@@ -713,7 +669,7 @@ STDMETHODIMP CWndNode::put_Attribute(BSTR bstrKey, BSTR bstrVal)
 				pTopNode->m_pTangramNodeCommonData->m_pHostClientView = pTopNode->m_pTangramNodeCommonData->m_pHostClientView;
 				pTopNode = pTopNode->m_pRootObj;
 			}
-			m_pHostParse->put_attr(_T("id"), _T("hostview"));
+			m_pHostParse->put_attr(TGM_NODE_TYPE, _T("hostview"));
 			if (g_pTangram->m_pDesignWindowNode)
 			{
 				pCompositor->m_pBindingNode = this;
@@ -725,9 +681,9 @@ STDMETHODIMP CWndNode::put_Attribute(BSTR bstrKey, BSTR bstrVal)
 			if (m_pParentObj && m_pParentObj->m_nViewType == Splitter)
 				m_pHostWnd->ModifyStyleEx(WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE, 0);
 			m_pTangramNodeCommonData->m_pCompositor->HostPosChanged();
-			if (m_pTangramNodeCommonData->m_pCompositor->m_bChromeFrame)
+			if (m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd)
 			{
-				ChromePlus::CHtmlWnd* pWebWnd = (ChromePlus::CHtmlWnd*)::GetWindowLongPtr(m_pTangramNodeCommonData->m_pCompositor->m_hWnd, GWLP_USERDATA);
+				CHtmlWnd* pWebWnd = m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd;
 				auto it = g_pTangram->m_mapBrowserWnd.find(::GetParent(pWebWnd->m_hWnd));
 				if (it != g_pTangram->m_mapBrowserWnd.end()) {
 					((CBrowserWnd*)it->second)->m_pBrowser->LayoutBrowser();
@@ -791,9 +747,10 @@ STDMETHODIMP CWndNode::get_XML(BSTR * pVal)
 
 BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT nID, CCreateContext * pContext)
 {
-	HWND hWnd = 0;
 	BOOL bRet = false;
 
+	CHtmlWnd* pHtmlWnd = m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd;
+	HWND hWnd = 0;
 	CNodeWnd* pTangramDesignView = (CNodeWnd*)m_pHostWnd;
 	BOOL isAppWnd = false;
 	if (m_strID == _T("activex") || m_strID == _T("clrctrl"))
@@ -988,47 +945,108 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 		hWnd = CreateWindow(L"Tangram Window Class", NULL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 0, 0, pParentWnd->m_hWnd, (HMENU)nID, AfxGetInstanceHandle(), NULL);
 		if (::IsWindow(m_pHostWnd->m_hWnd) == false)
 			bRet = m_pHostWnd->SubclassWindow(hWnd);
-		if (m_nViewType == BlankView && m_pHostParse != nullptr)
-		{
-			CString _strXml = m_pHostParse->attr(_T("url"), _T(""));
-			if (m_pWebBrowser == nullptr && _strXml != _T(""))
-			{
-				_strXml += _T("|");
-				CString s = _T("");
-				int nPos = _strXml.Find(_T("|"));
-				while (nPos != -1) {
-					CString strURL = _strXml.Left(nPos);
-					int nPos2 = strURL.Find(_T(":"));
-					if (nPos2 != -1)
-					{
-						CString strURLHeader = strURL.Left(nPos2);
-						if (strURLHeader.CompareNoCase(_T("host")) == 0)
-						{
-							strURL = g_pTangram->m_strAppPath + strURL.Mid(nPos2 + 1);
-						}
-					}
-					s += strURL;
-					s += _T("|");
-					_strXml = _strXml.Mid(nPos + 1);
-					nPos = _strXml.Find(_T("|"));
-				}
+	}
 
-				if (g_pTangram->m_pBrowserFactory)
+	if (pHtmlWnd)
+	{
+		if (this == m_pTangramNodeCommonData->m_pCompositor->m_pWorkNode)
+		{
+			IPCMsg pIPCInfo;
+			pIPCInfo.m_strId = IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE_ID;
+			pIPCInfo.m_strParam1 = m_strWebObjID;
+			CString strHandle = _T("");
+			strHandle.Format(_T("%d"), m_pHostWnd->m_hWnd);
+			pIPCInfo.m_strParam2 = strHandle;
+			strHandle.Format(_T("%d"), m_nViewType);
+			pIPCInfo.m_strParam3 = strHandle;
+			strHandle.Format(_T("%d"), m_pTangramNodeCommonData->m_pCompositor->m_hWnd);
+			pIPCInfo.m_strParam4 = strHandle;
+			pIPCInfo.m_strParam5 = _T("wndnode");
+			pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+		}
+		IPCMsg pIPCInfo;
+		pIPCInfo.m_strId = _T("Tangram_WndNode_Created");
+		pIPCInfo.m_strParam1 = m_strWebObjID;
+		CString strHandle = _T("");
+		strHandle.Format(_T("%d"), m_pHostWnd->m_hWnd);
+		pIPCInfo.m_strParam2 = strHandle;
+		strHandle.Format(_T("%d"), m_nViewType);
+		pIPCInfo.m_strParam3 = strHandle;
+		strHandle.Format(_T("%d"), m_pTangramNodeCommonData->m_pCompositor->m_hWnd);
+		pIPCInfo.m_strParam4 = strHandle;
+		pIPCInfo.m_strParam5 = _T("wndnode");
+		pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+		if (m_pParentObj)
+		{
+			IPCMsg pIPCInfo;
+			pIPCInfo.m_strId = CREATE_CHILD_TANGRAM_NODE_ID;
+			pIPCInfo.m_strParam1 = m_strWebObjID;
+			CString strHandle = _T("");
+			strHandle.Format(_T("%d"), m_pHostWnd->m_hWnd);
+			pIPCInfo.m_strParam2 = strHandle;
+
+			pIPCInfo.m_strParam3 = m_pParentObj->m_strWebObjID;
+			strHandle.Format(_T("%d"), m_pParentObj->m_pHostWnd->m_hWnd);
+			pIPCInfo.m_strParam4 = strHandle;
+			strHandle.Format(_T("%d"), m_pTangramNodeCommonData->m_pCompositor->m_pWorkNode->m_pHostWnd->m_hWnd);
+			pIPCInfo.m_strParam5 = strHandle;
+			pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+		}
+	}
+
+	if (m_nViewType == BlankView && m_pHostParse != nullptr)
+	{
+		CString _strURL = m_pHostParse->attr(_T("url"), _T(""));
+		if(_strURL ==_T("host"))
+		{ 
+			m_pRootObj->m_pTangramNodeCommonData->m_pCompositor->m_strHostWebBrowserNodeName = m_strName;
+			::SetParent(g_pTangram->m_hHostBrowserWnd, hWnd);
+			g_pTangram->m_hParent = NULL;
+			auto it = g_pTangram->m_mapBrowserWnd.find(g_pTangram->m_hHostBrowserWnd);
+			if (it != g_pTangram->m_mapBrowserWnd.end())
+			{
+				m_pWebBrowser = (CBrowserWnd*)it->second;
+				m_pRootObj->m_pTangramNodeCommonData->m_pCompositor->m_pHostWebBrowserNode = this;
+				m_pRootObj->m_pTangramNodeCommonData->m_pCompositor->m_pHostWebBrowserWnd = m_pWebBrowser;
+				m_pWebBrowser->m_heightfix = 12;
+			}
+		}
+		if (m_pWebBrowser == nullptr && _strURL != _T(""))
+		{
+			_strURL += _T("|");
+			CString s = _T("");
+			int nPos = _strURL.Find(_T("|"));
+			while (nPos != -1) {
+				CString strURL = _strURL.Left(nPos);
+				int nPos2 = strURL.Find(_T(":"));
+				if (nPos2 != -1)
 				{
-					HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(hWnd, s);
-					((CNodeWnd*)m_pHostWnd)->m_hFormWnd = hBrowser;
-					g_pTangram->m_hParent = NULL;
-					auto it = g_pTangram->m_mapBrowserWnd.find(hBrowser);
-					if (it != g_pTangram->m_mapBrowserWnd.end())
+					CString strURLHeader = strURL.Left(nPos2);
+					if (strURLHeader.CompareNoCase(_T("host")) == 0)
 					{
-						m_pWebBrowser = (CBrowserWnd*)it->second;
-						//m_pWebBrowser->m_pWndNode = this;
+						strURL = g_pTangram->m_strAppPath + strURL.Mid(nPos2 + 1);
 					}
 				}
-				else
+				s += strURL;
+				s += _T("|");
+				_strURL = _strURL.Mid(nPos + 1);
+				nPos = _strURL.Find(_T("|"));
+			}
+
+			if (g_pTangram->m_pBrowserFactory)
+			{
+				HWND hBrowser = g_pTangram->m_pBrowserFactory->CreateBrowser(hWnd, s);
+				((CNodeWnd*)m_pHostWnd)->m_hFormWnd = hBrowser;
+				g_pTangram->m_hParent = NULL;
+				auto it = g_pTangram->m_mapBrowserWnd.find(hBrowser);
+				if (it != g_pTangram->m_mapBrowserWnd.end())
 				{
-					g_pTangram->m_mapNodeForHtml[this] = s;
+					m_pWebBrowser = (CBrowserWnd*)it->second;
 				}
+			}
+			else
+			{
+				g_pTangram->m_mapNodeForHtml[this] = s;
 			}
 		}
 	}
@@ -1286,6 +1304,17 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 	CComBSTR bstr2;
 	get_Attribute(CComBSTR("name"), &bstr2);
 	CString strName = OLE2T(bstr2);
+
+	CHtmlWnd* pHtmlWnd = nullptr;
+	HWND _hWnd = m_pTangramNodeCommonData->m_pCompositor->m_hWnd;
+	{
+		::GetClassName(_hWnd, g_pTangram->m_szBuffer, 256);
+		CString strName = CString(g_pTangram->m_szBuffer);
+		if (strName == _T("Chrome Extended Window Class")) {
+			pHtmlWnd = (ChromePlus::CHtmlWnd*)::GetWindowLongPtr(_hWnd, GWLP_USERDATA);
+		}
+	}
+
 	switch (m_nViewType)
 	{
 	case ActiveX:
@@ -1393,27 +1422,12 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 		CString strUIKey = _T("");
 		if (g_pTangram->m_pCLRProxy)
 		{
-			ChromePlus::CHtmlWnd* pHtmlWnd = nullptr;
-			if (m_pRootObj)
-			{
-				HWND hWnd = m_pTangramNodeCommonData->m_pCompositor->m_pCompositorManager->m_hWnd;
-				hWnd = (HWND)::GetWindowLongPtr(hWnd, GWLP_USERDATA);
-				if (::IsWindow(hWnd))
-				{
-					::GetClassName(hWnd, g_pTangram->m_szBuffer, 256);
-					CString strName = CString(g_pTangram->m_szBuffer);
-					if (strName == _T("Chrome Extended Window Class")) {
-						pHtmlWnd = (ChromePlus::CHtmlWnd*)::GetWindowLongPtr(hWnd, GWLP_USERDATA);
-					}
-				}
-			}
-
 			if (pHtmlWnd)
 			{
 				g_pTangram->m_pCLRProxy->m_strCurrentWinFormTemplate = _T("");
 
 				CComBSTR bstrKey("");
-				get_Attribute(CComBSTR("name"), &bstrKey);
+				get_Attribute(CComBSTR("uikey"), &bstrKey);
 				strUIKey = OLE2T(bstrKey);
 				auto it = pHtmlWnd->m_mapUserControlsInfo.find(strUIKey);
 				if(it != pHtmlWnd->m_mapUserControlsInfo.end())
@@ -1428,6 +1442,18 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 				}
 			}
 			m_pDisp = g_pTangram->m_pCLRProxy->TangramCreateObject(strTag.AllocSysString(), hParentWnd, this);
+			if (g_pTangram->m_hFormNodeWnd)
+			{
+				LRESULT l = ::SendMessage((HWND)g_pTangram->m_hFormNodeWnd, WM_TANGRAMDATA, 0, 20190214);
+				if (l&& pHtmlWnd)
+				{
+					auto it = pHtmlWnd->m_mapWinForm.find(g_pTangram->m_hFormNodeWnd);
+					if (it == pHtmlWnd->m_mapWinForm.end())
+					{
+						pHtmlWnd->m_mapWinForm[g_pTangram->m_hFormNodeWnd] = (CTangramWinFormWnd*)l;
+					}
+				}
+			}
             // Create a corresponding RefObject from the IDispatch object and store its Handle.
             uint64_t nRawHandle = (uint64_t)m_pDisp;
             // TODO: ObjectFactory::Delete should be called when the IDispatch object is destructed.
@@ -1455,6 +1481,10 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 				pWnd->m_hFormWnd = g_pTangram->m_hFormNodeWnd;
 				g_pTangram->m_hFormNodeWnd = NULL;
 			}
+			//BSTR bstrRet;
+			//CString s = _T("");
+			//s.Format(_T("%d:%s:%s"), this->m_pHostWnd->m_hWnd,this->m_strNodeName,m_strCnnID);
+			//this->SendIPCMessage(CComBSTR(s), L"web", L"1", L"2", &bstrRet);
 		}
 	}
 	break;
@@ -1462,7 +1492,10 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 	if (m_pDisp)
 	{
 		m_pTangramNodeCommonData->m_mapLayoutNodes[m_strName] = this;
-		if (g_pTangram->m_hFormNodeWnd&&(::GetWindowLongPtr(g_pTangram->m_hFormNodeWnd, GWL_STYLE) & WS_CHILD))
+		HWND hCtrl = NULL;
+		if (g_pTangram->m_pCLRProxy)
+			hCtrl = g_pTangram->m_pCLRProxy->GetCtrlHandle(m_pDisp);
+		if (g_pTangram->m_hFormNodeWnd&& hCtrl == g_pTangram->m_hFormNodeWnd &&(::GetWindowLongPtr(g_pTangram->m_hFormNodeWnd, GWL_STYLE) & WS_CHILD))
 		{
 			HWND hWnd = g_pTangram->m_hFormNodeWnd;
 			g_pTangram->m_hFormNodeWnd = nullptr;
@@ -2811,6 +2844,7 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 		if (it != g_pTangram->m_mapBrowserWnd.end())
 		{
 			m_pWebBrowser = (CBrowserWnd*)it->second;
+			m_pWebBrowser->m_pParentNode = this;
 		}
 
 		return S_OK;
@@ -2841,9 +2875,9 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 {
 	::RefObject::IObjectFactory* pObjectFactory = g_pTangram->m_pObjectFactory;
     // TODO: Temporary: Determine whether the current node is a web node.
-	if (m_hXObject.IsZero() && m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd != nullptr)
+	if (m_hXObject.IsZero() && m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd != nullptr)
 	{
-		::RefObject::IRefObject* pObj = pObjectFactory->Create(_T("Cpp"), (uint64_t)m_pTangramNodeCommonData->m_pCompositor->m_pWebWnd);
+		::RefObject::IRefObject* pObj = pObjectFactory->Create(_T("Cpp"), (uint64_t)m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd);
 		if (pObj != nullptr)
 		{
 			pObj->AddDelegate(g_pTangram->m_pHtmlWndDelegate);
@@ -2891,6 +2925,12 @@ STDMETHODIMP CWndNode::AddChannel(BSTR bstrChannel)
 
 STDMETHODIMP CWndNode::SendIPCMessage(BSTR bstrTo, BSTR bstrPayload, BSTR bstrExtra, BSTR bstrMsgId, BSTR* bstrRet)
 {
+	if (m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd)
+	{
+		CHtmlWnd* pWnd = m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd;
+		//CHtmlWnd::SendChromeIPCMessage(CString strRouting, CString strParam1, CString strParam2)
+		m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->SendChromeIPCMessage(_T("I_DONT_KNOW"), OLE2T(bstrTo), OLE2T(bstrMsgId), OLE2T(bstrExtra), L"", L"");
+	}
 	CString strRet = SendIPCMessageInternal(OLE2T(bstrTo), OLE2T(bstrPayload), OLE2T(bstrExtra), OLE2T(bstrMsgId));
 	*bstrRet = strRet.AllocSysString();
 	return S_OK;
