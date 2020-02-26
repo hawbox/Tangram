@@ -44,6 +44,7 @@
 
 // begin Add by TangramTeam
 #include "c:/src/tangram/source/chrome_proxy/blink/core/tangram.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_node.h"
 // end Add by TangramTeam
 
 namespace blink {

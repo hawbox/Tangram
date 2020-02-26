@@ -38,6 +38,8 @@ namespace blink {
 		ScriptWrappable::Trace(visitor);
 		DOMWindowClient::Trace(visitor);
 		visitor->Trace(m_pHostNode);
+		visitor->Trace(m_mapTangramNode);
+		visitor->Trace(m_mapTangramNode2);
 	}
 
 	void TangramWindow::AddedEventListener(const AtomicString& event_type,
@@ -56,10 +58,9 @@ namespace blink {
 
 	TangramNode* TangramWindow::getNode(const String& nodeName)
 	{
-		WebString webstr = nodeName;
-		auto it = m_mapTangramNode2.find(webstr.Utf16());
+		auto it = m_mapTangramNode2.find(nodeName);
 		if (it != m_mapTangramNode2.end())
-			return it->second;
+			return it->value;
 		return nullptr;
 	}
 
@@ -67,7 +68,7 @@ namespace blink {
 	{
 		auto it = m_mapTangramNode.find(nodeHandle);
 		if (it != m_mapTangramNode.end())
-			return it->second;
+			return it->value;
 		return nullptr;
 	}
 

@@ -8254,6 +8254,20 @@ void RenderFrameHostImpl::SendTangramMessage(TangramCommon::IPCMsg* pMsg) {
         if (g_pTangramImpl)
         {
             msgIndex = g_pTangramImpl->GetIPCMsgIndex(pMsg->m_strId);
+            if (pMsg->m_strId == IPC_CLR_CONTROL_CREARED_ID)
+            {
+                Send(new TangramFrameMsg_Message2(
+                    routing_id_, 
+                    msgIndex, 
+                    LPCTSTR(pMsg->m_strParam1),
+                    LPCTSTR(pMsg->m_strParam2), 
+                    LPCTSTR(pMsg->m_strParam3),
+                    LPCTSTR(pMsg->m_strParam4), 
+                    LPCTSTR(pMsg->m_strParam5),
+                    pMsg->m_nHandleFrom, 
+                    pMsg->m_nHandleTo));
+                return;
+            }
             g_pTangramImpl->m_pCurrentIPCMsg = pMsg;
         }
         Send(new TangramFrameMsg_Message(

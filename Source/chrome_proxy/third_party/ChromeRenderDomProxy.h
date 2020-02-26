@@ -39,6 +39,16 @@ namespace TangramCommon {
 			std::wstring strParam4,
 			std::wstring strParam5) {}
 
+		virtual void OnTangramMessage2(
+			long messageindex,
+			std::wstring param1,
+			std::wstring param2,
+			std::wstring param3,
+			std::wstring param4,
+			std::wstring param5,
+			long fromHandle,
+			long toHandle) {}
+
 		virtual void OnTangramMessage8(long messageIndex,
 			std::wstring strId,
 			long NodeHandle,

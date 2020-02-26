@@ -4,6 +4,7 @@
 #include "tangram_event.h"
 #include "tangram_winform.h"
 #include "tangram_window.h"
+#include "tangram_control.h"
 #include "tangram_compositor.h"
 
 #include "third_party/blink/renderer/core/dom/document.h"
@@ -71,16 +72,23 @@ TangramNode* TangramNode::getChild(long nIndex)
 {
 	auto it = m_mapChildNode.find(nIndex);
 	if (it != m_mapChildNode.end())
-		return it->second;
+		return it->value;
 	return nullptr;
 }
 
 TangramNode* TangramNode::getChild(const String& strName)
 {
-	WebString webstr = strName;
-	auto it = m_mapChildNode2.find(webstr.Utf16());
+	auto it = m_mapChildNode2.find(strName);
 	if (it != m_mapChildNode2.end())
-		return it->second;
+		return it->value;
+	return nullptr;
+}
+
+TangramControl* TangramNode::getControl(const String& strCtrlName)
+{
+	auto it = m_mapChildControl2.find(strCtrlName);
+	if (it != m_mapChildControl2.end())
+		return it->value;
 	return nullptr;
 }
 
@@ -117,6 +125,10 @@ void TangramNode::Trace(blink::Visitor* visitor) {
   DOMWindowClient::Trace(visitor);
   visitor->Trace(m_pParentWnd);
   visitor->Trace(m_pParentForm);
+  visitor->Trace(m_mapChildControl);
+  visitor->Trace(m_mapChildControl2);
+  visitor->Trace(m_mapChildNode);
+  visitor->Trace(m_mapChildNode2);
 }
 
 
@@ -141,16 +153,12 @@ void TangramNode::setControlVal(const String& CtrlID, long CtrlHandle, const Str
 		nHandle = CtrlHandle;
 	if (nHandle)
 	{
-		WebLocalFrameImpl* web_local_frame_impl = WebLocalFrameImpl::FromFrame(GetFrame());
-		if (web_local_frame_impl != nullptr) {
-			WebLocalFrameClient* web_local_frame_client = web_local_frame_impl->Client();
-			if (web_local_frame_client) {
-				WebString webstr = strVal;
-				std::wstring _val = webstr.Utf16();
-				webstr = CtrlID;
-				std::wstring _strCtrlID = webstr.Utf16();
-				web_local_frame_client->SendTangramMessage(L"TANGRAM_CTRL_VALUE_MESSAGE", _strCtrlID, nHandle, 0, _val, L"");
-			}
+		if (web_local_frame_client) {
+			WebString webstr = strVal;
+			std::wstring _val = webstr.Utf16();
+			webstr = CtrlID;
+			std::wstring _strCtrlID = webstr.Utf16();
+			web_local_frame_client->SendTangramMessage(L"TANGRAM_CTRL_VALUE_MESSAGE", _strCtrlID, nHandle, 0, _val, L"");
 		}
 	}
 }
@@ -233,15 +241,34 @@ long TangramNode::nodehandle() {
 
 TangramNode* TangramNode::AddChild(long nHandle, const String& strNodeName, blink::Tangram* pTangram)
 {
-	TangramNode* node = TangramNode::Create(DomWindow()->GetFrame(), strNodeName);
-	node->nHandle = nHandle;
-	node->web_local_frame_client = web_local_frame_client;
-	int nSize = m_mapChildNode.size();
-	m_mapChildNode[nSize] = node;
-	pTangram->m_mapTangramNode[nHandle] = node;
-	WebString webstr = strNodeName;
-	pTangram->m_mapTangramNode2[webstr.Utf16()] = node;
+	TangramNode* node = nullptr;
+	auto it = pTangram->m_mapTangramNode.find(nHandle);
+	if (it != pTangram->m_mapTangramNode.end())
+	{
+		node = it->value;
+		int nSize = m_mapChildNode.size();
+		m_mapChildNode.insert(nSize, node);
+	}
 	return node;
+}
+
+TangramControl* TangramNode::AddCtrl(long nCtrlHandle, const String& strCtrlName, const String& strWebPageID, blink::Tangram*)
+{
+	TangramControl* ctrl = nullptr;
+	auto it = m_mapChildControl.find(nCtrlHandle);
+	if (it == m_mapChildControl.end())
+	{
+		ctrl = TangramControl::Create(DomWindow()->GetFrame(), strCtrlName);
+		ctrl->ctrlhandle_ = nCtrlHandle;
+		ctrl->name_ = strCtrlName;
+		ctrl->webpageid_ = strWebPageID;
+		m_mapChildControl.insert(nCtrlHandle,ctrl);
+		m_mapChildControl2.insert(strCtrlName, ctrl);
+		DispatchEvent(*blink::TangramEvent::Create(
+			blink::event_type_names::kTangramcontrolcreated, strCtrlName, L"",
+			L"", L"", L"", L"", nCtrlHandle, nodehandle_));
+	}
+	return ctrl;
 }
 
 const AtomicString& TangramNode::InterfaceName() const {

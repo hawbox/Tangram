@@ -1,4 +1,5 @@
 // begin Add by TangramTeam
+#include "tangram.h"
 #include "tangram_node.h"
 #include "tangram_event.h"
 #include "tangram_winform.h"
@@ -17,49 +18,67 @@
 
 namespace blink {
 
-	TangramWinform::TangramWinform(LocalFrame* frame) : DOMWindowClient(frame) {
+	TangramControl::TangramControl(LocalFrame* frame) : DOMWindowClient(frame) {
 		web_local_frame_client = nullptr;
 	}
 
-	TangramWinform::~TangramWinform() {
+	TangramControl::~TangramControl() {
 	}
 
-	TangramWinform* TangramWinform::Create(LocalFrame* frame, const String& strNodeXml) {
-		return MakeGarbageCollected<TangramWinform>(frame, strNodeXml);
+	TangramControl* TangramControl::Create(LocalFrame* frame, const String& strNodeName) {
+		return MakeGarbageCollected<TangramControl>(frame, strNodeName);
 	}
 
-	TangramWinform::TangramWinform(LocalFrame* frame, const String& strNodeName) : DOMWindowClient(frame)
+	TangramControl::TangramControl(LocalFrame* frame, const String& strNodeName) : DOMWindowClient(frame)
 	{
 		name_ = strNodeName;
 	}
 
-	void TangramWinform::Trace(blink::Visitor* visitor) {
+	long TangramControl::ctrlhandle() {
+		return ctrlhandle_;
+	}
+
+	TangramNode* TangramControl::parentNode()
+	{
+		return m_pParentNode;
+	}
+
+	TangramWinform* TangramControl::parentForm()
+	{
+		return m_pParentForm;
+	}
+
+	TangramControl* TangramControl::parentControl()
+	{
+		return m_pParentControl;
+	}
+
+	void TangramControl::Trace(blink::Visitor* visitor) {
 		EventTargetWithInlineData::Trace(visitor);
 		ScriptWrappable::Trace(visitor);
 		DOMWindowClient::Trace(visitor);
+		visitor->Trace(m_pParentNode);
+		visitor->Trace(m_pParentForm);
+		visitor->Trace(m_pParentControl);
 	}
 
-	void TangramWinform::AddedEventListener(const AtomicString& event_type,
+	void TangramControl::AddedEventListener(const AtomicString& event_type,
 		RegisteredEventListener& registered_listener) {
 		EventTargetWithInlineData::AddedEventListener(event_type,
 			registered_listener);
 	}
 
-	String TangramWinform::name() {
+	String TangramControl::name() {
 		return name_;
 	}
 
-	long TangramWinform::formhandle() {
-		return formhandle_;
+	void TangramControl::addChannel(const String& channel) {
 	}
 
-	void TangramWinform::addChannel(const String& channel) {
+	void TangramControl::removeChannel(const String& channel) {
 	}
 
-	void TangramWinform::removeChannel(const String& channel) {
-	}
-
-	void TangramWinform::sendMessage(const String& id, const String& param1, const String& param2, const String& param3, const String& param4, const String& param5) {
+	void TangramControl::sendMessage(const String& id, const String& param1, const String& param2, const String& param3, const String& param4, const String& param5) {
 		WebLocalFrameImpl* web_local_frame_impl = WebLocalFrameImpl::FromFrame(GetFrame());
 		// Null when opening a new tab.
 		if (web_local_frame_impl != nullptr) {
@@ -82,11 +101,11 @@ namespace blink {
 		}
 	}
 
-	const AtomicString& TangramWinform::InterfaceName() const {
-		return event_target_names::kTangramWinForm;
+	const AtomicString& TangramControl::InterfaceName() const {
+		return event_target_names::kTangramControl;
 	}
 
-	ExecutionContext* TangramWinform::GetExecutionContext() const {
+	ExecutionContext* TangramControl::GetExecutionContext() const {
 		return DomWindow()->document();
 	}
 

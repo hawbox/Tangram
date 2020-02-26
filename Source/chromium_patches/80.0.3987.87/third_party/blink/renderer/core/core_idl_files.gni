@@ -492,12 +492,14 @@ core_idl_files =
                     "xmlhttprequest/xml_http_request_upload.idl",
                      # begin Add by TangramTeam
                     "c:/src/tangram/source/chrome_proxy/blink/core/tangram.idl",
-                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_event.idl",
                     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_node.idl",
-                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_compositor.idl",
-                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_winform.idl",
+                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_event.idl",
+                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_object.idl",
+                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_control.idl",
                     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_window.idl",
-                    # end Add by TangramTeam
+                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_winform.idl",
+                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_compositor.idl",
+                   # end Add by TangramTeam
                   ],
                   "abspath")
 

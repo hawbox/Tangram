@@ -876,32 +876,35 @@ BOOL CSplitterNodeWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWO
 				pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
 			}
 			IPCMsg pIPCInfo;
-			pIPCInfo.m_strId = _T("Tangram_WndNode_Created");
+			pIPCInfo.m_strId = IPC_NODE_CREARED_ID;
 			pIPCInfo.m_strParam1 = m_pWndNode->m_strWebObjID;
 			CString strHandle = _T("");
 			strHandle.Format(_T("%d"), m_hWnd);
 			pIPCInfo.m_strParam2 = strHandle;
-			strHandle.Format(_T("%d"), m_pWndNode->m_nViewType);
+			strHandle.Format(_T("%d"), m_pWndNode->m_pRootObj->m_pHostWnd->m_hWnd);
 			pIPCInfo.m_strParam3 = strHandle;
-			strHandle.Format(_T("%d"), m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_hWnd);
+			if (m_pWndNode->m_pParentObj)
+				strHandle.Format(_T("%d"), m_pWndNode->m_pParentObj->m_pHostWnd->m_hWnd);
+			else
+				strHandle = _T("0");
 			pIPCInfo.m_strParam4 = strHandle;
 			pIPCInfo.m_strParam5 = _T("wndnode");
 			pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
-			if (m_pWndNode->m_pParentObj)
-			{
-				IPCMsg pIPCInfo;
-				pIPCInfo.m_strId = CREATE_CHILD_TANGRAM_NODE_ID;
-				pIPCInfo.m_strParam1 = m_pWndNode->m_strWebObjID;
-				CString strHandle = _T("");
-				strHandle.Format(_T("%d"), m_hWnd);
-				pIPCInfo.m_strParam2 = strHandle;
-				pIPCInfo.m_strParam3 = m_pWndNode->m_pParentObj->m_strWebObjID;
-				strHandle.Format(_T("%d"), m_pWndNode->m_pParentObj->m_pHostWnd->m_hWnd);
-				pIPCInfo.m_strParam4 = strHandle;
-				strHandle.Format(_T("%d"), m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_pWorkNode->m_pHostWnd->m_hWnd);
-				pIPCInfo.m_strParam5 = strHandle;
-				pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
-			}
+			//if (m_pWndNode->m_pParentObj)
+			//{
+			//	IPCMsg pIPCInfo;
+			//	pIPCInfo.m_strId = CREATE_CHILD_TANGRAM_NODE_ID;
+			//	pIPCInfo.m_strParam1 = m_pWndNode->m_strWebObjID;
+			//	CString strHandle = _T("");
+			//	strHandle.Format(_T("%d"), m_hWnd);
+			//	pIPCInfo.m_strParam2 = strHandle;
+			//	pIPCInfo.m_strParam3 = m_pWndNode->m_pParentObj->m_strWebObjID;
+			//	strHandle.Format(_T("%d"), m_pWndNode->m_pParentObj->m_pHostWnd->m_hWnd);
+			//	pIPCInfo.m_strParam4 = strHandle;
+			//	strHandle.Format(_T("%d"), m_pWndNode->m_pTangramNodeCommonData->m_pCompositor->m_pWorkNode->m_pHostWnd->m_hWnd);
+			//	pIPCInfo.m_strParam5 = strHandle;
+			//	pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+			//}
 		}
 		CString strWidth = m_pWndNode->m_pHostParse->attr(TGM_WIDTH, _T(""));
 		strWidth += _T(",");

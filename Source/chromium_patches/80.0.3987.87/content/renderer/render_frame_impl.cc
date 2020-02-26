@@ -2249,6 +2249,7 @@ bool RenderFrameImpl::OnMessageReceived(const IPC::Message& msg) {
 	  
 	// begin Add by TangramTeam
 	IPC_MESSAGE_HANDLER(TangramFrameMsg_Message, OnTangramMessage)
+	IPC_MESSAGE_HANDLER(TangramFrameMsg_Message2, OnTangramMessage2)
 	IPC_MESSAGE_HANDLER(TangramFrameMsg_Message8, OnTangramMessage8)
 	IPC_MESSAGE_HANDLER(TangramFrameMsg_Message9, OnTangramMessage9)
 	IPC_MESSAGE_HANDLER(TangramFrameMsg_Message10, OnTangramMessage10)
@@ -7228,24 +7229,23 @@ void RenderFrameImpl::OnTangramMessage(long messageindex,
         if (!node_element.IsNull()) {
             node_element.SetAttribute("hwnd", WebString::FromUTF16(param2));
             if (param5 == L"wndnode") {
-                node_element.SetAttribute("tangramnodetype", WebString::FromUTF16(param3));
-                node_element.SetAttribute("compositorhandle", WebString::FromUTF16(param4));
-                param3 = L"Tangram_WndNode_Created";
+                node_element.SetAttribute("tangramwindowhandle", WebString::FromUTF16(param3));
+                node_element.SetAttribute("parenthandle", WebString::FromUTF16(param4));
             } else if (param5 == L"wndform") {
                 node_element.SetAttribute("formhandle", WebString::FromUTF16(param3));
                 node_element.SetAttribute("mdiclienthandle", WebString::FromUTF16(param4));
-                param3 = L"Tangram_WndNode_Created";
             }
         }
         long nHandle = _wtol(param2.c_str());
+        long nPHandle = _wtol(param4.c_str());
         if (nHandle&& param5 == L"wndnode")
         {
-            pTangram->createTangramNode(nHandle, String(param1.c_str()));
+            long nWndHandle = _wtol(param3.c_str());
+            pTangram->createTangramNode(nHandle, String(param1.c_str()), nPHandle, nWndHandle);
         }
         pTangram->DispatchEvent(*blink::TangramEvent::Create(
         blink::event_type_names::kTangramnodecreated, String(id.c_str()), String(param1.c_str()),
-        _wtol(param2.c_str()), String(param3.c_str()), _wtol(param4.c_str()),
-        String(param5.c_str())));
+            nHandle, String(param3.c_str()), nPHandle, String(param5.c_str())));
         return;
       }
       break;
@@ -7259,55 +7259,46 @@ void RenderFrameImpl::OnTangramMessage(long messageindex,
               if (param5 == L"wndnode") {
                   node_element.SetAttribute("tangramnodetype", WebString::FromUTF16(param3));
                   node_element.SetAttribute("compositorhandle", WebString::FromUTF16(param4));
-                  param3 = L"Tangram_WndNode_Created";
               }
               else if (param5 == L"wndform") {
                   node_element.SetAttribute("formhandle", WebString::FromUTF16(param3));
                   node_element.SetAttribute("mdiclienthandle", WebString::FromUTF16(param4));
-                  param3 = L"Tangram_WndNode_Created";
               }
           }
           long nHandle = _wtol(param2.c_str());
+          long nPHandle = _wtol(param4.c_str());
           blink::TangramWindow* window = nullptr;
           if (nHandle)
           {
               window = pTangram->createTangramWindow(nHandle, String(param1.c_str()));
           }
           pTangram->DispatchEvent(*blink::TangramEvent::Create(
-              blink::event_type_names::kTangramnodecreated, String(id.c_str()), String(param1.c_str()),
-              _wtol(param2.c_str()), String(param3.c_str()), _wtol(param4.c_str()),
-              String(param5.c_str())));
-          pTangram->DispatchEvent(*blink::TangramEvent::Create(
               blink::event_type_names::kTangramwindowcreated, String(id.c_str()), String(param1.c_str()),
-              _wtol(param2.c_str()), String(param3.c_str()), _wtol(param4.c_str()),
-              String(param5.c_str())));
+              nHandle, String(param3.c_str()), nPHandle, String(param5.c_str())));
           if(window)
               window->DispatchEvent(*blink::TangramEvent::Create(
-                  blink::event_type_names::kTangramnodecreated, String(id.c_str()), String(param1.c_str()),
-                  _wtol(param2.c_str()), String(param3.c_str()), _wtol(param4.c_str()),
-                  String(param5.c_str())));
+                  strEventID, String(id.c_str()), String(param1.c_str()),
+                  nHandle, String(param3.c_str()), nPHandle, String(param5.c_str())));
           return;
-
       }
       break;
       case IPC_NODE_ONMOUSEACTIVATE:
       {
-          //long nNode = _wtol(param2.c_str());
-          //blink::TangramNode* pNode = nullptr;
-          //auto it1 = pTangram->m_mapTangramNode.find(nNode);
-          //if (it1 != pTangram->m_mapTangramNode.end())
-          //{
-          //  //pNode = it1->second;
-          //  //pNode->DispatchEvent(*blink::TangramEvent::Create(
-          //  //blink::event_type_names::kNodemouseactivate, String(id.c_str()), String(param1.c_str()),
-          //  //_wtol(param2.c_str()), String(param3.c_str()), _wtol(param4.c_str()),
-          //  //String(param5.c_str())));
-          //}
+          long nNode = _wtol(param2.c_str());
+          long nPHandle = _wtol(param4.c_str());
+          auto it1 = pTangram->m_mapTangramNode.find(nNode);
+          if (it1 != pTangram->m_mapTangramNode.end())
+          {
+            blink::TangramNode* pNode = it1->value;
+            if(pNode->nHandle)
+                pNode->DispatchEvent(*blink::TangramEvent::Create(
+                blink::event_type_names::kNodemouseactivate, String(id.c_str()), String(param1.c_str()),
+                    nNode, String(param3.c_str()), nPHandle, String(param5.c_str())));
+          }
 
-          pTangram->DispatchEvent(*blink::TangramEvent::Create(
-            blink::event_type_names::kNodemouseactivate, String(id.c_str()), String(param1.c_str()),
-            _wtol(param2.c_str()), String(param3.c_str()), _wtol(param4.c_str()),
-            String(param5.c_str())));
+          //pTangram->DispatchEvent(*blink::TangramEvent::Create(
+          //  blink::event_type_names::kNodemouseactivate, String(id.c_str()), String(param1.c_str()),
+          //    nNode, String(param3.c_str()), nPHandle, String(param5.c_str())));
           return;
       }
       break;
@@ -7331,35 +7322,6 @@ void RenderFrameImpl::OnTangramMessage(long messageindex,
           break;
       case CREATE_CHILD_TANGRAM_NODE:
       {
-        long nNode = _wtol(param2.c_str());
-        blink::TangramNode* pNode = nullptr;
-        long nParentNode = _wtol(param4.c_str());
-        if (nParentNode)
-        {
-            auto it = pTangram->m_mapTangramNode.find(nParentNode);
-            if (it != pTangram->m_mapTangramNode.end())
-            {
-                blink::TangramNode* pParentNode = it->second;
-                if (pParentNode)
-                {
-                    pNode = pParentNode->AddChild(_wtol(param2.c_str()), String(param1.c_str()), pTangram);
-                }
-            }
-            long nHandle = _wtol(param5.c_str());
-            blink::TangramWindow* window = nullptr;
-            auto it1 = pTangram->m_mapTangramWindow.find(nHandle);
-            if (it1 != pTangram->m_mapTangramWindow.end())
-            {
-                window = it1->second;
-                window->m_mapTangramNode[nNode] = pNode;
-                window->m_mapTangramNode2[param1.c_str()] = pNode;
-            }
-            if (window)
-                window->DispatchEvent(*blink::TangramEvent::Create(
-                    blink::event_type_names::kTangramnodecreated, String(id.c_str()), String(param1.c_str()),
-                    _wtol(param2.c_str()), String(param3.c_str()), _wtol(param4.c_str()),
-                    String(param5.c_str())));
-        }
       }
       break;
       case IPC_TANGRAM_CREATE_WIN_FORM_MESSAGE:
@@ -7370,7 +7332,7 @@ void RenderFrameImpl::OnTangramMessage(long messageindex,
           auto it = pTangram->m_mapWinForm.find(nHandle);
           if (it != pTangram->m_mapWinForm.end())
           {
-              node = it->second;
+              node = it->value;
               if (node)
               {
                   node->DispatchEvent(*blink::TangramEvent::Create(
@@ -7395,6 +7357,39 @@ void RenderFrameImpl::OnTangramMessage(long messageindex,
   }
 }
 
+void RenderFrameImpl::OnTangramMessage2(
+    long messageIndex, 
+    std::wstring strParam1,
+    std::wstring strParam2,
+    std::wstring strParam3,
+    std::wstring strParam4,
+    std::wstring strParam5,
+    long fromHandle,
+    long toHandle)
+{
+    blink::Tangram* pTangram = (blink::Tangram*)GetWebFrame()->GetTangram();
+    switch (messageIndex)
+    {
+    case IPC_CLR_CONTROL_CREARED:
+    {
+        String strName = String(strParam1.c_str());
+        auto it = pTangram->m_mapTangramNode.find(toHandle);
+        if (it != pTangram->m_mapTangramNode.end())
+        {
+            blink::TangramNode* pNode = it->value;
+            if (pNode && pNode->nHandle == toHandle)
+            {
+                blink::TangramControl* ctrl = pNode->AddCtrl(fromHandle, String(strParam2.c_str()),String(strParam4.c_str()), pTangram);
+                if(ctrl)
+                { }
+            }
+        }
+    }
+        break;
+    default:
+        break;
+    }
+}
 
 void RenderFrameImpl::OnTangramMessage8(long messageIndex,
     std::wstring strId,

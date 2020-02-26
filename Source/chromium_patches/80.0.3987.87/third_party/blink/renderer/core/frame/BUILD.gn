@@ -207,12 +207,16 @@ blink_core_sources("frame") {
     "c:/src/tangram/source/chrome_proxy/blink/core/tangram.h",
     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_node.cc",
     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_node.h",
-    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_compositor.cc",
-    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_compositor.h",
-    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_winform.cc",
-    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_winform.h",
+    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_object.cc",
+    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_object.h",
+    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_control.cc",
+    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_control.h",
     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_window.cc",
     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_window.h",
-    # end Add by TangramTeam
+    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_winform.cc",
+    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_winform.h",
+    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_compositor.cc",
+    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_compositor.h",
+     # end Add by TangramTeam
   ]
 }

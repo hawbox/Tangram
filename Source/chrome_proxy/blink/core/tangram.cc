@@ -36,6 +36,12 @@ void Tangram::Trace(blink::Visitor* visitor) {
   EventTargetWithInlineData::Trace(visitor);
   ScriptWrappable::Trace(visitor);
   DOMWindowClient::Trace(visitor);
+  visitor->Trace(m_mapTangramNode);
+  visitor->Trace(m_mapTangramWindow);
+  visitor->Trace(m_mapTangramWindow2);
+  visitor->Trace(m_mapTangramNode2);
+  visitor->Trace(m_mapWinForm);
+  visitor->Trace(m_mapTangramCompositor);
 }
 
 void Tangram::AddedEventListener(const AtomicString& event_type,
@@ -225,7 +231,7 @@ TangramWinform* Tangram::createWinForm(const String& strFormXml, const long Form
 	TangramWinform* form = TangramWinform::Create(DomWindow()->GetFrame(), strFormXml); 
 	form->nHandle = (long)form;
 	form->web_local_frame_client = web_local_frame_client;
-	m_mapWinForm[form->nHandle] = form;
+	m_mapWinForm.insert(form->nHandle, form);
 	if (web_local_frame_client) {
 		WebString webstr = strFormXml;
 		std::wstring _strFormXml = webstr.Utf16();
@@ -234,22 +240,46 @@ TangramWinform* Tangram::createWinForm(const String& strFormXml, const long Form
 	return form;
 }
 
-TangramNode* Tangram::createTangramNode(const long nHandle, const String& strNodeName)
+TangramNode* Tangram::createTangramNode(const long nHandle, const String& strNodeName, const long nPHandle, const long nWndHandle)
 {
 	TangramNode* node = TangramNode::Create(DomWindow()->GetFrame(), strNodeName);
 	node->nHandle = nHandle;
 	node->web_local_frame_client = web_local_frame_client;
-	m_mapTangramNode[nHandle] = node;
-	WebString webstr = strNodeName;
-	m_mapTangramNode2[webstr.Utf16()] = node;
-	//wstring s = L"大家好|123|是";
-	//std::wstringstream ss;
-	//ss.str(s);
-	//std::vector<std::wstring> elems;
-	//std::wstring item;
-	//while (std::getline(ss, item, L'|')) {
-	//	elems.push_back(item);
-	//}
+	m_mapTangramNode.insert(nHandle,node);
+	m_mapTangramNode2.insert(strNodeName, node);
+	if (nPHandle)
+	{
+		auto it = m_mapTangramNode.find(nPHandle);
+		if (it != m_mapTangramNode.end())
+		{
+			//int nSize = it->value->m_mapChildNode.size();
+			//it->value->m_mapChildNode.insert(nSize, node);
+			it->value->m_mapChildNode2.insert(strNodeName, node);
+			if (nWndHandle)
+			{
+				auto it1 = m_mapTangramWindow.find(nWndHandle);
+				if (it1 != m_mapTangramWindow.end())
+				{
+					blink::TangramWindow* window = it1->value;
+					if (window)
+					{
+						window->m_mapTangramNode.insert(nHandle, node);
+						window->m_mapTangramNode2.insert(strNodeName, node);
+						if (window)
+							window->DispatchEvent(*blink::TangramEvent::Create(
+								blink::event_type_names::kTangramnodecreated, String(L"CREATE_CHILD_TANGRAM_NODE"), 
+								strNodeName,
+								nHandle, 
+								it->value->name(), 
+								nPHandle,
+								String(L"wndnode")));
+
+					}
+				}
+			}
+		}
+	}
+
 
 	return node;
 }
@@ -259,15 +289,14 @@ TangramWindow* Tangram::createTangramWindow(const long nHandle, const String& st
 	TangramWindow* window = TangramWindow::Create(DomWindow()->GetFrame(), strWndName);
 	window->windowhandle_ = nHandle;
 	window->web_local_frame_client = web_local_frame_client;
-	m_mapTangramWindow[nHandle] = window;
-	WebString webstr = strWndName;
-	m_mapTangramWindow2[webstr.Utf16()] = window;
+	m_mapTangramWindow.insert(nHandle, window);
+	m_mapTangramWindow2.insert(strWndName, window);
 
-	window->m_pHostNode = TangramNode::Create(DomWindow()->GetFrame(), strWndName);
-	window->m_pHostNode->nHandle = nHandle;
-	window->m_pHostNode->web_local_frame_client = web_local_frame_client;
-	m_mapTangramNode[nHandle] = window->m_pHostNode;
-	m_mapTangramNode2[webstr.Utf16()] = window->m_pHostNode;
+	//window->m_pHostNode = TangramNode::Create(DomWindow()->GetFrame(), strWndName);
+	//window->m_pHostNode->nHandle = nHandle;
+	//window->m_pHostNode->web_local_frame_client = web_local_frame_client;
+	//m_mapTangramNode[nHandle] = window->m_pHostNode;
+	//m_mapTangramNode2[webstr.Utf16()] = window->m_pHostNode;
 
 
 	//wstring s = L"xxx|123|yyy";
@@ -284,10 +313,9 @@ TangramWindow* Tangram::createTangramWindow(const long nHandle, const String& st
 
 TangramNode* Tangram::getNode(const String& nodeName)
 {
-	WebString webstr = nodeName;
-	auto it = m_mapTangramNode2.find(webstr.Utf16());
+	auto it = m_mapTangramNode2.find(nodeName);
 	if (it != m_mapTangramNode2.end())
-		return it->second;
+		return it->value;
 	return nullptr;
 }
 
@@ -295,16 +323,15 @@ TangramNode* Tangram::getNode(const long nodeHandle)
 {
 	auto it = m_mapTangramNode.find(nodeHandle);
 	if (it != m_mapTangramNode.end())
-		return it->second;
+		return it->value;
 	return nullptr;
 }
 
 TangramWindow* Tangram::getWindow(const String& wndName)
 {
-	WebString webstr = wndName;
-	auto it = m_mapTangramWindow2.find(webstr.Utf16());
+	auto it = m_mapTangramWindow2.find(wndName);
 	if (it != m_mapTangramWindow2.end())
-		return it->second;
+		return it->value;
 	return nullptr;
 }
 
@@ -312,7 +339,7 @@ TangramWindow* Tangram::getWindow(const long wndHandle)
 {
 	auto it = m_mapTangramWindow.find(wndHandle);
 	if (it != m_mapTangramWindow.end())
-		return it->second;
+		return it->value;
 	return nullptr;
 }
 

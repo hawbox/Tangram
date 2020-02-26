@@ -21,6 +21,7 @@ using namespace std;
 class Tangram;
 class TangramWindow;
 class TangramWinform;
+class TangramControl;
 
 class Document;
 class ScriptState;
@@ -33,6 +34,7 @@ class CORE_EXPORT TangramNode final : public EventTargetWithInlineData,
 									  public DOMWindowClient {
   DEFINE_WRAPPERTYPEINFO();
   USING_GARBAGE_COLLECTED_MIXIN(TangramNode);
+  //USING_PRE_FINALIZER(TangramNode, Dispose);
 
  public:
   static TangramNode* Create(LocalFrame* frame) { return MakeGarbageCollected<TangramNode>(frame); }
@@ -73,11 +75,13 @@ class CORE_EXPORT TangramNode final : public EventTargetWithInlineData,
   // Node API:
   TangramNode* getChild(long nIndex);
   TangramNode* getChild(const String& strName);
+  TangramControl* getControl(const String& strCtrlName);
 
   DEFINE_ATTRIBUTE_EVENT_LISTENER(MessageReceived, kTangram)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(MdiChildActivate, kMdichildactivate)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(NodeMouseActivate, kNodemouseactivate)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(TangramNodeCreated, kTangramnodecreated)
+  DEFINE_ATTRIBUTE_EVENT_LISTENER(TangramControlCreated, kTangramcontrolcreated)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(TreeViewNodeAfterSelect, kTreeviewnodeafterselect)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(TreeViewNodeMouseDoubleClick, kTreeviewnodemousedoubleclick)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(ListViewItemSelectionChanged, kListviewitemselectionchanged)
@@ -94,6 +98,7 @@ class CORE_EXPORT TangramNode final : public EventTargetWithInlineData,
   TangramNode(LocalFrame*);
   TangramNode(LocalFrame*, const String& strNodeXml);
   TangramNode* AddChild(long nHandle, const String& strNodeName, blink::Tangram*);
+  TangramControl* AddCtrl(long nCtrlHandle, const String& strCtrlName, const String& strWebPageID, blink::Tangram*);
 
   ~TangramNode() override;
 
@@ -106,15 +111,18 @@ class CORE_EXPORT TangramNode final : public EventTargetWithInlineData,
 
   String name_;
 
+  WebLocalFrameClient* web_local_frame_client;
   mutable Member<TangramWindow> m_pParentWnd;
   mutable Member<TangramWinform> m_pParentForm;
 
-  WebLocalFrameClient* web_local_frame_client;
+  HeapHashMap<long, Member<TangramControl>> m_mapChildControl;
+  HeapHashMap<String, Member<TangramControl>> m_mapChildControl2;
+  HeapHashMap<int, Member<TangramNode>> m_mapChildNode;
+  HeapHashMap<String, Member<TangramNode>> m_mapChildNode2;
+
 private:
   String m_strNodeXml;
   map<std::wstring, String> m_mapVal;
-  map<int, TangramNode*> m_mapChildNode;
-  map<std::wstring, TangramNode*> m_mapChildNode2;
 };
 
 }  // namespace blink

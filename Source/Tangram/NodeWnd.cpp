@@ -125,14 +125,14 @@ BOOL CNodeWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwSty
 		if (pCompositor->m_pWebPageWnd)
 		{
 			IPCMsg pIPCInfo;
-			pIPCInfo.m_strId = _T("Tangram_WndNode_Created");
+			pIPCInfo.m_strId = IPC_NODE_CREARED_ID;
 			pIPCInfo.m_strParam1 = m_pWndNode->m_strWebObjID;
 			CString strHandle = _T("");
 			strHandle.Format(_T("%d"), m_hWnd);
 			pIPCInfo.m_strParam2 = strHandle;
-			strHandle.Format(_T("%d"), m_pWndNode->m_nViewType);
+			strHandle.Format(_T("%d"), m_pWndNode->m_pRootObj->m_pHostWnd->m_hWnd);
 			pIPCInfo.m_strParam3 = strHandle;
-			strHandle.Format(_T("%d"), pCompositor->m_hWnd);
+			strHandle.Format(_T("%d"), m_pWndNode->m_pParentObj->m_pHostWnd->m_hWnd);
 			pIPCInfo.m_strParam4 = strHandle;
 			//strHandle.Format(_T("%d"), m_pRootObj->m_pHostWnd->m_hWnd);
 			pIPCInfo.m_strParam5 = _T("wndnode");
@@ -241,7 +241,7 @@ int CNodeWnd::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message)
 		if (pHtmlWnd)
 		{
 			IPCMsg pIPCInfo;
-			pIPCInfo.m_strId = _T("Tangram_WndNode_OnMouseActivate");
+			pIPCInfo.m_strId = IPC_NODE_ONMOUSEACTIVATE_ID;
 			pIPCInfo.m_strParam1 = strID;
 			CString strHandle = _T("");
 			strHandle.Format(_T("%d"), m_hWnd);
@@ -326,7 +326,7 @@ int CNodeWnd::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message)
 		if (pHtmlWnd)
 		{
 			IPCMsg pIPCInfo;
-			pIPCInfo.m_strId = _T("Tangram_WndNode_OnMouseActivate");
+			pIPCInfo.m_strId = IPC_NODE_ONMOUSEACTIVATE_ID;
 			pIPCInfo.m_strParam1 = strID;
 			CString strHandle = _T("");
 			strHandle.Format(_T("%d"), m_hWnd);
@@ -681,16 +681,18 @@ LRESULT CNodeWnd::OnTangramData(WPARAM wParam, LPARAM lParam)
 			m_pHtmlWnd->m_mapBindWebObj.erase(it);
 		}
 		m_pHtmlWnd->m_mapBindWebObj[pObj->m_strBindObjName] = pObj;
-		IPCMsg pIPCInfo;
-		pIPCInfo.m_strId = _T("Tangram_WndNode_Created");
-		pIPCInfo.m_strParam1 = pObj->m_strBindObjName;
-		CString strHandle = _T("");
-		strHandle.Format(_T("%d"), pObj->m_hWnd);
-		pIPCInfo.m_strParam2 = strHandle;
-		pIPCInfo.m_strParam3 = _T("Tangram_WndNode_Created");;
-		pIPCInfo.m_strParam4 = pObj->m_strBindObjName;
-		pIPCInfo.m_strParam5 = _T("");
-		m_pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+		//IPCMsg pIPCInfo;
+		//pIPCInfo.m_strId = IPC_NODE_CREARED_ID;
+		//pIPCInfo.m_strParam1 = pObj->m_strObjName;
+		//CString strHandle = _T("");
+		//strHandle.Format(_T("%d"), pObj->m_hWnd);
+		//pIPCInfo.m_strParam2 = strHandle;
+		//pIPCInfo.m_strParam3 = IPC_NODE_CREARED_ID;
+		//pIPCInfo.m_strParam4 = pObj->m_strBindObjName;
+		//pIPCInfo.m_strParam5 = _T("");
+		//m_pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
+
+		((CTangramImpl*)g_pTangram)->ConnectClrObjectToDOM(m_pWndNode, pObj->m_strObjName, pObj->m_hWnd, pObj->m_strBindObjName, pObj->m_strBindData, _T(""));
 
 		if (g_pTangram->m_pCLRProxy)
 		{

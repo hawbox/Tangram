@@ -33,6 +33,8 @@
 #define TANGRAM_CONST_PANE_FIRST		20022017
 #define TANGRAM_CHROME_APP_INIT			20190501
 
+#define IPC_CLR_CONTROL_CREARED							20200220
+#define IPC_CLR_CONTROL_CREARED_ID						_T("Tangram_CLR_Control_Created")
 #define IPC_NODE_CREARED								20200221
 #define IPC_NODE_CREARED_ID								_T("Tangram_WndNode_Created")
 #define IPC_NODE_ONMOUSEACTIVATE						20200222
@@ -249,6 +251,7 @@ namespace TangramCommon {
 	{
 		int nType = -1;
 		HWND m_hWnd = NULL;
+		CString m_strObjName = _T("");
 		CString m_strBindObjName = _T("");
 		CString m_strBindData = _T("");
 		IWndNode* m_pNode = nullptr;
@@ -792,6 +795,7 @@ namespace TangramCommon {
 		virtual void InsertTangramDataMap(int nType, CString strKey, void* pData) {}
 		virtual IChromeWebPage* GetWebPageFromForm(HWND) { return nullptr; }
 		virtual long GetIPCMsgIndex(CString strMsgID) { return 0; }
+		virtual void ConnectClrObjectToDOM(IWndNode* pParentNode, CString ObjName, HWND hObjHandle, CString ObjDOMName, CString strBindEvents, CString strExtra) {}
 	};
 
 	class ITangramDelegate {

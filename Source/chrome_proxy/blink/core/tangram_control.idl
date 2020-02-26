@@ -1,0 +1,20 @@
+
+[
+	Exposed = Window,
+	NoInterfaceObject
+] interface TangramControl : EventTarget {
+
+	// Message API
+	void addChannel(DOMString channel);
+	void removeChannel(DOMString channel);
+	void sendMessage(DOMString id, DOMString param1, DOMString param2, DOMString param3, DOMString param4, DOMString param5);
+
+	readonly attribute DOMString name;
+	readonly attribute long ctrlhandle;
+	readonly attribute TangramNode parentNode;
+	readonly attribute TangramWinform parentForm;
+	readonly attribute TangramControl parentControl;
+	
+	// Event handler attributes
+	attribute EventHandler onMessageReceived;
+};

@@ -18,6 +18,12 @@ namespace blink {
 
 using namespace std;
 
+class Tangram;
+class TangramNode;
+class TangramWindow;
+class TangramWinform;
+class TangramControl;
+
 class Document;
 class ScriptState;
 class ExceptionState;
@@ -74,6 +80,8 @@ class CORE_EXPORT TangramWinform final : public EventTargetWithInlineData,
 
   long nHandle = 0;
   long formhandle_ = 0;
+  map<long, Member<TangramControl>> m_mapChildControl;
+  map<std::wstring, Member<TangramControl>> m_mapChildControl2;
   WebLocalFrameClient* web_local_frame_client;
 private:
   String name_;

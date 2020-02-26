@@ -66,6 +66,10 @@ event_target_names.json5：
 #include "VisualStudioPlus\VSAddin.h"
 #include <io.h>
 #include <stdio.h>
+#include <string>
+#include <iostream>
+#include <stdlib.h>
+#include <sstream>
 
 #include "NodeWnd.h"
 #include "WndNode.h"
@@ -270,6 +274,7 @@ CTangram::CTangram()
 	m_mapIPCMsgIndexDic[IPC_TANGRAM_CREATE_WIN_FORM_MESSAGE_ID] = IPC_TANGRAM_CREATE_WIN_FORM_MESSAGE;
 	m_mapIPCMsgIndexDic[IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE_ID] = IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE;
 	m_mapIPCMsgIndexDic[CREATE_CHILD_TANGRAM_NODE_ID] = CREATE_CHILD_TANGRAM_NODE;
+	m_mapIPCMsgIndexDic[IPC_CLR_CONTROL_CREARED_ID] = IPC_CLR_CONTROL_CREARED;
 }
 
 BOOL CTangram::CopyFolder(CString strSrcPath, CString strDesPath)
@@ -2081,6 +2086,47 @@ long CTangram::GetIPCMsgIndex(CString strMsgID)
 		return it->second;
 	else
 		return 0;
+}
+
+void CTangram::ConnectClrObjectToDOM(IWndNode* pParentNode, CString ObjName, HWND hObjHandle, CString ObjDOMName, CString strBindEvents, CString strExtra)
+{
+	if (pParentNode == nullptr)
+		return;
+	CWndNode* pNode = (CWndNode*)pParentNode;
+	CCompositor* pCompositor = pNode->m_pTangramNodeCommonData->m_pCompositor;
+	if (pCompositor)
+	{
+		CHtmlWnd* pHtmlWnd = pCompositor->m_pWebPageWnd;
+		if (pHtmlWnd&& pHtmlWnd->m_pChromeRenderFrameHost)
+		{
+			IPCMsg msg;
+			msg.m_strId = IPC_CLR_CONTROL_CREARED_ID;
+			msg.m_nHandleFrom = (long)hObjHandle;
+			msg.m_nHandleTo = (long)pNode->m_pHostWnd->m_hWnd;
+			msg.m_strParam1 = pNode->m_strName;
+			msg.m_strParam2 = ObjName;
+			msg.m_strParam3 = strBindEvents;
+			msg.m_strParam4 = ObjDOMName;
+			msg.m_strParam5 = strExtra;
+			pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&msg);
+			if (m_pCLRProxy)
+			{
+				CString strEvent = strBindEvents;
+				int nPos = strEvent.Find(_T("|"));
+				if (nPos == -1)
+				{
+
+				}
+				wstring s = LPCTSTR(strBindEvents);
+				std::wstringstream ss;
+				ss.str(s);
+				wstring item;
+				while (std::getline(ss, item, L'|')) {
+					CString strEvent = item.c_str();
+				}
+			}
+		}
+	}
 }
 
 IChromeWebPage* CTangram::GetWebPageFromForm(HWND hForm)

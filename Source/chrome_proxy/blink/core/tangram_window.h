@@ -78,8 +78,8 @@ class CORE_EXPORT TangramWindow final : public EventTargetWithInlineData,
   long windowhandle_ = 0;
   mutable Member<TangramNode> m_pHostNode;
   WebLocalFrameClient* web_local_frame_client;
-  map<long, TangramNode*> m_mapTangramNode;
-  map<std::wstring, TangramNode*> m_mapTangramNode2;
+  HeapHashMap<long, Member<TangramNode>> m_mapTangramNode;
+  HeapHashMap<String, Member<TangramNode>> m_mapTangramNode2;
 private:
   String name_;
   String m_strWindowXml;

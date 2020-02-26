@@ -490,4 +490,5 @@ private:
 	void InsertTangramDataMap(int nType, CString strKey, void* pData);
 	char* GetSchemeString(int nType, CString strKey);
 	long GetIPCMsgIndex(CString strMsgID);
+	void ConnectClrObjectToDOM(IWndNode* pParentNode, CString ObjName, HWND hObjHandle, CString ObjDOMName, CString strBindEvents, CString strExtra);
 };

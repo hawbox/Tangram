@@ -981,6 +981,16 @@ class CONTENT_EXPORT RenderFrameImpl
       std::wstring param4,
       std::wstring param5) override;
 
+  void OnTangramMessage2(
+      long messageindex,
+      std::wstring param1,
+      std::wstring param2,
+      std::wstring param3,
+      std::wstring param4,
+      std::wstring param5,
+      long fromHandle, 
+      long toHandle) override;
+
   void OnTangramMessage8(long messageIndex,
       std::wstring strId,
       long NodeHandle,

@@ -1147,6 +1147,7 @@ Object^ CTangramCLRProxy::InitTangramCtrl(Form^ pForm, Control^ pCtrl, bool bSav
 											pObj->nType = 0;
 											pObj->m_pObjDisp = (IDispatch*)Marshal::GetIDispatchForObject(pCtrl).ToPointer();
 											pObj->m_hWnd = (HWND)pChild->Handle.ToPointer();
+											pObj->m_strObjName = name;
 											pObj->m_strBindObjName = strWebName;
 											pObj->m_strBindData = pChildParse->attr(_T("bindevent"), _T(""));
 											HWND hForm = (HWND)pForm->Handle.ToPointer();
@@ -1320,13 +1321,17 @@ Object^ CTangramCLRProxy::InitTangramNode(IWndNode* _pNode, Control^ pCtrl, bool
 						if (pChildParse)
 						{
 							CString strWebName = pChildParse->attr(_T("id"), _T(""));
+							if (strWebName == _T(""))strWebName = pChild->Name;
 							if (strWebName != _T(""))
 							{
+								HWND hCtrl = (HWND)pChild->Handle.ToPointer();
+								CString strEvents = pChildParse->attr(_T("bindevent"), _T(""));
 								BindWebObj* pObj = new BindWebObj;
 								pObj->nType = 0;
 								pObj->m_pNode = _pNode;
-								pObj->m_strBindData = pChildParse->attr(_T("bindevent"), _T(""));
-								pObj->m_hWnd = (HWND)pChild->Handle.ToPointer();
+								pObj->m_strBindData = strEvents;
+								pObj->m_hWnd = hCtrl;
+								pObj->m_strObjName = pChild->Name;
 								pObj->m_strBindObjName = strWebName;
 								__int64 nHandle = 0;
 								_pNode->get_Handle(&nHandle);

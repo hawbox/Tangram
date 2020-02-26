@@ -340,6 +340,7 @@
     "tangramnode",
     "tangramcompositor",
     "tangramnodecreated",
+    "tangramcontrolcreated",
     "tangramwindowcreated",
     "nodemouseactivate",
     "mdichildactivate",
@@ -353,6 +354,8 @@
     "bindclrctrlevent",
     "tangramwinform",
     "tangramwindow",
+    "tangramcontrol",
+    "tangramobject",
     # end Add by TangramTeam
   ],
 }

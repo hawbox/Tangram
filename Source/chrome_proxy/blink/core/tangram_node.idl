@@ -1,7 +1,6 @@
 
 [
-	Exposed = Window,
-	NoInterfaceObject
+	Exposed = Window
 ] interface TangramNode : EventTarget {
 
 	// Message API
@@ -21,6 +20,7 @@
 	//Node API
 	TangramNode getChild(long nIndex);
 	TangramNode getChild(DOMString strName);
+	TangramControl getControl(DOMString strCtrlName);
 
 	readonly attribute DOMString name;
 	readonly attribute long row;
@@ -34,6 +34,7 @@
 	// Event handler attributes
 	attribute EventHandler onMessageReceived;
 	attribute EventHandler onTangramNodeCreated;
+	attribute EventHandler onTangramControlCreated;
 	attribute EventHandler onNodeMouseActivate;
 	attribute EventHandler onMdiChildActivate;
 	attribute EventHandler onTreeViewNodeAfterSelect;
