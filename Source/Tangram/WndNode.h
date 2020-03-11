@@ -30,6 +30,7 @@
 
 #pragma once
 
+class CTangramCloudSession;
 class CTangramNodeCommonData
 {
 public:
@@ -102,6 +103,7 @@ public:
 	CWndNode* 							m_pRootObj;
 	CWndNode* 							m_pParentObj;
 	CWndNode*							m_pVisibleXMLObj;
+	CTangramWinFormWnd*					m_pParentWinFormWnd;
 	CTangramXmlParse*					m_pHostParse;
 	CTangramXmlParse* 					m_pDocXmlParseNode;
 
@@ -120,6 +122,7 @@ public:
 	IVSDocument*						m_pVSDocument;
 	CTangramNodeVector					m_vChildNodes;
 	CWndNode*							m_pCurrentExNode;
+	CTangramCloudSession*				m_pTangramCloudSession;
 	map<CString, CCompositor*>			m_mapSubFrame;
 	map<CWndNode*, CString>				m_mapExtendNode;
 	CComObject<CWndNodeCollection>*		m_pChildNodeCollection;
@@ -135,10 +138,9 @@ public:
 	BOOL	RemoveChildNode(CWndNode* pNode);
 	CString GetNames();
 	CHtmlWnd* GetHtmlWnd();
-
 	// Object
 	IRefObject* GetXObject() override;
-
+	void NodeCreated();
 	// IPC message
 	IPC::Broker* GetBroker() override;
 	void OnIPCMessageReceived(CString strFrom, CString strTo, CString strMsgId, CString strPayload, CString strExtra = NULL) override;

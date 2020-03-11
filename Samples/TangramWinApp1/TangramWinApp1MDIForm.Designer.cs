@@ -465,6 +465,7 @@
             this.Name = "TangramWinApp1MDIForm";
             this.toolTip.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.Load += new System.EventHandler(this.TangramWinApp1MDIForm_Load);
+            this.SizeChanged += new System.EventHandler(this.TangramWinApp1MDIForm_SizeChanged);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.toolStrip.ResumeLayout(false);

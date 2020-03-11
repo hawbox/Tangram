@@ -980,14 +980,14 @@ void LocalNtpSource::StartDataRequest(
         base::StrCat({kSha256, DOODLES_JS_INTEGRITY});
     replacements["localNtpIntegrity"] =
         base::StrCat({kSha256, LOCAL_NTP_JS_INTEGRITY});
-	// begin Add by TangramTeam
-	replacements["tangramjsIntegrity"] =
-		base::StrCat({ kSha256, TANGRAM_JS_INTEGRITY });
 	// end Add by TangramTeam
 	replacements["utilsIntegrity"] =
         base::StrCat({kSha256, UTILS_JS_INTEGRITY});
     replacements["localNtpVoiceIntegrity"] =
         base::StrCat({kSha256, VOICE_JS_INTEGRITY});
+	// begin Add by TangramTeam
+	replacements["tangramjsIntegrity"] =
+		base::StrCat({ kSha256, TANGRAM_JS_INTEGRITY });
     // TODO(dbeam): why is this needed? How does it interact with
     // URLDataSource::GetContentSecurityPolicy*() methods?
     replacements["contentSecurityPolicy"] = GetContentSecurityPolicy();
@@ -1133,14 +1133,16 @@ std::string LocalNtpSource::GetContentSecurityPolicy() {
   //    VOICE_JS_INTEGRITY,
   //    search_config_provider_->config_data_integrity().c_str());
   // begin Add by TangramTeam
+
   std::string script_src_csp = base::StringPrintf(
-	  "script-src 'strict-dynamic' 'sha256-%s' 'sha256-%s' 'sha256-%s' "
-	  "'sha256-%s' 'sha256-%s' 'sha256-%s' 'sha256-%s' 'sha256-%s';",
-	  ANIMATIONS_JS_INTEGRITY, CUSTOMIZE_JS_INTEGRITY,
-	  DOODLES_JS_INTEGRITY, LOCAL_NTP_JS_INTEGRITY, UTILS_JS_INTEGRITY,
-	  VOICE_JS_INTEGRITY,
-	  TANGRAM_JS_INTEGRITY,
-	  search_config_provider_->config_data_integrity().c_str());
+      "script-src 'strict-dynamic' 'sha256-%s' 'sha256-%s' 'sha256-%s' "
+      "'sha256-%s' 'sha256-%s' 'sha256-%s' 'sha256-%s' 'sha256-%s' 'sha256-%s';",
+      ANIMATIONS_JS_INTEGRITY, ASSERT_JS_INTEGRITY, CUSTOMIZE_JS_INTEGRITY,
+      DOODLES_JS_INTEGRITY, LOCAL_NTP_JS_INTEGRITY, UTILS_JS_INTEGRITY,
+      VOICE_JS_INTEGRITY, TANGRAM_JS_INTEGRITY,
+      search_config_provider_->config_data_integrity().c_str());
+
+
   // end Add by TangramTeam
 
   return GetContentSecurityPolicyObjectSrc() +

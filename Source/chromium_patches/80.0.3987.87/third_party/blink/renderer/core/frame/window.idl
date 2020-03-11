@@ -214,6 +214,9 @@
 
 	// begin Add by TangramTeam
 	[RuntimeEnabled = TrustedDOMTypes, Replaceable] readonly attribute Tangram tangram;
+	[RuntimeEnabled = TrustedDOMTypes, Replaceable] readonly attribute TangramApplication application;
+	[RuntimeEnabled = TrustedDOMTypes, Replaceable] readonly attribute TangramUserpage userpage;
+	[RuntimeEnabled = TrustedDOMTypes, Replaceable] readonly attribute TangramNtp ntp;
 	// end Add by TangramTeam
 
     // TrustedTypes API: http://github.com/wicg/trusted-types

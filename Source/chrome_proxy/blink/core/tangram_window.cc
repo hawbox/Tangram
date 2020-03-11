@@ -1,5 +1,6 @@
 // begin Add by TangramTeam
 #include "tangram.h"
+#include "tangram_xobj.h"
 #include "tangram_node.h"
 #include "tangram_window.h"
 #include "tangram_event.h"
@@ -13,15 +14,29 @@
 #include "third_party/blink/renderer/core/frame/local_dom_window.h"
 #include "third_party/blink/public/web/web_local_frame_client.h"
 #include "third_party/blink/renderer/core/frame/web_local_frame_impl.h"
-#include "third_party/blink/renderer/bindings/core/v8/v8_general_callback.h"
+#include "third_party/blink/renderer/bindings/core/v8/v8_application_callback.h"
 
 namespace blink {
 
 	TangramWindow::TangramWindow(LocalFrame* frame) : DOMWindowClient(frame) {
-		web_local_frame_client = nullptr;
+		m_pHostNode = nullptr;
+		m_pRenderframeImpl = nullptr;
+		id_ = WTF::CreateCanonicalUUIDString();
 	}
 
 	TangramWindow::~TangramWindow() {
+		Tangram* pTangram = tangram_.Get();
+		if (pTangram)
+		{
+			WebString str = name_;
+			auto it = pTangram->m_mapTangramWindow2.find(str.Utf16());
+			if (it != pTangram->m_mapTangramWindow2.end())
+				pTangram->m_mapTangramWindow2.erase(it);
+
+			auto it2 = pTangram->m_mapTangramWindow.find(handle_);
+			if (it2 != pTangram->m_mapTangramWindow.end())
+				pTangram->m_mapTangramWindow.erase(it2);
+		}
 	}
 
 	TangramWindow* TangramWindow::Create(LocalFrame* frame, const String& strWindowName) {
@@ -37,9 +52,10 @@ namespace blink {
 		EventTargetWithInlineData::Trace(visitor);
 		ScriptWrappable::Trace(visitor);
 		DOMWindowClient::Trace(visitor);
+		visitor->Trace(tangram_);
+		visitor->Trace(innerXobj_);
 		visitor->Trace(m_pHostNode);
-		visitor->Trace(m_mapTangramNode);
-		visitor->Trace(m_mapTangramNode2);
+		visitor->Trace(mapTangramEventCallback_);
 	}
 
 	void TangramWindow::AddedEventListener(const AtomicString& event_type,
@@ -52,15 +68,26 @@ namespace blink {
 		return name_;
 	}
 
-	long TangramWindow::windowhandle() {
-		return windowhandle_;
+	String TangramWindow::getid()
+	{
+		return id_;
+	}
+
+	int64_t TangramWindow::handle() {
+		return handle_;
+	}
+
+	TangramXobj* TangramWindow::xobj()
+	{
+		return innerXobj_;
 	}
 
 	TangramNode* TangramWindow::getNode(const String& nodeName)
 	{
-		auto it = m_mapTangramNode2.find(nodeName);
+		WebString strName = nodeName;
+		auto it = m_mapTangramNode2.find(strName.Utf16());
 		if (it != m_mapTangramNode2.end())
-			return it->value;
+			return it->second;
 		return nullptr;
 	}
 
@@ -68,37 +95,8 @@ namespace blink {
 	{
 		auto it = m_mapTangramNode.find(nodeHandle);
 		if (it != m_mapTangramNode.end())
-			return it->value;
+			return it->second;
 		return nullptr;
-	}
-
-	void TangramWindow::addChannel(const String& channel) {
-	}
-
-	void TangramWindow::removeChannel(const String& channel) {
-	}
-
-	void TangramWindow::sendMessage(const String& id, const String& param1, const String& param2, const String& param3, const String& param4, const String& param5) {
-		WebLocalFrameImpl* web_local_frame_impl = WebLocalFrameImpl::FromFrame(GetFrame());
-		// Null when opening a new tab.
-		if (web_local_frame_impl != nullptr) {
-			WebLocalFrameClient* web_local_frame_client = web_local_frame_impl->Client();
-			if (web_local_frame_client) {
-				WebString webstr = id;
-				std::wstring u16_id = webstr.Utf16();
-				webstr = param1;
-				std::wstring u16_param1 = webstr.Utf16();
-				webstr = param2;
-				std::wstring u16_param2 = webstr.Utf16();
-				webstr = param3;
-				std::wstring u16_param3 = webstr.Utf16();
-				webstr = param4;
-				std::wstring u16_param4 = webstr.Utf16();
-				webstr = param5;
-				std::wstring u16_param5 = webstr.Utf16();
-				web_local_frame_client->SendTangramMessage(u16_id, u16_param1, u16_param2, u16_param3, u16_param4, u16_param5);
-			}
-		}
 	}
 
 	const AtomicString& TangramWindow::InterfaceName() const {
@@ -107,6 +105,85 @@ namespace blink {
 
 	ExecutionContext* TangramWindow::GetExecutionContext() const {
 		return DomWindow()->document();
+	}
+
+	void TangramWindow::addEventListener(const String& eventName, V8ApplicationCallback* callback)
+	{
+		if (callback)
+		{
+			auto it = innerXobj_->session_.m_mapString.find(L"objID");
+			if (it != innerXobj_->session_.m_mapString.end())
+			{
+				tangram_->m_mapTangramWindow2[WebString(id_).Utf16()] = this;
+				mapTangramEventCallback_.insert(eventName, callback);
+				innerXobj_->session_.m_mapString[L"listenerType"] = WebString(eventName).Utf16();
+				innerXobj_->session_.m_mapString[L"SenderType"] = L"TangramControl";
+				innerXobj_->session_.m_mapString[L"Sender"] = WebString(id_).Utf16();
+				sendMessage(innerXobj_, nullptr);
+			}
+		}
+	}
+
+	void TangramWindow::removeEventListener(const String& eventName)
+	{
+		auto it = mapTangramEventCallback_.find(eventName);
+		if (it != mapTangramEventCallback_.end())
+			mapTangramEventCallback_.erase(it);
+	}
+
+	void TangramWindow::disConnect()
+	{
+		int nSize = mapTangramEventCallback_.size();
+		if (nSize)
+		{
+			while (mapTangramEventCallback_.size())
+			{
+				auto it = mapTangramEventCallback_.begin();
+				mapTangramEventCallback_.erase(it);
+			}
+		}
+	}
+
+	void TangramWindow::fireEvent(const String& eventName, TangramXobj* eventParam)
+	{
+		auto itcallback = mapTangramEventCallback_.find(eventName);
+		if (itcallback != mapTangramEventCallback_.end())
+		{
+			blink::V8ApplicationCallback* callback = (blink::V8ApplicationCallback*)itcallback->value.Get();
+			ScriptState* callback_relevant_script_state = callback->CallbackRelevantScriptState();
+			ScriptState::Scope callback_relevant_context_scope(callback_relevant_script_state);
+			callback->InvokeAndReportException(nullptr, eventParam);
+		}
+	}
+
+	void TangramWindow::sendMessage(TangramXobj* msg, V8ApplicationCallback* callback)
+	{
+		if (m_pRenderframeImpl)
+		{
+			msg->setStr(L"senderid", id_);
+			if (callback)
+			{
+				String callbackid_ = WTF::CreateCanonicalUUIDString();
+				msg->setStr(L"callbackid", callbackid_);
+				mapTangramEventCallback_.insert(callbackid_, callback);
+				WebString strID = callbackid_;
+				m_pRenderframeImpl->m_mapTangramSession[strID.Utf16()] = this;
+			}
+			m_pRenderframeImpl->SendTangramMessageEx(msg->session_);
+		}
+	}
+
+	void TangramWindow::invokeCallback(wstring callbackid, TangramXobj* callbackParam)
+	{
+		auto itcallback = mapTangramEventCallback_.find(String(callbackid.c_str()));
+		if (itcallback != mapTangramEventCallback_.end())
+		{
+			blink::V8ApplicationCallback* callback = (blink::V8ApplicationCallback*)itcallback->value.Get();
+			mapTangramEventCallback_.erase(itcallback);
+			ScriptState* callback_relevant_script_state = callback->CallbackRelevantScriptState();
+			ScriptState::Scope callback_relevant_context_scope(callback_relevant_script_state);
+			callback->InvokeAndReportException(nullptr, callbackParam);
+		}
 	}
 
 }  // namespace blink

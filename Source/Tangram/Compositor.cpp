@@ -1332,16 +1332,6 @@ LRESULT CTangramWinFormWnd::OnGetMe(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 				m_pOwnerHtmlWnd->m_mapBindWebObj.erase(it);
 			}
 			m_pOwnerHtmlWnd->m_mapBindWebObj[pObj->m_strBindObjName] = pObj;
-			//IPCMsg pIPCInfo;
-			//pIPCInfo.m_strId = IPC_NODE_CREARED_ID;
-			//pIPCInfo.m_strParam1 = pObj->m_strBindObjName;
-			//CString strHandle = _T("");
-			//strHandle.Format(_T("%d"), pObj->m_hWnd);
-			//pIPCInfo.m_strParam2 = strHandle;
-			//pIPCInfo.m_strParam3 = IPC_NODE_CREARED_ID;
-			//pIPCInfo.m_strParam4 = pObj->m_strBindObjName;
-			//pIPCInfo.m_strParam5 = _T("");
-			//m_pOwnerHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
 		}
 		else
 		{
@@ -1360,64 +1350,51 @@ LRESULT CTangramWinFormWnd::OnGetMe(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 					m_pHtmlWnd->m_mapBindWebObj.erase(it);
 				}
 				m_pHtmlWnd->m_mapBindWebObj[pObj->m_strBindObjName] = pObj;
-				//IPCMsg pIPCInfo;
-				//pIPCInfo.m_strId = IPC_NODE_CREARED_ID;
-				//pIPCInfo.m_strParam1 = pObj->m_strObjName;
-				//CString strHandle = _T("");
-				//strHandle.Format(_T("%d"), pObj->m_hWnd);
-				//pIPCInfo.m_strParam2 = strHandle;
-				//pIPCInfo.m_strParam3 = IPC_NODE_CREARED_ID;
-				//pIPCInfo.m_strParam4 = pObj->m_strBindObjName;
-				//pIPCInfo.m_strParam5 = pObj->m_strBindData;
-				//m_pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
-
-				((CTangramImpl*)g_pTangram)->ConnectClrObjectToDOM(pWndNode, pObj->m_strObjName, pObj->m_hWnd, pObj->m_strBindObjName, pObj->m_strBindData, _T(""));
 
 				if (g_pTangram->m_pCLRProxy)
 				{
-					if (pObj->m_strBindData != _T(""))
-					{
-						IDispatch* pCtrl = g_pTangram->m_pCLRProxy->GetCtrlFromHandle(pObj->m_hWnd);
-						if (pCtrl)
-						{
-							CString strEvents = pObj->m_strBindData;
-							strEvents.MakeLower();
-							strEvents.Trim();
-							int nPos = strEvents.Find(_T("|"));
-							if (nPos == -1)
-							{
-								auto it = g_pTangram->m_mapEventDic.find(strEvents);
-								if (it != g_pTangram->m_mapEventDic.end())
-								{
-									g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
-								}
-							}
-							else
-							{
-								while (nPos != -1)
-								{
-									CString strEvent = strEvents.Left(nPos);
-									strEvents = strEvents.Mid(nPos + 1);
-									nPos = strEvents.Find(_T("|"));
-									auto it = g_pTangram->m_mapEventDic.find(strEvent);
-									if (it != g_pTangram->m_mapEventDic.end())
-									{
-										g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
-									}
-									if (nPos == -1)
-									{
-										auto it = g_pTangram->m_mapEventDic.find(strEvents);
-										if (it != g_pTangram->m_mapEventDic.end())
-										{
-											g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
-										}
-									}
-								}
-							}
-						}
-					}
+					//if (pObj->m_strBindData != _T(""))
+					//{
+					//	IDispatch* pCtrl = g_pTangram->m_pCLRProxy->GetCtrlFromHandle(pObj->m_hWnd);
+					//	if (pCtrl)
+					//	{
+					//		CString strEvents = pObj->m_strBindData;
+					//		strEvents.MakeLower();
+					//		strEvents.Trim();
+					//		int nPos = strEvents.Find(_T("|"));
+					//		if (nPos == -1)
+					//		{
+					//			auto it = g_pTangram->m_mapEventDic.find(strEvents);
+					//			if (it != g_pTangram->m_mapEventDic.end())
+					//			{
+					//				g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
+					//			}
+					//		}
+					//		else
+					//		{
+					//			while (nPos != -1)
+					//			{
+					//				CString strEvent = strEvents.Left(nPos);
+					//				strEvents = strEvents.Mid(nPos + 1);
+					//				nPos = strEvents.Find(_T("|"));
+					//				auto it = g_pTangram->m_mapEventDic.find(strEvent);
+					//				if (it != g_pTangram->m_mapEventDic.end())
+					//				{
+					//					g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
+					//				}
+					//				if (nPos == -1)
+					//				{
+					//					auto it = g_pTangram->m_mapEventDic.find(strEvents);
+					//					if (it != g_pTangram->m_mapEventDic.end())
+					//					{
+					//						g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
+					//					}
+					//				}
+					//			}
+					//		}
+					//	}
+					//}
 				}
-
 			}
 		}
 	}
@@ -2948,11 +2925,6 @@ STDMETHODIMP CCompositor::OpenFromWeb(BSTR bstrURLBase, BSTR bstrKey, BSTR bstrO
 
 STDMETHODIMP CCompositor::SendIPCMessage(int MessageType, BSTR bstrMessage, BSTR bstrMessageData)
 {
-	TangramIPCMessageData m_Data;
-	m_Data.m_nType = MessageType;
-	m_Data.m_strMessage = OLE2T(bstrMessage);
-	m_Data.m_strMessageData = OLE2T(bstrMessageData);
-	::SendMessage(m_hWnd, WM_CHROMEMSG, 0, (LPARAM)&m_Data);
 	return S_OK;
 }
 

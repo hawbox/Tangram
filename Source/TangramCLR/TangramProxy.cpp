@@ -80,7 +80,7 @@ namespace TangramCLR
 				//IntPtr nDisp;
 				try
 				{
-					IUnknown* pUnk = (IUnknown*)Marshal::GetIDispatchForObject(pCtrl).ToPointer();
+					IUnknown* pUnk = (IUnknown*)Marshal::GetIUnknownForObject(pCtrl).ToPointer();
 					CComQIPtr<IDispatch> pDisp(pUnk);
 					if (pDisp)
 						m_CtrlInfo.m_pCtrlDisp = pDisp.p;

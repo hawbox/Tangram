@@ -33,6 +33,21 @@ class RemoteDOMWindow final : public DOMWindow {
 	  NOTREACHED();
 	  return nullptr;
   }
+
+  TangramApplication* application() const override {
+	  NOTREACHED();
+	  return nullptr;
+  }
+
+  TangramUserpage* userpage() const override {
+	  NOTREACHED();
+	  return nullptr;
+  }
+
+  TangramNtp* ntp() const override {
+	  NOTREACHED();
+	  return nullptr;
+  }
   // end Add by TangramTeam
 
  protected:

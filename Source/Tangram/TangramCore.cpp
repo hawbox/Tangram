@@ -20,28 +20,6 @@
 ********************************************************************************/
 
 // TangramCore.cpp : Implementation of CTangram
-/*
-C:\src\chromium_stable_75\src\third_party\blink\renderer\core\events
-BUILD.gn：
-	"wheel_event.cc",
-	"wheel_event.h",
-	# begin Add by TangramTeam
-	"//chrome_proxy/blink/core/tangram_event.cc",
-	"//chrome_proxy/blink/core/tangram_event.h",
-	# end Add by TangramTeam
-event_type_names.json5
-	"writestart",
-	"zoom",
-	# begin ChromeProxy
-	"tangrammsg",
-	# end ChromeProxy
-event_target_names.json5：
-	"XMLHttpRequest",
-	"XMLHttpRequestUpload",
-	# begin ChromeProxy
-	"Tangram",
-	# end ChromeProxy
-*/
 
 #include "stdafx.h"
 #include "TangramCore.h"
@@ -79,6 +57,7 @@ event_target_names.json5：
 #include "TangramJavaHelper.h"
 #include "TangramCoreEvents.h"
 #include "TangramHtmlTreeWnd.h"
+#include "TangramCloudSession.h"
 
 #include <shellapi.h>
 #include <shlobj.h>
@@ -267,14 +246,7 @@ CTangram::CTangram()
 
 	m_mapIPCMsgIndexDic[IPC_NODE_CREARED_ID] = IPC_NODE_CREARED;
 	m_mapIPCMsgIndexDic[IPC_NODE_ONMOUSEACTIVATE_ID] = IPC_NODE_ONMOUSEACTIVATE;
-	m_mapIPCMsgIndexDic[IPC_WINFORM_TREEVIEW_NODE_ONAFTERSELECT_ID] = IPC_WINFORM_TREEVIEW_NODE_ONAFTERSELECT;
 	m_mapIPCMsgIndexDic[IPC_MDIWINFORM_ACTIVEMDICHILD_ID] = IPC_MDIWINFORM_ACTIVEMDICHILD;
-	m_mapIPCMsgIndexDic[IPC_BIND_CLR_CTRL_EVENT_ID] = IPC_BIND_CLR_CTRL_EVENT;
-	m_mapIPCMsgIndexDic[IPC_BUTTON_CLICK_EVENT_ID] = IPC_BUTTON_CLICK_EVENT;
-	m_mapIPCMsgIndexDic[IPC_TANGRAM_CREATE_WIN_FORM_MESSAGE_ID] = IPC_TANGRAM_CREATE_WIN_FORM_MESSAGE;
-	m_mapIPCMsgIndexDic[IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE_ID] = IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE;
-	m_mapIPCMsgIndexDic[CREATE_CHILD_TANGRAM_NODE_ID] = CREATE_CHILD_TANGRAM_NODE;
-	m_mapIPCMsgIndexDic[IPC_CLR_CONTROL_CREARED_ID] = IPC_CLR_CONTROL_CREARED;
 }
 
 BOOL CTangram::CopyFolder(CString strSrcPath, CString strDesPath)
@@ -643,6 +615,11 @@ CTangram::~CTangram()
 	if (m_nTangramNodeCommonData)
 		TRACE(_T("m_nTangramNodeCommonData Count: %d\n"), m_nTangramNodeCommonData);
 #endif
+	//if (m_pBrowserFactory)
+	//{
+	//    delete m_pBrowserFactory;
+	//    m_pBrowserFactory = nullptr;
+	//}
 
 	if (m_pExtender)
 		m_pExtender->Close();
@@ -1551,6 +1528,8 @@ void CTangram::TangramInitFromeWeb()
 			m_strNtpXml = m_Parse[_T("ntp")].xml();
 		if (pWnd->m_pVisibleWebWnd)
 		{
+			m_pMainChromeRenderFrameHostProxy = pWnd->m_pVisibleWebWnd;
+
 			pParse = m_Parse.GetChild(_T("urls"));
 			if (pParse)
 			{
@@ -2088,45 +2067,24 @@ long CTangram::GetIPCMsgIndex(CString strMsgID)
 		return 0;
 }
 
-void CTangram::ConnectClrObjectToDOM(IWndNode* pParentNode, CString ObjName, HWND hObjHandle, CString ObjDOMName, CString strBindEvents, CString strExtra)
+CTangramSession* CTangram::CreateCloudSession(CChromeRenderFrameHostProxy* pOwner)
 {
-	if (pParentNode == nullptr)
-		return;
-	CWndNode* pNode = (CWndNode*)pParentNode;
-	CCompositor* pCompositor = pNode->m_pTangramNodeCommonData->m_pCompositor;
-	if (pCompositor)
-	{
-		CHtmlWnd* pHtmlWnd = pCompositor->m_pWebPageWnd;
-		if (pHtmlWnd&& pHtmlWnd->m_pChromeRenderFrameHost)
-		{
-			IPCMsg msg;
-			msg.m_strId = IPC_CLR_CONTROL_CREARED_ID;
-			msg.m_nHandleFrom = (long)hObjHandle;
-			msg.m_nHandleTo = (long)pNode->m_pHostWnd->m_hWnd;
-			msg.m_strParam1 = pNode->m_strName;
-			msg.m_strParam2 = ObjName;
-			msg.m_strParam3 = strBindEvents;
-			msg.m_strParam4 = ObjDOMName;
-			msg.m_strParam5 = strExtra;
-			pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&msg);
-			if (m_pCLRProxy)
-			{
-				CString strEvent = strBindEvents;
-				int nPos = strEvent.Find(_T("|"));
-				if (nPos == -1)
-				{
+	CTangramCloudSession* pSession = new CTangramCloudSession();
+	pSession->m_pOwner = pOwner? pOwner:m_pMainChromeRenderFrameHostProxy;
+	pSession->m_pSession = pSession->m_pOwner->m_pChromeRenderFrameHost->GetIPCSession();
+	pSession->Insertint64(_T("ObjHandle"), (__int64)pSession);
+	pSession->InsertString(L"sessionid", GetNewGUID());
+	return pSession;
+}
 
-				}
-				wstring s = LPCTSTR(strBindEvents);
-				std::wstringstream ss;
-				ss.str(s);
-				wstring item;
-				while (std::getline(ss, item, L'|')) {
-					CString strEvent = item.c_str();
-				}
-			}
-		}
+CTangramSession* CTangram::GetCloudSession(IWndNode* _pNode)
+{ 
+	if (_pNode)
+	{
+		CWndNode* pNode = (CWndNode*)_pNode;
+		return pNode->m_pTangramCloudSession;
 	}
+	return nullptr; 
 }
 
 IChromeWebPage* CTangram::GetWebPageFromForm(HWND hForm)

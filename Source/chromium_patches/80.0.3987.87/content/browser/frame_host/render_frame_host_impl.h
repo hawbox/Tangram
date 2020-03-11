@@ -135,6 +135,17 @@
 
 // begin Add by TangramTeam
 #include "c:/src/tangram/source/chrome_proxy/third_party/TangramForChromium.h"
+using FrameMsg_TANGRAM_HOST_String_Map =
+std::map<std::wstring, std::wstring>;
+
+using FrameMsg_TANGRAM_HOST_LONG_Map =
+std::map<std::wstring, long>;
+
+using FrameMsg_TANGRAM_HOST_INT64_Map =
+std::map<std::wstring, __int64>;
+
+using FrameMsg_TANGRAM_HOST_FLOAT_Map =
+std::map<std::wstring, float>;
 // end Add by TangramTeam
 
 class GURL;
@@ -1439,6 +1450,15 @@ class CONTENT_EXPORT RenderFrameHostImpl :
 
   // IPC Message handlers.
   // begin Add by TangramTeam
+  TangramCommon::IPCSession* GetIPCSession() override;
+  void InsertString(TangramCommon::IPCSession*, CString key, CString value) override;
+  void InsertLong(TangramCommon::IPCSession*, CString key, long value) override;
+  void Insertint64(TangramCommon::IPCSession*, CString key, __int64 value) override;
+  void InsertFloat(TangramCommon::IPCSession*, CString key, float value) override;
+  CString GetString(TangramCommon::IPCSession*, CString key) override;
+  long GetLong(TangramCommon::IPCSession*, CString key) override;
+  __int64 Getint64(TangramCommon::IPCSession*, CString key) override;
+  float GetFloat(TangramCommon::IPCSession*, CString key) override;
   void ShowWebPage(bool bShow) override;
   void OnTangramMessage(std::wstring id,
       std::wstring param1,
@@ -1454,44 +1474,21 @@ class CONTENT_EXPORT RenderFrameHostImpl :
       std::wstring param4,
       std::wstring param5);
 
-  void OnTangramMessage3(std::wstring id,
-      std::wstring param1,
-      long fromhandle,
-      std::wstring param3,
-      long tohandle,
-      std::wstring param5);
+  //void OnTangramMessage3(std::wstring id,
+  //    std::wstring param1,
+  //    long fromhandle,
+  //    std::wstring param3,
+  //    long tohandle,
+  //    std::wstring param5);
 
-  void OnTangramMessage8(long messageIndex,
-      std::wstring strId,
-      long NodeHandle,
-      std::wstring strParam1,
-      std::wstring strParam2,
-      std::wstring strParam3,
-      std::wstring strParam4,
-      std::wstring strParam5);
-
-  void OnTangramMessage9(long messageIndex,
-      std::wstring strId,
-      long NodeHandle,
-      std::wstring strParam1,
-      std::wstring strParam2,
-      std::wstring strParam3,
-      std::wstring strParam4,
-      std::wstring strParam5,
-      std::wstring strParam6);
-
-  void OnTangramMessage10(long messageIndex,
-      std::wstring strId,
-      long NodeHandle,
-      std::wstring strParam1,
-      std::wstring strParam2,
-      std::wstring strParam3,
-      std::wstring strParam4,
-      std::wstring strParam5,
-      std::wstring strParam6,
-      std::wstring strParam7);
+  void OnTangramHostIPCMsg(
+      FrameMsg_TANGRAM_HOST_String_Map /* string map */,
+      FrameMsg_TANGRAM_HOST_LONG_Map /* long map*/,
+      FrameMsg_TANGRAM_HOST_INT64_Map /* int64 map*/,
+      FrameMsg_TANGRAM_HOST_FLOAT_Map /* float map */);
 
   void OpenURL(CString strUrl, CString strDisposition);
+  void SendTangramMessage(TangramCommon::IPCSession* var) override;
   void SendTangramMessage(TangramCommon::IPCMsg*) override;
   // end Add by TangramTeam
   void OnDetach();

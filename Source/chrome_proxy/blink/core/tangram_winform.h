@@ -19,17 +19,28 @@ namespace blink {
 using namespace std;
 
 class Tangram;
+class TangramXobj;
 class TangramNode;
 class TangramWindow;
 class TangramWinform;
 class TangramControl;
 
+//for callback:
+class CallbackFunctionBase;
+class V8TangramCallback;
+class V8ApplicationCallback;
+class V8SendMessageToNodeCallback;
+class V8SendMessageToFormCallback;
+class V8SendMessageToWindowCallback;
+class V8SendMessageToControlCallback;
+
 class Document;
 class ScriptState;
 class ExceptionState;
-class V8GeneralCallback;
+class V8TangramCallback;
 class WebLocalFrameClient;
 class SerializedScriptValue;
+class V8ApplicationCallback;
 
 class CORE_EXPORT TangramWinform final : public EventTargetWithInlineData,
 									  public DOMWindowClient {
@@ -46,28 +57,25 @@ class CORE_EXPORT TangramWinform final : public EventTargetWithInlineData,
   void AddedEventListener(const AtomicString& event_type,
                           RegisteredEventListener&) override;
 
-  long formhandle();
+  int64_t handle();
   String name();
+  String getid();
+  TangramXobj* xobj();
 
   // Message method
-
-  void addChannel(const String& channel);
-  void removeChannel(const String& channel);
-  void sendMessage(const String& id, const String& param1, const String& param2, const String& param3, const String& param4, const String& param5);
-  
+  void addEventListener(const String& eventName, V8ApplicationCallback* callback);
+  void addEventListener(const String& subObjName, const String& eventName, V8ApplicationCallback* callback);
+  void removeEventListener(const String& eventName);
+  void disConnect();
+  void fireEvent(const String& eventName, TangramXobj* eventParam);
+  void sendMessage(TangramXobj* msg, V8ApplicationCallback* callback);
+  void invokeCallback(wstring callbackid, TangramXobj* callbackParam);
 
   DEFINE_ATTRIBUTE_EVENT_LISTENER(MessageReceived, kTangramwinform)
       DEFINE_ATTRIBUTE_EVENT_LISTENER(MdiChildActivate, kMdichildactivate)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(NodeMouseActivate, kNodemouseactivate)
       DEFINE_ATTRIBUTE_EVENT_LISTENER(TangramNodeCreated, kTangramnodecreated)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(TreeViewNodeAfterSelect, kTreeviewnodeafterselect)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(TreeViewNodeMouseDoubleClick, kTreeviewnodemousedoubleclick)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(ListViewItemSelectionChanged, kListviewitemselectionchanged)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(FormMenuItemClick, kFormmenuitemclick)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(FormButtonClick, kFormbuttonclick)
       DEFINE_ATTRIBUTE_EVENT_LISTENER(WinFormCreated, kWinformcreated)
       DEFINE_ATTRIBUTE_EVENT_LISTENER(WinFormClosed, kWinformclosed)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(BindCLRCtrlEvent, kBindclrctrlevent)
 
   // EventTarget overrides:
   const AtomicString& InterfaceName() const override;
@@ -78,14 +86,18 @@ class CORE_EXPORT TangramWinform final : public EventTargetWithInlineData,
 
   ~TangramWinform() override;
 
-  long nHandle = 0;
-  long formhandle_ = 0;
-  map<long, Member<TangramControl>> m_mapChildControl;
+  int64_t handle_ = 0;
+  mutable Member<Tangram> tangram_;
+  mutable Member<TangramXobj> innerXobj_;
+
+  WebLocalFrameClient* m_pRenderframeImpl;
+  map<int64_t, Member<TangramControl>> m_mapChildControl;
   map<std::wstring, Member<TangramControl>> m_mapChildControl2;
-  WebLocalFrameClient* web_local_frame_client;
 private:
+  String id_;
   String name_;
   String m_strNodeXml;
+  HeapHashMap<String, Member<V8ApplicationCallback>> mapTangramEventCallback_;
 };
 
 }  // namespace blink

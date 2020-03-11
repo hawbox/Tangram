@@ -181,8 +181,10 @@ generated_core_callback_function_files = [
   "$bindings_core_v8_output_dir/v8_void_function.cc",
   "$bindings_core_v8_output_dir/v8_void_function.h",
   # begin Add by TangramTeam
-  "$bindings_core_v8_output_dir/v8_general_callback.cc",
-  "$bindings_core_v8_output_dir/v8_general_callback.h",
+  "$bindings_core_v8_output_dir/v8_tangram_callback.cc",
+  "$bindings_core_v8_output_dir/v8_tangram_callback.h",
+  "$bindings_core_v8_output_dir/v8_application_callback.cc",
+  "$bindings_core_v8_output_dir/v8_application_callback.h",
   # end Add by TangramTeam
 ]
 

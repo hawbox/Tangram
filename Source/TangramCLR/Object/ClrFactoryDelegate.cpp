@@ -25,13 +25,6 @@ namespace RefObject
         return nullptr;
     }
 
-    //IRefObject* ClrFactoryDelegate::Create(Object^ obj)
-    //{
-    //    IntPtr pUnk = Marshal::GetIUnknownForObject(obj);
-    //    uint64_t nRawHandle = (uint64_t)pUnk.ToPointer();
-    //    return m_pObjectFactory->Create(GetName(), nRawHandle);
-    //}
-
     void ClrFactoryDelegate::Invoke(IRefObject* pObj, CString strMethod)
     {
     }

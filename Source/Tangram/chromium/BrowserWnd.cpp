@@ -77,7 +77,7 @@ namespace ChromePlus {
 	}
 
 	void CBrowserWnd::UpdateContentRect(HWND hWnd, RECT& rc, int nTopFix) {
-		if (::IsWindowVisible(m_hWnd) == false || g_pTangram->m_bChromeNeedClosed == TRUE || g_pTangram->m_bOMNIBOXPOPUPVISIBLE) {
+		if (hWnd==0||::IsWindowVisible(m_hWnd) == false || g_pTangram->m_bChromeNeedClosed == TRUE || g_pTangram->m_bOMNIBOXPOPUPVISIBLE) {
 			return;
 		}
 		if (m_hOldTab)
@@ -103,7 +103,8 @@ namespace ChromePlus {
 				return;
 			}
 		}
-
+		//if (m_pVisibleWebWnd&&m_pVisibleWebWnd->m_pDevToolWnd)
+		//	m_pVisibleWebWnd = m_pVisibleWebWnd->m_pDevToolWnd;
 		BrowserLayout();
 		if (m_pVisibleWebWnd)
 		{
@@ -163,7 +164,8 @@ namespace ChromePlus {
 			!::IsWindowVisible(m_hWnd) ||
 			g_pTangram->m_bChromeNeedClosed == TRUE)
 			return 0;
-
+		if (!::IsWindow(m_hWnd))
+			return 0;
 		RECT rcBrowser;
 		GetClientRect(&rcBrowser);
 		if (m_pVisibleWebWnd->m_pCompositor == nullptr) {
@@ -195,7 +197,16 @@ namespace ChromePlus {
 		::GetWindowRect(m_pVisibleWebWnd->m_hExtendWnd, &rcExtendWnd);
 		::ScreenToClient(m_hWnd, (LPPOINT)&rcExtendWnd);
 		::ScreenToClient(m_hWnd, ((LPPOINT)&rcExtendWnd) + 1);
-		::GetWindowRect(m_pVisibleWebWnd->m_hWnd, &rcWebPage);
+		HWND _hWebPage = m_pVisibleWebWnd->m_hWnd;
+		if (m_pVisibleWebWnd->m_pDevToolWnd)
+		{
+			if (::GetParent(m_pVisibleWebWnd->m_hWnd) == ::GetParent(m_pVisibleWebWnd->m_pDevToolWnd->m_hWnd))
+			{
+				_hWebPage = m_pVisibleWebWnd->m_pDevToolWnd->m_hWnd;
+				::ShowWindow(_hWebPage, SW_SHOW);
+			}
+		}
+		::GetWindowRect(_hWebPage, &rcWebPage);
 		::ScreenToClient(m_hWnd, (LPPOINT)&rcWebPage);
 		::ScreenToClient(m_hWnd, ((LPPOINT)&rcWebPage) + 1);
 		//浏览器窗口区域：

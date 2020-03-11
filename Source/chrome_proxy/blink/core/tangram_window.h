@@ -18,13 +18,16 @@ namespace blink {
 
 using namespace std;
 
+class Tangram;
 class Document;
 class ScriptState;
+class TangramXobj;
 class TangramNode;
 class ExceptionState;
-class V8GeneralCallback;
+class V8TangramCallback;
 class WebLocalFrameClient;
 class SerializedScriptValue;
+class V8ApplicationCallback;
 
 class CORE_EXPORT TangramWindow final : public EventTargetWithInlineData,
 									  public DOMWindowClient {
@@ -41,30 +44,28 @@ class CORE_EXPORT TangramWindow final : public EventTargetWithInlineData,
   void AddedEventListener(const AtomicString& event_type,
                           RegisteredEventListener&) override;
 
-  long windowhandle();
+  int64_t handle();
   String name();
+  String getid();
+  TangramXobj* xobj();
 
   // Message method
+  void sendMessage(TangramXobj* msg, V8ApplicationCallback* callback);
 
-  void addChannel(const String& channel);
-  void removeChannel(const String& channel);
-  void sendMessage(const String& id, const String& param1, const String& param2, const String& param3, const String& param4, const String& param5);
-  
+  void addEventListener(const String& eventName, V8ApplicationCallback* callback);
+  void removeEventListener(const String& eventName);
+  void disConnect();
+  void fireEvent(const String& eventName, TangramXobj* eventParam);
+  void invokeCallback(wstring callbackid, TangramXobj* callbackParam);
+
   TangramNode* getNode(const String& nodeName);
   TangramNode* getNode(const long nodeHandle);
 
   DEFINE_ATTRIBUTE_EVENT_LISTENER(MessageReceived, kTangramwindow)
       DEFINE_ATTRIBUTE_EVENT_LISTENER(MdiChildActivate, kMdichildactivate)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(NodeMouseActivate, kNodemouseactivate)
       DEFINE_ATTRIBUTE_EVENT_LISTENER(TangramNodeCreated, kTangramnodecreated)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(TreeViewNodeAfterSelect, kTreeviewnodeafterselect)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(TreeViewNodeMouseDoubleClick, kTreeviewnodemousedoubleclick)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(ListViewItemSelectionChanged, kListviewitemselectionchanged)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(FormMenuItemClick, kFormmenuitemclick)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(FormButtonClick, kFormbuttonclick)
       DEFINE_ATTRIBUTE_EVENT_LISTENER(WinFormCreated, kWinformcreated)
       DEFINE_ATTRIBUTE_EVENT_LISTENER(WinFormClosed, kWinformclosed)
-      DEFINE_ATTRIBUTE_EVENT_LISTENER(BindCLRCtrlEvent, kBindclrctrlevent)
 
   // EventTarget overrides:
   const AtomicString& InterfaceName() const override;
@@ -75,14 +76,21 @@ class CORE_EXPORT TangramWindow final : public EventTargetWithInlineData,
 
   ~TangramWindow() override;
 
-  long windowhandle_ = 0;
+  int64_t handle_ = 0;
   mutable Member<TangramNode> m_pHostNode;
-  WebLocalFrameClient* web_local_frame_client;
-  HeapHashMap<long, Member<TangramNode>> m_mapTangramNode;
-  HeapHashMap<String, Member<TangramNode>> m_mapTangramNode2;
+
+  mutable Member<Tangram> tangram_;
+  mutable Member<TangramXobj> innerXobj_;
+
+  WebLocalFrameClient* m_pRenderframeImpl;
+  
+  map<int64_t, TangramNode*> m_mapTangramNode;
+  map<wstring, TangramNode*> m_mapTangramNode2;
 private:
+  String id_;
   String name_;
   String m_strWindowXml;
+  HeapHashMap<String, Member<V8ApplicationCallback>> mapTangramEventCallback_;
 };
 
 }  // namespace blink

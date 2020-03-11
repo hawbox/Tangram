@@ -19,9 +19,10 @@ namespace blink {
 using namespace std;
 
 class Document;
+class TangramXobj;
 class ScriptState;
 class ExceptionState;
-class V8GeneralCallback;
+class V8TangramCallback;
 class WebLocalFrameClient;
 class SerializedScriptValue;
 
@@ -41,6 +42,7 @@ class CORE_EXPORT TangramCompositor final : public EventTargetWithInlineData,
                           RegisteredEventListener&) override;
 
   String name();
+  String getid();
 
   // Message method
 
@@ -61,8 +63,10 @@ class CORE_EXPORT TangramCompositor final : public EventTargetWithInlineData,
 
   ~TangramCompositor() override;
 
-  WebLocalFrameClient* web_local_frame_client;
+  WebLocalFrameClient* m_pRenderframeImpl;
+  mutable Member<TangramXobj> innerXobj_;
 private:
+  String id_;
   String name_;
   String m_strNodeXml;
 };

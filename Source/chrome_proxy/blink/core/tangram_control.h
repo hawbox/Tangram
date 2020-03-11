@@ -19,6 +19,7 @@ namespace blink {
 using namespace std;
 
 class Tangram;
+class TangramXobj;
 class TangramNode;
 class TangramWindow;
 class TangramWinform;
@@ -27,7 +28,9 @@ class TangramControl;
 class Document;
 class ScriptState;
 class ExceptionState;
-class V8GeneralCallback;
+class V8TangramCallback;
+class V8ApplicationCallback;
+
 class WebLocalFrameClient;
 class SerializedScriptValue;
 
@@ -46,18 +49,18 @@ class CORE_EXPORT TangramControl final : public EventTargetWithInlineData,
   void AddedEventListener(const AtomicString& event_type,
                           RegisteredEventListener&) override;
 
-  long ctrlhandle();
+  int64_t handle();
   String name();
+  String type();
+  String getid();
+  TangramXobj* xobj();
   TangramNode* parentNode();
   TangramWinform* parentForm();
   TangramControl* parentControl();
 
   // Message method
-
-  void addChannel(const String& channel);
-  void removeChannel(const String& channel);
-  void sendMessage(const String& id, const String& param1, const String& param2, const String& param3, const String& param4, const String& param5);
-  
+  void sendMessage(TangramXobj* msg, V8ApplicationCallback* callback);
+  void invokeCallback(wstring callbackid, TangramXobj* callbackParam);
 
   DEFINE_ATTRIBUTE_EVENT_LISTENER(MessageReceived, kTangramcontrol)
 
@@ -70,15 +73,28 @@ class CORE_EXPORT TangramControl final : public EventTargetWithInlineData,
 
   ~TangramControl() override;
 
-  long ctrlhandle_ = 0;
+  // Binding Event:
+  void BindCtrlEvents(const String& strEvents); 
+  void addEventListener(const String& eventName, V8ApplicationCallback* callback);
+  void fireEvent(const String& eventName, TangramXobj* eventParam);
+  void removeEventListener(const String& eventName);
+
+  int64_t handle_ = 0;
   String name_;
+  String type_;
+  String events_;
   String webpageid_;
+
+  mutable Member<Tangram> tangram_;
+  mutable Member<TangramXobj> innerXobj_;
   mutable Member<TangramNode> m_pParentNode;
   mutable Member<TangramWinform> m_pParentForm;
   mutable Member<TangramControl> m_pParentControl;
-  WebLocalFrameClient* web_local_frame_client;
+  WebLocalFrameClient* m_pRenderframeImpl;
   map<std::wstring, int> m_mapEvent;
 private:
+  String id_;
+  HeapHashMap<String, Member<V8ApplicationCallback>> mapTangramEventCallback_;
 };
 
 }  // namespace blink

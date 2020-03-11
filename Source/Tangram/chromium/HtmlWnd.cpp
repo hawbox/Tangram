@@ -23,6 +23,7 @@
 #include "../stdafx.h"
 #include "../TangramApp.h"
 #include "../WndNode.h"
+#include "../TangramCloudSession.h"
 #include "../Compositor.h"
 #include "../NodeWnd.h"
 #include "HtmlWnd.h"
@@ -92,6 +93,50 @@ namespace ChromePlus {
 		bool bChild = ::GetWindowLongPtr(::GetParent(m_hWnd), GWL_STYLE) & WS_CHILD;
 		switch (wParam)
 		{
+		case 20200310:
+		{
+			CWndNode* pNode = (CWndNode*)lParam;
+			if (pNode && pNode->m_pTangramCloudSession == nullptr)
+			{
+				pNode->m_pTangramCloudSession = (CTangramCloudSession*)((CTangramImpl*)g_pTangram)->CreateCloudSession(this);
+				CTangramCloudSession* pSession = pNode->m_pTangramCloudSession;
+				if (pSession)
+				{
+					pSession->InsertString(_T("msgID"), IPC_NODE_CREARED_ID);
+					pSession->InsertLong(_T("autodelete"), 0);
+					pSession->InsertLong(_T("nodetype"), pNode->m_nViewType);
+					pSession->InsertLong(_T("rows"), pNode->m_nRows);
+					pSession->InsertLong(_T("cols"), pNode->m_nCols);
+					pSession->InsertLong(_T("row"), pNode->m_nRow);
+					pSession->InsertLong(_T("col"), pNode->m_nCol);
+					pSession->InsertString(_T("objtype"), pNode->m_strCnnID);
+					pSession->InsertString(_T("name@page"), pNode->m_strWebObjID);
+					pSession->Insertint64(_T("nodehandle"), (__int64)pNode->m_pHostWnd->m_hWnd);
+					pSession->Insertint64(_T("compositorhandle"), (__int64)pNode->m_pTangramNodeCommonData->m_pCompositor->m_hWnd);
+					pSession->Insertint64(_T("rootnodehandle"), (__int64)pNode->m_pRootObj->m_pHostWnd->m_hWnd);
+					pSession->Insertint64(_T("ObjHandle"), (__int64)pNode->m_pTangramCloudSession);
+					pSession->InsertString(_T("objID"), _T("wndnode"));
+					if (pNode->m_pParentObj)
+					{
+						pSession->Insertint64(_T("parentnodehandle"), (__int64)pNode->m_pParentObj->m_pHostWnd->m_hWnd);
+					}
+					if (pNode->m_pParentWinFormWnd)
+					{
+						pSession->Insertint64(_T("parentFormHandle"), (__int64)pNode->m_pParentWinFormWnd->m_hWnd);
+					}
+					if (pNode->m_pDisp)
+					{
+						pNode->m_pTangramCloudSession->Insertint64(_T("objectdisp"), (__int64)pNode->m_pDisp);
+						if (g_pTangram->m_pCLRProxy)
+						{
+							g_pTangram->m_pCLRProxy->ConnectNodeToWebPage(pNode, true);
+						}
+					}
+					m_pChromeRenderFrameHost->SendTangramMessage(pSession->m_pSession);
+				}
+			}
+		}
+		break;
 		case 20200131:
 		{
 			if (bChild && m_pChromeRenderFrameHost)
@@ -291,6 +336,14 @@ namespace ChromePlus {
 								pChromeBrowserWnd->BrowserLayout();
 								::PostMessageW(hNewPWnd, WM_BROWSERLAYOUT, 0, 2);
 							}
+						}
+					}
+					if (pChromeBrowserWnd->m_pVisibleWebWnd && m_bDevToolWnd && pChromeBrowserWnd->m_pVisibleWebWnd->m_bDevToolWnd == false)
+					{
+						if (pChromeBrowserWnd->m_pVisibleWebWnd->m_pDevToolWnd == nullptr)
+						{
+							pChromeBrowserWnd->m_pVisibleWebWnd->m_pDevToolWnd = this;
+							::ShowWindow(m_hWnd,SW_SHOW);
 						}
 					}
 				}
@@ -561,16 +614,7 @@ namespace ChromePlus {
 			CString strParam3 = pIPCInfo->m_strParam3;
 			CString strParam4 = pIPCInfo->m_strParam4;
 			CString strParam5 = pIPCInfo->m_strParam5;
-			if (pIPCInfo->m_strId.CompareNoCase(_T("TANGRAM_NODE_MESSAGE")) == 0)
-			{
-				HWND hNode = (HWND)_wtoi64(strParam2);
-				CWndNode* pNode = (CWndNode*)::SendMessage(hNode, WM_TANGRAMGETNODE, 0, 0);
-				if (pNode)
-				{
-					ATLTRACE(L"\n");
-				}
-			}
-			else if (pIPCInfo->m_strId.CompareNoCase(_T("TANGRAM_CTRL_VALUE_MESSAGE")) == 0)
+			if (pIPCInfo->m_strId.CompareNoCase(_T("TANGRAM_CTRL_VALUE_MESSAGE")) == 0)
 			{
 				HWND hCtrl = (HWND)pIPCInfo->m_nHandleFrom;
 				if (g_pTangram->m_pCLRProxy)
@@ -578,30 +622,6 @@ namespace ChromePlus {
 					IDispatch* pCtrl = g_pTangram->m_pCLRProxy->GetCtrlFromHandle(hCtrl);
 					if (pCtrl)
 						g_pTangram->m_pCLRProxy->SetCtrlValueByName(pCtrl, CComBSTR(""), true, CComBSTR(strParam4));
-				}
-			}
-			else if (pIPCInfo->m_strId.CompareNoCase(_T("TANGRAM_CREATE_WIN_FORM_MESSAGE")) == 0)
-			{
-				long nNodeHandle = pIPCInfo->m_nHandleFrom;
-				if (g_pTangram->m_pCLRProxy)
-				{
-					CString strFormXml = pIPCInfo->m_strParam1;
-					long formtype = pIPCInfo->m_nHandleTo;
-					CString strNodeHandle = _T("");
-					strNodeHandle.Format(_T("%d"), nNodeHandle);
-					g_pTangram->m_pCLRProxy->CreateWinForm(m_hWnd, CComBSTR(strFormXml));
-					this->SendChromeIPCMessage(pIPCInfo->m_strId, strNodeHandle, _T(""), _T(""), _T(""), _T(""));
-				}
-			}
-			else if (pIPCInfo->m_strId.CompareNoCase(_T("TANGRAM_CTRL_BIND_MESSAGE")) == 0)
-			{
-				HWND hCtrl = (HWND)pIPCInfo->m_nHandleFrom;
-				long nID = pIPCInfo->m_nHandleTo;
-				if (g_pTangram->m_pCLRProxy)
-				{
-					IDispatch* pCtrl = g_pTangram->m_pCLRProxy->GetCtrlFromHandle(hCtrl);
-					if (pCtrl)
-						g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_hWnd, hCtrl, nID, strParam1);
 				}
 			}
 			else
@@ -870,28 +890,6 @@ namespace ChromePlus {
 			}
 			return;
 		}
-		else if (strId.CompareNoCase(_T("CREATE_FORM")) == 0)
-		{
-			CTangramXmlParse xmlParse;
-			if (xmlParse.LoadXml(strParam2))
-			{
-				CChromeRenderFrameHostProxy* pChromeRenderFrameHostProxyBase = (CChromeRenderFrameHostProxy*)this;
-				xmlParse.put_attr(_T("renderframehostproxy"), (__int64)pChromeRenderFrameHostProxyBase);
-				if (strParam1.CompareNoCase(_T("subform")) == 0|| strParam1.CompareNoCase(_T("subdlgform")) == 0)
-				{
-					IChromeWebPage* pChromeWebPage = (IChromeWebPage*)this;
-					xmlParse.put_attr(_T("webpage"), (__int64)pChromeWebPage);
-					xmlParse.put_attr(_T("webpagehandle"), (__int64)m_hWnd);
-					if (strParam1.CompareNoCase(_T("subdlgform")) == 0)
-					{
-						xmlParse.put_attr(_T("model"), 1);
-					}
-				}
-				g_pTangram->LoadCLR();
-				IDispatch* pDisp = g_pTangram->m_pCLRProxy->CreateCLRObj(xmlParse.xml());
-			}
-			return;
-		}
 		else if (strId.CompareNoCase(_T("TO_BINDNODE")) == 0)
 		{
 			HWND hWnd = ::GetParent(::GetParent(m_hWnd));
@@ -1001,24 +999,6 @@ namespace ChromePlus {
 
 	void CHtmlWnd::RenderHTMLElement(CString strRuleName, CString strHTML)
 	{
-		/*if (strRuleName.CompareNoCase(_T("bindobjtowebpage")) == 0)
-		{
-			CTangramXmlParse m_Parse;
-			if (m_Parse.LoadXml(strHTML))
-			{
-				int nCount = m_Parse.GetCount();
-				for (int i = 0; i < nCount; i++)
-				{
-					CTangramXmlParse* pParse = m_Parse.GetChild(i);
-					CString strName = pParse->attr(_T("name"), _T(""));
-					CString strName2 = pParse->attr(_T("targetname"), _T(""));
-					BindWebObj* pObj = new BindWebObj;
-					pObj->m_strBindObjName = strName2;
-					m_mapBindWebObj[strName] = pObj;
-				}
-			}
-		}
-		else */
 		if (strRuleName.CompareNoCase(_T("application")) == 0)
 		{
 			if (g_pTangram->m_strAppXml == _T(""))
@@ -1081,21 +1061,6 @@ namespace ChromePlus {
 				xmlParse.put_attr(_T("renderframehostproxy"), (__int64)pChromeRenderFrameHostProxyBase);
 				IDispatch* pDisp = g_pTangram->m_pCLRProxy->CreateCLRObj(xmlParse.xml());
 			}
-		}
-	}
-
-	void CHtmlWnd::OnWinFormCreated(HWND hwnd)
-	{
-		if (hwnd)
-		{
-			CTangramWinFormWnd* pWnd = new CTangramWinFormWnd();
-			g_pTangram->m_hFormNodeWnd = NULL;
-			g_pTangram->m_hFormNodeWnd = (HWND)hwnd;
-			pWnd->SubclassWindow(hwnd);
-			pWnd->m_pOwnerHtmlWnd = this;
-			g_pTangram->m_mapFormWebPage[hwnd] = this;
-			m_mapWinForm[hwnd] = pWnd;
-			::PostMessage(g_pTangram->m_hFormNodeWnd, WM_WINFORMCREATED, 0, 0);
 		}
 	}
 
@@ -1267,6 +1232,74 @@ namespace ChromePlus {
 		if (g_pTangram->m_strNtpXml != _T(""))
 		{
 			LoadDocument2Viewport(_T("__NTP_DEFAULT__"), g_pTangram->m_strNtpXml);
+		}
+	}
+
+	void CHtmlWnd::OnWinFormCreated(HWND hwnd)
+	{
+		if (hwnd)
+		{
+			CTangramWinFormWnd* pWnd = new CTangramWinFormWnd();
+			g_pTangram->m_hFormNodeWnd = NULL;
+			g_pTangram->m_hFormNodeWnd = (HWND)hwnd;
+			pWnd->SubclassWindow(hwnd);
+			pWnd->m_pOwnerHtmlWnd = this;
+			g_pTangram->m_mapFormWebPage[hwnd] = this;
+			m_mapWinForm[hwnd] = pWnd;
+			::PostMessage(g_pTangram->m_hFormNodeWnd, WM_WINFORMCREATED, 0, 0);
+		}
+	}
+
+	void CHtmlWnd::OnCloudMsgReceived(CTangramSession* pSession)
+	{
+		CString strMsgID = pSession->GetString(L"msgID");
+
+		if (strMsgID == _T("CREATE_WINFORM"))
+		{
+			CString strFormXml = pSession->GetString(_T("formXml"));
+			pSession->InsertString(_T("formXml"),_T(""));
+			// formType: 0, normal form; 1 subform; 2: dlgform
+			long formType = pSession->GetLong(_T("formType"));
+			CTangramXmlParse xmlParse;
+			if (xmlParse.LoadXml(strFormXml))
+			{
+				CTangramXmlParse* pMdiChildXmlParse = xmlParse.GetChild(_T("mdichild"));
+				if (pMdiChildXmlParse)
+				{
+					CTangramXmlParse* pMdiClientXmlParse = xmlParse.GetChild(_T("mdiclient"));
+					int nCount = pMdiChildXmlParse->GetCount();
+					if (nCount && pMdiClientXmlParse)
+					{
+						CMDIChildFormInfo* pInfo = new CMDIChildFormInfo();
+						g_pTangram->m_pCurMDIChildFormInfo = pInfo;
+						for (int i = 0; i < nCount; i++)
+						{
+							CString strName = pMdiChildXmlParse->GetChild(i)->name();
+							if (pMdiClientXmlParse->GetChild(strName))
+								pInfo->m_mapFormsInfo[strName] = pMdiChildXmlParse->GetChild(i)->xml();
+						}
+					}
+				}
+				if (g_pTangram->m_pCLRProxy == nullptr)
+					g_pTangram->LoadCLR();
+				if (g_pTangram->m_pCLRProxy)
+				{
+					CChromeRenderFrameHostProxy* pChromeRenderFrameHostProxyBase = (CChromeRenderFrameHostProxy*)this;
+					xmlParse.put_attr(_T("renderframehostproxy"), (__int64)pChromeRenderFrameHostProxyBase);
+					xmlParse.put_attr(_T("ipcsession"), (__int64)pSession);
+					pSession->Insertint64(_T("ObjHandle"), (__int64)pSession);
+					pSession->InsertLong(_T("autodelete"), 0);
+					IChromeWebPage* pChromeWebPage = (IChromeWebPage*)this;
+					xmlParse.put_attr(_T("webpage"), (__int64)pChromeWebPage);
+					xmlParse.put_attr(_T("webpagehandle"), (__int64)m_hWnd);
+					if (formType == 2)
+					{
+						xmlParse.put_attr(_T("model"), 1);
+					}
+					pSession->m_pOwner = this;
+					IDispatch* pDisp = g_pTangram->m_pCLRProxy->CreateCLRObj(xmlParse.xml());
+				}
+			}
 		}
 	}
 

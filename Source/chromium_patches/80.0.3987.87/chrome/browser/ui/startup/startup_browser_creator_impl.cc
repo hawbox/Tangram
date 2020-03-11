@@ -332,9 +332,10 @@ bool ShouldShowBadFlagsSecurityWarnings() {
 class ChromeBrowserFactory : public TangramCommon::CTangramBrowserFactory {
  public:
   ChromeBrowserFactory();
-  ~ChromeBrowserFactory() final;
+  ~ChromeBrowserFactory() override;
   HWND CreateBrowser(HWND hParent, CString strXml) override;
   Profile* profile_;
+  DISALLOW_COPY_AND_ASSIGN(ChromeBrowserFactory);
 };
 
 ChromeBrowserFactory::ChromeBrowserFactory() {
@@ -356,7 +357,8 @@ ChromeBrowserFactory::ChromeBrowserFactory() {
   }
 }
 
-ChromeBrowserFactory::~ChromeBrowserFactory() {}
+ChromeBrowserFactory::~ChromeBrowserFactory() {
+}
 
 HWND ChromeBrowserFactory::CreateBrowser(HWND hParent, CString strXml) {
   HWND hBrowser = NULL;

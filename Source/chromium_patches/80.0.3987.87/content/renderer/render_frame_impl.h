@@ -114,6 +114,19 @@
 #if BUILDFLAG(ENABLE_PLUGINS)
 #include "content/renderer/pepper/plugin_power_saver_helper.h"
 #endif
+// begin add by TangramTeam
+using FrameMsg_TANGRAM_HOST_String_Map =
+std::map<std::wstring, std::wstring>;
+
+using FrameMsg_TANGRAM_HOST_LONG_Map =
+std::map<std::wstring, long>;
+
+using FrameMsg_TANGRAM_HOST_INT64_Map =
+std::map<std::wstring, __int64>;
+
+using FrameMsg_TANGRAM_HOST_FLOAT_Map =
+std::map<std::wstring, float>;
+// end add by TangramTeam
 
 struct FrameMsg_MixedContentFound_Params;
 struct FrameMsg_TextTrackSettings_Params;
@@ -953,6 +966,7 @@ class CONTENT_EXPORT RenderFrameImpl
   void TransferUserActivationFrom(blink::WebLocalFrame* source_frame) override;
 
   // begin Add by TangramTeam
+  void SendTangramMessageEx(blink::TangramCommon::IPCSession& var)override;
   void SendTangramMessage(std::wstring id,
       std::wstring param1,
       std::wstring param2,
@@ -961,17 +975,16 @@ class CONTENT_EXPORT RenderFrameImpl
       std::wstring param5) override;
   void SendTangramMessage(std::wstring id,
       std::wstring param1,
-      long handle,
-      long nID,
+      __int64 handle,
+      __int64 nID,
       std::wstring param4,
       std::wstring param5) override;
 
-  void SendTangramMessage(std::wstring id,
-      std::wstring param1,
-      long fromHandle,
-      std::wstring param3,
-      long toHandle,
-      std::wstring param5) override;
+  void SendTangramMessage5(
+      FrameMsg_TANGRAM_HOST_String_Map /* string map */,
+      FrameMsg_TANGRAM_HOST_LONG_Map /* long map*/,
+      FrameMsg_TANGRAM_HOST_INT64_Map /* int64 map*/,
+      FrameMsg_TANGRAM_HOST_FLOAT_Map /* float map */) override;
 
   void OnTangramMessage(long messageindex,
       std::wstring id,
@@ -981,45 +994,11 @@ class CONTENT_EXPORT RenderFrameImpl
       std::wstring param4,
       std::wstring param5) override;
 
-  void OnTangramMessage2(
-      long messageindex,
-      std::wstring param1,
-      std::wstring param2,
-      std::wstring param3,
-      std::wstring param4,
-      std::wstring param5,
-      long fromHandle, 
-      long toHandle) override;
-
-  void OnTangramMessage8(long messageIndex,
-      std::wstring strId,
-      long NodeHandle,
-      std::wstring strParam1,
-      std::wstring strParam2,
-      std::wstring strParam3,
-      std::wstring strParam4,
-      std::wstring strParam5) override;
-
-  void OnTangramMessage9(long messageIndex,
-      std::wstring strId,
-      long NodeHandle,
-      std::wstring strParam1,
-      std::wstring strParam2,
-      std::wstring strParam3,
-      std::wstring strParam4,
-      std::wstring strParam5,
-      std::wstring strParam6) override;
-
-  void OnTangramMessage10(long messageIndex,
-      std::wstring strId,
-      long NodeHandle,
-      std::wstring strParam1,
-      std::wstring strParam2,
-      std::wstring strParam3,
-      std::wstring strParam4,
-      std::wstring strParam5,
-      std::wstring strParam6,
-      std::wstring strParam7) override;
+  void OnTangramRendererIPCMsg(
+      FrameMsg_TANGRAM_HOST_String_Map /* string map */,
+      FrameMsg_TANGRAM_HOST_LONG_Map /* long map*/,
+      FrameMsg_TANGRAM_HOST_INT64_Map /* long map*/,
+      FrameMsg_TANGRAM_HOST_FLOAT_Map /* float map*/);
   // end Add by TangramTeam
 
   // Used in tests to override BrowserInterfaceBroker's methods

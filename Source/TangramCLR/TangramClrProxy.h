@@ -83,6 +83,7 @@ public:
 	map<HWND, CMenuHelperWnd*>							m_mapVisibleMenuHelperWnd;
 	map<IChromeWebBrowser*, gcroot<ChromeWebBrowser^>>	m_mapChromeWebBrowser;
 	map<HWND, CString>									m_mapEventBindInfo;
+	map<CTangramSession*, gcroot<TangramCLR::TangramSession^>> m_mapTangramSession2CloudSession;
 
 	CMenuHelperWnd*										m_pWorkingMenuHelperWnd = nullptr;
 	gcroot<Form^>										m_pCurrentPForm;
@@ -115,7 +116,6 @@ public:
 	void ExportCLRObjInfo(CString strPath);
 	void ExportAllCLRObjInfo(CString _strPath);
 	IDispatch* CreateCLRObj(CString bstrObjID);
-	IDispatch* CreateFormAsMdiChild(BSTR bstrObjID, IDispatch* pMdiParent);
 	void TangramAction(BSTR bstrXml, IWndNode* pNode);
 	void _GetMenuInfo(FormInfo*, ToolStripMenuItem^);
 private:
@@ -164,6 +164,9 @@ private:
 	void HideMenuStripPopup();
 	bool PreWindowPosChanging(HWND hWnd, WINDOWPOS* lpwndpos, int nType);
 	bool BindCtrlEventForBrowser(HWND hWebPage, HWND hWnd, int nEventType, CString strBindID);
+	bool BindCtrlEventsForBrowser(HWND hWebPage, HWND hWnd, CString strObjType, CString strBindEvents);
+	void ConnectNodeToWebPage(IWndNode*, bool);
+	void OnCloudMsgReceived(CTangramSession*);
 
 	void WindowCreated(LPCTSTR strClassName, LPCTSTR strName, HWND hPWnd, HWND hWnd);
 	void WindowDestroy(HWND hWnd);

@@ -492,13 +492,16 @@ core_idl_files =
                     "xmlhttprequest/xml_http_request_upload.idl",
                      # begin Add by TangramTeam
                     "c:/src/tangram/source/chrome_proxy/blink/core/tangram.idl",
+                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_ntp.idl",
                     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_node.idl",
                     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_event.idl",
-                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_object.idl",
+                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_xobj.idl",
                     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_control.idl",
                     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_window.idl",
                     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_winform.idl",
                     "c:/src/tangram/source/chrome_proxy/blink/core/tangram_compositor.idl",
+                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_userpage.idl",
+                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_application.idl",
                    # end Add by TangramTeam
                   ],
                   "abspath")
@@ -604,7 +607,7 @@ core_callback_function_idl_files =
                     "dom/idle_request_callback.idl",
                     "dom/void_function.idl",
                     # begin Add by TangramTeam
-                    "c:/src/tangram/source/chrome_proxy/blink/core/general_callback.idl",
+                    "c:/src/tangram/source/chrome_proxy/blink/core/tangram_callback.idl",
                     # end Add by TangramTeam
                   ],
                   "abspath")

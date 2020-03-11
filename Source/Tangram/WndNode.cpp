@@ -38,6 +38,7 @@
 #include "EclipsePlus\EclipseAddin.h"
 #include "TangramCtrl.h"
 #include "TangramListView.h"
+#include "TangramCloudSession.h"
 #include "WPFView.h"
 #include "tangram.c"
 #include "TangramTabCtrl.h"
@@ -96,6 +97,8 @@ CWndNode::CWndNode()
 
 void CWndNode::InitWndNode()
 {
+	m_pParentWinFormWnd = nullptr;
+	m_pTangramCloudSession = nullptr;
 	m_pTangramNodeCommonData = m_pRootObj->m_pTangramNodeCommonData;
 	ASSERT(m_pTangramNodeCommonData != nullptr);
 	m_nHeigh = m_pHostParse->attrInt(TGM_HEIGHT, 0);
@@ -283,14 +286,23 @@ CHtmlWnd* CWndNode::GetHtmlWnd()
 {
 	if (m_pRootObj)
 	{
-		HWND hWnd = m_pTangramNodeCommonData->m_pCompositor->m_pCompositorManager->m_hWnd;
-		hWnd = (HWND)::GetWindowLongPtr(hWnd, GWLP_USERDATA);
+		HWND hPWnd = m_pTangramNodeCommonData->m_pCompositor->m_pCompositorManager->m_hWnd;
+		HWND hWnd = (HWND)::GetWindowLongPtr(hPWnd, GWLP_USERDATA);
 		if (::IsWindow(hWnd))
 		{
 			::GetClassName(hWnd, g_pTangram->m_szBuffer, 256);
 			CString strName = CString(g_pTangram->m_szBuffer);
 			if (strName == _T("Chrome Extended Window Class")) {
 				return (ChromePlus::CHtmlWnd*)::GetWindowLongPtr(hWnd, GWLP_USERDATA);
+			}
+		}
+		else
+		{
+			CTangramWinFormWnd* pForm = (CTangramWinFormWnd*)::SendMessage(hPWnd, WM_TANGRAMDATA, 0, 20190214);
+			if (pForm)
+			{
+				m_pParentWinFormWnd = pForm;
+				return pForm->m_pOwnerHtmlWnd;
 			}
 		}
 	}
@@ -947,55 +959,7 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 			bRet = m_pHostWnd->SubclassWindow(hWnd);
 	}
 
-	if (pHtmlWnd)
-	{
-		if (this == m_pTangramNodeCommonData->m_pCompositor->m_pWorkNode)
-		{
-			IPCMsg pIPCInfo;
-			pIPCInfo.m_strId = IPC_TANGRAM_CREATE_TANGRAM_WINDOW_MESSAGE_ID;
-			pIPCInfo.m_strParam1 = m_strWebObjID;
-			CString strHandle = _T("");
-			strHandle.Format(_T("%d"), m_pHostWnd->m_hWnd);
-			pIPCInfo.m_strParam2 = strHandle;
-			strHandle.Format(_T("%d"), m_nViewType);
-			pIPCInfo.m_strParam3 = strHandle;
-			strHandle.Format(_T("%d"), m_pTangramNodeCommonData->m_pCompositor->m_hWnd);
-			pIPCInfo.m_strParam4 = strHandle;
-			pIPCInfo.m_strParam5 = _T("wndnode");
-			pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
-		}
-		IPCMsg pIPCInfo;
-		pIPCInfo.m_strId = IPC_NODE_CREARED_ID;
-		pIPCInfo.m_strParam1 = m_strWebObjID;
-		CString strHandle = _T("");
-		strHandle.Format(_T("%d"), m_pHostWnd->m_hWnd);
-		pIPCInfo.m_strParam2 = strHandle;
-		strHandle.Format(_T("%d"), m_pRootObj->m_pHostWnd->m_hWnd);
-		pIPCInfo.m_strParam3 = strHandle;
-		if (m_pParentObj)
-			strHandle.Format(_T("%d"), m_pParentObj->m_pHostWnd->m_hWnd);
-		else
-			strHandle = _T("0");
-		pIPCInfo.m_strParam4 = strHandle;
-		pIPCInfo.m_strParam5 = _T("wndnode");
-		pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
-		//if (m_pParentObj)
-		//{
-		//	IPCMsg pIPCInfo;
-		//	pIPCInfo.m_strId = CREATE_CHILD_TANGRAM_NODE_ID;
-		//	pIPCInfo.m_strParam1 = m_strWebObjID;
-		//	CString strHandle = _T("");
-		//	strHandle.Format(_T("%d"), m_pHostWnd->m_hWnd);
-		//	pIPCInfo.m_strParam2 = strHandle;
-
-		//	pIPCInfo.m_strParam3 = m_pParentObj->m_strWebObjID;
-		//	strHandle.Format(_T("%d"), m_pParentObj->m_pHostWnd->m_hWnd);
-		//	pIPCInfo.m_strParam4 = strHandle;
-		//	strHandle.Format(_T("%d"), m_pTangramNodeCommonData->m_pCompositor->m_pWorkNode->m_pHostWnd->m_hWnd);
-		//	pIPCInfo.m_strParam5 = strHandle;
-		//	pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(&pIPCInfo);
-		//}
-	}
+	NodeCreated();
 
 	if (m_nViewType == BlankView && m_pHostParse != nullptr)
 	{
@@ -1299,6 +1263,48 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 	return bRet;
 }
 
+void CWndNode::NodeCreated()
+{
+	CHtmlWnd* pHtmlWnd = m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd;
+	if (pHtmlWnd == nullptr)
+		pHtmlWnd = GetHtmlWnd();
+	if (pHtmlWnd&&m_pTangramCloudSession == nullptr)
+	{
+		::PostMessage(pHtmlWnd->m_hWnd, WM_TANGRAMMSG, 20200310, (LPARAM)this);
+		//m_pTangramCloudSession = (CTangramCloudSession*)((CTangramImpl*)g_pTangram)->CreateCloudSession(pHtmlWnd);
+		//if(m_pTangramCloudSession)
+		//{
+		//	m_pTangramCloudSession->InsertString(_T("msgID"), IPC_NODE_CREARED_ID);
+		//	m_pTangramCloudSession->InsertLong(_T("autodelete"), 0);
+		//	m_pTangramCloudSession->InsertLong(_T("nodetype"), m_nViewType);
+		//	m_pTangramCloudSession->InsertLong(_T("rows"), m_nRows);
+		//	m_pTangramCloudSession->InsertLong(_T("cols"), m_nCols);
+		//	m_pTangramCloudSession->InsertLong(_T("row"), m_nRow);
+		//	m_pTangramCloudSession->InsertLong(_T("col"), m_nCol);
+		//	m_pTangramCloudSession->InsertString(_T("cnnid"), m_strCnnID);
+		//	m_pTangramCloudSession->InsertString(_T("name@page"), m_strWebObjID);
+		//	m_pTangramCloudSession->Insertint64(_T("nodehandle"), (__int64)m_pHostWnd->m_hWnd);
+		//	m_pTangramCloudSession->Insertint64(_T("compositorhandle"), (__int64)m_pTangramNodeCommonData->m_pCompositor->m_hWnd);
+		//	m_pTangramCloudSession->Insertint64(_T("rootnodehandle"), (__int64)m_pRootObj->m_pHostWnd->m_hWnd);
+		//	m_pTangramCloudSession->Insertint64(_T("ObjHandle"), (__int64)m_pTangramCloudSession);
+		//	m_pTangramCloudSession->InsertString(_T("objID"), _T("wndnode"));
+		//	if (m_pParentObj)
+		//	{
+		//		m_pTangramCloudSession->Insertint64(_T("parentnodehandle"), (__int64)m_pParentObj->m_pHostWnd->m_hWnd);
+		//	}
+		//	if (m_pDisp)
+		//	{
+		//		m_pTangramCloudSession->Insertint64(_T("objectdisp"), (__int64)m_pDisp);
+		//		if (g_pTangram->m_pCLRProxy)
+		//		{
+		//			g_pTangram->m_pCLRProxy->ConnectNodeToWebPage(this, true);
+		//		}
+		//	}
+		//	pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(m_pTangramCloudSession->m_pSession);
+		//}
+	}
+}
+
 HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 {
 	BOOL bWebCtrl = false;
@@ -1458,16 +1464,15 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 				}
 			}
             // Create a corresponding RefObject from the IDispatch object and store its Handle.
-            uint64_t nRawHandle = (uint64_t)m_pDisp;
-            // TODO: ObjectFactory::Delete should be called when the IDispatch object is destructed.
-            ::RefObject::IRefObject* pObj = g_pTangram->m_pObjectFactory->Create(_T("Clr"), nRawHandle);
-			if(pObj)
-				m_hXObject = pObj->GetHandle();
-
-			if (pHtmlWnd&& strUIKey!=_T(""))
+			if (m_pDisp)
 			{
-
+				uint64_t nRawHandle = (uint64_t)m_pDisp;
+				// TODO: ObjectFactory::Delete should be called when the IDispatch object is destructed.
+				::RefObject::IRefObject* pObj = g_pTangram->m_pObjectFactory->Create(_T("Clr"), nRawHandle);
+				if(pObj)
+					m_hXObject = pObj->GetHandle();
 			}
+
 			CNodeWnd* pWnd = (CNodeWnd*)m_pHostWnd;
 			if (m_pDisp && pWnd->m_mapDockCtrl.size())
 			{
@@ -1484,10 +1489,6 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 				pWnd->m_hFormWnd = g_pTangram->m_hFormNodeWnd;
 				g_pTangram->m_hFormNodeWnd = NULL;
 			}
-			//BSTR bstrRet;
-			//CString s = _T("");
-			//s.Format(_T("%d:%s:%s"), this->m_pHostWnd->m_hWnd,this->m_strNodeName,m_strCnnID);
-			//this->SendIPCMessage(CComBSTR(s), L"web", L"1", L"2", &bstrRet);
 		}
 	}
 	break;
@@ -2447,7 +2448,9 @@ HRESULT CWndNode::Fire_Destroy()
 	{
 		g_pTangram->m_pCLRProxy->ReleaseTangramObj((IWndNode*)this);
 	}
-
+	//if (m_pTangramCloudSession)
+	//	delete m_pTangramCloudSession;
+	//m_pTangramCloudSession = nullptr;
 	return hr;
 }
 
@@ -2931,7 +2934,6 @@ STDMETHODIMP CWndNode::SendIPCMessage(BSTR bstrTo, BSTR bstrPayload, BSTR bstrEx
 	if (m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd)
 	{
 		CHtmlWnd* pWnd = m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd;
-		//CHtmlWnd::SendChromeIPCMessage(CString strRouting, CString strParam1, CString strParam2)
 		m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->SendChromeIPCMessage(_T("I_DONT_KNOW"), OLE2T(bstrTo), OLE2T(bstrMsgId), OLE2T(bstrExtra), L"", L"");
 	}
 	CString strRet = SendIPCMessageInternal(OLE2T(bstrTo), OLE2T(bstrPayload), OLE2T(bstrExtra), OLE2T(bstrMsgId));

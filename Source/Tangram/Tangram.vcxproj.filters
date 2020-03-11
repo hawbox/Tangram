@@ -247,6 +247,9 @@
     <ClCompile Include="Gui\XWindows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TangramCloudSession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\CommonFile\Tangram.idl">
@@ -520,6 +523,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gui\XWindows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TangramCloudSession.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

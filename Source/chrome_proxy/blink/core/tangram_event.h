@@ -1,4 +1,3 @@
-// begin Add by TangramTeam
 #ifndef THIRD_PARTY_BLINK_RENDERER_CORE_EVENTS_TANGRAM_EVENT_H_
 #define THIRD_PARTY_BLINK_RENDERER_CORE_EVENTS_TANGRAM_EVENT_H_
 
@@ -7,12 +6,18 @@
 namespace blink {
 
   class ScriptState;
+  class TangramXobj;
+  class TangramNode;
+  class TangramWindow;
+  class TangramWinform;
 
   class CORE_EXPORT TangramEvent : public Event {
     DEFINE_WRAPPERTYPEINFO();
 
   public:
     static TangramEvent* Create() { return MakeGarbageCollected<TangramEvent>(); }
+    
+    static TangramEvent* Create(const AtomicString& event_type, TangramXobj* var);
 
     static TangramEvent* Create(const AtomicString& event_type,
       const String& eventId,
@@ -21,15 +26,16 @@ namespace blink {
       const String& param3,
       const String& param4,
       const String& param5,
-      const long handleSource,
-      const long handleTarget);
+      const int64_t handleSource,
+      const int64_t handleTarget,
+        TangramXobj*);
 
     static TangramEvent* Create(const AtomicString& event_type,
       const String& eventId,
       const String& param1,
-      const long handleSource,
+      const int64_t handleSource,
       const String& param3,
-      const long handleTarget,
+      const int64_t handleTarget,
       const String& param5);
 
     String eventId();
@@ -44,11 +50,20 @@ namespace blink {
     void setParam4(const String&);
     String param5();
     void setParam5(const String&);
+    TangramXobj* xobj();
+    void setXobj(TangramXobj*);
 
-    long handleSource();
-    void setHandleSource(const long);
-    long handleTarget();
-    void setHandleTarget(const long);
+    int64_t handleSource();
+    void setHandleSource(const int64_t);
+    int64_t handleTarget();
+    void setHandleTarget(const int64_t);
+
+    int64_t hwnd();
+    String name();
+    String objtype();
+    TangramNode* node();
+    TangramWinform* form();
+    TangramWindow* window();
 
     ~TangramEvent() override;
 
@@ -61,8 +76,11 @@ namespace blink {
       const String& param3,
       const String& param4,
       const String& param5,
-      const long handleSource,
-      const long handleTarget);
+      const int64_t handleSource,
+      const int64_t handleTarget,
+        TangramXobj* session);
+
+    void Trace(blink::Visitor*) override;
 
   private:
     String eventId_;
@@ -71,11 +89,11 @@ namespace blink {
     String param3_;
     String param4_;
     String param5_;
-    long handleSource_;
-    long handleTarget_;
+    int64_t handleSource_;
+    int64_t handleTarget_;
+    Member<TangramXobj> session_;
   };
 
 }  // namespace blink
 
 #endif  // THIRD_PARTY_BLINK_RENDERER_CORE_EVENTS_PROGRESS_EVENT_H_
-// end Add by TangramTeam

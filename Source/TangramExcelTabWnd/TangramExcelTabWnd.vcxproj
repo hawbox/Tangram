@@ -76,7 +76,7 @@
     <_ProjectFileVersion>16.0.29124.152</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\chromium_root\src\out\tangram_static_debug_x86\tangramcontainer\</OutDir>
+    <OutDir>..\..\chromium_root_80\src\out\tangram_static_release_x86\tangramcontainer\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
@@ -94,7 +94,7 @@
     <CodeAnalysisRuleAssemblies />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\chromium_root_80\src\out\tangram_static_release_x64\tangramcomponent\</OutDir>
+    <OutDir>..\..\chromium_root_80\src\out\tangram_non_static_debug_x64\tangramcomponent\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>

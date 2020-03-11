@@ -1174,6 +1174,19 @@ RenderFrameHostImpl::~RenderFrameHostImpl() {
 
   if (prefetched_signed_exchange_cache_)
     prefetched_signed_exchange_cache_->RecordHistograms();
+  // begin Add by TangramTeam
+  for (auto it : m_mapTangramSession)
+  {
+      auto itX = it.second->m_mapint64.find(L"ObjHandle");
+      if (itX != it.second->m_mapint64.end())
+      {
+          TangramCommon::CTangramSession* pSession = (TangramCommon::CTangramSession*)itX->second;
+          delete pSession;
+      }
+      delete it.second;
+  }
+  m_mapTangramSession.erase(m_mapTangramSession.begin(), m_mapTangramSession.end());
+  // end Add by TangramTeam
 }
 
 int RenderFrameHostImpl::GetRoutingID() {
@@ -1752,10 +1765,7 @@ bool RenderFrameHostImpl::OnMessageReceived(const IPC::Message& msg) {
 	// begin Add by TangramTeam
 	IPC_MESSAGE_HANDLER(TangramFrameHostMsg_Message, OnTangramMessage)
 	IPC_MESSAGE_HANDLER(TangramFrameHostMsg_Message2, OnTangramMessage2)
-	IPC_MESSAGE_HANDLER(TangramFrameHostMsg_Message3, OnTangramMessage3)
-	//IPC_MESSAGE_HANDLER(TangramFrameHostMsg_Message8, OnTangramMessage8)
-	//IPC_MESSAGE_HANDLER(TangramFrameHostMsg_Message9, OnTangramMessage9)
-	//IPC_MESSAGE_HANDLER(TangramFrameHostMsg_Message10, OnTangramMessage10)
+	IPC_MESSAGE_HANDLER(TangramHostIPCMsg, OnTangramHostIPCMsg)
 	// end Add by TangramTeam
 
   IPC_END_MESSAGE_MAP()
@@ -8138,18 +8148,15 @@ void RenderFrameHostImpl::OnTangramMessage2(std::wstring id,
 		content::RenderWidgetHostViewAura* view = static_cast<content::RenderWidgetHostViewAura*>(GetViewForAccessibility());
 		if(view)
         { 
-            //if (id == L"TANGRAM_CREATE_WIN_FORM_MESSAGE"||id == L"TANGRAM_CTRL_BIND_MESSAGE"|| id == L"TANGRAM_CTRL_VALUE_MESSAGE")
-            {
-                TangramCommon::IPCMsg IPCInfo;
-		        IPCInfo.m_strId = id.c_str();
-                IPCInfo.m_strParam1 = param1.c_str();
-                IPCInfo.m_nHandleFrom = handle;
-                IPCInfo.m_nHandleTo = nID;
-                IPCInfo.m_strParam4 = param4.c_str();
-                IPCInfo.m_strParam5 = param5.c_str();
-                g_pTangramImpl->m_pCurrentIPCMsg = &IPCInfo;
-		        ::SendMessage(view->AccessibilityGetAcceleratedWidget(), WM_CHROMEIPCMSG, (WPARAM)this, (LPARAM)&IPCInfo);
-            }
+            TangramCommon::IPCMsg IPCInfo;
+		    IPCInfo.m_strId = id.c_str();
+            IPCInfo.m_strParam1 = param1.c_str();
+            IPCInfo.m_nHandleFrom = handle;
+            IPCInfo.m_nHandleTo = nID;
+            IPCInfo.m_strParam4 = param4.c_str();
+            IPCInfo.m_strParam5 = param5.c_str();
+            g_pTangramImpl->m_pCurrentIPCMsg = &IPCInfo;
+		    ::SendMessage(view->AccessibilityGetAcceleratedWidget(), WM_CHROMEIPCMSG, (WPARAM)this, (LPARAM)&IPCInfo);
         }
 	}
     if (g_pTangramImpl)
@@ -8158,52 +8165,83 @@ void RenderFrameHostImpl::OnTangramMessage2(std::wstring id,
     }
 }
 
-void RenderFrameHostImpl::OnTangramMessage3(std::wstring id,
-    std::wstring param1,
-    long fromhandle,
-    std::wstring param3,
-    long partohandleam4,
-    std::wstring param5) {
-}
-
-
-void RenderFrameHostImpl::OnTangramMessage8(long messageIndex,
-    std::wstring strId,
-    long NodeHandle,
-    std::wstring strParam1,
-    std::wstring strParam2,
-    std::wstring strParam3,
-    std::wstring strParam4,
-    std::wstring strParam5)
+void RenderFrameHostImpl::OnTangramHostIPCMsg(
+    FrameMsg_TANGRAM_HOST_String_Map mapString/* string map */,
+    FrameMsg_TANGRAM_HOST_LONG_Map mapLong/* long map*/,
+    FrameMsg_TANGRAM_HOST_INT64_Map mapint64/* int64 map*/,
+    FrameMsg_TANGRAM_HOST_FLOAT_Map mapFloat/* float map*/)
 {
+    TangramCommon::CTangramSession* pSession = nullptr;
+    auto it = mapint64.find(L"ObjHandle");
+    if (it != mapint64.end())
+    {
+        pSession = (TangramCommon::CTangramSession*)it->second;
+    }
 
-}
+    if (pSession == nullptr&& m_pProxy)
+    {
+        pSession = g_pTangramImpl->CreateCloudSession(m_pProxy);
+    }
 
-void RenderFrameHostImpl::OnTangramMessage9(long messageIndex,
-    std::wstring strId,
-    long NodeHandle,
-    std::wstring strParam1,
-    std::wstring strParam2,
-    std::wstring strParam3,
-    std::wstring strParam4,
-    std::wstring strParam5,
-    std::wstring strParam6)
-{
-
-}
-
-void RenderFrameHostImpl::OnTangramMessage10(long messageIndex,
-    std::wstring strId,
-    long NodeHandle,
-    std::wstring strParam1,
-    std::wstring strParam2,
-    std::wstring strParam3,
-    std::wstring strParam4,
-    std::wstring strParam5,
-    std::wstring strParam6,
-    std::wstring strParam7)
-{
-
+    if (pSession)
+    {
+        for (auto it1 : mapString)
+        {
+            if (it1.first != L"sessionid")
+            {
+                pSession->InsertString(it1.first.c_str(), it1.second.c_str());
+            }
+        }
+        for (auto it2 : mapLong)
+        {
+            pSession->InsertLong(it2.first.c_str(), it2.second);
+        }
+        for (auto it3 : mapint64)
+        {
+            pSession->Insertint64(it3.first.c_str(), it3.second);
+        }
+        for (auto it4 : mapFloat)
+        {
+            pSession->InsertFloat(it4.first.c_str(), it4.second);
+        }
+        if (g_pTangramImpl->m_pCLRProxy)
+        {
+            g_pTangramImpl->m_pCLRProxy->OnCloudMsgReceived(pSession);
+        }
+        if (m_pProxy)
+        {
+            m_pProxy->OnCloudMsgReceived(pSession);
+        }
+    }
+    //else
+    //{
+    //    TangramCommon::IPCSession var;
+    //    for (auto it1 : mapString)
+    //    {
+    //        var.m_mapString[it1.first] = it1.second;
+    //    }
+    //    for (auto it2 : mapLong)
+    //    {
+    //        var.m_mapLong[it2.first] = it2.second;
+    //    }
+    //    for (auto it3 : mapint64)
+    //    {
+    //        var.m_mapint64[it3.first] = it3.second;
+    //    }
+    //    for (auto it4 : mapFloat)
+    //    {
+    //        var.m_mapFloat[it4.first] = it4.second;
+    //    }
+    //    if (g_pTangramImpl->m_pCLRProxy)
+    //    {
+    //        //g_pTangramImpl->m_pCLRProxy->OnCloudMsgReceived(&var);
+    //    }
+    //    if (m_pProxy)
+    //    {
+    //        CTangramSession* pSession = g_pTangramImpl->CreateCloudSession(m_pProxy);
+    //        //m_pProxy->OnCloudMsgReceived(&var);
+    //    }
+    //}
 }
 
 void RenderFrameHostImpl::OpenURL(CString strUrl, CString strDisposition)
@@ -8215,6 +8253,85 @@ void RenderFrameHostImpl::OpenURL(CString strUrl, CString strDisposition)
 			(WindowOpenDisposition)_wtoi(strDisposition),
 			ui::PAGE_TRANSITION_LINK, false /* is_renderer_initiated */));
 	}
+}
+
+TangramCommon::IPCSession* RenderFrameHostImpl::GetIPCSession()
+{
+    return new TangramCommon::IPCSession;
+}
+
+void RenderFrameHostImpl::InsertString(TangramCommon::IPCSession* var, CString key, CString value)
+{
+    var->m_mapString[LPCTSTR(key)] = LPCTSTR(value);
+}
+
+void RenderFrameHostImpl::InsertLong(TangramCommon::IPCSession* var, CString key, long value)
+{
+    var->m_mapLong[LPCTSTR(key)] = value;
+}
+
+void RenderFrameHostImpl::Insertint64(TangramCommon::IPCSession* var, CString key, __int64 value)
+{
+    var->m_mapint64[LPCTSTR(key)] = value;
+}
+
+void RenderFrameHostImpl::InsertFloat(TangramCommon::IPCSession* var, CString key, float value)
+{
+    var->m_mapFloat[LPCTSTR(key)] = value;
+}
+
+CString RenderFrameHostImpl::GetString(TangramCommon::IPCSession* var, CString key)
+{
+    auto it = var->m_mapString.find(LPCTSTR(key));
+    if (it != var->m_mapString.end())
+        return CString(it->second.c_str());
+    return _T("");
+}
+
+long RenderFrameHostImpl::GetLong(TangramCommon::IPCSession* var, CString key)
+{
+    auto it = var->m_mapLong.find(LPCTSTR(key));
+    if (it != var->m_mapLong.end())
+        return it->second;
+    return 0;
+}
+
+__int64 RenderFrameHostImpl::Getint64(TangramCommon::IPCSession* var, CString key)
+{
+    auto it = var->m_mapint64.find(LPCTSTR(key));
+    if (it != var->m_mapint64.end())
+        return it->second;
+    return 0;
+}
+float RenderFrameHostImpl::GetFloat(TangramCommon::IPCSession* var, CString key)
+{
+    auto it = var->m_mapFloat.find(LPCTSTR(key));
+    if (it != var->m_mapFloat.end())
+        return it->second;
+    return 0;
+}
+
+void RenderFrameHostImpl::SendTangramMessage(TangramCommon::IPCSession* var)
+{
+    CString strID = _T("");
+    auto it = var->m_mapString.find(L"msgID");
+    if (it != var->m_mapString.end())
+    {
+        strID = it->second.c_str();
+    }
+    Send(new TangramRendererIPCMsg(
+        routing_id_, var->m_mapString, var->m_mapLong, var->m_mapint64, var->m_mapFloat));
+    auto it1 = var->m_mapLong.find(L"autodelete");
+    if (it1 != var->m_mapLong.end() && it1->second == 0)
+    {
+        auto it2 = var->m_mapString.find(L"sessionid");
+        if (it2 != var->m_mapString.end())
+        {
+            m_mapTangramSession[it2->second.c_str()] = var;
+        }
+    }
+    else
+        delete var;
 }
 
 void RenderFrameHostImpl::SendTangramMessage(TangramCommon::IPCMsg* pMsg) {
@@ -8250,26 +8367,7 @@ void RenderFrameHostImpl::SendTangramMessage(TangramCommon::IPCMsg* pMsg) {
     } 
     else if(pMsg->m_strId!=_T(""))
     {
-        long msgIndex = 0;
-        if (g_pTangramImpl)
-        {
-            msgIndex = g_pTangramImpl->GetIPCMsgIndex(pMsg->m_strId);
-            if (pMsg->m_strId == IPC_CLR_CONTROL_CREARED_ID)
-            {
-                Send(new TangramFrameMsg_Message2(
-                    routing_id_, 
-                    msgIndex, 
-                    LPCTSTR(pMsg->m_strParam1),
-                    LPCTSTR(pMsg->m_strParam2), 
-                    LPCTSTR(pMsg->m_strParam3),
-                    LPCTSTR(pMsg->m_strParam4), 
-                    LPCTSTR(pMsg->m_strParam5),
-                    pMsg->m_nHandleFrom, 
-                    pMsg->m_nHandleTo));
-                return;
-            }
-            g_pTangramImpl->m_pCurrentIPCMsg = pMsg;
-        }
+        long msgIndex = g_pTangramImpl->GetIPCMsgIndex(pMsg->m_strId);
         Send(new TangramFrameMsg_Message(
             routing_id_, msgIndex, LPCTSTR(pMsg->m_strId), LPCTSTR(pMsg->m_strParam1),
             LPCTSTR(pMsg->m_strParam2), LPCTSTR(pMsg->m_strParam3), 

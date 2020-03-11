@@ -115,6 +115,7 @@ namespace ChromePlus
 		void RenderHTMLDocElement(CString strHTML);
 		void OnNTPLoaded();
 		void OnWinFormCreated(HWND);
+		void OnCloudMsgReceived(CTangramSession*);
 
 	protected:
 		ULONG InternalAddRef() { return 1; }

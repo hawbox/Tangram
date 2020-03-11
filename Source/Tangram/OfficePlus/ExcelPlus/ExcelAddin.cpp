@@ -56,22 +56,6 @@ namespace OfficePlus
 
 		void CExcelAddin::CreateCommonDesignerToolBar()
 		{
-			//BSTR bstrID = ::SysAllocString(L"chromeplus.tangram");
-			//
-			//auto it = m_mapRemoteTangramCore.find(_T("chromeplus.tangram"));
-			//ITangram* pRemoteTangram = nullptr;
-			//if (it != m_mapRemoteTangramCore.end())
-			//{
-			//	pRemoteTangram = it->second;
-			//}
-			//else
-			//{
-			//	StartApplication(bstrID, CComBSTR(""));
-			//	it = m_mapRemoteTangramCore.find(_T("chromeplus.tangram"));
-			//	if (it != m_mapRemoteTangramCore.end())
-			//		pRemoteTangram = it->second;
-			//}
-			//::SysFreeString(bstrID);
 			CString strName = this->m_strExeName;
 			if (::IsWindow(m_hHostWnd) == false)
 			{

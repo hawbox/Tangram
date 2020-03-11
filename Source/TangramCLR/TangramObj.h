@@ -975,6 +975,7 @@ namespace TangramCLR
 		static Dictionary<String^, Type^>^ m_pAppFormTypeDic = nullptr;
 		static Dictionary<String^, Type^>^ m_pAppMDIFormTypeDic = nullptr;
 		static Dictionary<Control^, String^>^ m_pControlRelationDic = nullptr;
+		static Dictionary<Object^, TangramCLR::TangramSession^>^ m_pCloudEventDic = gcnew Dictionary<Object^, TangramCLR::TangramSession^>();
 		static Dictionary<String^, String^>^ CustomizeDictionary = gcnew Dictionary<String^, String^>();
 	public:
 #ifndef _WIN64
@@ -1009,6 +1010,7 @@ namespace TangramCLR
 		static WndNode^ GetNodeFromControl(Control^ ctrl);
 		static void RegComponentForTangram(String^ strIDs, Assembly^ a);
 		static void UpdateNewTabPageLayout(String^ newTabPageLayout);
+		static void BindObjToWebPage(IntPtr hWebPage, Object^ pObj, String^ name);
 
 		TangramCLR::ITangramApp^ m_pTangramAppProxy;
 
@@ -1146,6 +1148,18 @@ namespace TangramCLR
 			Dictionary<String^, String^>^ get()
 			{
 				return CustomizeDictionary;
+			};
+			//void set(Dictionary<String^, String^>^ Dic)
+			//{
+			//	CustomizeDictionary = Dic;
+			//};
+		}
+
+		static property Dictionary<Object^, TangramCLR::TangramSession^>^ WebBindEventDic
+		{
+			Dictionary<Object^, TangramCLR::TangramSession^>^ get()
+			{
+				return m_pCloudEventDic;
 			};
 			//void set(Dictionary<String^, String^>^ Dic)
 			//{
@@ -1336,6 +1350,14 @@ namespace TangramCLR
 			return OnGetAppIcon(nIndex);
 		}
 
+		delegate Object^ GetSubObjForWebPage(Object^ SourceObj, String^ subObjName);
+		static event GetSubObjForWebPage^ OnGetSubObjForWebPage;
+		static Object^ Fire_OnGetSubObjForWebPage(Object^ SourceObj, String^ subObjName);
+
+		delegate void BindCLRObjToWebPage(Object^ SourceObj, TangramCLR::TangramSession^ eventSession ,String^ eventName);
+		static event BindCLRObjToWebPage^ OnBindCLRObjToWebPage;
+		static void Fire_OnBindCLRObjToWebPage(Object^ SourceObj, TangramCLR::TangramSession^ eventSession, String^ eventName);
+
 		delegate void OpenComplete(IntPtr hWnd, String^ bstrUrl, WndNode^ pRootNode);
 		static event OpenComplete^ OnOpenComplete;
 		static void Fire_OnOpenComplete(IntPtr hWnd, String^ bstrUrl, WndNode^ pRootNode)
@@ -1445,7 +1467,7 @@ namespace TangramCLR
 
 			void set(String ^ strName, Object ^ newObj)
 			{
-				IDispatch* pDisp = (IDispatch*)Marshal::GetIDispatchForObject(newObj).ToPointer();
+				IDispatch* pDisp = (IDispatch*)Marshal::GetIUnknownForObject(newObj).ToPointer();
 				m_pCompositorManager->put_Extender(STRING2BSTR(strName), pDisp);
 			}
 		}

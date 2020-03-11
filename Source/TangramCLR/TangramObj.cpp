@@ -557,7 +557,7 @@ namespace TangramCLR
 		{
 			try
 			{
-				IntPtr nDisp = Marshal::GetIDispatchForObject(obj);
+				IntPtr nDisp = Marshal::GetIUnknownForObject(obj);
 				theApp.m_pTangram->put_Application((IDispatch*)nDisp.ToPointer());
 			}
 			catch (ArgumentException^ e)
@@ -741,6 +741,16 @@ namespace TangramCLR
 	void Tangram::Fire_OnCloudAppIdle()
 	{
 		OnCloudAppIdle();
+	}
+
+	Object^ Tangram::Fire_OnGetSubObjForWebPage(Object^ SourceObj, String^ subObjName)
+	{
+		return OnGetSubObjForWebPage(SourceObj, subObjName);
+	}
+
+	void Tangram::Fire_OnBindCLRObjToWebPage(Object^ SourceObj, TangramCLR::TangramSession^ eventSession, String^ eventName)
+	{
+		OnBindCLRObjToWebPage(SourceObj, eventSession, eventName);
 	}
 
 	void Tangram::Fire_OnEclipseAppInit()
@@ -945,6 +955,60 @@ namespace TangramCLR
 	void Tangram::UpdateNewTabPageLayout(String^ newTabPageLayout)
 	{
 		Tangram::NTPXml::set(newTabPageLayout);
+	}
+
+	void Tangram::BindObjToWebPage(IntPtr hWebPage, Object^ pObj, String^ strWebName)
+	{
+		HWND hWnd = (HWND)hWebPage.ToPointer();
+		CChromeRenderFrameHostProxy* pProxy = nullptr;
+		auto it = theAppProxy.m_mapChromeWebPage.find(hWnd);
+		if (it != theAppProxy.m_mapChromeWebPage.end())
+		{
+			pProxy = it->second->m_pProxy;
+		}
+		TangramCLR::TangramSession^ pCloudSession = nullptr;
+		CTangramSession* pSession = nullptr;
+		bool bExists = TangramCLR::Tangram::WebBindEventDic->TryGetValue(pObj, pCloudSession);
+		if (bExists)
+		{
+			pSession = pCloudSession->m_pTangramSession;
+			Type^ pType = pObj->GetType();
+			pCloudSession->InsertString(_T("msgID"), _T("BindCLRObject"));
+			pCloudSession->InsertString(_T("objtype"), pType->FullName);
+			pCloudSession->InsertString(_T("objID"), _T(".netobj"));
+			pCloudSession->InsertString(_T("action"), _T("webbind"));
+			pCloudSession->InsertString(_T("name@page"), strWebName);
+			if (pType->IsSubclassOf(Control::typeid))
+			{
+				pCloudSession->InsertInt64(_T("hwnd"), ((Control^)pObj)->Handle.ToInt64());
+			}
+			pCloudSession->InsertInt64(_T("ObjHandle"), (__int64)pSession);
+			pCloudSession->InsertLong(_T("autodelete"), 0);
+			pCloudSession->m_pHostObj = pObj;
+			theAppProxy.m_mapTangramSession2CloudSession[pSession] = pCloudSession;
+			pSession->SendMessage();
+		}
+		else
+		{
+			pSession = theApp.m_pTangramImpl->CreateCloudSession(pProxy);
+			Type^ pType = pObj->GetType();
+			pSession->InsertString(_T("msgID"), _T("BindCLRObject"));
+			pSession->InsertString(_T("objtype"), pType->FullName);
+			pSession->InsertString(_T("objID"), _T(".netobj"));
+			pSession->InsertString(_T("action"), _T("webbind"));
+			pSession->InsertString(_T("name@page"), strWebName);
+			if (pType->IsSubclassOf(Control::typeid))
+			{
+				pSession->Insertint64(_T("hwnd"), ((Control^)pObj)->Handle.ToInt64());
+			}
+			pSession->Insertint64(_T("ObjHandle"), (__int64)pSession);
+			pSession->InsertLong(_T("autodelete"), 0);
+			if(pCloudSession==nullptr)
+				pCloudSession = gcnew TangramSession(pSession);
+			pCloudSession->m_pHostObj = pObj;
+			theAppProxy.m_mapTangramSession2CloudSession[pSession] = pCloudSession;
+			pSession->SendMessage();
+		}
 	}
 
 	List<String^>^ Tangram::FindFiles(String^ rootPath, String^ fileSpec, bool recursive)
@@ -1631,18 +1695,18 @@ namespace TangramCLR
 						{
 							if (pObj->GetType()->IsSubclassOf(Form::typeid))
 							{
-								CString strCaption = m_Parse.attr(_T("caption"), _T(""));
+								//CString strCaption = m_Parse.attr(_T("caption"), _T(""));
 								Form^ thisForm = (Form^)pObj;
-								if (strCaption != _T(""))
-									thisForm->Text = BSTR2STRING(strCaption);
-								if (thisForm->IsMdiContainer)
-								{
-									CString strBKPage = m_Parse.attr(_T("mdibkpageid"), _T(""));
-									if (strBKPage != _T(""))
-									{
-										Tangram::CreateBKPage(thisForm, BSTR2STRING(strBKPage));
-									}
-								}
+								//if (strCaption != _T(""))
+								//	thisForm->Text = BSTR2STRING(strCaption);
+								//if (thisForm->IsMdiContainer)
+								//{
+								//	CString strBKPage = m_Parse.attr(_T("mdibkpageid"), _T(""));
+								//	if (strBKPage != _T(""))
+								//	{
+								//		Tangram::CreateBKPage(thisForm, BSTR2STRING(strBKPage));
+								//	}
+								//}
 								thisForm->Show(parent);
 							}
 							return (Form^)pObj;
@@ -1817,6 +1881,7 @@ namespace TangramCLR
 						HWND hWnd = (HWND)m_pBindTreeView->Handle.ToPointer();
 
 						ICompositor* pCompositor = nullptr;
+						IWndNode* _pNode = nullptr;
 						m_pWndNode->get_Compositor(&pCompositor);
 						CComBSTR bstrName("");
 						pCompositor->get_Name(&bstrName);
@@ -1825,7 +1890,8 @@ namespace TangramCLR
 						name += L"." + BSTR2STRING(bstrName);
 						BSTR strName = STRING2BSTR(name->ToLower());
 						TangramCLR::Compositor^ _pCompositor = CompositorManager->CreateCompositor(m_pBindTreeView->Handle, name);
-						_pCompositor->Open(L"default", BSTR2STRING(_pParse->xml()));
+						pCompositor->Open(L"default", CComBSTR(_pParse->xml()),&_pNode);
+						::SysFreeString(strName);
 					}
 					else
 					{
@@ -1857,12 +1923,12 @@ namespace TangramCLR
 			m_pBindTreeView->NodeMouseDoubleClick += gcnew System::Windows::Forms::TreeNodeMouseClickEventHandler(this, &TangramCLR::WndNode::OnNodeMouseDoubleClick);
 			m_pBindTreeView->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &TangramCLR::WndNode::OnAfterSelect);
 
-			CString strXml = _T("");
 			if (String::IsNullOrEmpty(m_strTreeViewData) == true)
 				m_strTreeViewData = TangramCLR::Tangram::m_strWizData;
 			if (String::IsNullOrEmpty(m_strTreeViewData) == false)
 			{
-				strXml = STRING2BSTR(m_strTreeViewData);
+				BSTR bstrXml = STRING2BSTR(m_strTreeViewData);
+				CString strXml = OLE2T(bstrXml);
 				CTangramXmlParse m_Parse;
 				if (m_Parse.LoadXml(strXml) || m_Parse.LoadFile(strXml))
 				{
@@ -1871,6 +1937,7 @@ namespace TangramCLR
 						LoadNode(m_pBindTreeView->Nodes->Add(BSTR2STRING(m_Parse.text())), &m_Parse);
 					}
 				}
+				::SysFreeString(bstrXml);
 				m_pBindTreeView->ExpandAll();
 			}
 		}

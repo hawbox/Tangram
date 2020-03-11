@@ -111,6 +111,16 @@
 // begin Add by TangramTeam
 #include "third_party/blink/renderer/core/html/html_collection.h"
 #include "third_party/blink/renderer/core/frame/web_local_frame_impl.h"
+
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_ntp.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_xobj.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_node.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_winform.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_window.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_control.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_userpage.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_application.h"
 // end Add by TangramTeam
 
 namespace blink {
@@ -285,7 +295,6 @@ Document* LocalDOMWindow::InstallNewDocument(const String& mime_type,
 
   document_ = CreateDocument(mime_type, init, force_xhtml);
   document_->Initialize();
-
   if (!GetFrame())
     return document_;
 
@@ -312,6 +321,36 @@ void LocalDOMWindow::EnqueueDocumentEvent(Event& event, TaskType task_type) {
     document_->EnqueueEvent(event, task_type);
 }
 
+// begin Add by TangramTeam
+Tangram* LocalDOMWindow::tangram() const {
+    if (!tangram_) {
+        tangram_ = Tangram::Create(GetFrame());
+    }
+    return tangram_.Get();
+}
+
+TangramNtp* LocalDOMWindow::ntp() const {
+    if (!ntp_) {
+        ntp_ = TangramNtp::Create(GetFrame());
+    }
+    return ntp_.Get();
+}
+
+TangramApplication* LocalDOMWindow::application() const {
+    if (!application_) {
+        application_ = TangramApplication::Create(GetFrame());
+    }
+    return application_.Get();
+}
+
+TangramUserpage* LocalDOMWindow::userpage() const {
+    if (!userpage_) {
+        userpage_ = TangramUserpage::Create(GetFrame());
+    }
+    return userpage_.Get();
+}
+// end Add by TangramTeam
+
 void LocalDOMWindow::DispatchWindowLoadEvent() {
 #if DCHECK_IS_ON()
   DCHECK(!EventDispatchForbiddenScope::IsEventDispatchForbidden());
@@ -325,56 +364,6 @@ void LocalDOMWindow::DispatchWindowLoadEvent() {
                                         WrapPersistent(this)));
     return;
   }
-
-  // begin Add by TangramTeam
-  WebLocalFrameImpl* web_local_frame_impl = WebLocalFrameImpl::FromFrame(GetFrame());
-  if (web_local_frame_impl != nullptr) {
-      tangram()-> web_local_frame_client = web_local_frame_impl->Client();
-  }
-
-  AtomicString extraPrefix = "";
-
-  // Use a custom prefix.
-  HTMLCollection* const extraPrefixElements = document()->getElementsByTagName("extraPrefix");
-  for (Element* extraPrefixElement : *extraPrefixElements) {
-	  AtomicString value = extraPrefixElement->getAttribute("value");
-	  extraPrefix = value;
-  }
-
-  // TODO: Notify the prefix information to the Tangram.
-
-  AtomicString extraPrefixWithDash = "";
-  if (extraPrefix != "") {
-	  extraPrefixWithDash = extraPrefix + "-";
-  }
-
-  tangram()->waitMessage();
-
-  // Scan all define tags.
-  HTMLCollection* const defineElements = document()->getElementsByTagName(extraPrefixWithDash + "define");
-  for (Element* defineElement : *defineElements) {
-	  String tagName = defineElement->getAttribute(extraPrefixWithDash + "tagName");
-	  if (tagName.IsNull() || tagName.IsEmpty()) {
-		  tagName = defineElement->getAttribute("tagName");
-	  }
-	  if (!tagName.IsNull() && !tagName.IsEmpty()) {
-		  if (tagName.StartsWith(extraPrefixWithDash, kTextCaseASCIIInsensitive)) {
-			  tagName = tagName.Substring(extraPrefixWithDash.length());
-		  }
-		  String outerHTML = defineElement->OuterHTMLAsString();
-		  tangram()->defineElement(tagName, outerHTML);
-
-		  // Scan tags for specific tagName
-		  HTMLCollection* const elements = document()->getElementsByTagName(extraPrefixWithDash + tagName);
-		  for (Element* element : *elements) {
-			  String outerHTML = element->OuterHTMLAsString();
-			  tangram()->renderElement(tagName, outerHTML);
-		  }
-	  }
-  }
-
-  tangram()->releaseMessage();
-  // end Add by TangramTeam
 
   DispatchLoadEvent();
 }
@@ -487,6 +476,12 @@ MediaQueryList* LocalDOMWindow::matchMedia(const String& media) {
 }
 
 void LocalDOMWindow::FrameDestroyed() {
+  // begin Add by TangramTeam
+    if (tangram_ != nullptr)
+    {
+        tangram()->Close();
+    }
+  // end Add by TangramTeam
   RemoveAllEventListeners();
   DisconnectFromFrame();
 }
@@ -516,6 +511,8 @@ void LocalDOMWindow::Reset() {
   trusted_types_ = nullptr;
   // begin Add by TangramTeam
   tangram_ = nullptr;
+  application_ = nullptr;
+  userpage_ = nullptr;
   // end Add by TangramTeam
 }
 
@@ -1548,6 +1545,56 @@ void LocalDOMWindow::FinishedLoading(FrameLoader::NavigationFinishState state) {
       state == FrameLoader::NavigationFinishState::kSuccess) {
     print(nullptr);
   }
+
+  // begin Add by TangramTeam
+  if (tangram_.Get() == nullptr)
+      tangram();
+  if (tangram_)
+  {
+      AtomicString extraPrefix = "";
+
+      // Use a custom prefix.
+      HTMLCollection* const extraPrefixElements = document()->getElementsByTagName("extraPrefix");
+      for (Element* extraPrefixElement : *extraPrefixElements) {
+          AtomicString value = extraPrefixElement->getAttribute("value");
+          extraPrefix = value;
+      }
+
+      // TODO: Notify the prefix information to the Tangram.
+
+      AtomicString extraPrefixWithDash = "";
+      if (extraPrefix != "") {
+          extraPrefixWithDash = extraPrefix + "-";
+      }
+
+      tangram()->waitMessage();
+
+      // Scan all define tags.
+      HTMLCollection* const defineElements = document()->getElementsByTagName(extraPrefixWithDash + "define");
+      for (Element* defineElement : *defineElements) {
+          String tagName = defineElement->getAttribute(extraPrefixWithDash + "tagName");
+          if (tagName.IsNull() || tagName.IsEmpty()) {
+              tagName = defineElement->getAttribute("tagName");
+          }
+          if (!tagName.IsNull() && !tagName.IsEmpty()) {
+              if (tagName.StartsWith(extraPrefixWithDash, kTextCaseASCIIInsensitive)) {
+                  tagName = tagName.Substring(extraPrefixWithDash.length());
+              }
+              String outerHTML = defineElement->OuterHTMLAsString();
+              tangram()->defineElement(tagName, outerHTML);
+
+              // Scan tags for specific tagName
+              HTMLCollection* const elements = document()->getElementsByTagName(extraPrefixWithDash + tagName);
+              for (Element* element : *elements) {
+                  String outerHTML = element->OuterHTMLAsString();
+                  tangram()->renderElement(tagName, outerHTML);
+              }
+          }
+      }
+
+      tangram()->releaseMessage();
+  }
+  // end Add by TangramTeam
 }
 
 void LocalDOMWindow::PrintErrorMessage(const String& message) const {
@@ -1688,6 +1735,9 @@ void LocalDOMWindow::Trace(blink::Visitor* visitor) {
   visitor->Trace(trusted_types_);
   // begin Add by TangramTeam
   visitor->Trace(tangram_);
+  visitor->Trace(application_);
+  visitor->Trace(userpage_);
+  visitor->Trace(ntp_);
   // end Add by TangramTeam
   DOMWindow::Trace(visitor);
   Supplementable<LocalDOMWindow>::Trace(visitor);

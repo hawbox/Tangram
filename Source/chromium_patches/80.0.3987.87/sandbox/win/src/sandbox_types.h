@@ -9,8 +9,8 @@
 #include "base/process/launch.h"
 // begin Add by TangramTeam
 #if defined(_WIN64) 
-#define SANDBOX_EXPORTS true
 #endif
+#define SANDBOX_EXPORTS true
 // end Add by TangramTeam
 
 namespace sandbox {

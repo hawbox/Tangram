@@ -42,11 +42,6 @@
 
 #include <memory>
 
-// begin Add by TangramTeam
-#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram.h"
-#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_node.h"
-// end Add by TangramTeam
-
 namespace blink {
 
 class ApplicationCache;
@@ -79,6 +74,16 @@ class TrustedTypePolicyFactory;
 class V8FrameRequestCallback;
 class V8IdleRequestCallback;
 class V8VoidFunction;
+// begin Add by TangramTeam
+class Tangram;
+class TangramXobj;
+class TangramNode;
+class TangramWindow;
+class TangramControl;
+class TangramWinform;
+class TangramUserpage;
+class TangramApplication;
+// end Add by TangramTeam
 
 enum PageTransitionEventPersistence {
   kPageTransitionEventNotPersisted = 0,
@@ -317,12 +322,10 @@ class CORE_EXPORT LocalDOMWindow final : public DOMWindow,
   TrustedTypePolicyFactory* trustedTypes() const;
 
   // begin Add by TangramTeam
-  Tangram* tangram() const override {
-	  if (!tangram_) {
-		  tangram_ = Tangram::Create(GetFrame());
-	  }
-	  return tangram_.Get();
-  }
+  Tangram* tangram() const override;
+  TangramApplication* application() const override;
+  TangramUserpage* userpage() const override;
+  TangramNtp* ntp() const override;
   // end Add by TangramTeam
 
   void DispatchPersistedPageshowEvent(base::TimeTicks navigation_start);
@@ -387,6 +390,9 @@ class CORE_EXPORT LocalDOMWindow final : public DOMWindow,
 
   // begin Add by TangramTeam
   mutable Member<Tangram> tangram_;
+  mutable Member<TangramApplication> application_;
+  mutable Member<TangramUserpage> userpage_;
+  mutable Member<TangramNtp> ntp_;
   // end Add by TangramTeam
 
   String status_;

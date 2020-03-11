@@ -19,6 +19,7 @@ namespace blink {
 using namespace std;
 
 class Tangram;
+class TangramXobj;
 class TangramWindow;
 class TangramWinform;
 class TangramControl;
@@ -26,7 +27,8 @@ class TangramControl;
 class Document;
 class ScriptState;
 class ExceptionState;
-class V8GeneralCallback;
+class V8TangramCallback;
+class V8ApplicationCallback;
 class WebLocalFrameClient;
 class SerializedScriptValue;
 
@@ -34,7 +36,6 @@ class CORE_EXPORT TangramNode final : public EventTargetWithInlineData,
 									  public DOMWindowClient {
   DEFINE_WRAPPERTYPEINFO();
   USING_GARBAGE_COLLECTED_MIXIN(TangramNode);
-  //USING_PRE_FINALIZER(TangramNode, Dispose);
 
  public:
   static TangramNode* Create(LocalFrame* frame) { return MakeGarbageCollected<TangramNode>(frame); }
@@ -50,46 +51,46 @@ class CORE_EXPORT TangramNode final : public EventTargetWithInlineData,
   long col();
   long rows();
   long cols();
-  long nodehandle();
+  int64_t handle();
+  TangramXobj* xobj();
 
+  TangramNode* rootNode();
+  TangramNode* parentNode();
   TangramWindow* parentWindow();
   TangramWinform* parentForm();
 
+  int64_t hwnd();
   String name();
+  String objtype();
+  String getid();
 
   // Message method
 
   void addChannel(const String& channel);
   void removeChannel(const String& channel);
   void sendMessage(const String& id, const String& param1, const String& param2, const String& param3, const String& param4, const String& param5);
-  
-  // Data Dictionary:
-  void setVal(const String& strKey, const String& val);
-  String getVal(const String& strKey);
-  void clearData();
+  void addEventListener(const String& eventName, V8ApplicationCallback* callback);
+  void addEventListener(const String& subObjName, const String& eventName, V8ApplicationCallback* callback);
+  void removeEventListener(const String& eventName);
+  void disConnect();
+  void fireEvent(const String& eventName, TangramXobj* eventParam);
+  void sendMessage(TangramXobj* msg, V8ApplicationCallback* callback);
+  void invokeCallback(wstring callbackid, TangramXobj* callbackParam);
 
   //Control Bind API:
-  void setControlVal(const String& CtrlID, long CtrlHandle, const String& strVal);
-  void BindControlEvent(const String& CtrlID, long CtrlHandle, long EventID, const String& strBindID);
+  void setControlVal(const String& CtrlID, int64_t CtrlHandle, const String& strVal);
+  void GetControlsNames(V8ApplicationCallback* callback);
 
   // Node API:
   TangramNode* getChild(long nIndex);
   TangramNode* getChild(const String& strName);
-  TangramControl* getControl(const String& strCtrlName);
 
   DEFINE_ATTRIBUTE_EVENT_LISTENER(MessageReceived, kTangram)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(MdiChildActivate, kMdichildactivate)
-  DEFINE_ATTRIBUTE_EVENT_LISTENER(NodeMouseActivate, kNodemouseactivate)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(TangramNodeCreated, kTangramnodecreated)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(TangramControlCreated, kTangramcontrolcreated)
-  DEFINE_ATTRIBUTE_EVENT_LISTENER(TreeViewNodeAfterSelect, kTreeviewnodeafterselect)
-  DEFINE_ATTRIBUTE_EVENT_LISTENER(TreeViewNodeMouseDoubleClick, kTreeviewnodemousedoubleclick)
-  DEFINE_ATTRIBUTE_EVENT_LISTENER(ListViewItemSelectionChanged, kListviewitemselectionchanged)
-  DEFINE_ATTRIBUTE_EVENT_LISTENER(FormMenuItemClick, kFormmenuitemclick)
-  DEFINE_ATTRIBUTE_EVENT_LISTENER(FormButtonClick, kFormbuttonclick)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(WinFormCreated, kWinformcreated)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(WinFormClosed, kWinformclosed)
-  DEFINE_ATTRIBUTE_EVENT_LISTENER(BindCLRCtrlEvent, kBindclrctrlevent)
 
   // EventTarget overrides:
   const AtomicString& InterfaceName() const override;
@@ -97,32 +98,26 @@ class CORE_EXPORT TangramNode final : public EventTargetWithInlineData,
 
   TangramNode(LocalFrame*);
   TangramNode(LocalFrame*, const String& strNodeXml);
-  TangramNode* AddChild(long nHandle, const String& strNodeName, blink::Tangram*);
-  TangramControl* AddCtrl(long nCtrlHandle, const String& strCtrlName, const String& strWebPageID, blink::Tangram*);
+  TangramNode* AddChild(int64_t nHandle, const String& strNodeName, blink::Tangram*);
+  //TangramControl* AddCtrl(int64_t nCtrlHandle, const String& strCtrlName, const String& strCtrlType, const String& strCtrlData, const String& strWebPageID, blink::Tangram*);
 
   ~TangramNode() override;
 
-  long nHandle = 0;
-  long row_ = 0;
-  long col_ = 0;
-  long rows_ = 0;
-  long cols_ = 0;
-  long nodehandle_ = 0;
+  int64_t handle_ = 0;
 
   String name_;
 
-  WebLocalFrameClient* web_local_frame_client;
-  mutable Member<TangramWindow> m_pParentWnd;
+  mutable Member<Tangram> tangram_;
+  mutable Member<TangramXobj> innerXobj_;
   mutable Member<TangramWinform> m_pParentForm;
 
-  HeapHashMap<long, Member<TangramControl>> m_mapChildControl;
-  HeapHashMap<String, Member<TangramControl>> m_mapChildControl2;
-  HeapHashMap<int, Member<TangramNode>> m_mapChildNode;
-  HeapHashMap<String, Member<TangramNode>> m_mapChildNode2;
+  WebLocalFrameClient* m_pRenderframeImpl;
+  map<int, TangramNode*> m_mapChildNode;
+  map<wstring, TangramNode*> m_mapChildNode2;
 
 private:
-  String m_strNodeXml;
-  map<std::wstring, String> m_mapVal;
+  String id_;
+  HeapHashMap<String, Member<V8ApplicationCallback>> mapTangramEventCallback_;
 };
 
 }  // namespace blink

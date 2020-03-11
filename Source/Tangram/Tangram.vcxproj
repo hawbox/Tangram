@@ -86,12 +86,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\PublicAssemblies</OutDir>
+    <OutDir>..\..\chromium_root_80\src\out\tangram_static_release_x86</OutDir>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\chromium_root_80\src\out\tangram_static_release_x64</OutDir>
+    <OutDir>..\..\chromium_root_80\src\out\tangram_non_static_debug_x64</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -316,6 +316,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="TangramCloudSession.cpp" />
     <ClCompile Include="Gui\Document.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
@@ -536,6 +537,7 @@
     <ClInclude Include="chromium\HtmlWnd.h" />
     <ClInclude Include="chromium\BrowserWnd.h" />
     <ClInclude Include="chromium\HtmlWndDelegate.h" />
+    <ClInclude Include="TangramCloudSession.h" />
     <ClInclude Include="Gui\Document.h" />
     <ClInclude Include="Gui\Grid.h" />
     <ClInclude Include="Gui\Node.h" />

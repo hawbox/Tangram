@@ -95,8 +95,21 @@ using FrameMsg_GetSerializedHtmlWithLocalLinks_UrlMap =
     std::map<GURL, base::FilePath>;
 using FrameMsg_GetSerializedHtmlWithLocalLinks_FrameRoutingIdMap =
     std::map<int, base::FilePath>;
-
 #endif  // INTERNAL_CONTENT_COMMON_FRAME_MESSAGES_H_
+
+// begin add by TangramTeam
+using FrameMsg_TANGRAM_HOST_String_Map =
+    std::map<std::wstring, std::wstring>;
+
+using FrameMsg_TANGRAM_HOST_LONG_Map =
+    std::map<std::wstring, long>;
+
+using FrameMsg_TANGRAM_HOST_INT64_Map =
+std::map<std::wstring, __int64>;
+
+using FrameMsg_TANGRAM_HOST_FLOAT_Map =
+    std::map<std::wstring, float>;
+// end add by TangramTeam
 
 #undef IPC_MESSAGE_EXPORT
 #define IPC_MESSAGE_EXPORT CONTENT_EXPORT
@@ -1352,70 +1365,6 @@ IPC_MESSAGE_ROUTED2(FrameHostMsg_PrintCrossProcessSubframe,
 IPC_MESSAGE_ROUTED0(FrameHostMsg_RenderFallbackContentInParentProcess)
 
 // begin Add by TangramTeam
-IPC_MESSAGE_ROUTED12(TangramFrameMsg_Message12,
-	long /* nessage index */,
-	std::wstring /* id */,
-    long /* nodehandle */,
-    std::wstring /* param1 */,
-    std::wstring /* param2 */,
-    std::wstring /* param3 */,
-    std::wstring /* param4 */,
-    std::wstring /* param5 */,
-    std::wstring /* param6 */,
-    std::wstring /* param7 */,
-    std::wstring /* param8 */,
-    std::wstring /* param9 */)
-IPC_MESSAGE_ROUTED11(TangramFrameMsg_Message11,
-	long /* nessage index */,
-	std::wstring /* id */,
-    long /* nodehandle */,
-    std::wstring /* param1 */,
-    std::wstring /* param2 */,
-    std::wstring /* param3 */,
-    std::wstring /* param4 */,
-    std::wstring /* param5 */,
-    std::wstring /* param6 */,
-    std::wstring /* param7 */,
-    std::wstring /* param8 */)
-IPC_MESSAGE_ROUTED10(TangramFrameMsg_Message10,
-	long /* nessage index */,
-	std::wstring /* id */,
-    long /* nodehandle */,
-    std::wstring /* param1 */,
-    std::wstring /* param2 */,
-    std::wstring /* param3 */,
-    std::wstring /* param4 */,
-    std::wstring /* param5 */,
-    std::wstring /* param6 */,
-    std::wstring /* param7 */)
-IPC_MESSAGE_ROUTED9(TangramFrameMsg_Message9,
-	long /* nessage index */,
-	std::wstring /* id */,
-    long /* nodehandle */,
-    std::wstring /* param1 */,
-    std::wstring /* param2 */,
-    std::wstring /* param3 */,
-    std::wstring /* param4 */,
-    std::wstring /* param5 */,
-    std::wstring /* param6 */)
-IPC_MESSAGE_ROUTED8(TangramFrameMsg_Message8,
-	long /* nessage index */,
-	std::wstring /* id */,
-    long /* nodehandle */,
-    std::wstring /* param1 */,
-    std::wstring /* param2 */,
-    std::wstring /* param3 */,
-    std::wstring /* param4 */,
-    std::wstring /* param5 */)
-IPC_MESSAGE_ROUTED8(TangramFrameMsg_Message2,
-    long /* nessage index */,
-    std::wstring /* param1 */,
-    std::wstring /* param2 */,
-    std::wstring /* param3 */,
-    std::wstring /* param4 */,
-    std::wstring /* param5 */,
-    long /* fromhandle */,
-    long /* tohandle */)
 IPC_MESSAGE_ROUTED7(TangramFrameMsg_Message,
 	long /* nessage index */,
 	std::wstring /* id */,
@@ -1424,6 +1373,13 @@ IPC_MESSAGE_ROUTED7(TangramFrameMsg_Message,
     std::wstring /* param3 */,
     std::wstring /* param4 */,
     std::wstring /* param5 */)
+
+IPC_MESSAGE_ROUTED4(TangramRendererIPCMsg,
+    FrameMsg_TANGRAM_HOST_String_Map /* string map */,
+    FrameMsg_TANGRAM_HOST_LONG_Map /* long map*/,
+    FrameMsg_TANGRAM_HOST_INT64_Map /* int64 map*/,
+    FrameMsg_TANGRAM_HOST_FLOAT_Map /* param3 */)
+
 IPC_MESSAGE_ROUTED6(TangramFrameHostMsg_Message,
 	std::wstring /* id */,
     std::wstring /* param1 */,
@@ -1434,17 +1390,15 @@ IPC_MESSAGE_ROUTED6(TangramFrameHostMsg_Message,
 IPC_MESSAGE_ROUTED6(TangramFrameHostMsg_Message2,
 	std::wstring /* id */,
     std::wstring /* param1 */,
-    long /* param2 */,
-    long /* param3 */,
+    __int64 /* param2 */,
+    __int64 /* param3 */,
     std::wstring /* param4 */,
     std::wstring /* param5 */)
-IPC_MESSAGE_ROUTED6(TangramFrameHostMsg_Message3,
-	std::wstring /* id */,
-    std::wstring /* param1 */,
-    long /* param2 */,
-    std::wstring /* param3 */,
-    long /* param4 */,
-    std::wstring /* param5 */)
+IPC_MESSAGE_ROUTED4(TangramHostIPCMsg,
+    FrameMsg_TANGRAM_HOST_String_Map /* string map */,
+    FrameMsg_TANGRAM_HOST_LONG_Map /* long map*/,
+    FrameMsg_TANGRAM_HOST_INT64_Map /* int64 map*/,
+    FrameMsg_TANGRAM_HOST_FLOAT_Map /* float map */)
 // end Add by TangramTeam
 
 // Used to go to the session history entry at the given offset (ie, -1 will

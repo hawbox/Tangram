@@ -27,6 +27,10 @@ class WindowPostMessageOptions;
 class WindowProxyManager;
 // begin Add by TangramTeam
 class Tangram;
+class TangramNtp;
+class TangramXobj;
+class TangramUserpage;
+class TangramApplication;
 // end Add by TangramTeam
 
 // DOMWindow is an abstract class of Window interface implementations.
@@ -130,6 +134,9 @@ class CORE_EXPORT DOMWindow : public EventTargetWithInlineData {
 
   // begin Add by TangramTeam
   virtual Tangram* tangram() const = 0;
+  virtual TangramApplication* application() const = 0;
+  virtual TangramUserpage* userpage() const = 0;
+  virtual TangramNtp* ntp() const = 0;
   // end Add by TangramTeam
 
   void PostMessageForTesting(scoped_refptr<SerializedScriptValue> message,

@@ -210,13 +210,13 @@ int MainDllLoader::Launch(HINSTANCE instance,
       reinterpret_cast<DLL_MAIN>(::GetProcAddress(dll_, "ChromeMain"));
   int rc = chrome_main(instance, &sandbox_info,
                        exe_entry_point_ticks.ToInternalValue());
-  // begin Add by TangramTeam
-  if (g_pTangramImpl && g_pTangramImpl->m_pBrowserFactory)
-  {
-	  delete g_pTangramImpl->m_pBrowserFactory;
-	  g_pTangramImpl->m_pBrowserFactory = nullptr;
-  }
-  // end Add by TangramTeam
+  //// begin Add by TangramTeam
+  //if (g_pTangramImpl && g_pTangramImpl->m_pBrowserFactory)
+  //{
+	 // delete g_pTangramImpl->m_pBrowserFactory;
+	 // g_pTangramImpl->m_pBrowserFactory = nullptr;
+  //}
+  //// end Add by TangramTeam
   OnBeforeExit(file);
   return rc;
 }
@@ -317,11 +317,12 @@ class ChromiumDllLoader : public MainDllLoader {
 		 g_pTangramImpl = pTangramImpl;
 		 Launch(GetModuleHandle(nullptr), base::TimeTicks::Now());
 		 RelaunchChromeBrowserWithNewCommandLineIfNeeded();
-		 if (g_pTangramImpl && g_pTangramImpl->m_pBrowserFactory)
-		 {
-			 delete g_pTangramImpl->m_pBrowserFactory;
-			 g_pTangramImpl->m_pBrowserFactory = nullptr;
-		 }
+		 //if (g_pTangramImpl && g_pTangramImpl->m_pBrowserFactory)
+		 //{
+			// delete g_pTangramImpl->m_pBrowserFactory;
+			// g_pTangramImpl->m_pBrowserFactory = nullptr;
+		 //}
+         Sleep(1000);
 		 delete this;
 	 }
 	 // end Add by TangramTeam

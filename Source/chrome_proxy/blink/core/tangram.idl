@@ -1,21 +1,26 @@
 typedef sequence<any> ObjectArray;
 
 [
-	Exposed = Window, 
-	NoInterfaceObject 
+	Exposed = Window
 ] interface Tangram : EventTarget {
 
 	// Message API
+	void wait(boolean bwait);
 	void addChannel(DOMString channel);
 	void removeChannel(DOMString channel);
 	void sendMessage(DOMString id, DOMString param1, DOMString param2, 
 		[DefaultValue = Undefined] optional DOMString param3, 
 		[DefaultValue = Undefined] optional DOMString param4, 
 		[DefaultValue = Undefined] optional DOMString param5);
-	void sendNodeMessage(DOMString domid, DOMString param1, DOMString param2, 
-		[DefaultValue = Undefined] optional DOMString param3, 
-		[DefaultValue = Undefined] optional DOMString param4, 
-		[DefaultValue = Undefined] optional DOMString param5);
+	void sendMessage(TangramXobj msg,
+		[DefaultValue = Undefined] optional ApplicationCallback callback, 
+		[DefaultValue = Undefined] optional  boolean bwait);
+	void addEventListener(DOMString eventName, ApplicationCallback callback);
+	void removeEventListener(DOMString eventName);
+
+	// DOM API
+	void defineElement(DOMString tagName, DOMString html);
+	void renderElement(DOMString tagName, DOMString html);
 
 	// Data Dictionary:
 	void setVal(DOMString strKey, DOMString strVal);
@@ -23,33 +28,32 @@ typedef sequence<any> ObjectArray;
 	void clearData();
 
 	//Control Bind Api:
-	void setControlVal(DOMString CtrlID, long CtrlHandle, DOMString strVal);
-	void BindControlEvent(DOMString CtrlID, long CtrlHandle, long EventID, DOMString strBindID);
+	void setControlVal(DOMString CtrlID, long long CtrlHandle, DOMString strVal);
 
 	//TangramNode API
-	TangramNode getNode(DOMString nodeName);
-	TangramNode getNode(long nodeHandle);
+	TangramXobj newVar([DefaultValue = Undefined] optional DOMString name);
+	TangramNode getNode(long long nodeHandle);
 	TangramWindow getWindow(DOMString wndName);
-	TangramWindow getWindow(long wndHandle);
+	TangramWindow getWindow(long long wndHandle);
 
 	//TangramWinForm API
-	TangramWinform createWinForm(DOMString strFormXml, long FormType);
+	TangramWinform createWinForm(DOMString strFormXml, 
+		long FormType, 
+		[DefaultValue = Undefined] optional ApplicationCallback callback);
+
+	[Affects = Nothing] getter TangramXobj ? getNamedItem(DOMString name);
+	[RaisesException, CEReactions] TangramXobj ? setNamedItem(TangramXobj var);
+	[RaisesException, CEReactions] void setNamedItem(DOMString name, TangramXobj var);
+
+	readonly attribute DOMString url;
+
 	// Event handler attributes
 	attribute EventHandler onMessageReceived;
+	attribute EventHandler onTangramMessageReceived;
 	attribute EventHandler onTangramNodeCreated;
 	attribute EventHandler onTangramWindowCreated;
-	attribute EventHandler onNodeMouseActivate;
 	attribute EventHandler onMdiChildActivate;
-	attribute EventHandler onTreeViewNodeAfterSelect;
-	attribute EventHandler onTreeViewNodeMouseDoubleClick;
-	attribute EventHandler onListViewItemSelectionChanged;
-	attribute EventHandler onFormButtonClick;
-	attribute EventHandler onFormMenuItemClick;
 	attribute EventHandler onWinFormCreated;
 	attribute EventHandler onWinFormClosed;
-	attribute EventHandler onBindCLRCtrlEvent;
-
-	// DOM API
-	void defineElement(DOMString tagName, DOMString html);
-	void renderElement(DOMString tagName, DOMString html);
+	attribute EventHandler onBindCLRObject;
 };

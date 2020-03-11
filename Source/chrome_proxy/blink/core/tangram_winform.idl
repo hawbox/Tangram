@@ -1,28 +1,23 @@
 
 [
-	Exposed = Window,
-	NoInterfaceObject
+	Exposed = Window
 ] interface TangramWinform : EventTarget {
 
 	// Message API
-	void addChannel(DOMString channel);
-	void removeChannel(DOMString channel);
-	void sendMessage(DOMString id, DOMString param1, DOMString param2, DOMString param3, DOMString param4, DOMString param5);
+	void sendMessage(TangramXobj msg,
+		[DefaultValue = Undefined] optional ApplicationCallback callback);
+	void addEventListener(DOMString eventName, ApplicationCallback callback);
+	void addEventListener(DOMString subObjName, DOMString eventName, ApplicationCallback callback);
+	void removeEventListener(DOMString eventName);
 
+	readonly attribute long long handle;
 	readonly attribute DOMString name;
-	readonly attribute long formhandle;
+	[RuntimeEnabled = TrustedDOMTypes, Replaceable] readonly attribute TangramXobj xobj;
 
 	// Event handler attributes
 	attribute EventHandler onMessageReceived;
 	attribute EventHandler onTangramNodeCreated;
-	attribute EventHandler onNodeMouseActivate;
 	attribute EventHandler onMdiChildActivate;
-	attribute EventHandler onTreeViewNodeAfterSelect;
-	attribute EventHandler onTreeViewNodeMouseDoubleClick;
-	attribute EventHandler onListViewItemSelectionChanged;
-	attribute EventHandler onFormButtonClick;
-	attribute EventHandler onFormMenuItemClick;
 	attribute EventHandler onWinFormCreated;
 	attribute EventHandler onWinFormClosed;
-	attribute EventHandler onBindCLRCtrlEvent;
 };

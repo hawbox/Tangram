@@ -44,6 +44,69 @@ using System::Runtime::InteropServices::Marshal;
 
 namespace TangramCLR
 {
+	TangramSession::TangramSession(TangramCommon::CTangramSession* pTangramSession)
+	{
+		m_pTangramSession = pTangramSession;
+	}
+
+	void TangramSession::InsertString(String^ key, String^ value)
+	{
+		if(m_pTangramSession)
+			m_pTangramSession->InsertString(key, value);
+	}
+
+	void TangramSession::InsertLong(String^ key, long value)
+	{
+		if(m_pTangramSession)
+			m_pTangramSession->InsertLong(key, value);
+	}
+
+	void TangramSession::InsertInt64(String^ key, __int64 value)
+	{
+		if(m_pTangramSession)
+			m_pTangramSession->Insertint64(key, value);
+	}
+
+	void TangramSession::InsertFloat(String^ key, float value)
+	{
+		if(m_pTangramSession)
+			m_pTangramSession->InsertFloat(key, value);
+	}
+
+	String^ TangramSession::GetString(String^ key)
+	{
+		if(m_pTangramSession)
+			return BSTR2STRING(m_pTangramSession->GetString(key));
+		return L"";
+	}
+
+	long TangramSession::GetLong(String^ key)
+	{
+		if(m_pTangramSession)
+			return m_pTangramSession->GetLong(key);
+		return 0;
+	}
+
+	__int64 TangramSession::GetInt64(String^ key)
+	{
+		if(m_pTangramSession)
+			return m_pTangramSession->Getint64(key);
+		return 0;
+	}
+
+	float TangramSession::GetFloat(String^ key)
+	{
+		if(m_pTangramSession)
+			return m_pTangramSession->GetFloat(key);
+		return 0;
+	}
+
+	void TangramSession::SendMessage()
+	{
+		if (m_pTangramSession)
+			return m_pTangramSession->SendMessage();
+	}
+
 	ChromeWebBrowser::ChromeWebBrowser(IChromeWebBrowser* pChromeWebBrowser)
 	{
 		m_pChromeWebBrowserHost = pChromeWebBrowser;

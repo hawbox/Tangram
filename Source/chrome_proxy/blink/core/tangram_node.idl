@@ -4,45 +4,42 @@
 ] interface TangramNode : EventTarget {
 
 	// Message API
-	void addChannel(DOMString channel);
-	void removeChannel(DOMString channel);
-	void sendMessage(DOMString id, DOMString param1, DOMString param2, DOMString param3, DOMString param4, DOMString param5);
+	void sendMessage(TangramXobj msg,
+		[DefaultValue = Undefined] optional ApplicationCallback callback);
+	void addEventListener(DOMString eventName, ApplicationCallback callback);
+	void addEventListener(DOMString subObjName, DOMString eventName, ApplicationCallback callback);
+	void removeEventListener(DOMString eventName);
 
-	// Data Dictionary:
-	void setVal(DOMString strKey, DOMString strVal);
-	DOMString getVal(DOMString strKey);
-	void clearData();
+	void GetControlsNames(ApplicationCallback callback);
 
 	//Control Bind Api:
-	void setControlVal(DOMString CtrlID, long CtrlHandle, DOMString strVal);
-	void BindControlEvent(DOMString CtrlID, long CtrlHandle, long EventID, DOMString strBindID);
+	void setControlVal(DOMString CtrlID, long long CtrlHandle, DOMString strVal);
 
 	//Node API
 	TangramNode getChild(long nIndex);
 	TangramNode getChild(DOMString strName);
-	TangramControl getControl(DOMString strCtrlName);
+	//TangramControl getControl(DOMString strCtrlName);
 
-	readonly attribute DOMString name;
 	readonly attribute long row;
 	readonly attribute long col;
 	readonly attribute long rows;
 	readonly attribute long cols;
-	readonly attribute long nodehandle;
+	readonly attribute long long handle;
+	readonly attribute long long hwnd;
+	[RuntimeEnabled = TrustedDOMTypes, Replaceable] readonly attribute TangramXobj xobj;
+	readonly attribute DOMString name;
+	readonly attribute DOMString objtype;
 
-	readonly attribute TangramWindow parentWindow;
-	readonly attribute TangramWinform parentForm;
+	[RuntimeEnabled = TrustedDOMTypes, Replaceable] readonly attribute TangramNode rootNode;
+	[RuntimeEnabled = TrustedDOMTypes, Replaceable] readonly attribute TangramNode parentNode;
+	[RuntimeEnabled = TrustedDOMTypes, Replaceable] readonly attribute TangramWindow parentWindow;
+	[RuntimeEnabled = TrustedDOMTypes, Replaceable] readonly attribute TangramWinform parentForm;
+
 	// Event handler attributes
 	attribute EventHandler onMessageReceived;
 	attribute EventHandler onTangramNodeCreated;
 	attribute EventHandler onTangramControlCreated;
-	attribute EventHandler onNodeMouseActivate;
 	attribute EventHandler onMdiChildActivate;
-	attribute EventHandler onTreeViewNodeAfterSelect;
-	attribute EventHandler onTreeViewNodeMouseDoubleClick;
-	attribute EventHandler onListViewItemSelectionChanged;
-	attribute EventHandler onFormButtonClick;
-	attribute EventHandler onFormMenuItemClick;
 	attribute EventHandler onWinFormCreated;
 	attribute EventHandler onWinFormClosed;
-	attribute EventHandler onBindCLRCtrlEvent;
 };

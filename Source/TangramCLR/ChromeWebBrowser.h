@@ -10,6 +10,23 @@ namespace TangramCLR
 	ref class WndNode;
 	ref class Compositor;
 
+	public ref class TangramSession
+	{
+	public:
+		TangramCommon::CTangramSession*	m_pTangramSession;
+		TangramSession(CTangramSession* m_pTangramSession);
+		Object^ m_pHostObj = nullptr;
+		void InsertString(String^ key, String^ value);
+		void InsertLong(String^ key, long value);
+		void InsertInt64(String^ key, __int64 value);
+		void InsertFloat(String^ key, float value);
+		String^ GetString(String^ key);
+		long GetLong(String^ key);
+		float GetFloat(String^ key);
+		__int64 GetInt64(String^ key);
+		void SendMessage();
+	};
+
 	public ref class ChromeWebBrowser
 	{
 	public:
