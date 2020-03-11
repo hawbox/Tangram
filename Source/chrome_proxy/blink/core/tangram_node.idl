@@ -11,6 +11,7 @@
 	void removeEventListener(DOMString eventName);
 
 	void GetControlsNames(ApplicationCallback callback);
+	void SyncCtrlTextChange(DOMString strcontrols, [DefaultValue = Undefined] optional ApplicationCallback callback);
 
 	//Control Bind Api:
 	void setControlVal(DOMString CtrlID, long long CtrlHandle, DOMString strVal);

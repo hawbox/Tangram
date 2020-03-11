@@ -27,7 +27,6 @@ class TangramControl;
 class Document;
 class ScriptState;
 class ExceptionState;
-class V8TangramCallback;
 class V8ApplicationCallback;
 class WebLocalFrameClient;
 class SerializedScriptValue;
@@ -76,6 +75,7 @@ class CORE_EXPORT TangramNode final : public EventTargetWithInlineData,
   void fireEvent(const String& eventName, TangramXobj* eventParam);
   void sendMessage(TangramXobj* msg, V8ApplicationCallback* callback);
   void invokeCallback(wstring callbackid, TangramXobj* callbackParam);
+  void SyncCtrlTextChange(const String& strcontrols, V8ApplicationCallback* callback);
 
   //Control Bind API:
   void setControlVal(const String& CtrlID, int64_t CtrlHandle, const String& strVal);

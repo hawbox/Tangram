@@ -27,17 +27,11 @@ class TangramControl;
 
 //for callback:
 class CallbackFunctionBase;
-class V8TangramCallback;
 class V8ApplicationCallback;
-class V8SendMessageToNodeCallback;
-class V8SendMessageToFormCallback;
-class V8SendMessageToWindowCallback;
-class V8SendMessageToControlCallback;
 
 class Document;
 class ScriptState;
 class ExceptionState;
-class V8TangramCallback;
 class WebLocalFrameClient;
 class SerializedScriptValue;
 class V8ApplicationCallback;
@@ -70,6 +64,7 @@ class CORE_EXPORT TangramWinform final : public EventTargetWithInlineData,
   void fireEvent(const String& eventName, TangramXobj* eventParam);
   void sendMessage(TangramXobj* msg, V8ApplicationCallback* callback);
   void invokeCallback(wstring callbackid, TangramXobj* callbackParam);
+  void SyncCtrlTextChange(const String& strcontrols, V8ApplicationCallback* callback);
 
   DEFINE_ATTRIBUTE_EVENT_LISTENER(MessageReceived, kTangramwinform)
       DEFINE_ATTRIBUTE_EVENT_LISTENER(MdiChildActivate, kMdichildactivate)

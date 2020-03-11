@@ -1,4 +1,4 @@
-// begin Add by TangramTeam
+﻿// begin Add by TangramTeam
 #include "tangram.h"
 #include "tangram_xobj.h"
 #include "tangram_node.h"
@@ -128,6 +128,16 @@ void TangramNode::addEventListener(const String& subObjName, const String& event
 	if (callback)
 	{
 		innerXobj_->addEventListener(subObjName, eventName, callback);
+	}
+}
+
+void TangramNode::SyncCtrlTextChange(const String& strcontrols, V8ApplicationCallback* callback)
+{
+	if (callback)
+	{
+		innerXobj_->setStr(L"eventtype", L"SyncCtrlTextChange");
+		innerXobj_->setStr(L"ctrls", strcontrols);
+		innerXobj_->addEventListener(L"SyncCtrlTextChange", L"OnTextChanged", callback);
 	}
 }
 

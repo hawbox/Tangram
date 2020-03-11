@@ -191,7 +191,6 @@ private:
 	static void OnClick(Object ^sender, EventArgs ^e);
 	static void OnNodeMouseDoubleClick(System::Object^ sender, System::Windows::Forms::TreeNodeMouseClickEventArgs^ e);
 	static void OnTextChanged(System::Object^ sender, System::EventArgs^ e);
-	static void OnKeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e);
 };
 
 class CTangramWPFObjWrapper : public CTangramWPFObj

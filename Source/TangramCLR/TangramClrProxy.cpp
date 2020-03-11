@@ -2410,34 +2410,34 @@ void CTangramCLRProxy::SetCtrlValueByName(IDispatch* CtrlDisp, BSTR bstrName, bo
 
 bool CTangramCLRProxy::BindCtrlEventForBrowser(HWND hWebPage, HWND hWnd, int nType, CString strBindID)
 {
-	Control^ pCtrl = (Control^)Control::FromHandle((IntPtr)hWnd);
-	String^ strID = BSTR2STRING(strBindID);
-	strID += L"|" + ((IntPtr)hWebPage).ToString("d");
-	if (pCtrl)
-	{
-		theAppProxy.m_mapEventBindInfo[hWnd] = strID;
-		Type^ type = pCtrl->GetType();
-		if (type == System::Windows::Forms::TextBox::typeid || type->IsSubclassOf(System::Windows::Forms::TextBox::typeid))
-		{
-			TextBox^ pTextCtrl = (TextBox^)pCtrl;
-			switch (nType)
-			{
-			case 1:
-			{
-				System::EventHandler^ pHandler = gcnew System::EventHandler(&OnTextChanged);
-				pTextCtrl->TextChanged += pHandler;
-			}
-			break;
-			case 2:
-			{
-				pTextCtrl->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(&OnKeyDown);
-			}
-			break;
-			case 3:
-				break;
-			}
-		}
-	}
+	//Control^ pCtrl = (Control^)Control::FromHandle((IntPtr)hWnd);
+	//String^ strID = BSTR2STRING(strBindID);
+	//strID += L"|" + ((IntPtr)hWebPage).ToString("d");
+	//if (pCtrl)
+	//{
+	//	theAppProxy.m_mapEventBindInfo[hWnd] = strID;
+	//	Type^ type = pCtrl->GetType();
+	//	if (type == System::Windows::Forms::TextBox::typeid || type->IsSubclassOf(System::Windows::Forms::TextBox::typeid))
+	//	{
+	//		TextBox^ pTextCtrl = (TextBox^)pCtrl;
+	//		switch (nType)
+	//		{
+	//		case 1:
+	//		{
+	//			System::EventHandler^ pHandler = gcnew System::EventHandler(&OnTextChanged);
+	//			pTextCtrl->TextChanged += pHandler;
+	//		}
+	//		break;
+	//		case 2:
+	//		{
+	//			pTextCtrl->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(&OnKeyDown);
+	//		}
+	//		break;
+	//		case 3:
+	//			break;
+	//		}
+	//	}
+	//}
 	return false;
 }
 
@@ -2483,15 +2483,47 @@ void CTangramCLRProxy::OnCloudMsgReceived(CTangramSession* pSession)
 	{
 		Object^ pObj = nullptr;
 		pObj = it->second->m_pHostObj;
+		CString strType = pSession->GetString(L"eventtype");
 		CString strCallback = pSession->GetString(L"callbackid");
 		if (strCallback != _T(""))
 		{
-			CString strEventName = pSession->GetString(LPCTSTR(strCallback));
 			TangramCLR::TangramSession^ pCloudSession = nullptr;
 			if (!TangramCLR::Tangram::WebBindEventDic->TryGetValue(pObj, pCloudSession))
 			{
 				pCloudSession =  gcnew TangramCLR::TangramSession(pSession);
 				TangramCLR::Tangram::WebBindEventDic[pObj] = pCloudSession;
+			}
+			CString strEventName = pSession->GetString(LPCTSTR(strCallback));
+			if (strType == _T("SyncCtrlTextChange"))
+			{
+				if (pObj->GetType()->IsSubclassOf(Control::typeid))
+				{
+					Control^ pCtrl = (Control^)pObj;
+					Control^ pSubCtrl = nullptr;
+					CString strCtrls = pSession->GetString(L"ctrls");
+					String^ _strCtrls = BSTR2STRING(strCtrls);
+					cli::array<String^, 1>^ s = _strCtrls->Split(';');
+					for each (String ^ _strSubObjName in s)
+					{
+						if (String::IsNullOrEmpty(_strSubObjName) == false)
+						{
+							cli::array<Control^, 1>^ pArray = pCtrl->Controls->Find(_strSubObjName, true);
+							if (pArray != nullptr && pArray->Length)
+							{
+								pSubCtrl = pArray[0];
+								TangramCLR::TangramSession^ pCloudSession2 = nullptr;
+								if (!TangramCLR::Tangram::WebBindEventDic->TryGetValue(pSubCtrl, pCloudSession2))
+								{
+									TangramCLR::Tangram::WebBindEventDic[pSubCtrl] = pCloudSession;
+								}
+								pSession->Insertint64(pSubCtrl->Name, pSubCtrl->Handle.ToInt64());
+								pSubCtrl->TextChanged += gcnew System::EventHandler(&OnTextChanged);
+							}
+						}
+					}
+				}
+					
+				return;
 			}
 			String^ _strEventName = L"";
 			String^ _strSubObjName = L"";
@@ -2542,81 +2574,6 @@ void CTangramCLRProxy::OnCloudMsgReceived(CTangramSession* pSession)
 				TangramCLR::Tangram::Fire_OnBindCLRObjToWebPage(pObj, pCloudSession, _strEventName);
 		}
 	}
-	//else
-	//{
-	//	__int64 nformhandle = pSession->Getint64(_T("formhandle"));
-	//	if (nformhandle)
-	//	{
-	//		HWND hWnd = (HWND)nformhandle;
-	//		if (::IsWindow(hWnd))
-	//		{
-	//			Control^ pObj = Control::FromHandle((IntPtr)nformhandle);
-	//			if (pObj != nullptr)
-	//			{
-	//				CString strCallback = pSession->GetString(L"callbackid");
-	//				if (strCallback != _T(""))
-	//				{
-	//					CString strEventName = pSession->GetString(LPCTSTR(strCallback));
-	//					TangramCLR::TangramSession^ pCloudSession = nullptr;
-	//					if (!TangramCLR::Tangram::WebBindEventDic->TryGetValue(pObj, pCloudSession))
-	//					{
-	//						pCloudSession = gcnew TangramCLR::TangramSession(pSession);
-	//						TangramCLR::Tangram::WebBindEventDic[pObj] = pCloudSession;
-	//					}
-	//					pCloudSession->m_pTangramSession = pSession;
-	//					m_mapTangramSession2CloudSession[pSession] = pCloudSession;
-	//					String^ _strEventName = L"";
-	//					String^ _strSubObjName = L"";
-	//					int nPos = strEventName.Find(_T("@"));
-	//					if (nPos != -1)
-	//					{
-	//						_strEventName = BSTR2STRING(strEventName.Left(nPos));
-	//						_strSubObjName = BSTR2STRING(strEventName.Mid(nPos + 1));
-	//					}
-	//					else
-	//					{
-	//						_strEventName = BSTR2STRING(strEventName);
-	//					}
-	//					if (!String::IsNullOrEmpty(_strSubObjName))
-	//					{
-	//						if (pObj->GetType()->IsSubclassOf(Control::typeid))
-	//						{
-	//							Control^ pCtrl = (Control^)pObj;
-	//							Control^ pSubCtrl = nullptr;
-	//							if (pCtrl != nullptr)
-	//							{
-	//								cli::array<Control^, 1>^ pArray = pCtrl->Controls->Find(_strSubObjName, true);
-	//								if (pArray != nullptr && pArray->Length)
-	//								{
-	//									pSubCtrl = pArray[0];
-	//									TangramCLR::TangramSession^ pCloudSession2 = nullptr;
-	//									if (!TangramCLR::Tangram::WebBindEventDic->TryGetValue(pSubCtrl, pCloudSession2))
-	//									{
-	//										TangramCLR::Tangram::WebBindEventDic[pSubCtrl] = pCloudSession;
-	//									}
-
-	//									TangramCLR::Tangram::Fire_OnBindCLRObjToWebPage(pSubCtrl, pCloudSession, _strEventName);
-	//									return;
-	//								}
-	//							}
-	//						}
-	//						else
-	//						{
-	//							Object^ subObj = TangramCLR::Tangram::Fire_OnGetSubObjForWebPage(pObj, _strSubObjName);
-	//							if (subObj != nullptr)
-	//							{
-	//								TangramCLR::Tangram::Fire_OnBindCLRObjToWebPage(subObj, pCloudSession, _strEventName);
-	//								return;
-	//							}
-	//						}
-	//					}
-	//					else
-	//						TangramCLR::Tangram::Fire_OnBindCLRObjToWebPage(pObj, pCloudSession, _strEventName);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
 }
 
 bool CTangramCLRProxy::BindCtrlEventsForBrowser(HWND hWebPage, HWND hWnd, CString strObjType, CString strBindEvents)
@@ -2752,53 +2709,39 @@ void CTangramCLRProxy::OnClick(Object^ sender, EventArgs^ e)
 		TangramCLR::Tangram::ExtendMDIClient(form, L"newdoc", L"");
 }
 
-void CTangramCLRProxy::OnKeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e)
-{
-	TextBox^ pTextCtrl = (TextBox^)sender;
-	auto it = theAppProxy.m_mapEventBindInfo.find((HWND)pTextCtrl->Handle.ToPointer());
-	if (it != theAppProxy.m_mapEventBindInfo.end())
-	{
-		String^ strIndex = BSTR2STRING(it->second);
-		int nIndex = strIndex->IndexOf(L"|");
-		String^ strBindID = strIndex->Substring(0, nIndex);
-		strIndex = strIndex->Substring(nIndex + 1);
-		CString s = strIndex;
-		HWND hWebPageWnd = (HWND)_wtoi(s);
-		String^ strVal = e->KeyCode.ToString();
-		IPCMsg msg;
-		msg.m_strId = _T("BIND_CLR_CTRL_EVENT");
-		msg.m_strParam1 = strBindID;
-		msg.m_strParam2 = pTextCtrl->Handle.ToString("d");
-		msg.m_strParam3 = strVal;
-		msg.m_strParam4 = _T("OnKeyDown");
-		msg.m_strParam5 = e->KeyData.ToString();
-		//msg.m_nHandleFrom = e->KeyCode.ToInt16('d');
-		//msg.m_nHandleTo = e->KeyValue.ToInt16();
-		::SendMessage(hWebPageWnd, WM_TANGRAMMSG, 20200221, (LPARAM)&msg);
-	}
-}
-
 void CTangramCLRProxy::OnTextChanged(System::Object^ sender, System::EventArgs^ e)
 {
 	TextBox^ pTextCtrl = (TextBox^)sender;
-	auto it = theAppProxy.m_mapEventBindInfo.find((HWND)pTextCtrl->Handle.ToPointer());
-	if (it != theAppProxy.m_mapEventBindInfo.end())
+	TangramCLR::TangramSession^ pCloudSession = nullptr;
+	if (TangramCLR::Tangram::WebBindEventDic->TryGetValue(sender, pCloudSession))
 	{
-		String^ strIndex = BSTR2STRING(it->second);
-		int nIndex = strIndex->IndexOf(L"|");
-		String^ strBindID = strIndex->Substring(0, nIndex);
-		strIndex = strIndex->Substring(nIndex + 1);
-		CString s = strIndex;
-		HWND hWebPageWnd = (HWND)_wtoi(s);
-		String^ strVal = pTextCtrl->Text;
-		IPCMsg msg;
-		msg.m_strId = _T("BIND_CLR_CTRL_EVENT");
-		msg.m_strParam1 = strBindID;
-		msg.m_strParam2 = pTextCtrl->Handle.ToString("d");
-		msg.m_strParam3 = strVal;
-		msg.m_strParam4 = _T("OnTextChanged");
-		::SendMessage(hWebPageWnd, WM_TANGRAMMSG, 20200221, (LPARAM)&msg);
+		pCloudSession->InsertString(pTextCtrl->Name, pTextCtrl->Text);
+		pCloudSession->InsertString("msgID", "FIRE_EVENT");
+		pCloudSession->InsertString("currentsubobj", pTextCtrl->Name);
+		String^ strEventtype = pCloudSession->GetString(L"eventtype");
+		pCloudSession->InsertString("currentevent", "OnTextChanged@" + strEventtype);
+
+		pCloudSession->SendMessage();
 	}
+
+	//auto it = theAppProxy.m_mapEventBindInfo.find((HWND)pTextCtrl->Handle.ToPointer());
+	//if (it != theAppProxy.m_mapEventBindInfo.end())
+	//{
+	//	String^ strIndex = BSTR2STRING(it->second);
+	//	int nIndex = strIndex->IndexOf(L"|");
+	//	String^ strBindID = strIndex->Substring(0, nIndex);
+	//	strIndex = strIndex->Substring(nIndex + 1);
+	//	CString s = strIndex;
+	//	HWND hWebPageWnd = (HWND)_wtoi(s);
+	//	String^ strVal = pTextCtrl->Text;
+	//	IPCMsg msg;
+	//	msg.m_strId = _T("BIND_CLR_CTRL_EVENT");
+	//	msg.m_strParam1 = strBindID;
+	//	msg.m_strParam2 = pTextCtrl->Handle.ToString("d");
+	//	msg.m_strParam3 = strVal;
+	//	msg.m_strParam4 = _T("OnTextChanged");
+	//	::SendMessage(hWebPageWnd, WM_TANGRAMMSG, 20200221, (LPARAM)&msg);
+	//}
 }
 
 HWND CTangramCLRProxy::GetCtrlHandle(IDispatch* _pCtrl)

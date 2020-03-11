@@ -15,7 +15,6 @@
 #include "third_party/blink/renderer/core/frame/local_dom_window.h"
 #include "third_party/blink/public/web/web_local_frame_client.h"
 #include "third_party/blink/renderer/core/frame/web_local_frame_impl.h"
-#include "third_party/blink/renderer/bindings/core/v8/v8_win_form_created_callback.h"
 #include "third_party/blink/renderer/bindings/core/v8/v8_application_callback.h"
 #include "third_party/blink/renderer/platform/wtf/uuid.h"
 
@@ -81,6 +80,16 @@ namespace blink {
 
 	int64_t TangramWinform::handle() {
 		return handle_;
+	}
+
+	void TangramWinform::SyncCtrlTextChange(const String& strcontrols, V8ApplicationCallback* callback)
+	{
+		if (callback)
+		{
+			innerXobj_->setStr(L"eventtype", L"SyncCtrlTextChange");
+			innerXobj_->setStr(L"ctrls", strcontrols);
+			innerXobj_->addEventListener(L"SyncCtrlTextChange", L"OnTextChanged", callback);
+		}
 	}
 
 	void TangramWinform::addEventListener(const String& eventName, V8ApplicationCallback* callback)

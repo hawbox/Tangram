@@ -24,7 +24,6 @@ class ScriptState;
 class TangramXobj;
 class TangramNode;
 class ExceptionState;
-class V8TangramCallback;
 class WebLocalFrameClient;
 class SerializedScriptValue;
 class V8ApplicationCallback;
