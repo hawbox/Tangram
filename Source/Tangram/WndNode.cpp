@@ -1271,37 +1271,6 @@ void CWndNode::NodeCreated()
 	if (pHtmlWnd&&m_pTangramCloudSession == nullptr)
 	{
 		::PostMessage(pHtmlWnd->m_hWnd, WM_TANGRAMMSG, 20200310, (LPARAM)this);
-		//m_pTangramCloudSession = (CTangramCloudSession*)((CTangramImpl*)g_pTangram)->CreateCloudSession(pHtmlWnd);
-		//if(m_pTangramCloudSession)
-		//{
-		//	m_pTangramCloudSession->InsertString(_T("msgID"), IPC_NODE_CREARED_ID);
-		//	m_pTangramCloudSession->InsertLong(_T("autodelete"), 0);
-		//	m_pTangramCloudSession->InsertLong(_T("nodetype"), m_nViewType);
-		//	m_pTangramCloudSession->InsertLong(_T("rows"), m_nRows);
-		//	m_pTangramCloudSession->InsertLong(_T("cols"), m_nCols);
-		//	m_pTangramCloudSession->InsertLong(_T("row"), m_nRow);
-		//	m_pTangramCloudSession->InsertLong(_T("col"), m_nCol);
-		//	m_pTangramCloudSession->InsertString(_T("cnnid"), m_strCnnID);
-		//	m_pTangramCloudSession->InsertString(_T("name@page"), m_strWebObjID);
-		//	m_pTangramCloudSession->Insertint64(_T("nodehandle"), (__int64)m_pHostWnd->m_hWnd);
-		//	m_pTangramCloudSession->Insertint64(_T("compositorhandle"), (__int64)m_pTangramNodeCommonData->m_pCompositor->m_hWnd);
-		//	m_pTangramCloudSession->Insertint64(_T("rootnodehandle"), (__int64)m_pRootObj->m_pHostWnd->m_hWnd);
-		//	m_pTangramCloudSession->Insertint64(_T("ObjHandle"), (__int64)m_pTangramCloudSession);
-		//	m_pTangramCloudSession->InsertString(_T("objID"), _T("wndnode"));
-		//	if (m_pParentObj)
-		//	{
-		//		m_pTangramCloudSession->Insertint64(_T("parentnodehandle"), (__int64)m_pParentObj->m_pHostWnd->m_hWnd);
-		//	}
-		//	if (m_pDisp)
-		//	{
-		//		m_pTangramCloudSession->Insertint64(_T("objectdisp"), (__int64)m_pDisp);
-		//		if (g_pTangram->m_pCLRProxy)
-		//		{
-		//			g_pTangram->m_pCLRProxy->ConnectNodeToWebPage(this, true);
-		//		}
-		//	}
-		//	pHtmlWnd->m_pChromeRenderFrameHost->SendTangramMessage(m_pTangramCloudSession->m_pSession);
-		//}
 	}
 }
 

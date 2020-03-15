@@ -77,6 +77,7 @@ namespace blink {
 	 DEFINE_ATTRIBUTE_EVENT_LISTENER(WinFormClosed, kWinformclosed)
 	 DEFINE_ATTRIBUTE_EVENT_LISTENER(BindCLRObject, kBindclrobject)
 
+	 TangramXobj* xobj();
 	 String url();
 	 TangramXobj* getNamedItem(const AtomicString&) const;
 	 TangramXobj* setNamedItem(TangramXobj*, ExceptionState&);
@@ -99,13 +100,9 @@ namespace blink {
 	 void defineElement(const String& tagName, const String& html);
 	 void renderElement(const String& tagName, const String& html);
 
-	 void setVal(const String& strKey, const String& val);
-	 String getVal(const String& strKey);
-	 void clearData();
-
-	 //Control Bind API:
-	 void setControlVal(const String& CtrlID, int64_t CtrlHandle, const String& strVal);
+	 //WinForm API:
 	 TangramWinform* createWinForm(const String& strFormXml, const long FormType, V8ApplicationCallback* callback);
+	 TangramWinform* newWinForm(int64_t handle, TangramXobj* obj);
 
 	 //TangramNode API
 	 TangramNode* createTangramNode(TangramXobj* xobj);
@@ -146,7 +143,6 @@ namespace blink {
 	 base::RunLoop run_loop_;
 	 bool is_pending_;
 	 Vector<String> pending_messages_;
-	 map<std::wstring, String> m_mapVal;
 	 HeapHashMap<String, Member<V8TangramCallback>> mapTangramCallback_;
 	 HeapHashMap<int64_t, Member<CallbackFunctionBase>> mapCallbackFunction_;
 	};

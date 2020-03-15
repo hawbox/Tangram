@@ -198,8 +198,14 @@ int main() {
          HasValidWindowsPrefetchArgument(*command_line));
 
   // begin Add by TangramTeam
+#ifdef SANDBOX_EXPORTS
   if (process_type.empty())
-	  return 0;
+      return 0;
+#endif 
+  if (process_type.empty())
+  {
+    ::LoadLibrary(L"tangramcore.dll");
+  }
   // end Add by TangramTeam
 
   if (process_type == crash_reporter::switches::kCrashpadHandler) {

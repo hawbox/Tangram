@@ -2918,16 +2918,6 @@ STDMETHODIMP CCompositor::Open(BSTR bstrKey, BSTR bstrXml, IWndNode** ppRetNode)
 	return S_OK;
 }
 
-STDMETHODIMP CCompositor::OpenFromWeb(BSTR bstrURLBase, BSTR bstrKey, BSTR bstrOrg, BSTR bstrRepo, BSTR bstrBranch, BSTR bstrPath)
-{
-	return S_OK;
-}
-
-STDMETHODIMP CCompositor::SendIPCMessage(int MessageType, BSTR bstrMessage, BSTR bstrMessageData)
-{
-	return S_OK;
-}
-
 STDMETHODIMP CCompositor::get_CurrentNavigateKey(BSTR* pVal)
 {
 	*pVal = m_strCurrentKey.AllocSysString();

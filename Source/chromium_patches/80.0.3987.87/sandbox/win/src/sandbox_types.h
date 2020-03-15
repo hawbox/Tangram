@@ -7,10 +7,10 @@
 
 #include "base/process/kill.h"
 #include "base/process/launch.h"
-// begin Add by TangramTeam
+ // begin Add by TangramTeam
 #if defined(_WIN64) 
-#endif
 #define SANDBOX_EXPORTS true
+#endif
 // end Add by TangramTeam
 
 namespace sandbox {

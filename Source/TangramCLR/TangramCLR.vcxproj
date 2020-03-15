@@ -85,7 +85,7 @@
     <_ProjectFileVersion>11.0.51106.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\chromium_root_80\src\out\tangram_static_release_x86</OutDir>
+    <OutDir>..\..\..\..\Program Files %28x86%29\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\PublicAssemblies</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <LinkKeyFile>

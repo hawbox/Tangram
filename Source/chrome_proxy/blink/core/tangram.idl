@@ -22,14 +22,6 @@ typedef sequence<any> ObjectArray;
 	void defineElement(DOMString tagName, DOMString html);
 	void renderElement(DOMString tagName, DOMString html);
 
-	// Data Dictionary:
-	void setVal(DOMString strKey, DOMString strVal);
-	DOMString getVal(DOMString strKey);
-	void clearData();
-
-	//Control Bind Api:
-	void setControlVal(DOMString CtrlID, long long CtrlHandle, DOMString strVal);
-
 	//TangramNode API
 	TangramXobj newVar([DefaultValue = Undefined] optional DOMString name);
 	TangramNode getNode(long long nodeHandle);
@@ -46,6 +38,7 @@ typedef sequence<any> ObjectArray;
 	[RaisesException, CEReactions] void setNamedItem(DOMString name, TangramXobj var);
 
 	readonly attribute DOMString url;
+	[RuntimeEnabled = TrustedDOMTypes, Replaceable] readonly attribute TangramXobj xobj;
 
 	// Event handler attributes
 	attribute EventHandler onMessageReceived;

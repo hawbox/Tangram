@@ -19,7 +19,6 @@
 	//Node API
 	TangramNode getChild(long nIndex);
 	TangramNode getChild(DOMString strName);
-	//TangramControl getControl(DOMString strCtrlName);
 
 	readonly attribute long row;
 	readonly attribute long col;

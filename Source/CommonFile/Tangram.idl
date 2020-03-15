@@ -616,8 +616,6 @@ interface ICompositor : IDispatch{
 	[id(103), helpstring("method ModifyHost")] HRESULT ModifyHost(LONGLONG hHostWnd);
 	[id(104)] HRESULT Open(BSTR bstrKey, BSTR bstrXml, [out, retval] IWndNode** ppRetNode);
 	[id(105)] HRESULT GetXml(BSTR bstrRootName, [out, retval] BSTR* bstrRet);
-	[id(106)] HRESULT OpenFromWeb(BSTR bstrURLBase, BSTR bstrKey, BSTR bstrOrg, BSTR bstrRepo, BSTR bstrBranch, BSTR bstrPath);
-	[id(107)] HRESULT SendIPCMessage(int MessageType, BSTR bstrMessage, BSTR bstrMessageData);
 };
 
 [

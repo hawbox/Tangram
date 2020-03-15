@@ -982,7 +982,7 @@ namespace TangramCLR
 			{
 				pCloudSession->InsertInt64(_T("hwnd"), ((Control^)pObj)->Handle.ToInt64());
 			}
-			pCloudSession->InsertInt64(_T("ObjHandle"), (__int64)pSession);
+			pCloudSession->InsertInt64(_T("domhandle"), (__int64)pSession);
 			pCloudSession->InsertLong(_T("autodelete"), 0);
 			pCloudSession->m_pHostObj = pObj;
 			theAppProxy.m_mapTangramSession2CloudSession[pSession] = pCloudSession;
@@ -1001,7 +1001,7 @@ namespace TangramCLR
 			{
 				pSession->Insertint64(_T("hwnd"), ((Control^)pObj)->Handle.ToInt64());
 			}
-			pSession->Insertint64(_T("ObjHandle"), (__int64)pSession);
+			pSession->Insertint64(_T("domhandle"), (__int64)pSession);
 			pSession->InsertLong(_T("autodelete"), 0);
 			if(pCloudSession==nullptr)
 				pCloudSession = gcnew TangramSession(pSession);

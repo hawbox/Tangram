@@ -35,7 +35,6 @@ namespace blink {
 	}
 
 	Tangram::~Tangram() {
-		clearData();
 	}
 
 	void Tangram::Trace(blink::Visitor* visitor) {
@@ -55,6 +54,11 @@ namespace blink {
 	String Tangram::url()
 	{
 		return DomWindow()->document()->Url().GetString();
+	}
+
+	TangramXobj* Tangram::xobj()
+	{
+		return innerXobj_;
 	}
 
 	void Tangram::wait(bool bwait)
@@ -143,64 +147,6 @@ namespace blink {
 		}
 	}
 
-	void Tangram::setVal(const String& strKey, const String& val)
-	{
-		WebString webstr = strKey;
-		auto it = m_mapVal.find(webstr.Utf16());
-		if (it != m_mapVal.end())
-		{
-			m_mapVal.erase(it);
-		}
-		m_mapVal[webstr.Utf16()] = val;
-	}
-
-	String Tangram::getVal(const String& strKey)
-	{
-		WebString webstr = strKey;
-		auto it = m_mapVal.find(webstr.Utf16());
-		if (it != m_mapVal.end())
-		{
-			return it->second;
-		}
-		return "";
-	}
-
-	void Tangram::clearData()
-	{
-		m_mapVal.erase(m_mapVal.begin(), m_mapVal.end());
-	}
-
-	void Tangram::setControlVal(const String& CtrlID, int64_t CtrlHandle, const String& strVal)
-	{
-		int64_t nHandle = 0;
-		if (CtrlID != "")
-		{
-			Element* const tangramelement = DomWindow()->document()->getElementById(WTF::AtomicString(CtrlID));
-			if (tangramelement)
-			{
-				WTF::AtomicString handle = tangramelement->getAttribute("hwnd");
-				if (handle != "")
-				{
-					WebString webstr = handle;
-					std::wstring u16_handle = webstr.Utf16();
-					nHandle = _wtoi64(u16_handle.c_str());
-				}
-			}
-		}
-		else
-			nHandle = CtrlHandle;
-		if (nHandle)
-		{
-			if (m_pRenderframeImpl) {
-				WebString webstr = strVal;
-				std::wstring _val = webstr.Utf16();
-				webstr = CtrlID;
-				std::wstring _strCtrlID = webstr.Utf16();
-				m_pRenderframeImpl->SendTangramMessage(L"TANGRAM_CTRL_VALUE_MESSAGE", _strCtrlID, nHandle, 0, _val, L"");
-			}
-		}
-	}
-
 	TangramXobj* Tangram::newVar(const String& strName)
 	{
 		TangramXobj* var = TangramXobj::Create(strName);
@@ -232,6 +178,18 @@ namespace blink {
 			form->innerXobj_->setLong(L"formType", FormType);
 			m_pRenderframeImpl->SendTangramMessageEx(form->innerXobj_->session_);
 		}
+		return form;
+	}
+
+	TangramWinform* Tangram::newWinForm(int64_t handle, TangramXobj* obj)
+	{
+		TangramWinform* form = TangramWinform::Create(DomWindow()->GetFrame(), L"");
+		form->tangram_ = this;
+		form->innerXobj_ = obj;
+		form->handle_ = handle;
+		form->innerXobj_->setStr(L"objID", L"WinForm");
+		form->m_pRenderframeImpl = m_pRenderframeImpl;
+		m_mapWinForm.insert(form->handle_, form);
 		return form;
 	}
 

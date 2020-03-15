@@ -114,7 +114,7 @@ namespace ChromePlus {
 					pSession->Insertint64(_T("nodehandle"), (__int64)pNode->m_pHostWnd->m_hWnd);
 					pSession->Insertint64(_T("compositorhandle"), (__int64)pNode->m_pTangramNodeCommonData->m_pCompositor->m_hWnd);
 					pSession->Insertint64(_T("rootnodehandle"), (__int64)pNode->m_pRootObj->m_pHostWnd->m_hWnd);
-					pSession->Insertint64(_T("ObjHandle"), (__int64)pNode->m_pTangramCloudSession);
+					pSession->Insertint64(_T("domhandle"), (__int64)pNode->m_pTangramCloudSession);
 					pSession->InsertString(_T("objID"), _T("wndnode"));
 					if (pNode->m_pParentObj)
 					{
@@ -133,6 +133,18 @@ namespace ChromePlus {
 						}
 					}
 					m_pChromeRenderFrameHost->SendTangramMessage(pSession->m_pSession);
+				}
+			}
+		}
+		break;
+		case 20200311:
+		{
+			if (m_pCompositor)
+			{
+				if (m_pCompositor->m_pWorkNode->m_pTangramCloudSession)
+				{
+					m_pCompositor->m_pWorkNode->m_pTangramCloudSession->InsertString(_T("msgID"), _T("TANGRAMAPP_READY"));
+					m_pCompositor->m_pWorkNode->m_pTangramCloudSession->SendMessage();
 				}
 			}
 		}
@@ -1224,6 +1236,7 @@ namespace ChromePlus {
 				strName = _T("__VIEWPORT_DEFAULT__");
 			}
 			LoadDocument2Viewport(strName, strHTML);
+			::PostMessage(m_hWnd, WM_TANGRAMMSG, 20200311, 0);
 		}
 	}
 
@@ -1239,14 +1252,18 @@ namespace ChromePlus {
 	{
 		if (hwnd)
 		{
-			CTangramWinFormWnd* pWnd = new CTangramWinFormWnd();
-			g_pTangram->m_hFormNodeWnd = NULL;
-			g_pTangram->m_hFormNodeWnd = (HWND)hwnd;
-			pWnd->SubclassWindow(hwnd);
-			pWnd->m_pOwnerHtmlWnd = this;
-			g_pTangram->m_mapFormWebPage[hwnd] = this;
-			m_mapWinForm[hwnd] = pWnd;
-			::PostMessage(g_pTangram->m_hFormNodeWnd, WM_WINFORMCREATED, 0, 0);
+			LRESULT l = ::SendMessage(hwnd, WM_TANGRAMDATA, 0, 20190214);
+			if (l == 0)
+			{
+				CTangramWinFormWnd* pWnd = new CTangramWinFormWnd();
+				g_pTangram->m_hFormNodeWnd = NULL;
+				g_pTangram->m_hFormNodeWnd = (HWND)hwnd;
+				pWnd->SubclassWindow(hwnd);
+				pWnd->m_pOwnerHtmlWnd = this;
+				g_pTangram->m_mapFormWebPage[hwnd] = this;
+				m_mapWinForm[hwnd] = pWnd;
+				::PostMessage(g_pTangram->m_hFormNodeWnd, WM_WINFORMCREATED, 0, 0);
+			}
 		}
 	}
 
@@ -1284,10 +1301,10 @@ namespace ChromePlus {
 					g_pTangram->LoadCLR();
 				if (g_pTangram->m_pCLRProxy)
 				{
-					CChromeRenderFrameHostProxy* pChromeRenderFrameHostProxyBase = (CChromeRenderFrameHostProxy*)this;
-					xmlParse.put_attr(_T("renderframehostproxy"), (__int64)pChromeRenderFrameHostProxyBase);
+					CChromeRenderFrameHostProxy* pProxyBase = (CChromeRenderFrameHostProxy*)this;
+					xmlParse.put_attr(_T("renderframehostproxy"), (__int64)pProxyBase);
 					xmlParse.put_attr(_T("ipcsession"), (__int64)pSession);
-					pSession->Insertint64(_T("ObjHandle"), (__int64)pSession);
+					pSession->Insertint64(_T("domhandle"), (__int64)pSession);
 					pSession->InsertLong(_T("autodelete"), 0);
 					IChromeWebPage* pChromeWebPage = (IChromeWebPage*)this;
 					xmlParse.put_attr(_T("webpage"), (__int64)pChromeWebPage);

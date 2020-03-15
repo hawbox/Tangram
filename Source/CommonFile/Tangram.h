@@ -5601,19 +5601,6 @@ EXTERN_C const IID IID_ICompositor;
             BSTR bstrRootName,
             /* [retval][out] */ BSTR *bstrRet) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE OpenFromWeb( 
-            BSTR bstrURLBase,
-            BSTR bstrKey,
-            BSTR bstrOrg,
-            BSTR bstrRepo,
-            BSTR bstrBranch,
-            BSTR bstrPath) = 0;
-        
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE SendIPCMessage( 
-            int MessageType,
-            BSTR bstrMessage,
-            BSTR bstrMessageData) = 0;
-        
     };
     
     
@@ -5768,21 +5755,6 @@ EXTERN_C const IID IID_ICompositor;
             BSTR bstrRootName,
             /* [retval][out] */ BSTR *bstrRet);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *OpenFromWeb )( 
-            ICompositor * This,
-            BSTR bstrURLBase,
-            BSTR bstrKey,
-            BSTR bstrOrg,
-            BSTR bstrRepo,
-            BSTR bstrBranch,
-            BSTR bstrPath);
-        
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *SendIPCMessage )( 
-            ICompositor * This,
-            int MessageType,
-            BSTR bstrMessage,
-            BSTR bstrMessageData);
-        
         END_INTERFACE
     } ICompositorVtbl;
 
@@ -5887,12 +5859,6 @@ EXTERN_C const IID IID_ICompositor;
 
 #define ICompositor_GetXml(This,bstrRootName,bstrRet)	\
     ( (This)->lpVtbl -> GetXml(This,bstrRootName,bstrRet) ) 
-
-#define ICompositor_OpenFromWeb(This,bstrURLBase,bstrKey,bstrOrg,bstrRepo,bstrBranch,bstrPath)	\
-    ( (This)->lpVtbl -> OpenFromWeb(This,bstrURLBase,bstrKey,bstrOrg,bstrRepo,bstrBranch,bstrPath) ) 
-
-#define ICompositor_SendIPCMessage(This,MessageType,bstrMessage,bstrMessageData)	\
-    ( (This)->lpVtbl -> SendIPCMessage(This,MessageType,bstrMessage,bstrMessageData) ) 
 
 #endif /* COBJMACROS */
 

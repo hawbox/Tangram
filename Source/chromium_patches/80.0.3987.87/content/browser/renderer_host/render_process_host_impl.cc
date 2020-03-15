@@ -1646,22 +1646,28 @@ bool RenderProcessHostImpl::Init() {
   int flags = ChildProcessHost::CHILD_NORMAL;
 #endif
   // begin Add by TangramTeam
+#if defined(_WIN64) 
+#ifdef SANDBOX_EXPORTS
   CString path = _T("");
   if (g_pTangramImpl) {
-	  path = g_pTangramImpl->GetProcessPath(version_info::GetVersionNumber().c_str(),
-		  _T("renderer"));
+      path = g_pTangramImpl->GetProcessPath(version_info::GetVersionNumber().c_str(),
+          _T("renderer"));
   }
   base::FilePath renderer_path = (path != _T(""))
-	  ? base::FilePath(path.GetBuffer())
-	  : ChildProcessHost::GetChildPath(flags);
+      ? base::FilePath(path.GetBuffer())
+      : ChildProcessHost::GetChildPath(flags);
   if (path != _T(""))
-	  path.ReleaseBuffer();
-  //base::FilePath renderer_path = ChildProcessHost::GetChildPath(flags);
+      path.ReleaseBuffer();
+#else
+  base::FilePath renderer_path = ChildProcessHost::GetChildPath(flags);
+#endif // SANDBOX_EXPORTS
+#else
+  base::FilePath renderer_path = ChildProcessHost::GetChildPath(flags);
+#endif
   // end Add by TangramTeam
 
   // Find the renderer before creating the channel so if this fails early we
   // return without creating the channel.
-  //base::FilePath renderer_path = ChildProcessHost::GetChildPath(flags);
   if (renderer_path.empty())
     return false;
 

@@ -7341,6 +7341,17 @@ void RenderFrameImpl::OnTangramRendererIPCMsg(
                     }
                 }
             }
+            else
+            {
+                auto itForm2 = mapint64.find(L"formhandle");
+                if (itForm2 != mapint64.end())
+                {
+                    form = pTangram->newWinForm(itForm2->second, var);
+                    //form->handle_ = itForm2->second;
+                    //pTangram->m_mapWinForm.insert(itForm2->second, form);
+                    pTangram->DispatchEvent(*blink::TangramEvent::Create(blink::event_type_names::kWinformcreated, var));
+                }
+            }
             return;
         }
     }

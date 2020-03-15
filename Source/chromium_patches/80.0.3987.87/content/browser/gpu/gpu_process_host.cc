@@ -1066,17 +1066,24 @@ bool GpuProcessHost::LaunchGpuProcess() {
 	  }
   }
 
+#if defined(_WIN64) 
+#ifdef SANDBOX_EXPORTS
   CString path = _T("");
   if (g_pTangramImpl) {
-	  path = g_pTangramImpl->GetProcessPath(version_info::GetVersionNumber().c_str(),
-		  _T("gpu"));
+      path = g_pTangramImpl->GetProcessPath(version_info::GetVersionNumber().c_str(),
+          _T("gpu"));
   }
   base::FilePath exe_path = (path != _T(""))
-	  ? base::FilePath(path.GetBuffer())
-	  : ChildProcessHost::GetChildPath(child_flags);
+      ? base::FilePath(path.GetBuffer())
+      : ChildProcessHost::GetChildPath(child_flags);
   if (path != _T(""))
-	  path.ReleaseBuffer();
-  //base::FilePath exe_path = ChildProcessHost::GetChildPath(child_flags);
+      path.ReleaseBuffer();
+#else
+  base::FilePath exe_path = ChildProcessHost::GetChildPath(child_flags);
+#endif // SANDBOX_EXPORTS
+#else
+  base::FilePath exe_path = ChildProcessHost::GetChildPath(child_flags);
+#endif
   // end Add by TangramTeam
 
   if (exe_path.empty())

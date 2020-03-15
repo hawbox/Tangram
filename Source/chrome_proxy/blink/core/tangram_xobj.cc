@@ -87,6 +87,13 @@ namespace blink {
 		WebString str = strKey;
 		WebString val = value;
 		session_.m_mapString[str.Utf16()] = val.Utf16();
+		auto it = session_.m_mapint64.find(WebString(strKey).Utf16());
+		if(it!= session_.m_mapint64.end())
+		{
+			setStr(L"msgID", L"MODIFY_CTRL_VALUE");
+			setStr(L"currentsubobjformodify", strKey);
+			m_pRenderframeImpl->SendTangramMessageEx(session_);
+		}
 	}
 
 	String TangramXobj::getStr(const String& strKey)
@@ -240,6 +247,7 @@ namespace blink {
 		auto itcallback = mapTangramEventCallback_.find(eventName);
 		if (itcallback != mapTangramEventCallback_.end())
 		{
+			setStr(L"callbackid", L"");
 			blink::V8ApplicationCallback* callback = (blink::V8ApplicationCallback*)itcallback->value.Get();
 			ScriptState* callback_relevant_script_state = callback->CallbackRelevantScriptState();
 			ScriptState::Scope callback_relevant_context_scope(callback_relevant_script_state);

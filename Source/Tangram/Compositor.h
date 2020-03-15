@@ -357,8 +357,6 @@ private:
 
 	STDMETHOD(Attach)(void);
 	STDMETHOD(Detach)(void);
-	STDMETHOD(OpenFromWeb)(BSTR bstrURLBase, BSTR bstrKey, BSTR bstrOrg, BSTR bstrRepo, BSTR bstrBranch, BSTR bstrPath);
-	STDMETHOD(SendIPCMessage)(int MessageType, BSTR bstrMessage, BSTR bstrMessageData);
 
 	void OnFinalMessage(HWND hWnd);
 };

@@ -2072,7 +2072,7 @@ CTangramSession* CTangram::CreateCloudSession(CChromeRenderFrameHostProxy* pOwne
 	CTangramCloudSession* pSession = new CTangramCloudSession();
 	pSession->m_pOwner = pOwner? pOwner:m_pMainChromeRenderFrameHostProxy;
 	pSession->m_pSession = pSession->m_pOwner->m_pChromeRenderFrameHost->GetIPCSession();
-	pSession->Insertint64(_T("ObjHandle"), (__int64)pSession);
+	pSession->Insertint64(_T("domhandle"), (__int64)pSession);
 	pSession->InsertString(L"sessionid", GetNewGUID());
 	return pSession;
 }

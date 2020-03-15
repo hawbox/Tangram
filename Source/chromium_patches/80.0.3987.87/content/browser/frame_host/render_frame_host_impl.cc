@@ -1177,7 +1177,7 @@ RenderFrameHostImpl::~RenderFrameHostImpl() {
   // begin Add by TangramTeam
   for (auto it : m_mapTangramSession)
   {
-      auto itX = it.second->m_mapint64.find(L"ObjHandle");
+      auto itX = it.second->m_mapint64.find(L"domhandle");
       if (itX != it.second->m_mapint64.end())
       {
           TangramCommon::CTangramSession* pSession = (TangramCommon::CTangramSession*)itX->second;
@@ -8172,7 +8172,7 @@ void RenderFrameHostImpl::OnTangramHostIPCMsg(
     FrameMsg_TANGRAM_HOST_FLOAT_Map mapFloat/* float map*/)
 {
     TangramCommon::CTangramSession* pSession = nullptr;
-    auto it = mapint64.find(L"ObjHandle");
+    auto it = mapint64.find(L"domhandle");
     if (it != mapint64.end())
     {
         pSession = (TangramCommon::CTangramSession*)it->second;

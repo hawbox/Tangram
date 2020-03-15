@@ -149,6 +149,7 @@ CTangramCLRProxy::CTangramCLRProxy() : ITangramCLRImpl()
 {
 	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);//TabPage|TabControl|
 	//_CrtSetBreakAlloc(826);
+	//m_strExtendableTypes = L"|WebBrowser|Panel|TreeView|ListView|MonthCalendar|GroupBox|FlowLayoutPanel|TableLayoutPanel|SplitContainer|";
 	m_strExtendableTypes = L"|Button|TextBox|WebBrowser|Panel|TreeView|ListView|MonthCalendar|GroupBox|FlowLayoutPanel|TableLayoutPanel|SplitContainer|";
 	m_bHostApp = false;
 	m_pCurrentPForm = nullptr;
@@ -1782,12 +1783,12 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 					{
 						CString strCaption = m_Parse.attr(_T("caption"), _T(""));
 						Form^ thisForm = (Form^)pObj;
-						CChromeRenderFrameHostProxy* pChromeRenderFrameHostProxyBase = nullptr;
+						CChromeRenderFrameHostProxy* pProxyBase = nullptr;
 						__int64 nHandle = m_Parse.attrInt64(_T("renderframehostproxy"), 0);
 						if (nHandle)
 						{
-							pChromeRenderFrameHostProxyBase = (CChromeRenderFrameHostProxy*)nHandle;
-							pChromeRenderFrameHostProxyBase->OnWinFormCreated((HWND)thisForm->Handle.ToPointer());
+							pProxyBase = (CChromeRenderFrameHostProxy*)nHandle;
+							pProxyBase->OnWinFormCreated((HWND)thisForm->Handle.ToPointer());
 						}
 
 						ChromeWebPage^ pPage = nullptr;
@@ -1820,19 +1821,47 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 
 						thisForm->Tag = BSTR2STRING(m_Parse.name());
 						__int64 nIpcSession = m_Parse.attrInt64(_T("ipcsession"), 0);
+						TangramCLR::TangramSession^ pCloudSession = nullptr;
+						CTangramSession* pTangramSession = nullptr;
 						if (nIpcSession)
 						{
-							CTangramSession* pTangramSession = (CTangramSession*)nIpcSession;
-							TangramCLR::TangramSession^ pCloudSession = nullptr;
+							pTangramSession = (CTangramSession*)nIpcSession;
 							bool bExists = TangramCLR::Tangram::WebBindEventDic->TryGetValue(pObj, pCloudSession);
 							if (bExists == false)
 							{
 								pCloudSession = gcnew TangramSession(pTangramSession);
 								TangramCLR::Tangram::WebBindEventDic[pObj] = pCloudSession;
 								pCloudSession->m_pHostObj = pObj;
-								theAppProxy.m_mapTangramSession2CloudSession[pTangramSession] = pCloudSession;
 							}
+							theAppProxy.m_mapTangramSession2CloudSession[pTangramSession] = pCloudSession;
 							pTangramSession->Insertint64(_T("formhandle"), thisForm->Handle.ToInt64());
+							pTangramSession->InsertString(_T("msgID"), _T("WINFORM_CREATED"));
+							pTangramSession->SendMessage();
+						}
+						else
+						{
+							pTangramSession = theApp.m_pTangramImpl->CreateCloudSession(pProxyBase);
+							pCloudSession = gcnew TangramSession(pTangramSession);
+							TangramCLR::Tangram::WebBindEventDic[pObj] = pCloudSession;
+							pCloudSession->m_pHostObj = pObj;
+							CString strFormName = m_Parse.attr(_T("formname"), _T(""));
+							pTangramSession->InsertLong(_T("autodelete"), 0);
+							pTangramSession->Insertint64(_T("domhandle"), (__int64)pTangramSession);
+							pTangramSession->InsertString(_T("formname"), strFormName);
+							theAppProxy.m_mapTangramSession2CloudSession[pTangramSession] = pCloudSession;
+							if(thisForm->IsMdiContainer)
+								pTangramSession->Insertint64(_T("formhandle"), thisForm->Handle.ToInt64());
+							else if (thisForm->MdiParent)
+							{
+								pTangramSession->Insertint64(_T("mdiformhandle"), thisForm->MdiParent->Handle.ToInt64());
+								thisForm->Show();
+								pTangramSession->InsertString(_T("msgID"), _T("WINFORM_CREATED"));
+								pTangramSession->Insertint64(_T("formhandle"), thisForm->Handle.ToInt64());
+								pTangramSession->SendMessage();
+								return (IDispatch*)Marshal::GetIUnknownForObject(pObj).ToPointer();
+							}
+							else
+								pTangramSession->Insertint64(_T("formhandle"), thisForm->MdiParent->Handle.ToInt64());
 							pTangramSession->InsertString(_T("msgID"), _T("WINFORM_CREATED"));
 							pTangramSession->SendMessage();
 						}
@@ -2483,6 +2512,26 @@ void CTangramCLRProxy::OnCloudMsgReceived(CTangramSession* pSession)
 	{
 		Object^ pObj = nullptr;
 		pObj = it->second->m_pHostObj;
+		CString strMsgID = pSession->GetString(L"msgID");
+		if (strMsgID == _T("MODIFY_CTRL_VALUE"))
+		{
+			CString strSubObj = pSession->GetString(L"currentsubobjformodify");
+			if (pObj->GetType()->IsSubclassOf(Control::typeid))
+			{
+				Control^ pCtrl = (Control^)pObj;
+				Control^ pSubCtrl = nullptr;
+				String^ _strSubObjName = BSTR2STRING(strSubObj);
+				if (String::IsNullOrEmpty(_strSubObjName) == false)
+				{
+					cli::array<Control^, 1>^ pArray = pCtrl->Controls->Find(_strSubObjName, true);
+					if (pArray != nullptr && pArray->Length)
+					{
+						pSubCtrl = pArray[0];
+						pSubCtrl->Text = BSTR2STRING(pSession->GetString(strSubObj));
+					}
+				}
+			}
+		}
 		CString strType = pSession->GetString(L"eventtype");
 		CString strCallback = pSession->GetString(L"callbackid");
 		if (strCallback != _T(""))
@@ -2720,6 +2769,8 @@ void CTangramCLRProxy::OnTextChanged(System::Object^ sender, System::EventArgs^ 
 		pCloudSession->InsertString("currentsubobj", pTextCtrl->Name);
 		String^ strEventtype = pCloudSession->GetString(L"eventtype");
 		pCloudSession->InsertString("currentevent", "OnTextChanged@" + strEventtype);
+		//pCloudSession->InsertString(L"callbackid", _T(""));
+		//pCloudSession->InsertString(L"eventtype", _T(""));
 
 		pCloudSession->SendMessage();
 	}
@@ -3170,7 +3221,7 @@ bool CTangramCLRApp::OnTangramPreTranslateMessage(MSG* pMsg)
 	{
 		if (::GetAsyncKeyState(VK_MENU) < 0)
 		{
-			int key = pMsg->wParam;
+			int key = (int)pMsg->wParam;
 			ToolStripMenuItem^ pSelectedItem = nullptr;
 			HWND hWnd = ::GetActiveWindow();
 			if (theAppProxy.m_pWorkingMenuHelperWnd)
@@ -3278,7 +3329,7 @@ bool CTangramCLRApp::OnTangramPreTranslateMessage(MSG* pMsg)
 	{
 		if (::GetKeyState(VK_CONTROL) < 0)
 		{
-			int key = pMsg->wParam + 64 + (int)System::Windows::Forms::Keys::Control;//VK_CONTROL;
+			int key = (int)pMsg->wParam + 64 + (int)System::Windows::Forms::Keys::Control;//VK_CONTROL;
 			Form^ m_pCurrentForm = nullptr;
 			FormInfo* pInfo = nullptr;
 			auto it = theAppProxy.m_mapFormInfo.find(::GetActiveWindow());
@@ -3330,7 +3381,7 @@ bool CTangramCLRApp::OnTangramPreTranslateMessage(MSG* pMsg)
 		}
 		if (theAppProxy.m_pWorkingMenuHelperWnd)
 		{
-			int key = pMsg->wParam;
+			int key = (int)pMsg->wParam;
 			ToolStripItem^ pSelectedItem = nullptr;
 			ToolStripDropDownMenu^ pToolStripDropDownMenu = theAppProxy.m_pWorkingMenuHelperWnd->m_pToolStripDropDownMenu;
 			for each (ToolStripItem ^ item in pToolStripDropDownMenu->Items)
@@ -3543,7 +3594,7 @@ bool CTangramCLRProxy::PreWindowPosChanging(HWND hWnd, WINDOWPOS* lpwndpos, int 
 		for (auto it = m_mapVisibleMenuHelperWnd.begin(); it != m_mapVisibleMenuHelperWnd.end(); it++)
 		{
 			CMenuHelperWnd* pWnd = it->second;
-			if (::IsChild(hWnd, pWnd->m_hOwner) == true)
+			if (::IsChild(hWnd, pWnd->m_hOwner) == TRUE)
 			{
 				bFind = true;
 				break;
