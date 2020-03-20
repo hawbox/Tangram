@@ -609,7 +609,6 @@ namespace TangramCommon {
 		virtual void OnWebPageCreated(HWND, CChromeRenderFrameHostProxy*, IChromeWebPage* pChromeWebContent, int nState) = 0;
 		virtual void HideMenuStripPopup() = 0;
 		virtual bool PreWindowPosChanging(HWND hWnd, WINDOWPOS* lpwndpos, int nType) = 0;
-		virtual bool BindCtrlEventForBrowser(HWND hWebPage, HWND hWnd, int nEventType, CString strBindID) = 0;
 		virtual bool BindCtrlEventsForBrowser(HWND hWebPage, HWND hWnd, CString strObjType, CString strBindEvents) = 0;
 		virtual void OnCloudMsgReceived(CTangramSession*) = 0;
 		virtual void ConnectNodeToWebPage(IWndNode*, bool) = 0;

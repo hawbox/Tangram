@@ -163,7 +163,6 @@ private:
 	void OnWebPageCreated(HWND, CChromeRenderFrameHostProxy*, IChromeWebPage*, int nState);
 	void HideMenuStripPopup();
 	bool PreWindowPosChanging(HWND hWnd, WINDOWPOS* lpwndpos, int nType);
-	bool BindCtrlEventForBrowser(HWND hWebPage, HWND hWnd, int nEventType, CString strBindID);
 	bool BindCtrlEventsForBrowser(HWND hWebPage, HWND hWnd, CString strObjType, CString strBindEvents);
 	void ConnectNodeToWebPage(IWndNode*, bool);
 	void OnCloudMsgReceived(CTangramSession*);

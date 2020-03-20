@@ -2437,39 +2437,6 @@ void CTangramCLRProxy::SetCtrlValueByName(IDispatch* CtrlDisp, BSTR bstrName, bo
 	}
 }
 
-bool CTangramCLRProxy::BindCtrlEventForBrowser(HWND hWebPage, HWND hWnd, int nType, CString strBindID)
-{
-	//Control^ pCtrl = (Control^)Control::FromHandle((IntPtr)hWnd);
-	//String^ strID = BSTR2STRING(strBindID);
-	//strID += L"|" + ((IntPtr)hWebPage).ToString("d");
-	//if (pCtrl)
-	//{
-	//	theAppProxy.m_mapEventBindInfo[hWnd] = strID;
-	//	Type^ type = pCtrl->GetType();
-	//	if (type == System::Windows::Forms::TextBox::typeid || type->IsSubclassOf(System::Windows::Forms::TextBox::typeid))
-	//	{
-	//		TextBox^ pTextCtrl = (TextBox^)pCtrl;
-	//		switch (nType)
-	//		{
-	//		case 1:
-	//		{
-	//			System::EventHandler^ pHandler = gcnew System::EventHandler(&OnTextChanged);
-	//			pTextCtrl->TextChanged += pHandler;
-	//		}
-	//		break;
-	//		case 2:
-	//		{
-	//			pTextCtrl->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(&OnKeyDown);
-	//		}
-	//		break;
-	//		case 3:
-	//			break;
-	//		}
-	//	}
-	//}
-	return false;
-}
-
 void CTangramCLRProxy::ConnectNodeToWebPage(IWndNode* pNode, bool bAdd)
 {
 	CTangramSession* pSession = theApp.m_pTangramImpl->GetCloudSession(pNode);

@@ -1353,47 +1353,6 @@ LRESULT CTangramWinFormWnd::OnGetMe(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 
 				if (g_pTangram->m_pCLRProxy)
 				{
-					//if (pObj->m_strBindData != _T(""))
-					//{
-					//	IDispatch* pCtrl = g_pTangram->m_pCLRProxy->GetCtrlFromHandle(pObj->m_hWnd);
-					//	if (pCtrl)
-					//	{
-					//		CString strEvents = pObj->m_strBindData;
-					//		strEvents.MakeLower();
-					//		strEvents.Trim();
-					//		int nPos = strEvents.Find(_T("|"));
-					//		if (nPos == -1)
-					//		{
-					//			auto it = g_pTangram->m_mapEventDic.find(strEvents);
-					//			if (it != g_pTangram->m_mapEventDic.end())
-					//			{
-					//				g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
-					//			}
-					//		}
-					//		else
-					//		{
-					//			while (nPos != -1)
-					//			{
-					//				CString strEvent = strEvents.Left(nPos);
-					//				strEvents = strEvents.Mid(nPos + 1);
-					//				nPos = strEvents.Find(_T("|"));
-					//				auto it = g_pTangram->m_mapEventDic.find(strEvent);
-					//				if (it != g_pTangram->m_mapEventDic.end())
-					//				{
-					//					g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
-					//				}
-					//				if (nPos == -1)
-					//				{
-					//					auto it = g_pTangram->m_mapEventDic.find(strEvents);
-					//					if (it != g_pTangram->m_mapEventDic.end())
-					//					{
-					//						g_pTangram->m_pCLRProxy->BindCtrlEventForBrowser(m_pHtmlWnd->m_hWnd, pObj->m_hWnd, it->second, pObj->m_strBindObjName);
-					//					}
-					//				}
-					//			}
-					//		}
-					//	}
-					//}
 				}
 			}
 		}
