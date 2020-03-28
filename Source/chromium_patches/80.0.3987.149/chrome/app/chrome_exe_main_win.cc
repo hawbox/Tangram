@@ -247,5 +247,6 @@ int main() {
   int rc = loader->Launch(instance, exe_entry_point_ticks);
   loader->RelaunchChromeBrowserWithNewCommandLineIfNeeded();
   delete loader;
+  
   return rc;
 }

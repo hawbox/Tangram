@@ -58,8 +58,8 @@ namespace ChromePlus {
 		{
 			delete it.second;
 		}
-		::RefObject::IObjectFactory* pObjectFactory = g_pTangram->m_pObjectFactory;
-		pObjectFactory->Delete(_T("Cpp"), (uint64_t)this);
+		//::RefObject::IObjectFactory* pObjectFactory = g_pTangram->m_pObjectFactory;
+		//pObjectFactory->Delete(_T("Cpp"), (uint64_t)this);
 	}
 
 	LRESULT CHtmlWnd::OnMouseActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
@@ -955,7 +955,8 @@ namespace ChromePlus {
 		}
 		else
 		{
-			g_pTangram->m_pTangramDelegate->TangramIPCMsg(m_hWnd, strId, strParam1, strParam2); // TODO: Missing parameters
+			if(g_pTangram->m_pTangramDelegate)
+				g_pTangram->m_pTangramDelegate->TangramIPCMsg(m_hWnd, strId, strParam1, strParam2); // TODO: Missing parameters
 		}
 	}
 

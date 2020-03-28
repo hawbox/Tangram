@@ -34,6 +34,7 @@ public:
 	CTangramCLRApp();
 	virtual ~CTangramCLRApp();
 
+	bool									m_bHostApp;
 	bool									m_bBrowserModeInit = false;
 	DWORD									m_dwThreadID;
 	HWND									m_hHostWnd;

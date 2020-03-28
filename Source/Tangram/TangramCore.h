@@ -492,4 +492,5 @@ private:
 	long GetIPCMsgIndex(CString strMsgID);
 	CTangramSession* CreateCloudSession(CChromeRenderFrameHostProxy*);
 	CTangramSession* GetCloudSession(IWndNode*);
+	void ReleaseCLR();
 };

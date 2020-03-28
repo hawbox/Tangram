@@ -231,7 +231,7 @@ CTangram::CTangram()
 #endif
 	//g_pTangram = m_pTangramImplData;
 	m_mapValInfo[_T("currenteclipeworkBenchid")] = CComVariant(_T(""));
-	m_pObjectFactory = new ::RefObject::ObjectFactory();
+	//m_pObjectFactory = new ::RefObject::ObjectFactory();
 	//m_pXWindows = new ::Gui::XWindows();
 	m_pXWindows = nullptr;
 	m_TabWndClassInfoDictionary[_T("hostview")] = RUNTIME_CLASS(CNodeWnd);
@@ -468,7 +468,11 @@ void CTangram::Init()
 					m_strDesignerXml = pXmlParse->xml();
 				}
 			}
-
+			_pXmlParse = m_Parse.GetChild(_T("ntp"));
+			if (_pXmlParse)
+			{
+				g_pTangram->m_strNtpXml = _pXmlParse->xml();
+			}
 			if (::PathFileExists(m_strConfigDataFile) == FALSE)
 			{
 				_pXmlParse = m_Parse.GetChild(_T("tangrampage"));
@@ -557,8 +561,8 @@ CTangram::~CTangram()
 
 	if(m_pXWindows)
 		delete m_pXWindows;
-	if(m_pObjectFactory)
-		delete m_pObjectFactory;
+	//if(m_pObjectFactory)
+	//	delete m_pObjectFactory;
 	if(m_pHtmlWndDelegate)
 		delete m_pHtmlWndDelegate;
 
@@ -2085,6 +2089,28 @@ CTangramSession* CTangram::GetCloudSession(IWndNode* _pNode)
 		return pNode->m_pTangramCloudSession;
 	}
 	return nullptr; 
+}
+
+void CTangram::ReleaseCLR() 
+{
+	if (m_pClrHost && m_nAppID == -1 && theApp.m_bHostCLR == false)
+	{
+		OutputDebugString(_T("------------------Begin Stop CLR------------------------\n"));
+		HRESULT hr = m_pClrHost->Stop();
+		ASSERT(hr == S_OK);
+		if (hr == S_OK)
+		{
+			OutputDebugString(_T("------------------Stop CLR Successed!------------------------\n"));
+		}
+		DWORD dw = m_pClrHost->Release();
+		ASSERT(dw == 0);
+		if (dw == 0)
+		{
+			m_pClrHost = nullptr;
+			OutputDebugString(_T("------------------ClrHost Release Successed!------------------------\n"));
+		}
+		OutputDebugString(_T("------------------End Stop CLR------------------------\n"));
+	}
 }
 
 IChromeWebPage* CTangram::GetWebPageFromForm(HWND hForm)

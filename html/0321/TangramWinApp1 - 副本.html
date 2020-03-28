@@ -1,0 +1,281 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Your First Cloud Form Application</title>
+    <script type="text/javascript">
+        window.onload = function () {
+            if (tangram != null) {
+                tangram.addChannel('web');
+                tangram.onMessageReceived = function (e) {
+                    switch (e.msgId) {
+                        case "ControlBindMessage:OnAfterSelect":
+                            {
+                                var x = document.getElementById(e.extra);
+                                if (x != null) {
+                                    tangram.sendMessage(e.from, e.to, x.outerHTML, e.extra);
+                                }
+                            }
+                            break;
+                        case "ControlBindMessage:MouseDoubleClick":
+                            {
+                                var x = document.getElementById(e.extra);
+                                if (x != null) {
+                                    tangram.sendMessage(e.from, e.to, x.outerHTML, e.extra);
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <define tagName="mainWindow"></define>
+    <define tagName="application"></define>
+    <define tagName="object"></define>
+    <define tagName="doc"></define>
+    <bindobj id="test1">
+        <window>
+            <node id='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                <node name='test1'></node>
+            </node>
+        </window>
+    </bindobj>
+    <bindobj id="hostclient">
+        <window>
+            <node name="Start_S0001" id="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="18">
+                <node name="Page1" caption="About Chrome App" id="hostview"></node>
+                <node name="Page2" caption="About NTP Page" id="" cnnid=""></node>
+                <node name="Page3" caption="Create your own NTP Page"></node>
+                <node name="Page4" caption="Customize your own WebBrowser"></node>
+            </node>
+        </window>
+    </bindobj>
+    <mainWindow type="winform" objid="TangramWinApp1.TangramWinApp1MDIForm,host" formkey="test" mdibkpageid="TangramWinApp1.bk,host" showstartup="true" caption="Your First WinForm MDI Application Using Chromium Anywhere">
+        <mdiclient>
+            <default>
+                <window>
+                    <node url="host" name="htest">
+                    </node>
+                </window>
+            </default>
+            <xxx>
+                <window>
+                    <node id='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </xxx>
+            <aaa>
+                <window>
+                    <node id='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </aaa>
+            <abc1>
+                <window>
+                    <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="18">
+                        <node name="winform" caption="Tangram for WinForm Developer" id="hostview" cnnid=""></node>
+                        <node name="mfc" caption="Tangram for MFC/C++ Developer" id="" cnnid=""></node>
+                        <node name="eclipse" caption="Tangram for Eclipse" id="" cnnid=""></node>
+                    </node>
+                </window>
+            </abc1>
+        </mdiclient>
+        <mdichild>
+            <xxx objid="TangramWinApp1.Form1,host" caption="test child form1">
+                <mainpanel>
+                    <default>
+                        <window>
+                            <node id='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                                <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                                <node name='test1'></node>
+                            </node>
+                        </window>
+                    </default>
+                </mainpanel>
+            </xxx>
+            <abc1 objid="TangramWinApp1.Form1,host" caption="test child mdi form 2">
+                <mainpanel>
+                    <default>
+                        <window>
+                            <node id='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                                <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                                <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="19">
+                                    <node name="winform" caption="Tangram for WinForm Developer" id="" cnnid=""></node>
+                                    <node name="mfc" caption="Tangram for MFC/C++ Developer" id="" cnnid=""></node>
+                                    <node name="eclipse" caption="Tangram for Eclipse" id="" cnnid=""></node>
+                                </node>
+                            </node>
+                        </window>
+                    </default>
+                </mainpanel>
+            </abc1>
+            <aaa objid="TangramWinApp1.Form1,host" tooltips="test aaa" caption="test child form2">
+                <mainpanel>
+                    <default>
+                        <window>
+                            <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="19">
+                                <node id='splitter' name='splitter' rows='1' cols='2' height='250,' width='400,100,' caption="Tangram Solution for TangramWinApp1">
+                                    <node name="mfc" caption="Tangram for MFC/C++ Developer" id="" cnnid=""></node>
+                                    <node name="eclipse" caption="Tangram for Eclipse" id="" cnnid=""></node>
+                                </node>
+                            </node>
+                        </window>
+                    </default>
+                </mainpanel>
+            </aaa>
+        </mdichild>
+    </mainWindow>
+    <object type="winform" objid="TangramWinApp1.Form1,host" uikey="form1" caption="test child form1">
+        <mainpanel>
+            <default>
+                <window>
+                    <node id='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </default>
+        </mainpanel>
+        <panel1 webobjname="test1">
+        </panel1>
+        <treeView1>
+            <uidata key="ntpdata" treenode="true" width="0" height="0" text="Welcome to the World of Tangram!">
+                <tangramxml>
+                    <window>
+                        <node name="Start_S0001" id="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="18">
+                            <node name="Page1" caption="About Chrome App" id="hostview"></node>
+                            <node name="Page2" caption="About NTP Page" id="" cnnid=""></node>
+                            <node name="Page3" caption="Create your own NTP Page"></node>
+                            <node name="Page4" caption="Customize your own WebBrowser"></node>
+                        </node>
+                    </window>
+                </tangramxml>
+                <featurelist treenode="true" text="Feature Lists">
+                    <node1 treenode="true" text="Welcome to the New Cloud-Desktop Mixed World"></node1>
+                    <node1_tag action="openurl" bindwebobj="test1">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node1_tag>
+                    <node2 treenode="true" text="ChromeRuntime Support"></node2>
+                    <node2_tag bindwebobj="hostclient">
+                        <afterselected>
+                            <window>
+                                "<node id='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                                    <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                                    <node name='test1'></node>
+                                </node>
+                            </window>
+                        </afterselected>
+                    </node2_tag>
+                    <node3 treenode="true" text="JavaRuntime Support"></node3>
+                    <node3_tag action="doubleclick" bindwebobj="test3">
+                        <doubleclick>
+                            <window>
+                                <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="18">
+                                    <node name="mfc" caption="Tangram for MFC/C++ Developer" id="hostview" cnnid=""></node>
+                                    <node name="winform" caption="Tangram for WinForm Developer" id="" cnnid=""></node>
+                                    <node name="eclipse" caption="Tangram for Eclipse" id="" cnnid=""></node>
+                                </node>
+                            </window>
+                        </doubleclick>
+                    </node3_tag>
+                    <node4 treenode="true" text="CLR Support"></node4>
+                    <node4_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node4_tag>
+                    <node5 treenode="true" text="COM Support"></node5>
+                    <node5_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node5_tag>
+                    <node6 treenode="true" text="C++ Support"></node6>
+                    <node6_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node6_tag>
+                    <node7 treenode="true" text="Office Support"></node7>
+                    <node7_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node7_tag>
+                </featurelist>
+                <Samples treenode="true" text="Samples for Tangram">
+                    <sample1 treenode="true" text="Tangram Sample1(doubleclick me)"></sample1>
+                    <sample1_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample1.html"></openurl>
+                    </sample1_tag>
+                    <sample2 treenode="true" text="Tangram Sample2(doubleclick me)"></sample2>
+                    <sample2_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample2.html"></openurl>
+                    </sample2_tag>
+                    <sample3 treenode="true" text="Tangram Sample3(doubleclick me)"></sample3>
+                    <sample3_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample3.html"></openurl>
+                    </sample3_tag>
+                    <sample4 treenode="true" text="Tangram Sample4(doubleclick me)"></sample4>
+                    <sample4_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample4.html"></openurl>
+                    </sample4_tag>
+                </Samples>
+            </uidata>
+            <default>
+                <window>
+                    <node id='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </default>
+        </treeView1>
+    </object>
+    <div>
+        <p align=center style='text-align:center'>
+            <b>
+                <i>
+                    <span lang=EN-US style='font-size:14.0pt'>
+                        <a href="startpage.html" target="view_window">Dynamic UI Style 1</a>
+                    </span>
+                </i>
+            </b>
+        </p>
+        <p><b><span lang=EN-US style='font-size:20.0pt;font-family: "Times New Roman",serif'>Welcome to a Wonderful Web-Desktop Hybrid Programming World, where you will experience an Extended DOM Environment for developing desktop software using web-desktop mixed technology.</span></b></p>
+        <p><b><span lang=EN-US style='font-size:20.0pt;font-family: "Times New Roman",serif'>This is a New and Dynamic Desktop Software World where you can combine most of the existing component frameworks, such as .NET, Java, COM, C++, Web and Office etc. ...</span></b></p>
+        <p>
+            <b>
+                <span lang=EN-US style='font-size:14.0pt'>
+                    <a href="test.html">Click me to see what will happen ...</a>
+                </span>
+            </b>
+        <p />
+    </div>
+    <doc>
+        <window>
+            <node id="splitter" rows="1" cols="2" width="350,100,">
+                <node id="clrctrl" cnnid="TangramWinApp1.Form1,host" uikey="form1"></node>
+                <node id="hostview"  webobjname="hostclient" name="xx"></node>
+            </node>
+        </window>
+    </doc>
+    <application>
+        <ntp>
+            <window>
+                <node id='splitter' name='splitter' rows='1' cols='2' height='250,' width='350,250,' borderwidth='0' splitterwidth='2' middlecolor='RGB(180,180,180)'>
+                    <node id="hostview"></node>
+                    <node id="clrctrl" cnnid="TangramWinApp1.UserControl1,host"></node>
+                </node>
+            </window>
+        </ntp>
+        <urls>
+            <test url="http://www.baidu.com"></test>
+            <test url="http://www.tangram.dev"></test>
+        </urls>
+    </application>
+</body>
+</html>

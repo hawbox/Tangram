@@ -1,0 +1,589 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Your First Cloud Form Application</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <style type="text/css">
+        .hidden {
+            display: none;
+        }
+
+        ;
+        .show {
+            display: block;
+        }
+
+        ;
+    </style>
+    <script type="text/javascript">
+        window.onload = function () {
+            var testNode = null;
+            if (tangram != null) {
+                tangram.addChannel('web');
+                var mainform = null;
+
+
+                tangram.onWinFormCreated = function (e) {
+                    alert("form created:" + e.xobj.getStr("formname"));
+                };
+                tangram.onTangramNodeCreated = function (e) {
+                    //alert("node created:" + e.node.handle);
+                };
+
+                tangram.onTangramWindowCreated = function (e) {
+                    var wnd = e.window;
+                    wnd.onTangramNodeCreated = function (x) {
+                        var Node = x.node;
+                        if (x.name == "test1235") {
+                            Node.addEventListener("button1", "OnClick", function (e) {
+                                var xform = tangram.createWinForm(document.getElementById("testform").outerHTML,
+                                    0,
+                                    function (x) {
+                                        x.form.addEventListener("button1", "OnClick", function (e) {
+                                            alert("hi" + "  --  " + x.form.handle);
+                                            x.form.xobj.setStr("textBox1", "test modify textbox");
+                                        });
+                                        x.form.SyncCtrlTextChange("textBox1;button1", function (e) {
+                                            alert("hi" + "  --  " + e.getStr("textBox1"));
+                                        });
+
+                                        xform.onTangramNodeCreated = function (e) {
+                                        };
+                                    });
+                            })
+                            Node.addEventListener("treeView1", "OnAfterSelect", function (e) {
+                                var eventtarget = e.getStr("onafterselect");
+                                var list = document.getElementsByTagName(eventtarget);
+                                for (var i = 0; i < list.length; i++) {
+                                    var target = list[i].getAttribute("target");
+                                    if (target != null) {
+                                        tangram.sendMessage("TANGRAM_UI_MESSAGE", eventtarget, e.getInt64("subobjhandle"), list[i].outerHTML, target);
+                                    }
+                                }
+
+                                var contentElements = document.getElementsByClassName("tangramcontents")[0].children;
+                                for (var i = 0; i < contentElements.length; i++) {
+                                    var contentElement = contentElements[i];
+                                    if (contentElement.classList.contains(eventtarget)) {
+                                        contentElement.classList.remove("hidden");
+                                        contentElement.classList.add("show");
+                                    } else {
+                                        contentElement.classList.remove("show");
+                                        contentElement.classList.add("hidden");
+                                    }
+                                }
+                            })
+                        }
+                    };
+                };
+
+                tangram.onMdiChildActivate = function (e) {
+                    var contentElements = document.getElementsByClassName("tangramcontents")[0].children;
+                    if (e.param4 != "") {
+                        for (var i = 0; i < contentElements.length; i++) {
+                            var contentElement = contentElements[i];
+                            if (contentElement.classList.contains(e.param4)) {
+                                contentElement.classList.remove("hidden");
+                                contentElement.classList.add("show");
+                                for (var j = 0; j < contentElement.children.length; j++) {
+                                    var x = contentElement.children[j];
+
+                                    if (x.tagName.toLowerCase() == "formui") {
+                                        tangram.sendMessage("TANGRAM_UI_MESSAGE", e.param1, e.param2, x.outerHTML);
+                                        break;
+                                    }
+                                }
+                            } else {
+                                contentElement.classList.remove("show");
+                                contentElement.classList.add("hidden");
+                            }
+                        }
+                    }
+                    else {
+                        for (var i = 0; i < contentElements.length; i++) {
+                            var contentElement = contentElements[i];
+                            if (contentElement.classList.contains("mainWindow")) {
+                                contentElement.classList.remove("hidden");
+                                contentElement.classList.add("show");
+                            } else {
+                                contentElement.classList.remove("show");
+                                contentElement.classList.add("hidden");
+                            }
+                        }
+                    }
+                };
+
+                tangram.onMessageReceived = function (e) {
+                    switch (e.param3) {
+                        case "MainMdiForm:ActiveClient":
+                            {
+                                var contentElements = document.getElementsByClassName("tangramcontents")[0].children;
+                                if (e.param4 != "") {
+                                    for (var i = 0; i < contentElements.length; i++) {
+                                        var contentElement = contentElements[i];
+                                        if (contentElement.classList.contains("mainWindow")) {
+                                            contentElement.classList.remove("hidden");
+                                            contentElement.classList.add("show");
+                                            tangram.sendMessage("TANGRAM_UI_MESSAGE", "__VIEWPORT_DEFAULT__", e.param2);
+                                        } else {
+                                            contentElement.classList.remove("show");
+                                            contentElement.classList.add("hidden");
+                                        }
+                                    }
+                                }
+                                else {
+                                    for (var i = 0; i < contentElements.length; i++) {
+                                        var contentElement = contentElements[i];
+                                        if (contentElement.classList.toLowerCase().contains("mainWindow")) {
+                                            contentElement.classList.remove("hidden");
+                                            contentElement.classList.add("show");
+                                        } else {
+                                            contentElement.classList.remove("show");
+                                            contentElement.classList.add("hidden");
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                tangram.onTangramMessageReceived = function (e) {
+                    switch (e.xobj.getStr("msgID")) {
+                        case "TANGRAMAPP_READY":
+                            {
+                                //if (mainform == null) {
+                                //    mainform = tangram.createWinForm(document.getElementById("Mainform").outerHTML,
+                                //        0,
+                                //        function (x) {
+                                //        });
+                                //}
+                            }
+                            break;
+                    }
+                }
+
+                tangram.onBindCLRObject = function (e) {
+                    alert(e.name);
+                    alert(e.objtype);
+                    alert(e.hwnd);
+                    e.xobj.addEventListener("SizeChanged", function (x) {
+                        alert(x.getStr("currentevent") + " " +
+                            "当前Form宽度：" + x.getLong("width") +
+                            " 高度：" + x.getLong("height"));
+                    });
+                }
+            }
+        }
+
+        function open_win3() {
+            //tangram["test"] = tangram.newVar("1");
+            //tangram["test1"] = tangram.newVar("testwwwwwwwwwwwwww");
+            //tangram["test1"].setStr("22", "444");
+            //alert(tangram["test"].name);
+            //alert(tangram["test1"].getStr("22"));
+
+            tangram.setControlVal("testBindtext", 0, document.getElementById("textName").value);
+            tangramnode1.sendMessage("1", "2", "3", "4", "5", "6");
+            var node = document.getElementById("hostclient");
+            alert(node.outerHTML);
+            alert(node.getAttribute("hwnd"));
+            tangram.BindControlEvent("testBindtext", "0", "1", "testBindtext");
+            tangram.sendNodeMessage("hostclient", "3", "<tangramproperties><window><node nodetype='splitter' name='properties' rows='2' cols='2' height ='350,250,' width='500,200,' middlecolor='RGB(255,224,192)'><node name='tangramtabctrl_Page2' nodetype='' cnnid='TangramDesigner.SplitterDesigner,TangramCLR' caption='tangramtabctrl_Page1'/><node nodetype='tab' name='tangramtabctrl' cnnid='TangramTabbedWnd.TabbedComponent.1' tabstyle='18' activepage='1'><node name='tangramtabctrl_Page2' caption='tangramtabctrl_Page1'/><node name='propertiesView' caption='host' nodetype='hostview'/><node name='tangramtabctrl_Page2' caption='tangramtabctrl_Page2'/></node><node name='test'/><node name='tangramtabctrl_Page1' nodetype='ClrCtrl' cnnid='TangramDesigner.HostViewDesigner,TangramCLR' caption='tangramtabctrl_Page1'/></node></window></tangramproperties>", "chrome_proxy:tangram", "3", "");
+            tangram.sendMessage("TO_TOPFRAME","3", "<tangramproperties><window><node nodetype='splitter' name='properties' rows='2' cols='2' height ='350,250,' width='500,200,' middlecolor='RGB(255,224,192)'><node name='tangramtabctrl_Page2' nodetype='' cnnid='TangramDesigner.SplitterDesigner,TangramCLR' caption='tangramtabctrl_Page1'/><node nodetype='tab' name='tangramtabctrl' cnnid='TangramTabbedWnd.TabbedComponent.1' tabstyle='18' activepage='1'><node name='tangramtabctrl_Page2' caption='tangramtabctrl_Page1'/><node name='propertiesView' caption='host' nodetype='hostview'/><node name='tangramtabctrl_Page2' caption='tangramtabctrl_Page2'/></node><node name='test'/><node name='tangramtabctrl_Page1' nodetype='ClrCtrl' cnnid='TangramDesigner.HostViewDesigner,TangramCLR' caption='tangramtabctrl_Page1'/></node></window></tangramproperties>", "chrome_proxy:tangram", "3","");
+        }
+
+        function open_win4() {
+            tangram.sendMessage("TO_TOPFRAME", "4", "<tangramproperties>" +
+                "<window>" +
+                "<node nodetype='splitter' name='properties' rows='3' cols='3' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>" +
+                "<node name='tangramtabctrl_Page2' caption='tangramtabctrl_Page1' />" +
+                "<node name='test1' />" +
+                "<node name='test2' />" +
+                "<node name='test3' />" +
+                "<node name='propertiesView' nodetype='hostview' />" +
+                "<node name='test11' />" +
+                "<node name='test21' />" +
+                "<node name='test31' />" +
+                "<node name='tangramtabctrl_Page1' caption='tangramtabctrl_Page1' />" +
+                "</node>" +
+                "</window>" +
+                "</tangramproperties>", "chrome_proxy:tangram", "4", "");
+        }
+
+        function open_win1() {
+            tangram.sendMessage("TO_TOPFRAME", "__VIEWPORT_DEFAULT__", "<default><window><node name='tangram' nodetype='HostView'/></window></default>", "chrome_proxy:tangram", "__VIEWPORT_DEFAULT__", "");
+        }
+
+        function open_win2() {
+            tangram.sendMessage("TO_TOPFRAME", "2", "<tangramproperties><window><node nodetype='splitter' name='properties' rows='3' cols='1' height ='350,250,200' width='500,' middlecolor='RGB(255,224,192)'><node name='tangramtabctrl_Page2' caption='tangramtabctrl_Page1'/><node name='propertiesView' nodetype='hostview'/><node name='tangramtabctrl_Page1' caption='tangramtabctrl_Page1'/></node></window></tangramproperties>", "chrome_proxy:tangram", "2", "");
+        }
+
+    </script>
+</head>
+<body>
+    <define tagName="mainWindow"></define>
+    <define tagName="application"></define>
+    <define tagName="doc"></define>
+    <define tagName="object"></define>
+
+    <object type="winform" objid="TangramWinApp1.Form1,host" uikey="form1" caption="test child form1" id="testform">
+        <mainpanel>
+            <default>
+                <window>
+                    <node nodetype='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </default>
+        </mainpanel>
+        <panel1 id="test3">
+        </panel1>
+        <textBox1 id="testBindtext" bindevent="TextChanged|KeyDown|KeyUp">
+        </textBox1>
+        <button1 id="testButton" bindevent="OnClick">
+        </button1>
+        <treeView1>
+            <treeview1_onafterselect>
+                <maincontent target="test1">
+                    <window>
+                        <node nodetype='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                            <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                            <node name='test1'></node>
+                        </node>
+                    </window>
+                </maincontent>
+                <maincontent target="test3">
+                    <window>
+                        <node name="Start_S0001" nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="19">
+                            <node name="Page3" caption="Create your own NTP Page" nodetype="clrctrl" cnnid="TangramWinApp1.UserControl1,host"></node>
+                            <node name="Page4" caption="Customize your own WebBrowser"></node>
+                        </node>
+                    </window>
+                </maincontent>
+                <maincontent target="hostclient">
+                    <window>
+                        <node name="Start_S0001" nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="39">
+                            <node name="Page1" caption="xxxxxxx" nodetype="hostview"></node>
+                            <node name="Page2" caption="yyy" nodetype="" cnnid=""></node>
+                            <node name="Page3" caption="Create your own NTP Page"></node>
+                            <node name="Page4" caption="Customize your own WebBrowser"></node>
+                        </node>
+                    </window>
+                </maincontent>
+                <yyy target="test1">
+                    <window>
+                        <node nodetype='splitter' name='properties' rows='2' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                            <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                            <node name='test1'></node>
+                            <node name='test2'></node>
+                            <node name='test3'></node>
+                        </node>
+                    </window>
+                </yyy>
+                <yyy target="test3">
+                    <window>
+                        <node name="Start_S0001" nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="17">
+                            <node name="Page3" caption="xxxxxxxxxxxxxx"></node>
+                            <node name="Page4" caption="tttttttttttt"></node>
+                        </node>
+                    </window>
+                </yyy>
+                <yyy target="hostclient">
+                    <window>
+                        <node name="Start_S0001" nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="18">
+                            <node name="Page1" caption="111111" nodetype="hostview"></node>
+                            <node name="Page2" caption="222222" nodetype="" cnnid=""></node>
+                            <node name="Page3" caption="33333 your own NTP Page"></node>
+                        </node>
+                    </window>
+                </yyy>
+            </treeview1_onafterselect>
+            <treeview1_onnodemousedoubleclick></treeview1_onnodemousedoubleclick>
+            <uidata key="ntpdata" treenode="true" width="0" height="0" text="Welcome to the World of Tangram!">
+                <featurelist treenode="true" text="Feature Lists">
+                    <node1 treenode="true" text="Welcome to the New Cloud-Desktop Mixed World"></node1>
+                    <node1_tag action="openurl" onafterselect="maincontent">
+                    </node1_tag>
+                    <node2 treenode="true" text="ChromeRuntime Support"></node2>
+                    <node2_tag target="test1" onafterselect="yyy">
+                    </node2_tag>
+                    <node3 treenode="true" text="JavaRuntime Support"></node3>
+                    <node3_tag action="doubleclick" target="test3">
+                    </node3_tag>
+                    <node4 treenode="true" text="CLR Support"></node4>
+                    <node4_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node4_tag>
+                    <node5 treenode="true" text="COM Support"></node5>
+                    <node5_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node5_tag>
+                    <node6 treenode="true" text="C++ Support"></node6>
+                    <node6_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node6_tag>
+                    <node7 treenode="true" text="Office Support"></node7>
+                    <node7_tag action="openurl">
+                        <openurl url="http://www.tangram.dev"></openurl>
+                    </node7_tag>
+                </featurelist>
+                <Samples treenode="true" text="Samples for Tangram">
+                    <sample1 treenode="true" text="Tangram Sample1(doubleclick me)"></sample1>
+                    <sample1_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample1.html"></openurl>
+                    </sample1_tag>
+                    <sample2 treenode="true" text="Tangram Sample2(doubleclick me)"></sample2>
+                    <sample2_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample2.html"></openurl>
+                    </sample2_tag>
+                    <sample3 treenode="true" text="Tangram Sample3(doubleclick me)"></sample3>
+                    <sample3_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample3.html"></openurl>
+                    </sample3_tag>
+                    <sample4 treenode="true" text="Tangram Sample4(doubleclick me)"></sample4>
+                    <sample4_tag action="openurl">
+                        <openurl url="http://www.tangram.dev/sample/sample4.html"></openurl>
+                    </sample4_tag>
+                </Samples>
+            </uidata>
+            <default>
+                <window>
+                    <node nodetype='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </default>
+        </treeView1>
+    </object>
+    <object type="usercontrol" objid="tangramwinapp1.usercontrol,host" uikey="control1">
+        <button1 id="testButtonatctrl" bindevent="OnClick">
+        </button1>
+        <listview1 id="test1">
+            <default>
+                <window>
+                    <node nodetype='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </default>
+        </listview1>
+    </object>
+    <doc>
+        <window>
+            <node nodetype="splitter" rows="1" cols="2" width="350,100,">
+                <node nodetype="clrctrl" cnnid="TangramWinApp1.Form1,host" uikey="form1" id="test1235"></node>
+                <node nodetype="splitter" rows="2" cols="1" height="350,100," id="asasdasd">
+                    <node nodetype="hostview" id="hostclient" name="xx" id="sfsdfsdfsfsd"></node>
+                    <node nodetype="clrctrl" cnnid="TangramWinApp1.usercontrol1,host" uikey="control1"></node>
+                </node>
+            </node>
+        </window>
+    </doc>
+    <application>
+        <ntp>
+            <window>
+                <node nodetype='splitter' name='splitter' rows='1' cols='2' height='250,' width='350,350,' borderwidth='0' splitterwidth='10' middlecolor='RGB(180,180,180)'>
+                    <node nodetype="hostview"></node>
+                    <node nodetype="clrctrl" cnnid="TangramWinApp1.UserControl1,host"></node>
+                </node>
+            </window>
+        </ntp>
+        <urls>
+            <test url="host:startpage.html"></test>
+            <test url="host:winapp3.html"></test>
+            <test url="http://www.baidu.com"></test>
+            <test url="http://www.csdn.net"></test>
+        </urls>
+    </application>
+    <div class="tangramcontents">
+        <div class="show mainWindow maincontent">
+            <mainWindow type="winform"
+                        formname="test"
+                        mainwindow="true"
+                        objid="TangramWinApp1.TangramWinApp1MDIForm,host" 
+                        formkey="test"
+                        mdibkpageid="TangramWinApp1.bk,host"
+                        showstartup="true"
+                        caption="Your First WinForm MDI Application Using Chromium Anywhere"
+                        id="Mainform">
+                <mdiclient>
+                    <default>
+                        <window>
+                            <node url="host" name="mainworkclient">
+                            </node>
+                        </window>
+                    </default>
+                    <childform_1>
+                        <window>
+                            <node nodetype='splitter' name='properties' rows='1' cols='2' width='300,600,'
+                                  middlecolor='RGB(255,224,192)'>
+                                <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                                <node name="mainworkclient"></node>
+                            </node>
+                        </window>
+                    </childform_1>
+                    <childform_2>
+                        <window>
+                            <node nodetype='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                                <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                                <node name="mainworkclient"></node>
+                            </node>
+                        </window>
+                    </childform_2>
+                    <childform_3>
+                        <window>
+                            <node nodetype='splitter' name='properties' rows='1' cols='2' width='600,200,' middlecolor='RGB(255,224,192)'>
+                                <node name="mainworkclient"></node>
+                                <node nodetype="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="18">
+                                    <node name="winform" caption="Tangram for WinForm Developer" nodetype="hostview" cnnid=""></node>
+                                    <node name="mfc" caption="Tangram for MFC/C++ Developer" nodetype="" cnnid=""></node>
+                                    <node name="mainworkclient" caption="Tangram for Eclipse" nodetype="" cnnid=""></node>
+                                </node>
+                            </node>
+                        </window>
+                    </childform_3>
+                </mdiclient>
+                <mdichild>
+                    <childform_1 reldiv="childform_1" objid="TangramWinApp1.Form1,host" caption="test child form1">
+                        <mainpanel>
+                            <default>
+                                <window>
+                                    <node nodetype='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                                        <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                                        <node name='test1' nodetype="clrctrl" cnnid="TangramWinApp1.UserControl1,TangramWinApp1"></node>
+                                    </node>
+                                </window>
+                            </default>
+                        </mainpanel>
+                    </childform_1>
+                    <childform_2 reldiv="childform_2" objid="TangramWinApp1.Form1,host" tooltips="test childform_2" caption="test child form2">
+                        <mainpanel>
+                            <default>
+                                <window>
+                                    <node nodetype="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="19">
+                                        <node nodetype='splitter' name='splitter' rows='1' cols='2' height='250,' width='400,100,' caption="Tangram Solution for TangramWinApp1">
+                                            <node name="mfc" caption="Tangram for MFC/C++ Developer" nodetype="" cnnid=""></node>
+                                            <node name="eclipse" caption="Tangram for Eclipse" nodetype="" cnnid=""></node>
+                                        </node>
+                                    </node>
+                                </window>
+                            </default>
+                        </mainpanel>
+                    </childform_2>
+                    <childform_3 reldiv="childform_3" objid="TangramWinApp1.Form1,host" caption="test child mdi form 2">
+                        <mainpanel>
+                            <default>
+                                <window>
+                                    <node nodetype='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                                        <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                                        <node nodetype="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="19">
+                                            <node name="winform" caption="Tangram for WinForm Developer" nodetype="" cnnid=""></node>
+                                            <node name="mfc" caption="Tangram for MFC/C++ Developer" nodetype="" cnnid=""></node>
+                                            <node name="eclipse" caption="Tangram for Eclipse" nodetype="" cnnid=""></node>
+                                        </node>
+                                    </node>
+                                </window>
+                            </default>
+                        </mainpanel>
+                    </childform_3>
+                </mdichild>
+            </mainWindow>
+            <input type=button value="Test Tangram 1" onclick="open_win1()" />
+            <input type=button value="Test Tangram 2" onclick="open_win2()" />
+            <input type=button value="Test Tangram 3" onclick="open_win3()" />
+            <input type=button value="Test Tangram 4" onclick="open_win4()" />
+            test: <input id="textName" type="text" name="fname"><br>
+            <h1 align=center style='text-align:center'>About Cloud MDI WinForm</h1>
+            <p><b><span lang=EN-US style='font-size:20.0pt;font-family: "Times New Roman",serif'>Welcome to a Wonderful Web-Desktop Hybrid Programming World, where you will experience an Extended DOM Environment for developing desktop software using web-desktop mixed technology.</span></b></p>
+            <p><b><span lang=EN-US style='font-size:20.0pt;font-family: "Times New Roman",serif'>This is a New and Dynamic Desktop Software World where you can combine most of the existing component frameworks, such as .NET, Java, COM, C++, Web and Office etc. ...</span></b></p>
+            <formui>
+                <window>
+                    <node nodetype="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="13">
+                        <node name="winform" caption="main div" nodetype="hostview" cnnid=""></node>
+                        <node name="mfc" caption="test1" nodetype="" cnnid=""></node>
+                        <node name="eclipse" caption="test2" nodetype="" cnnid=""></node>
+                    </node>
+                </window>
+            </formui>
+        </div>
+        <div class="hidden yyy">
+            <h1>About Cloud Form</h1>
+            <p>
+                <b>
+                    <span lang=EN-US style='font-size:14.0pt'>
+                        <a href="test.html">Click me to see what will happen ...</a>
+                    </span>
+                </b>
+                <input type="button" value="Send Message" onclick="" />
+            <p />
+        </div>
+        <div class="hidden childform_1">
+            <h1 align=center style='text-align:center'>About Cloud MDI Child WinForm 1</h1>
+            <formui>
+                <window>
+                    <node nodetype="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="27">
+                        <node name="winform" caption="Tangram for WinForm Developer" nodetype="hostview" cnnid=""></node>
+                        <node name="mfc" caption="Tangram for MFC/C++ Developer" nodetype="" cnnid=""></node>
+                        <node name="eclipse" caption="Tangram for Eclipse" nodetype="" cnnid=""></node>
+                    </node>
+                </window>
+            </formui>
+            <p>
+                <b>
+                    <span lang=EN-US style='font-size:14.0pt'>
+                        <a href="test.html">Hi, Im a Active Child Form</a>
+                    </span>
+                </b>
+                <input type="button" value="Send Message" onclick="" />
+            <p />
+        </div>
+        <div class="hidden childform_2">
+            <h1 align=center style='text-align:center'>About Cloud MDI Child WinForm 2</h1>
+            <formui>
+                <window>
+                    <node nodetype="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="43">
+                        <node name="winform" caption="Tangram for WinForm Developer" nodetype="hostview" cnnid=""></node>
+                        <node name="mfc" caption="Tangram for MFC/C++ Developer" nodetype="" cnnid=""></node>
+                        <node name="eclipse" caption="Tangram for Eclipse" nodetype="" cnnid=""></node>
+                    </node>
+                </window>
+            </formui>
+            <p>
+                First name: <input type="text" name="fname"><br>
+                Last name: <input type="text" name="lname"><br>
+            <p />
+        </div>
+        <div class="hidden childform_3">
+            <h1 align=center style='text-align:center'>About Cloud MDI Child WinForm 3</h1>
+            <formui>
+                <window>
+                    <node nodetype="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="18">
+                        <node name="winform" caption="xxxxxxxxx" nodetype="hostview" cnnid=""></node>
+                        <node name="mfc" caption="yyyyyyyyy" nodetype="" cnnid=""></node>
+                        <node name="eclipse" caption="zzzzzzzz" nodetype="" cnnid=""></node>
+                    </node>
+                </window>
+            </formui>
+            <p>
+                <b>
+                    <span lang=EN-US style='font-size:14.0pt'>
+                        <a href="test.html">Hi, Im a Active Child Form</a>
+                    </span>
+                </b>
+                <input type="button" value="Send Message" onclick="" />
+            <p />
+        </div>
+    </div>
+</body>
+</html>

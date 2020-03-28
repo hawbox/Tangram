@@ -813,6 +813,7 @@ namespace TangramCommon {
 		virtual long GetIPCMsgIndex(CString strMsgID) { return 0; }
 		virtual CTangramSession* CreateCloudSession(CChromeRenderFrameHostProxy*) { return nullptr; }
 		virtual CTangramSession* GetCloudSession(IWndNode*) { return nullptr; }
+		virtual void ReleaseCLR() {}
 	};
 
 	class ITangramDelegate {

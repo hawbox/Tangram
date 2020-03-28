@@ -151,7 +151,6 @@ CTangramCLRProxy::CTangramCLRProxy() : ITangramCLRImpl()
 	//_CrtSetBreakAlloc(826);
 	//m_strExtendableTypes = L"|WebBrowser|Panel|TreeView|ListView|MonthCalendar|GroupBox|FlowLayoutPanel|TableLayoutPanel|SplitContainer|";
 	m_strExtendableTypes = L"|Button|TextBox|WebBrowser|Panel|TreeView|ListView|MonthCalendar|GroupBox|FlowLayoutPanel|TableLayoutPanel|SplitContainer|";
-	m_bHostApp = false;
 	m_pCurrentPForm = nullptr;
 	m_strCurrentWinFormTemplate = _T("");
 	Forms::Application::EnableVisualStyles();
@@ -166,7 +165,7 @@ CTangramCLRProxy::CTangramCLRProxy() : ITangramCLRImpl()
 	Forms::Application::ApplicationExit += gcnew EventHandler(&OnApplicationExit);
 	if (::GetModuleHandle(_T("TangramCore.dll")) == nullptr)
 	{
-		m_bHostApp = true;
+		theApp.m_bHostApp = true;
 		GetTangram();
 		if (theApp.m_pTangram)
 		{
@@ -183,7 +182,7 @@ CTangramCLRProxy::CTangramCLRProxy() : ITangramCLRImpl()
 		}
 	}
 	TangramCLR::Tangram::GetTangram();
-	theApp.m_pTangramImpl->m_pObjectFactory->AddFactoryDelegate(new ::RefObject::ClrFactoryDelegate());
+	//theApp.m_pTangramImpl->m_pObjectFactory->AddFactoryDelegate(new ::RefObject::ClrFactoryDelegate());
 }
 
 CTangramCLRProxy::~CTangramCLRProxy()
@@ -193,17 +192,17 @@ CTangramCLRProxy::~CTangramCLRProxy()
 		delete it.second;
 	}
 
-	if (m_bHostApp == false)
+	if (theApp.m_bHostApp == false)
 		theApp.m_pTangramImpl->m_pCLRProxy = nullptr;
 
-	if (m_bHostApp)
+	//if (m_bHostApp)
 	{
-		if (theApp.m_pTangramImpl->m_pObjectFactory)
-		{
-			delete theApp.m_pTangramImpl->m_pObjectFactory;
-			theApp.m_pTangramImpl->m_pObjectFactory = nullptr;
-		}
-		BOOL bUnload = ::FreeLibrary(::GetModuleHandle(_T("TangramCore.dll")));
+		//if (theApp.m_pTangramImpl->m_pObjectFactory)
+		//{
+		//	delete theApp.m_pTangramImpl->m_pObjectFactory;
+		//	theApp.m_pTangramImpl->m_pObjectFactory = nullptr;
+		//}
+		//BOOL bUnload = ::FreeLibrary(::GetModuleHandle(_T("TangramCore.dll")));
 		//while (bUnload)
 		//	bUnload = ::FreeLibrary(::GetModuleHandle(_T("TangramCore.dll")));
 	}
@@ -664,7 +663,7 @@ void CTangramCLRProxy::WindowDestroy(HWND hWnd)
 		if (m_mapForm.size() == 0)
 		{
 			if (::GetModuleHandle(L"devenv.exe") == NULL)
-				::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, theAppProxy.m_bHostApp ? 1 : 0, 20190511);
+				::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, theApp.m_bHostApp ? 1 : 0, 20190511);
 		}
 	}
 }
@@ -1092,7 +1091,7 @@ Object^ CTangramCLRProxy::InitTangramCtrl(Form^ pForm, Control^ pCtrl, bool bSav
 							BSTR strName = STRING2BSTR(name->ToLower());
 							if (name == L"htmlclient")
 							{
-								::PostMessage(hWnd, WM_TANGRAMMSG, pChild->Handle.ToInt64(), 20200130);
+								::PostMessage(hWnd, WM_TANGRAMMSG, (WPARAM)pChild->Handle.ToInt64(), 20200130);
 								pChild->Tag = name;
 								pChild->VisibleChanged += gcnew System::EventHandler(&OnVisibleChanged);
 							}
@@ -1171,7 +1170,7 @@ Object^ CTangramCLRProxy::InitTangramCtrl(Form^ pForm, Control^ pCtrl, bool bSav
 				}
 				else
 				{
-					::SetWindowLongPtr((HWND)pChild->Handle.ToInt64(), GWLP_USERDATA, pForm->Handle.ToInt64());
+					::SetWindowLongPtr((HWND)pChild->Handle.ToInt64(), GWLP_USERDATA, (LONG_PTR)pForm->Handle.ToInt64());
 					if (m_pOnCtrlVisible)
 					{
 					}
@@ -2846,7 +2845,7 @@ void CTangramCLRProxy::TangramAction(BSTR bstrXml, IWndNode* pNode)
 					if (theApp.m_pTangram && !theApp.m_pTangramImpl->m_bIsEclipseInit)
 					{
 						theApp.m_pTangram->InitEclipseApp();
-						if (theAppProxy.m_bHostApp && theAppProxy.m_pTangramWpfApp)
+						if (theApp.m_bHostApp && theAppProxy.m_pTangramWpfApp)
 						{
 							theApp.ExitJVM();
 						}
@@ -2874,7 +2873,7 @@ void CTangramCLRProxy::TangramAction(BSTR bstrXml, IWndNode* pNode)
 		}
 		if (strXml.CompareNoCase(_T("EndInitEclipseApp")) == 0)
 		{
-			if (m_bHostApp && m_pTangramWpfApp)
+			if (theApp.m_bHostApp && m_pTangramWpfApp)
 			{
 				theApp.ExitJVM();
 			}
@@ -3479,12 +3478,9 @@ void CTangramCLRProxy::OnApplicationExit(System::Object^ sender, System::EventAr
 				::DestroyWindow(proxy->m_pTangramAppProxy->m_hMainWnd);
 		}
 	}
-	//for (auto it : theAppProxy.m_mapTangramSession2CloudSession)
-	//{
-	//	//delete it.first->
-	//}
+
 	theAppProxy.m_mapChromeWebPage.clear();
-	if (theAppProxy.m_bHostApp)
+	if (theApp.m_bHostApp)
 	{
 		theApp.ExitJVM();
 	}
@@ -3780,7 +3776,7 @@ void CTangramCLRProxy::OnSelectedObjectsChanged(Object^ sender, EventArgs^ e)
 					theAppProxy.GetMDIClientHandle(pDisp);
 					Control^ ctrl = TangramCLR::Tangram::GetMDIClient(pForm);
 					__int64 nHandle = ctrl->Handle.ToInt64();
-					::SetWindowLongPtr(hWnd, GWLP_USERDATA, nHandle);
+					::SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)nHandle);
 				}
 			}
 			else if (s == L"System.Windows.Forms.UserControl")
@@ -3821,8 +3817,8 @@ void CTangramCLRProxy::OnControlAdded(Object^ sender, ControlEventArgs^ e)
 	{
 		__int64 nHandle = e->Control->Handle.ToInt64();
 		HWND hWnd = (HWND)((Form^)sender)->Handle.ToInt64();
-		::SetWindowLongPtr(hWnd, GWLP_USERDATA, nHandle);
-		::SendMessage(hWnd, WM_TANGRAMMSG, nHandle, 20170907);
+		::SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)nHandle);
+		::SendMessage(hWnd, WM_TANGRAMMSG, (WPARAM)nHandle, 20170907);
 	}
 }
 

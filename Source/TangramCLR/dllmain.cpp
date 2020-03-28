@@ -39,11 +39,13 @@ CTangramCLRApp::CTangramCLRApp()
 	m_strAppPath = CString(file);
 	int nPos = m_strAppPath.ReverseFind('\\');
 	m_strAppPath = m_strAppPath.Left(nPos + 1);
+	m_bHostApp = false;
 }
 
 CTangramCLRApp::~CTangramCLRApp()
 {
 	ATLTRACE(_T("Release CTangramCLRApp :%p\n"), this);
+	BOOL bUnload = ::FreeLibrary(::GetModuleHandle(_T("TangramCore.dll")));
 }
 
 void CTangramCLRApp::InitTangramApp(bool bCrashReporting)

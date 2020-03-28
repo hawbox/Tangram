@@ -806,7 +806,7 @@ namespace TangramCLR
 		Control^ mdiclient = Tangram::GetMDIClient(form);
 		if (mdiclient)
 		{
-			::SendMessage((HWND)form->Handle.ToPointer(), WM_MDICLIENTCREATED, mdiclient->Handle.ToInt64(), (LPARAM)STRING2BSTR(strID));
+			::SendMessage((HWND)form->Handle.ToPointer(), WM_MDICLIENTCREATED, (WPARAM)mdiclient->Handle.ToInt64(), (LPARAM)STRING2BSTR(strID));
 		}
 	}
 

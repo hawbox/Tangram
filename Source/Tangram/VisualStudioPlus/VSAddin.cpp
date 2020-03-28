@@ -1083,7 +1083,7 @@ namespace VisualStudioPlus
 						strBranch = m_Parse.attr(_T("branch"), _T(""));
 						strPath = m_Parse.attr(_T("path"), _T("vstoolwindow.xml"));
 					}
-					pCompositor->OpenFromWeb(CComBSTR(strURL), CComBSTR(strKey), CComBSTR(strOrg), CComBSTR(strRepo), CComBSTR(strBranch), CComBSTR(strPath));
+					//pCompositor->OpenFromWeb(CComBSTR(strURL), CComBSTR(strKey), CComBSTR(strOrg), CComBSTR(strRepo), CComBSTR(strBranch), CComBSTR(strPath));
 				}
 				else
 				{

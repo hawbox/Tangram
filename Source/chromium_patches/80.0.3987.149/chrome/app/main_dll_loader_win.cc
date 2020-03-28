@@ -211,6 +211,21 @@ int MainDllLoader::Launch(HINSTANCE instance,
   int rc = chrome_main(instance, &sandbox_info,
                        exe_entry_point_ticks.ToInternalValue());
   // begin Add by TangramTeam
+  if (g_pTangramImpl == nullptr)
+  {
+      HMODULE hModule = ::GetModuleHandle(L"tangramcore.dll");
+      if (hModule) {
+          typedef TangramCommon::CTangramImpl* (__stdcall*
+              GetTangramImpl)(ITangram**);
+          GetTangramImpl _pTangramFunction;
+          _pTangramFunction =
+              (GetTangramImpl)GetProcAddress(hModule, "GetTangramImpl");
+          if (_pTangramFunction != NULL) {
+              ITangram* pTangram = nullptr;
+              g_pTangramImpl = _pTangramFunction(&pTangram);
+          }
+      }
+  }
   if (g_pTangramImpl && g_pTangramImpl->m_pBrowserFactory)
   {
 	  delete g_pTangramImpl->m_pBrowserFactory;

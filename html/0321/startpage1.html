@@ -1,0 +1,72 @@
+﻿<html>
+<head>
+    <meta charset="utf-8"/>
+    <title></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link href="assets/github-markdown.css" rel="stylesheet" type="text/css">
+    <style>
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+    </style>
+	<script type="text/javascript">
+        SendMessage = function () {
+            alert(1);
+			if (tangram) {
+				tangram.sendMessage("toparentnode", document.getElementById("toparentnode").outerHTML, "key", "");
+			}
+		}
+        SendMessage2 = function () {
+            alert(2);
+			if (tangram) {
+				tangram.sendMessage("toparentnode", document.getElementById("toparentnode2").outerHTML, "key2", "");
+			}
+		}
+	</script>
+</head>
+<body>
+
+    <article class="markdown-body">
+        <h1><a class="md-header-anchor"></a><span>Show a Windows Form</span></h1>
+        <input type="button" value="Send Message" onclick="SendMessage()" />
+        <input type="button" value="Send Message2" onclick="SendMessage2()" />
+    </article>
+
+    <toparentnode id="toparentnode">
+        <window>
+            <node id='splitter' name='properties' rows='3' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                <node name='tangramtabctrl_Page2' caption='tangramtabctrl_Page1'></node>
+                <node name='htest' id=""></node>
+                <node name='test2'></node>
+                <node name='test3' id=""></node>
+                <node name='propertiesView' id=''></node>
+                <node name='test11'></node>
+            </node>
+        </window>
+    </toparentnode>
+    <toparentnode id="toparentnode2">
+        <window>
+            <node id='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                <node name='tangramtabctrl_Page2' caption='tangramtabctrl_Page1'></node>
+                <node name='htest' id=""></node>
+            </node>
+        </window>
+    </toparentnode>
+
+</body>
+</html>
+</body>
+</html>

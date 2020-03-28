@@ -1435,11 +1435,11 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
             // Create a corresponding RefObject from the IDispatch object and store its Handle.
 			if (m_pDisp)
 			{
-				uint64_t nRawHandle = (uint64_t)m_pDisp;
-				// TODO: ObjectFactory::Delete should be called when the IDispatch object is destructed.
-				::RefObject::IRefObject* pObj = g_pTangram->m_pObjectFactory->Create(_T("Clr"), nRawHandle);
-				if(pObj)
-					m_hXObject = pObj->GetHandle();
+				//uint64_t nRawHandle = (uint64_t)m_pDisp;
+				//// TODO: ObjectFactory::Delete should be called when the IDispatch object is destructed.
+				//::RefObject::IRefObject* pObj = g_pTangram->m_pObjectFactory->Create(_T("Clr"), nRawHandle);
+				//if(pObj)
+				//	m_hXObject = pObj->GetHandle();
 			}
 
 			CNodeWnd* pWnd = (CNodeWnd*)m_pHostWnd;
@@ -2848,25 +2848,25 @@ STDMETHODIMP CWndNode::put_URL(BSTR newVal)
 
 ::RefObject::IRefObject* CWndNode::GetXObject()
 {
-	::RefObject::IObjectFactory* pObjectFactory = g_pTangram->m_pObjectFactory;
+	//::RefObject::IObjectFactory* pObjectFactory = g_pTangram->m_pObjectFactory;
     // TODO: Temporary: Determine whether the current node is a web node.
-	if (m_hXObject.IsZero() && m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd != nullptr)
-	{
-		::RefObject::IRefObject* pObj = pObjectFactory->Create(_T("Cpp"), (uint64_t)m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd);
-		if (pObj != nullptr)
-		{
-			pObj->AddDelegate(g_pTangram->m_pHtmlWndDelegate);
-			return pObj;
-		}
-	}
-    else
-    {
-        ::RefObject::IRefObject* pObj = pObjectFactory->GetObjectFromHandle(m_hXObject);
-        if (pObj != nullptr)
-        {
-            return pObj;
-        }
-    }
+	//if (m_hXObject.IsZero() && m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd != nullptr)
+	//{
+	//	::RefObject::IRefObject* pObj = pObjectFactory->Create(_T("Cpp"), (uint64_t)m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd);
+	//	if (pObj != nullptr)
+	//	{
+	//		pObj->AddDelegate(g_pTangram->m_pHtmlWndDelegate);
+	//		return pObj;
+	//	}
+	//}
+ //   else
+ //   {
+ //       ::RefObject::IRefObject* pObj = pObjectFactory->GetObjectFromHandle(m_hXObject);
+ //       if (pObj != nullptr)
+ //       {
+ //           return pObj;
+ //       }
+ //   }
 	return nullptr;
 }
 

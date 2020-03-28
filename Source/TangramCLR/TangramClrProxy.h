@@ -67,7 +67,6 @@ public:
 	CTangramCLRProxy();
 	virtual~CTangramCLRProxy();
 
-	bool												m_bHostApp;
 	bool												m_bInitApp = false;
 	HWND												m_hCreatingCLRWnd = nullptr;
 	gcroot<String^>										m_strExtendableTypes;

@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+     <define tagName="object"></define>
+   <define tagName="doc"></define>
+    <object type="winform" objid="TangramWinApp1.TangramWinApp1MDIForm,host" uikey="test" caption="Your First WinForm MDI Application Using Chromium Anywhere">
+        <mdiclient>
+            <default>
+                <window>
+                    <node name="htest">
+                    </node>
+                </window>
+            </default>
+            <xxx>
+                <window>
+                    <node id='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                        <node name='test1'></node>
+                    </node>
+                </window>
+            </xxx>
+            <aaa>
+                <window>
+                    <node id='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                        <node name='test1' id="clrctrl" cnnid="TangramWinApp1.UserControl1,TangramWinApp1"></node>
+                    </node>
+                </window>
+            </aaa>
+            <abc1>
+                <window>
+                    <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="18">
+                        <node name="winform" caption="Tangram for WinForm Developer" id="hostview" cnnid=""></node>
+                        <node name="mfc" caption="Tangram for MFC/C++ Developer" id="" cnnid=""></node>
+                        <node name="eclipse" caption="Tangram for Eclipse" id="" cnnid=""></node>
+                    </node>
+                </window>
+            </abc1>
+        </mdiclient>
+        <mdichild>
+            <xxx objid="TangramWinApp1.Form1,host" caption="test child form1">
+                <mainpanel>
+                    <default>
+                        <window>
+                            <node id='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                                <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                                <node name='test1'></node>
+                            </node>
+                        </window>
+                    </default>
+                </mainpanel>
+            </xxx>
+            <abc1 objid="TangramWinApp1.Form1,host" caption="test child mdi form 2">
+                <mainpanel>
+                    <default>
+                        <window>
+                            <node id='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                                <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                                <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="19">
+                                    <node name="winform" caption="Tangram for WinForm Developer"></node>
+                                    <node name="mfc" caption="Tangram for MFC/C++ Developer" id="" cnnid=""></node>
+                                    <node name="eclipse" caption="Tangram for Eclipse" id="" cnnid=""></node>
+                                </node>
+                            </node>
+                        </window>
+                    </default>
+                </mainpanel>
+            </abc1>
+            <aaa objid="TangramWinApp1.Form1,host" tooltips="test aaa" caption="test child form2">
+                <mainpanel>
+                    <default>
+                        <window>
+                            <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="19">
+                                <node id='splitter' name='splitter' rows='1' cols='2' height='250,' width='400,100,' caption="Tangram Solution for TangramWinApp1">
+                                    <node name="mfc" caption="Tangram for MFC/C++ Developer" id="" cnnid=""></node>
+                                    <node name="eclipse" caption="Tangram for Eclipse" id="clrctrl" cnnid="TangramWinApp1.UserControl1,TangramWinApp1"></node>
+                                </node>
+                            </node>
+                        </window>
+                    </default>
+                </mainpanel>
+            </aaa>
+        </mdichild>
+    </object>
+    <doc>
+        <window>
+            <node id="clrctrl" cnnid="TangramWinApp1.TangramWinApp1MDIForm,host" uikey="test"></node>
+        </window>
+    </doc>
+</body>
+</html>
