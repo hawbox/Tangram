@@ -12,12 +12,8 @@ namespace TangramCLR
 		if (hostnode != nullptr)
 		{
 			String^ name = hostnode->Name;
-			Tangram::WizCtrlDic[this->Handle.ToString()] = this;
 			WizForm^ pWizForm = (WizForm^)Tangram::m_pWizForm;
-			if (pWizForm != nullptr&&pWizForm->m_pWizListView!=nullptr)
-			{
-				m_nAppType = pWizForm->m_pWizListView->SelectedItems[0]->Index;
-			}
+			Tangram::WizCtrlDic[pWizForm->m_pWizListView->SelectedItems[0]->Text] = this;
 		}
 #endif
 	}

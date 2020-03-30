@@ -88,7 +88,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>..\..\chromium_root_80\src\out\tangram_static_release_x86\tangramcomponent</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
@@ -218,11 +218,8 @@
       <RegisterOutput>false</RegisterOutput>
     </Link>
     <PostBuildEvent>
-      <Command>if not exist "C:\Program Files (x86)\Tangram\" (
-  mkdir "C:\Program Files (x86)\Tangram"
-)
-copy "$(OutDir)$(TargetName)$(TargetExt)" "C:\Program Files (x86)\Tangram\$(TargetName)$(TargetExt)"
-regsvr32 /s "C:\Program Files (x86)\Tangram\$(TargetName)$(TargetExt)"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

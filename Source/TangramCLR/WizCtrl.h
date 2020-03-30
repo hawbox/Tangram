@@ -25,12 +25,11 @@ namespace TangramCLR {
 			//
 		}
 
-		delegate void WizFinish(int WizType);
+		delegate void WizFinish();
 		event WizFinish^ OnWizFinish;
-		void Fire_OnWizFinish(int WizType)
+		void Fire_OnWizFinish()
 		{
-			if(WizType==m_nAppType)
-				OnWizFinish(WizType);
+			OnWizFinish();
 		}
 
 	protected:
@@ -70,7 +69,6 @@ namespace TangramCLR {
 
 		}
 #pragma endregion
-		private: int m_nAppType = -1;
 		private: WndNode^ hostnode = nullptr;
 		private: System::Void WizCtrl_Load(System::Object^ sender, System::EventArgs^ e);
 	};
