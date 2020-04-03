@@ -21,6 +21,7 @@ namespace TangramCLR {
 		static bool m_bSolutionModel = false;
 		String^ m_strAppType=L"";
 		ListView^ m_pWizListView = nullptr;
+		Dictionary<String^, Control^>^ m_pWizCtrlDic = gcnew Dictionary<String^, Control^>();
 
 		WizForm(void);
 
@@ -38,6 +39,14 @@ namespace TangramCLR {
 			void set(String^ strTemplateID)
 			{
 				m_strTemplateID = strTemplateID;
+			};
+		}
+		
+		property Dictionary<String^, Control^>^ WizCtrlDic
+		{
+			Dictionary<String^, Control^>^ get()
+			{
+				return m_pWizCtrlDic;
 			};
 		}
 

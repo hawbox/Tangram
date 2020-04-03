@@ -28,7 +28,7 @@ HWND CTangramApp::Create(HWND hParentWnd, IWndNode* pNode)
 {
 	CString strNames = _T("exceltab,outlooktabwndh,outlooktabwndv,");
 	BSTR bstrTag = L"";
-	pNode->get_Attribute(L"id", &bstrTag);
+	pNode->get_Attribute(L"nodetype", &bstrTag);
 	USES_CONVERSION;
 	CString m_strTag = OLE2T(bstrTag);
 	::SysFreeString(bstrTag);

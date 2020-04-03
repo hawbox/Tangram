@@ -158,7 +158,7 @@ namespace TangramCLR
 						CComQIPtr<IWebBrowser2> pWebCtrl(var.pdispVal);
 						if (pWebCtrl)
 						{
-							m_pWndNode->get_Attribute(CComBSTR("id"), &bstrCap);
+							m_pWndNode->get_Attribute(CComBSTR("nodetype"), &bstrCap);
 							return BSTR2STRING(bstrCap);
 						}
 					}
@@ -195,7 +195,7 @@ namespace TangramCLR
 						CComQIPtr<IWebBrowser2> pWebCtrl(var.pdispVal);
 						if (pWebCtrl)
 						{
-							m_pWndNode->put_Attribute(CComBSTR("id"), STRING2BSTR(newVal));
+							m_pWndNode->put_Attribute(CComBSTR("nodetype"), STRING2BSTR(newVal));
 						}
 					}
 				}
@@ -781,6 +781,7 @@ namespace TangramCLR
 			Object^ tag = pForm->Tag;
 			if (tag != nullptr)
 				strTag = tag->ToString();
+
 			CString _strTag = _T("");
 			if(String::IsNullOrEmpty(strTag)==false)
 				_strTag = STRING2BSTR(strTag);

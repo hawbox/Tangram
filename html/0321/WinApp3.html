@@ -18,26 +18,26 @@
             </default>
             <xxx>
                 <window>
-                    <node id='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
-                        <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                    <node nodetype='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
                         <node name='test1'></node>
                     </node>
                 </window>
             </xxx>
             <aaa>
                 <window>
-                    <node id='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
-                        <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
-                        <node name='test1' id="clrctrl" cnnid="TangramWinApp1.UserControl1,TangramWinApp1"></node>
+                    <node nodetype='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                        <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                        <node name='test1' nodetype="clrctrl" cnnid="TangramWinApp1.UserControl1,TangramWinApp1"></node>
                     </node>
                 </window>
             </aaa>
             <abc1>
                 <window>
-                    <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="18">
-                        <node name="winform" caption="Tangram for WinForm Developer" id="hostview" cnnid=""></node>
-                        <node name="mfc" caption="Tangram for MFC/C++ Developer" id="" cnnid=""></node>
-                        <node name="eclipse" caption="Tangram for Eclipse" id="" cnnid=""></node>
+                    <node nodetype="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="18">
+                        <node name="winform" caption="Tangram for WinForm Developer" nodetype="hostview" cnnid=""></node>
+                        <node name="mfc" caption="Tangram for MFC/C++ Developer" nodetype="" cnnid=""></node>
+                        <node name="eclipse" caption="Tangram for Eclipse" nodetype="" cnnid=""></node>
                     </node>
                 </window>
             </abc1>
@@ -47,8 +47,8 @@
                 <mainpanel>
                     <default>
                         <window>
-                            <node id='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
-                                <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
+                            <node nodetype='splitter' name='properties' rows='1' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                                <node name='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
                                 <node name='test1'></node>
                             </node>
                         </window>
@@ -59,9 +59,9 @@
                 <mainpanel>
                     <default>
                         <window>
-                            <node id='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                            <node nodetype='splitter' name='properties' rows='2' cols='1' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
                                 <node name='tangramtabctrl_Page2' id='hostview' caption=''></node>
-                                <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="19">
+                                <node nodetype="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="19">
                                     <node name="winform" caption="Tangram for WinForm Developer"></node>
                                     <node name="mfc" caption="Tangram for MFC/C++ Developer" id="" cnnid=""></node>
                                     <node name="eclipse" caption="Tangram for Eclipse" id="" cnnid=""></node>
@@ -75,10 +75,10 @@
                 <mainpanel>
                     <default>
                         <window>
-                            <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="19">
-                                <node id='splitter' name='splitter' rows='1' cols='2' height='250,' width='400,100,' caption="Tangram Solution for TangramWinApp1">
-                                    <node name="mfc" caption="Tangram for MFC/C++ Developer" id="" cnnid=""></node>
-                                    <node name="eclipse" caption="Tangram for Eclipse" id="clrctrl" cnnid="TangramWinApp1.UserControl1,TangramWinApp1"></node>
+                            <node nodetype="tangramtabctrl" name="tangramtabctrl" cnnid="tangramtabbedwnd.tabbedcomponent.1" style="19">
+                                <node nodetype='splitter' name='splitter' rows='1' cols='2' height='250,' width='400,100,' caption="Tangram Solution for TangramWinApp1">
+                                    <node name="mfc" caption="Tangram for MFC/C++ Developer" nodetype="" cnnid=""></node>
+                                    <node name="eclipse" caption="Tangram for Eclipse" nodetype="clrctrl" cnnid="TangramWinApp1.UserControl1,TangramWinApp1"></node>
                                 </node>
                             </node>
                         </window>
@@ -89,7 +89,7 @@
     </object>
     <doc>
         <window>
-            <node id="clrctrl" cnnid="TangramWinApp1.TangramWinApp1MDIForm,host" uikey="test"></node>
+            <node nodetype="clrctrl" cnnid="TangramWinApp1.TangramWinApp1MDIForm,host" uikey="test"></node>
         </window>
     </doc>
 </body>

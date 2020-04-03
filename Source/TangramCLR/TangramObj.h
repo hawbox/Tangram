@@ -975,12 +975,11 @@ namespace TangramCLR
 		static Dictionary<String^, Type^>^ m_pAppFormTypeDic = nullptr;
 		static Dictionary<String^, Type^>^ m_pAppMDIFormTypeDic = nullptr;
 		static Dictionary<Control^, String^>^ m_pControlRelationDic = nullptr;
-		static Dictionary<Object^, TangramCLR::TangramSession^>^ m_pCloudEventDic = gcnew Dictionary<Object^, TangramCLR::TangramSession^>();
+		static Dictionary<Object^, TangramSession^>^ m_pCloudEventDic = gcnew Dictionary<Object^, TangramSession^>();
 		static Dictionary<String^, String^>^ CustomizeDictionary = gcnew Dictionary<String^, String^>();
 	public:
 #ifndef _WIN64
 		static Dictionary<String^, String^>^ replacementsDictionary = nullptr;
-		static Dictionary<String^, Control^>^ m_pWizCtrlDic = gcnew Dictionary<String^, Control^>();;
 		static Control^ m_pWizForm = nullptr;
 #endif
 		static String^ m_strWizData = L"";
@@ -1134,13 +1133,6 @@ namespace TangramCLR
 			};
 		}
 
-		static property Dictionary<String^, Control^>^ WizCtrlDic
-		{
-			Dictionary<String^, Control^>^ get()
-			{
-				return m_pWizCtrlDic;
-			};
-		}
 #endif
 
 		static property Dictionary<String^, String^>^ CustomizeDic
@@ -1149,10 +1141,6 @@ namespace TangramCLR
 			{
 				return CustomizeDictionary;
 			};
-			//void set(Dictionary<String^, String^>^ Dic)
-			//{
-			//	CustomizeDictionary = Dic;
-			//};
 		}
 
 		static property Dictionary<Object^, TangramCLR::TangramSession^>^ WebBindEventDic
@@ -1161,10 +1149,6 @@ namespace TangramCLR
 			{
 				return m_pCloudEventDic;
 			};
-			//void set(Dictionary<String^, String^>^ Dic)
-			//{
-			//	CustomizeDictionary = Dic;
-			//};
 		}
 
 		static property Form^ MainForm

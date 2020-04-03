@@ -2740,25 +2740,6 @@ void CTangramCLRProxy::OnTextChanged(System::Object^ sender, System::EventArgs^ 
 
 		pCloudSession->SendMessage();
 	}
-
-	//auto it = theAppProxy.m_mapEventBindInfo.find((HWND)pTextCtrl->Handle.ToPointer());
-	//if (it != theAppProxy.m_mapEventBindInfo.end())
-	//{
-	//	String^ strIndex = BSTR2STRING(it->second);
-	//	int nIndex = strIndex->IndexOf(L"|");
-	//	String^ strBindID = strIndex->Substring(0, nIndex);
-	//	strIndex = strIndex->Substring(nIndex + 1);
-	//	CString s = strIndex;
-	//	HWND hWebPageWnd = (HWND)_wtoi(s);
-	//	String^ strVal = pTextCtrl->Text;
-	//	IPCMsg msg;
-	//	msg.m_strId = _T("BIND_CLR_CTRL_EVENT");
-	//	msg.m_strParam1 = strBindID;
-	//	msg.m_strParam2 = pTextCtrl->Handle.ToString("d");
-	//	msg.m_strParam3 = strVal;
-	//	msg.m_strParam4 = _T("OnTextChanged");
-	//	::SendMessage(hWebPageWnd, WM_TANGRAMMSG, 20200221, (LPARAM)&msg);
-	//}
 }
 
 HWND CTangramCLRProxy::GetCtrlHandle(IDispatch* _pCtrl)

@@ -69,7 +69,6 @@ namespace TangramCLR {
 
 		}
 #pragma endregion
-		private: WndNode^ hostnode = nullptr;
 		private: System::Void WizCtrl_Load(System::Object^ sender, System::EventArgs^ e);
 	};
 }

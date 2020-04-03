@@ -51,7 +51,7 @@ HWND CTangramApp::Create(HWND hParent, IWndNode* pNode)
 	pNode->get_Attribute(L"activepage", &bstrTag);
 	CString m_strTag = OLE2T(bstrTag);
 	int nActivePage = _wtoi(m_strTag);
-	pNode->get_Attribute(L"id", &bstrTag);
+	pNode->get_Attribute(L"nodetype", &bstrTag);
 	pNode->get_Attribute(L"style", &bstrStyle);
 	CString strStyle = OLE2T(bstrStyle);
 	strStyle.Trim();

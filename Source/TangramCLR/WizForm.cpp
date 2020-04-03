@@ -12,7 +12,7 @@ namespace TangramCLR {
 		//
 #ifndef _WIN64
 		TangramCLR::Tangram::m_pWizForm = this;
-		TangramCLR::Tangram::WizCtrlDic->Clear();
+		m_pWizCtrlDic->Clear();
 #endif
 	}
 
