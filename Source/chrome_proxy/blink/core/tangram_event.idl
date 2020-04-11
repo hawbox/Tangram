@@ -1,14 +1,4 @@
 [
-  Constructor(DOMString event_type,
-  DOMString eventId,
-  DOMString param1,
-  DOMString param2,
-  DOMString param3,
-  DOMString param4,
-  DOMString param5, 
-  long long handleSource,
-  long long handleTarget,
-  TangramXobj var),
   Exposed = Window
 ] interface TangramEvent {
   attribute DOMString eventId;
