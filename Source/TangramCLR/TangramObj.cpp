@@ -279,14 +279,6 @@ namespace TangramCLR
 		//}
 	}
 
-	ApplicationContext::ApplicationContext()
-	{
-		if (theAppProxy.m_bInitApp == false)
-		{
-			::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, 0, 20191022);
-		}
-	}
-
 	WpfApplication::WpfApplication()
 	{
 		if (theAppProxy.m_bInitApp == false)
@@ -473,6 +465,10 @@ namespace TangramCLR
 			FuncIsChromeRunning = (_IsChromeRunning)GetProcAddress(hModule, "IsBrowserModel");
 			if (FuncIsChromeRunning != NULL) {
 				IsChromeRunning = FuncIsChromeRunning(false);
+				if (theAppProxy.m_bInitApp == false)
+				{
+					::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, 0, 20191022);
+				}
 			}
 		}
 

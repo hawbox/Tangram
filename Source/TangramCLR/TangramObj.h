@@ -942,13 +942,6 @@ namespace TangramCLR
 		}
 	};
 
-	public ref class ApplicationContext : public Forms::ApplicationContext
-	{
-	public:
-		ApplicationContext();
-		~ApplicationContext() {};
-	};
-
 	public ref class WpfApplication : public Windows::Application
 	{
 	public:
