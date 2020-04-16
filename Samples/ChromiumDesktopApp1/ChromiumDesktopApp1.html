@@ -1,0 +1,127 @@
+﻿<!-- This is "index.html". Normally, it is named "ApplicationName.index.html". This webpage is the real entry point of the Chromium Desktop App. -->
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Chromium Desktop App!</title>
+    <link rel="stylesheet" href="./assets/bulma.min.css">
+    <link rel="stylesheet" href="./assets/bulma-helpers.min.css">
+    <script>
+        // Scripts for Hybrid UI
+        function LoadSnippet1() {
+            if (tangram) {
+                var snippet1 = document.getElementsByTagName("snippet_1")[0].outerHTML;
+                tangram.sendMessage("TO_TOPFRAME", "snippet1", snippet1, "chrome_proxy:tangram", "snippet1", "")
+            }
+        }
+        function LoadSnippet2() {
+            if (tangram) {
+                var snippet2 = document.getElementsByTagName("snippet_2")[0].outerHTML;
+                tangram.sendMessage("TO_TOPFRAME", "snippet2", snippet2, "chrome_proxy:tangram", "snippet2", "")
+            }
+        }
+        function LoadSnippet3() {
+            if (tangram) {
+                var snippet3 = document.getElementsByTagName("snippet_3")[0].outerHTML;
+                tangram.sendMessage("TO_TOPFRAME", "snippet3", snippet3, "chrome_proxy:tangram", "snippet3", "")
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Define new DOM elements -->
+    <define tagName="mainWindow"></define>
+    <define tagName="application"></define>
+    <!-- End Define new DOM elements -->
+
+    <!-- Non-standard DOM -->
+    <!-- The <application> node is required, it can provide application-level configuration. -->
+    <application>
+        <!-- The <urls> node provides a batch of bundled additional pages for the current page.
+            When the current page is opened, the bundled pages will be opened at the same time. -->
+        <urls>
+            <url url="https://www.tangram.dev/"></url>
+        </urls>
+    </application>
+    <!-- Determine the main window of the application, "ChromiumDesktopApp1.MainForm,host" represents 
+        the ChromiumDesktopApp1.MainForm class in the current executable program. -->
+    <mainWindow type="winform" objid="ChromiumDesktopApp1.MainForm,host" caption="Main Window of My Chromium Desktop App">
+        <!-- The <clientPanel> node specifies a Panel control in MainForm whose Name is "clientPanel". -->
+        <clientPanel>
+            <default>
+                <!-- The <window> node is a key structure in the Tangram system, which is used to 
+                    determine the content of the specified area. -->
+                <window>
+                    <!-- The "host" refers to the index.html page, which is ChromiumDesktopApp1.index.html in the current project. -->
+                    <node url="host"></node>
+                </window>
+            </default>
+        </clientPanel>
+    </mainWindow>
+    <!-- For LoadSnippet1 function -->
+    <snippet_1>
+        <window>
+            <!-- The "hostview" refers to the original window. In the current scenario, "hostview" refers to 
+                the web page window. This XML means to create a grid with 1 row and 2 columns, the original 
+                window (web page window) on the left and ChromiumDesktopApp1.UserControl1 on the right. -->
+            <node nodetype="splitter" rows="1" cols="2" width="600,400,">
+                <node nodetype="hostview"></node>
+                <node nodetype="clrctrl" cnnid="ChromiumDesktopApp1.UserControl1,host"></node>
+            </node>
+        </window>
+    </snippet_1>
+    <!-- For LoadSnippet2 function -->
+    <snippet_2>
+        <window>
+            <node nodetype="splitter" rows="2" cols="1" height="400,200,">
+                <node nodetype="hostview"></node>
+                <node nodetype="clrctrl" cnnid="ChromiumDesktopApp1.UserControl1,host"></node>
+            </node>
+        </window>
+    </snippet_2>
+    <!-- For LoadSnippet3 function -->
+    <snippet_3>
+        <window>
+            <node nodetype="hostview"></node>
+        </window>
+    </snippet_3>
+    <!-- End Non-standard DOM -->
+
+    <!-- Standard DOM -->
+    <div class="tile is-ancestor has-margin-5">
+        <div class="tile is-parent">
+            <div class="tile is-child notification is-info">
+                <div class="content">
+                    <p class="title">Where did the main window come from?</p>
+                    <p>The general Windows Form program will determine the main window through the following line of code.</p>
+                    <blockquote class="has-text-dark">
+                        Application.Run(new Form1());
+                    </blockquote>
+                    <p>In the Chromium Desktop App, the initial state of the application is determined by <b>index.html</b> (called <b>ChromiumDesktopApp1.index.html</b> in the project). In <b>index.html</b>, the main window of the application is determined by a <b>mainWindow</b> node.</p>
+                    <blockquote class="has-text-dark">
+                        &lt;mainWindow... &lt;/mainWindow&gt;
+                    </blockquote>
+                    <p>You can learn more details about the <b>Application.Run</b> method by visiting <a href="https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.application.run?view=netframework-4.8" target="view_window_1">Microsoft's documentation</a>.</p>
+                </div>
+            </div>
+        </div>
+        <div class="tile is-5 is-vertical is-parent">
+            <div class="tile is-child notification is-primary">
+                <p class="title">Dynamic UI</p>
+                <p>Dynamic UI is our core technology. Based on this solution, we enable developers to convert any Windows Form user area into a web viewport and support HTML-driven dynamic native content.</p>
+                <br />
+                <a href="javascript:LoadSnippet1();">Load Snippet1</a>
+                <a href="javascript:LoadSnippet2();">Load Snippet2</a>
+                <a href="javascript:LoadSnippet3();">Resume</a>
+            </div>
+            <div class="tile is-child notification is-warning">
+                <p class="title">Learn More</p>
+                <p>You can learn about our technology by further using our Wizard, or you can join our <a href="https://tangram-slack-invite-auto.herokuapp.com/" target="view_window_2">Slack Channel</a> to communicate with us directly.</p>
+            </div>
+        </div>
+    </div>
+    <!-- End Standard DOM -->
+</body>
+</html>

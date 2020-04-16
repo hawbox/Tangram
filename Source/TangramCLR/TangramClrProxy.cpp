@@ -1860,7 +1860,7 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 								return (IDispatch*)Marshal::GetIUnknownForObject(pObj).ToPointer();
 							}
 							else
-								pTangramSession->Insertint64(_T("formhandle"), thisForm->MdiParent->Handle.ToInt64());
+								pTangramSession->Insertint64(_T("formhandle"), thisForm->Handle.ToInt64());
 							pTangramSession->InsertString(_T("msgID"), _T("WINFORM_CREATED"));
 							pTangramSession->SendMessage();
 						}

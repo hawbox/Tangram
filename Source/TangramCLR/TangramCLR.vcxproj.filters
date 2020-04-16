@@ -144,7 +144,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="TangramCLR.rgs">
       <Filter>Resource Files</Filter>
     </None>
