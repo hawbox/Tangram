@@ -55,7 +55,7 @@ namespace TangramWinApp1
             //TangramCLR.CompositorManager thisManager = TangramCLR.Tangram.CreateCompositorManager(this, this);
             //TangramCLR.Compositor thisCompositor = thisManager.CreateCompositor(TangramCLR.Tangram.GetMDIClient(this), "default");
             //thisCompositor.Open("default", "TangramWinApp1.xml");
-            TangramCLR.Tangram.BindObjToWebPage(IntPtr.Zero, this, "mainForm");
+            //TangramCLR.Tangram.BindObjToWebPage(IntPtr.Zero, this, "mainForm");
         }
 
         private void OpenFile(object sender, EventArgs e)

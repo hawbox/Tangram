@@ -100,7 +100,9 @@
     <EmbeddedResource Include="UserControl1.resx">
       <DependentUpon>UserControl1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Default.xml" />
+    <EmbeddedResource Include="..\..\chromium_root_80\src\out\tangram_non_static_debug_x64\Default.xml">
+      <Link>Default.xml</Link>
+    </EmbeddedResource>
     <Compile Include="TangramWinApp1MDIForm.cs">
       <SubType>Form</SubType>
     </Compile>

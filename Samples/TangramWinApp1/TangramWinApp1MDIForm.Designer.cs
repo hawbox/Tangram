@@ -83,6 +83,7 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.panel1 = new System.Windows.Forms.Panel();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -90,7 +91,6 @@
             // 
             // menuStrip
             // 
-            resources.ApplyResources(this.menuStrip, "menuStrip");
             this.menuStrip.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -100,9 +100,9 @@
             this.toolsMenu,
             this.windowsMenu,
             this.helpMenu});
+            resources.ApplyResources(this.menuStrip, "menuStrip");
             this.menuStrip.MdiWindowListItem = this.windowsMenu;
             this.menuStrip.Name = "menuStrip";
-            this.toolTip.SetToolTip(this.menuStrip, resources.GetString("menuStrip.ToolTip"));
             this.menuStrip.MenuDeactivate += new System.EventHandler(this.menuStrip_MenuDeactivate);
             this.menuStrip.Click += new System.EventHandler(this.menuStrip_Click);
             this.menuStrip.KeyDown += new System.Windows.Forms.KeyEventHandler(this.menuStrip_KeyDown);
@@ -113,7 +113,6 @@
             // 
             // fileMenu
             // 
-            resources.ApplyResources(this.fileMenu, "fileMenu");
             this.fileMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
             this.openToolStripMenuItem,
@@ -126,6 +125,7 @@
             this.printSetupToolStripMenuItem,
             this.toolStripSeparator5,
             this.exitToolStripMenuItem});
+            resources.ApplyResources(this.fileMenu, "fileMenu");
             this.fileMenu.Name = "fileMenu";
             // 
             // newToolStripMenuItem
@@ -142,8 +142,8 @@
             // 
             // toolStripSeparator3
             // 
-            resources.ApplyResources(this.toolStripSeparator3, "toolStripSeparator3");
             this.toolStripSeparator3.Name = "toolStripSeparator3";
+            resources.ApplyResources(this.toolStripSeparator3, "toolStripSeparator3");
             // 
             // saveToolStripMenuItem
             // 
@@ -152,14 +152,14 @@
             // 
             // saveAsToolStripMenuItem
             // 
-            resources.ApplyResources(this.saveAsToolStripMenuItem, "saveAsToolStripMenuItem");
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            resources.ApplyResources(this.saveAsToolStripMenuItem, "saveAsToolStripMenuItem");
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
-            resources.ApplyResources(this.toolStripSeparator4, "toolStripSeparator4");
             this.toolStripSeparator4.Name = "toolStripSeparator4";
+            resources.ApplyResources(this.toolStripSeparator4, "toolStripSeparator4");
             // 
             // printToolStripMenuItem
             // 
@@ -173,23 +173,22 @@
             // 
             // printSetupToolStripMenuItem
             // 
-            resources.ApplyResources(this.printSetupToolStripMenuItem, "printSetupToolStripMenuItem");
             this.printSetupToolStripMenuItem.Name = "printSetupToolStripMenuItem";
+            resources.ApplyResources(this.printSetupToolStripMenuItem, "printSetupToolStripMenuItem");
             // 
             // toolStripSeparator5
             // 
-            resources.ApplyResources(this.toolStripSeparator5, "toolStripSeparator5");
             this.toolStripSeparator5.Name = "toolStripSeparator5";
+            resources.ApplyResources(this.toolStripSeparator5, "toolStripSeparator5");
             // 
             // exitToolStripMenuItem
             // 
-            resources.ApplyResources(this.exitToolStripMenuItem, "exitToolStripMenuItem");
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            resources.ApplyResources(this.exitToolStripMenuItem, "exitToolStripMenuItem");
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolsStripMenuItem_Click);
             // 
             // editMenu
             // 
-            resources.ApplyResources(this.editMenu, "editMenu");
             this.editMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.undoToolStripMenuItem,
             this.redoToolStripMenuItem,
@@ -200,6 +199,7 @@
             this.toolStripSeparator7,
             this.selectAllToolStripMenuItem});
             this.editMenu.Name = "editMenu";
+            resources.ApplyResources(this.editMenu, "editMenu");
             // 
             // undoToolStripMenuItem
             // 
@@ -213,8 +213,8 @@
             // 
             // toolStripSeparator6
             // 
-            resources.ApplyResources(this.toolStripSeparator6, "toolStripSeparator6");
             this.toolStripSeparator6.Name = "toolStripSeparator6";
+            resources.ApplyResources(this.toolStripSeparator6, "toolStripSeparator6");
             // 
             // cutToolStripMenuItem
             // 
@@ -236,55 +236,54 @@
             // 
             // toolStripSeparator7
             // 
-            resources.ApplyResources(this.toolStripSeparator7, "toolStripSeparator7");
             this.toolStripSeparator7.Name = "toolStripSeparator7";
+            resources.ApplyResources(this.toolStripSeparator7, "toolStripSeparator7");
             // 
             // selectAllToolStripMenuItem
             // 
-            resources.ApplyResources(this.selectAllToolStripMenuItem, "selectAllToolStripMenuItem");
             this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+            resources.ApplyResources(this.selectAllToolStripMenuItem, "selectAllToolStripMenuItem");
             // 
             // viewMenu
             // 
-            resources.ApplyResources(this.viewMenu, "viewMenu");
             this.viewMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolBarToolStripMenuItem,
             this.statusBarToolStripMenuItem});
             this.viewMenu.Name = "viewMenu";
+            resources.ApplyResources(this.viewMenu, "viewMenu");
             // 
             // toolBarToolStripMenuItem
             // 
-            resources.ApplyResources(this.toolBarToolStripMenuItem, "toolBarToolStripMenuItem");
             this.toolBarToolStripMenuItem.Checked = true;
             this.toolBarToolStripMenuItem.CheckOnClick = true;
             this.toolBarToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.toolBarToolStripMenuItem.Name = "toolBarToolStripMenuItem";
+            resources.ApplyResources(this.toolBarToolStripMenuItem, "toolBarToolStripMenuItem");
             this.toolBarToolStripMenuItem.Click += new System.EventHandler(this.ToolBarToolStripMenuItem_Click);
             // 
             // statusBarToolStripMenuItem
             // 
-            resources.ApplyResources(this.statusBarToolStripMenuItem, "statusBarToolStripMenuItem");
             this.statusBarToolStripMenuItem.Checked = true;
             this.statusBarToolStripMenuItem.CheckOnClick = true;
             this.statusBarToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.statusBarToolStripMenuItem.Name = "statusBarToolStripMenuItem";
+            resources.ApplyResources(this.statusBarToolStripMenuItem, "statusBarToolStripMenuItem");
             this.statusBarToolStripMenuItem.Click += new System.EventHandler(this.StatusBarToolStripMenuItem_Click);
             // 
             // toolsMenu
             // 
-            resources.ApplyResources(this.toolsMenu, "toolsMenu");
             this.toolsMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.optionsToolStripMenuItem});
             this.toolsMenu.Name = "toolsMenu";
+            resources.ApplyResources(this.toolsMenu, "toolsMenu");
             // 
             // optionsToolStripMenuItem
             // 
-            resources.ApplyResources(this.optionsToolStripMenuItem, "optionsToolStripMenuItem");
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            resources.ApplyResources(this.optionsToolStripMenuItem, "optionsToolStripMenuItem");
             // 
             // windowsMenu
             // 
-            resources.ApplyResources(this.windowsMenu, "windowsMenu");
             this.windowsMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newWindowToolStripMenuItem,
             this.cascadeToolStripMenuItem,
@@ -293,46 +292,46 @@
             this.closeAllToolStripMenuItem,
             this.arrangeIconsToolStripMenuItem});
             this.windowsMenu.Name = "windowsMenu";
+            resources.ApplyResources(this.windowsMenu, "windowsMenu");
             // 
             // newWindowToolStripMenuItem
             // 
-            resources.ApplyResources(this.newWindowToolStripMenuItem, "newWindowToolStripMenuItem");
             this.newWindowToolStripMenuItem.Name = "newWindowToolStripMenuItem";
+            resources.ApplyResources(this.newWindowToolStripMenuItem, "newWindowToolStripMenuItem");
             this.newWindowToolStripMenuItem.Click += new System.EventHandler(this.ShowNewForm);
             // 
             // cascadeToolStripMenuItem
             // 
-            resources.ApplyResources(this.cascadeToolStripMenuItem, "cascadeToolStripMenuItem");
             this.cascadeToolStripMenuItem.Name = "cascadeToolStripMenuItem";
+            resources.ApplyResources(this.cascadeToolStripMenuItem, "cascadeToolStripMenuItem");
             this.cascadeToolStripMenuItem.Click += new System.EventHandler(this.CascadeToolStripMenuItem_Click);
             // 
             // tileVerticalToolStripMenuItem
             // 
-            resources.ApplyResources(this.tileVerticalToolStripMenuItem, "tileVerticalToolStripMenuItem");
             this.tileVerticalToolStripMenuItem.Name = "tileVerticalToolStripMenuItem";
+            resources.ApplyResources(this.tileVerticalToolStripMenuItem, "tileVerticalToolStripMenuItem");
             this.tileVerticalToolStripMenuItem.Click += new System.EventHandler(this.TileVerticalToolStripMenuItem_Click);
             // 
             // tileHorizontalToolStripMenuItem
             // 
-            resources.ApplyResources(this.tileHorizontalToolStripMenuItem, "tileHorizontalToolStripMenuItem");
             this.tileHorizontalToolStripMenuItem.Name = "tileHorizontalToolStripMenuItem";
+            resources.ApplyResources(this.tileHorizontalToolStripMenuItem, "tileHorizontalToolStripMenuItem");
             this.tileHorizontalToolStripMenuItem.Click += new System.EventHandler(this.TileHorizontalToolStripMenuItem_Click);
             // 
             // closeAllToolStripMenuItem
             // 
-            resources.ApplyResources(this.closeAllToolStripMenuItem, "closeAllToolStripMenuItem");
             this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
+            resources.ApplyResources(this.closeAllToolStripMenuItem, "closeAllToolStripMenuItem");
             this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.CloseAllToolStripMenuItem_Click);
             // 
             // arrangeIconsToolStripMenuItem
             // 
-            resources.ApplyResources(this.arrangeIconsToolStripMenuItem, "arrangeIconsToolStripMenuItem");
             this.arrangeIconsToolStripMenuItem.Name = "arrangeIconsToolStripMenuItem";
+            resources.ApplyResources(this.arrangeIconsToolStripMenuItem, "arrangeIconsToolStripMenuItem");
             this.arrangeIconsToolStripMenuItem.Click += new System.EventHandler(this.ArrangeIconsToolStripMenuItem_Click);
             // 
             // helpMenu
             // 
-            resources.ApplyResources(this.helpMenu, "helpMenu");
             this.helpMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contentsToolStripMenuItem,
             this.indexToolStripMenuItem,
@@ -340,11 +339,12 @@
             this.toolStripSeparator8,
             this.aboutToolStripMenuItem});
             this.helpMenu.Name = "helpMenu";
+            resources.ApplyResources(this.helpMenu, "helpMenu");
             // 
             // contentsToolStripMenuItem
             // 
-            resources.ApplyResources(this.contentsToolStripMenuItem, "contentsToolStripMenuItem");
             this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
+            resources.ApplyResources(this.contentsToolStripMenuItem, "contentsToolStripMenuItem");
             // 
             // indexToolStripMenuItem
             // 
@@ -358,17 +358,16 @@
             // 
             // toolStripSeparator8
             // 
-            resources.ApplyResources(this.toolStripSeparator8, "toolStripSeparator8");
             this.toolStripSeparator8.Name = "toolStripSeparator8";
+            resources.ApplyResources(this.toolStripSeparator8, "toolStripSeparator8");
             // 
             // aboutToolStripMenuItem
             // 
-            resources.ApplyResources(this.aboutToolStripMenuItem, "aboutToolStripMenuItem");
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            resources.ApplyResources(this.aboutToolStripMenuItem, "aboutToolStripMenuItem");
             // 
             // toolStrip
             // 
-            resources.ApplyResources(this.toolStrip, "toolStrip");
             this.toolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripButton,
@@ -380,90 +379,94 @@
             this.toolStripSeparator2,
             this.helpToolStripButton,
             this.browserToolStripButton});
+            resources.ApplyResources(this.toolStrip, "toolStrip");
             this.toolStrip.Name = "toolStrip";
-            this.toolTip.SetToolTip(this.toolStrip, resources.GetString("toolStrip.ToolTip"));
             // 
             // newToolStripButton
             // 
-            resources.ApplyResources(this.newToolStripButton, "newToolStripButton");
             this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(this.newToolStripButton, "newToolStripButton");
             this.newToolStripButton.Name = "newToolStripButton";
             this.newToolStripButton.Click += new System.EventHandler(this.ShowNewForm);
             // 
             // openToolStripButton
             // 
-            resources.ApplyResources(this.openToolStripButton, "openToolStripButton");
             this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(this.openToolStripButton, "openToolStripButton");
             this.openToolStripButton.Name = "openToolStripButton";
             this.openToolStripButton.Click += new System.EventHandler(this.OpenFile);
             // 
             // saveToolStripButton
             // 
-            resources.ApplyResources(this.saveToolStripButton, "saveToolStripButton");
             this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(this.saveToolStripButton, "saveToolStripButton");
             this.saveToolStripButton.Name = "saveToolStripButton";
             // 
             // toolStripSeparator1
             // 
-            resources.ApplyResources(this.toolStripSeparator1, "toolStripSeparator1");
             this.toolStripSeparator1.Name = "toolStripSeparator1";
+            resources.ApplyResources(this.toolStripSeparator1, "toolStripSeparator1");
             // 
             // printToolStripButton
             // 
-            resources.ApplyResources(this.printToolStripButton, "printToolStripButton");
             this.printToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(this.printToolStripButton, "printToolStripButton");
             this.printToolStripButton.Name = "printToolStripButton";
             // 
             // printPreviewToolStripButton
             // 
-            resources.ApplyResources(this.printPreviewToolStripButton, "printPreviewToolStripButton");
             this.printPreviewToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(this.printPreviewToolStripButton, "printPreviewToolStripButton");
             this.printPreviewToolStripButton.Name = "printPreviewToolStripButton";
             // 
             // toolStripSeparator2
             // 
-            resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
             this.toolStripSeparator2.Name = "toolStripSeparator2";
+            resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
             // 
             // helpToolStripButton
             // 
-            resources.ApplyResources(this.helpToolStripButton, "helpToolStripButton");
             this.helpToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(this.helpToolStripButton, "helpToolStripButton");
             this.helpToolStripButton.Name = "helpToolStripButton";
             // 
             // browserToolStripButton
             // 
-            resources.ApplyResources(this.browserToolStripButton, "browserToolStripButton");
             this.browserToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            resources.ApplyResources(this.browserToolStripButton, "browserToolStripButton");
             this.browserToolStripButton.Name = "browserToolStripButton";
             this.browserToolStripButton.Click += new System.EventHandler(this.browserToolStripButton_Click);
             // 
             // statusStrip
             // 
-            resources.ApplyResources(this.statusStrip, "statusStrip");
             this.statusStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel});
+            resources.ApplyResources(this.statusStrip, "statusStrip");
             this.statusStrip.Name = "statusStrip";
-            this.toolTip.SetToolTip(this.statusStrip, resources.GetString("statusStrip.ToolTip"));
             // 
             // toolStripStatusLabel
             // 
-            resources.ApplyResources(this.toolStripStatusLabel, "toolStripStatusLabel");
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+            resources.ApplyResources(this.toolStripStatusLabel, "toolStripStatusLabel");
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.Red;
+            resources.ApplyResources(this.panel1, "panel1");
+            this.panel1.Name = "panel1";
             // 
             // TangramWinApp1MDIForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CausesValidation = false;
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.menuStrip);
-            this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip;
             this.Name = "TangramWinApp1MDIForm";
-            this.toolTip.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.Load += new System.EventHandler(this.TangramWinApp1MDIForm_Load);
             this.SizeChanged += new System.EventHandler(this.TangramWinApp1MDIForm_SizeChanged);
             this.menuStrip.ResumeLayout(false);
@@ -532,6 +535,7 @@
         private System.Windows.Forms.ToolStripButton helpToolStripButton;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.ToolStripButton browserToolStripButton;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 

@@ -80,6 +80,7 @@ namespace ChromePlus {
 		if (hWnd==0||::IsWindowVisible(m_hWnd) == false || g_pTangram->m_bChromeNeedClosed == TRUE || g_pTangram->m_bOMNIBOXPOPUPVISIBLE) {
 			return;
 		}
+		//return;
 		if (m_hOldTab)
 		{
 			RECT rc;
@@ -105,7 +106,7 @@ namespace ChromePlus {
 		}
 		//if (m_pVisibleWebWnd&&m_pVisibleWebWnd->m_pDevToolWnd)
 		//	m_pVisibleWebWnd = m_pVisibleWebWnd->m_pDevToolWnd;
-		BrowserLayout();
+		//BrowserLayout();
 		if (m_pVisibleWebWnd)
 		{
 			if (m_pVisibleWebWnd->m_hExtendWnd == nullptr)
@@ -156,7 +157,7 @@ namespace ChromePlus {
 				}
 			}
 		}
-		//BrowserLayout();
+		BrowserLayout();
 	};
 
 	LRESULT CBrowserWnd::BrowserLayout() {

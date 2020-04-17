@@ -41,9 +41,11 @@ namespace TangramWinApp1
             Application.SetCompatibleTextRenderingDefault(false);
             if (Tangram.BuiltInBrowserModel == true)
                 return;
-            string newTabPageLayout = Helper.LoadResourceFile("TangramWinApp1.Default.xml");
-            Tangram.UpdateNewTabPageLayout(newTabPageLayout);
-            Tangram.WizData = "TangramWinApp1.wizxml";
+
+            //string newTabPageLayout = Helper.LoadResourceFile("TangramWinApp1.Default.xml");
+            //Tangram.UpdateNewTabPageLayout(newTabPageLayout);
+            //Tangram.WizData = "TangramWinApp1.wizxml";
+            Tangram.NTPXml = "default.xml";
             Tangram.OnBindCLRObjToWebPage += Tangram_OnBindCLRObjToWebPage;
 
             //Support Application Type:
@@ -59,7 +61,7 @@ namespace TangramWinApp1
             //Tangram.AppType = TangramAppType.APP_ECLIPSE;
             //Application is a Win32 Desktop App
             //Tangram.AppType = TangramAppType.APP_WIN32;
-
+            //TangramCLR.ApplicationContext Context = Tangram.Context;
             switch (Tangram.AppType)
             {
                 case TangramAppType.APP_BROWSER:
@@ -94,7 +96,8 @@ namespace TangramWinApp1
                     break;
             }
 
-            Application.Run(Tangram.Context);
+             //Application.Run(new TangramWinApp1MDIForm());
+           Application.Run();
         }
 
         private static void Tangram_OnBindCLRObjToWebPage(object SourceObj, TangramSession eventSession, string eventName)
