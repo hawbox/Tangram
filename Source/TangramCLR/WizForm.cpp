@@ -58,14 +58,15 @@ namespace TangramCLR {
 			for (int i = 0; i < nCount; i++)
 			{
 				CTangramXmlParse* pChild = m_Parse.GetChild(i);
-				CString _strPath = strPath + pChild->name()+_T(".ico");
+				CString _strPath = strPath + pChild->attr(_T("iconName"), pChild->name()) + _T(".png");
 				int nIndex = -1;
 				if (::PathFileExists(_strPath))
 				{
-					System::Drawing::Icon^ pIcon = gcnew System::Drawing::Icon(BSTR2STRING(_strPath));
-					pImageList->Images->Add(pIcon);
+					//System::Drawing::Icon^ pIcon = gcnew System::Drawing::Icon(BSTR2STRING(_strPath));
+					//pImageList->Images->Add(pIcon);
+					pImageList->Images->Add(Image::FromFile(BSTR2STRING(_strPath)));
 				}
-				CString strName = pChild->name();
+				CString strName = pChild->attr(_T("name"), pChild->name());
 				strName.Replace(_T("_"), _T(" "));
 				ctrl->Items->Add(BSTR2STRING(strName), i)->Tag = BSTR2STRING(pChild->xml());
 			}
