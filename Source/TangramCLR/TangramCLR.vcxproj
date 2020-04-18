@@ -93,7 +93,7 @@
     <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\Samples\TangramShared1\output</OutDir>
+    <OutDir>..\..\..\TangramWizard\TangramShared\output</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <LinkKeyFile>TangramCLR.snk</LinkKeyFile>
@@ -107,7 +107,7 @@
     <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\..\chromium_root_80\src\out\tangram_static_release_x64</OutDir>
+    <OutDir>..\..\..\TangramWizard\TangramShared\output</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <LinkKeyFile>TangramCLR.snk</LinkKeyFile>

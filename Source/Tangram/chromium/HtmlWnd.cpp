@@ -1030,7 +1030,7 @@ namespace ChromePlus {
 		{
 			RenderHTMLDataElement(strHTML);
 		}
-		else if (strRuleName.CompareNoCase(_T("doc")) == 0)
+		else if (strRuleName.CompareNoCase(_T("webViewPort")) == 0)
 		{
 			m_strDocXml = strHTML;
 		}

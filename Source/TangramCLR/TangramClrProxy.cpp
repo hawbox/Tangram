@@ -1817,7 +1817,8 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 								TangramCLR::Tangram::CreateBKPage(thisForm, BSTR2STRING(strBKPage));
 							}
 						}
-
+						if (strTagName == _T("mainwindow") || strTagName == _T("mainWindow"))
+							theApp.m_pTangramImpl->m_hMainWnd = (HWND)thisForm->Handle.ToPointer();
 						thisForm->Tag = BSTR2STRING(m_Parse.name());
 						__int64 nIpcSession = m_Parse.attrInt64(_T("ipcsession"), 0);
 						TangramCLR::TangramSession^ pCloudSession = nullptr;
