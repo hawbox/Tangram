@@ -1022,6 +1022,10 @@ namespace ChromePlus {
 			if (g_pTangram->m_strMainWndXml == _T(""))
 				g_pTangram->m_strMainWndXml = strHTML;
 		}
+		else if (strRuleName.CompareNoCase(_T("webBrowser")) == 0)
+		{
+			RenderHTMLWebBrowserElement(strHTML);
+		}
 		else if (strRuleName.CompareNoCase(_T("object")) == 0)
 		{
 			RenderHTMLObjectElement(strHTML);
@@ -1074,6 +1078,39 @@ namespace ChromePlus {
 				xmlParse.put_attr(_T("renderframehostproxy"), (__int64)pChromeRenderFrameHostProxyBase);
 				IDispatch* pDisp = g_pTangram->m_pCLRProxy->CreateCLRObj(xmlParse.xml());
 			}
+		}
+	}
+
+	void CHtmlWnd::RenderHTMLWebBrowserElement(CString strHTML)
+	{
+		CTangramXmlParse m_Parse;
+		if (m_Parse.LoadXml(strHTML))
+		{
+			CString strUrls = _T("");
+			int nCount = m_Parse.GetCount();
+			if (nCount > 0)
+			{
+				for (int i = 0; i < nCount; i++)
+				{
+					CString strUrl = m_Parse.GetChild(i)->val();
+					int nPos2 = strUrl.Find(_T(":"));
+					if (nPos2 != -1)
+					{
+						CString strURLHeader = strUrl.Left(nPos2);
+						if (strURLHeader.CompareNoCase(_T("host")) == 0)
+						{
+							strUrl = g_pTangram->m_strAppPath + strUrl.Mid(nPos2 + 1);
+						}
+					}
+					strUrls = strUrls + strUrl + _T("|");
+				}
+			}
+			else
+			{
+				strUrls = "chrome://newtab|";
+			}
+
+			g_pTangram->m_pBrowserFactory->CreateBrowser(NULL, strUrls);
 		}
 	}
 

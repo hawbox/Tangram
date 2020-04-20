@@ -421,6 +421,18 @@ namespace ChromePlus {
 			g_pTangram->m_mapBrowserWnd.erase(it);
 		}
 
+		if (g_pTangram->m_hMainWnd == g_pTangram->m_hHostWnd && g_pTangram->m_mapBrowserWnd.size() == 1)
+		{
+			g_pTangram->m_bChromeNeedClosed = true;
+			for (auto it : g_pTangram->m_mapBrowserWnd)
+			{
+				if (((ChromePlus::CBrowserWnd*)it.second)->m_hWnd != m_hWnd)
+					((ChromePlus::CBrowserWnd*)it.second)->PostMessageW(WM_CLOSE, 0, 0);
+			}
+			//::SetParent(g_pTangram->m_hMainWnd, m_hWnd);
+			g_pTangram->m_hMainWnd = nullptr;
+		}
+
 		if (g_pTangram->m_hHostBrowserWnd == m_hWnd)
 		{
 			g_pTangram->m_bChromeNeedClosed = true;

@@ -2727,7 +2727,7 @@ void CTangramCLRProxy::OnClick(Object^ sender, EventArgs^ e)
 
 void CTangramCLRProxy::OnTextChanged(System::Object^ sender, System::EventArgs^ e)
 {
-	TextBox^ pTextCtrl = (TextBox^)sender;
+	Control^ pTextCtrl = (Control^)sender;
 	TangramCLR::TangramSession^ pCloudSession = nullptr;
 	if (TangramCLR::Tangram::WebBindEventDic->TryGetValue(sender, pCloudSession))
 	{
