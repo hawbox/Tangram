@@ -1026,6 +1026,10 @@ namespace ChromePlus {
 		{
 			RenderHTMLWebBrowserElement(strHTML);
 		}
+		else if (strRuleName.CompareNoCase(_T("indWindow")) == 0)
+		{
+			RenderHTMLIndWindowElement(strHTML);
+		}
 		else if (strRuleName.CompareNoCase(_T("object")) == 0)
 		{
 			RenderHTMLObjectElement(strHTML);
@@ -1049,6 +1053,39 @@ namespace ChromePlus {
 	}
 
 	void CHtmlWnd::RenderHTMLMainWindowElement(CString strHTML)
+	{
+		CTangramXmlParse xmlParse;
+		if (xmlParse.LoadXml(strHTML))
+		{
+			CTangramXmlParse* pMdiChildXmlParse = xmlParse.GetChild(_T("mdichild"));
+			if (pMdiChildXmlParse)
+			{
+				CTangramXmlParse* pMdiClientXmlParse = xmlParse.GetChild(_T("mdiclient"));
+				int nCount = pMdiChildXmlParse->GetCount();
+				if (nCount && pMdiClientXmlParse)
+				{
+					CMDIChildFormInfo* pInfo = new CMDIChildFormInfo();
+					g_pTangram->m_pCurMDIChildFormInfo = pInfo;
+					for (int i = 0; i < nCount; i++)
+					{
+						CString strName = pMdiChildXmlParse->GetChild(i)->name();
+						if (pMdiClientXmlParse->GetChild(strName))
+							pInfo->m_mapFormsInfo[strName] = pMdiChildXmlParse->GetChild(i)->xml();
+					}
+				}
+			}
+			if (g_pTangram->m_pCLRProxy == nullptr)
+				g_pTangram->LoadCLR();
+			if (g_pTangram->m_pCLRProxy)
+			{
+				CChromeRenderFrameHostProxy* pChromeRenderFrameHostProxyBase = (CChromeRenderFrameHostProxy*)this;
+				xmlParse.put_attr(_T("renderframehostproxy"), (__int64)pChromeRenderFrameHostProxyBase);
+				IDispatch* pDisp = g_pTangram->m_pCLRProxy->CreateCLRObj(xmlParse.xml());
+			}
+		}
+	}
+
+	void CHtmlWnd::RenderHTMLIndWindowElement(CString strHTML)
 	{
 		CTangramXmlParse xmlParse;
 		if (xmlParse.LoadXml(strHTML))
