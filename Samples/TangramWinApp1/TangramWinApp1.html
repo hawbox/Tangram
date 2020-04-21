@@ -210,7 +210,7 @@
 <body>
     <define tagName="mainWindow"></define>
     <define tagName="application"></define>
-    <define tagName="doc"></define>
+    <define tagName="webViewport"></define>
     <define tagName="object"></define>
 
     <object type="winform" objid="TangramWinApp1.Form1,host" uikey="form1" caption="test child form1" id="testform">
@@ -358,7 +358,7 @@
             </default>
         </listview1>
     </object>
-    <doc>
+    <webViewport>
         <window>
             <node nodetype="splitter" rows="1" cols="2" width="350,100,">
                 <node nodetype="clrctrl" cnnid="TangramWinApp1.Form1,host" uikey="form1" id="test1235"></node>
@@ -368,7 +368,7 @@
                 </node>
             </node>
         </window>
-    </doc>
+    </webViewport>
     <application>
         <ntp>
             <window>
@@ -379,10 +379,10 @@
             </window>
         </ntp>
         <urls>
-            <test url="host:startpage.html"></test>
             <test url="host:winapp3.html"></test>
             <test url="http://www.baidu.com"></test>
             <test url="http://www.csdn.net"></test>
+            <test url="host:startpage.html"></test>
         </urls>
     </application>
     <div class="tangramcontents">

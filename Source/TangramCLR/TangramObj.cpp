@@ -391,12 +391,6 @@ namespace TangramCLR
 		return BSTR2STRING(strRet);
 	}
 
-	void Tangram::BrowserModel::set(bool bBrowser)
-	{
-		if (bBrowser)
-			theApp.m_pTangramImpl->m_nAppType = TANGRAM_APP_BROWSER;
-	}
-
 	bool Tangram::SupportCrashReporting::get()
 	{
 		return theApp.m_pTangramImpl->m_bIsSupportCrashReporting;
@@ -451,7 +445,7 @@ namespace TangramCLR
 		return TangramCLR::Tangram::m_pDefaultIcon;
 	}
 
-	bool Tangram::BuiltInBrowserModel::get()
+	bool Tangram::WebRuntimeInit::get()
 	{
 		if (IsChromeRunning)
 			return true;

@@ -1818,7 +1818,10 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 							}
 						}
 						if (strTagName == _T("mainwindow") || strTagName == _T("mainWindow"))
+						{
 							theApp.m_pTangramImpl->m_hMainWnd = (HWND)thisForm->Handle.ToPointer();
+							::PostMessage(theApp.m_pTangramImpl->m_hMainWnd, WM_TANGRAMMSG, 0, 20200419);
+						}
 						thisForm->Tag = BSTR2STRING(m_Parse.name());
 						__int64 nIpcSession = m_Parse.attrInt64(_T("ipcsession"), 0);
 						TangramCLR::TangramSession^ pCloudSession = nullptr;
@@ -1847,6 +1850,12 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 							CString strFormName = m_Parse.attr(_T("formname"), _T(""));
 							pTangramSession->InsertLong(_T("autodelete"), 0);
 							pTangramSession->Insertint64(_T("domhandle"), (__int64)pTangramSession);
+							CString strFormID = m_Parse.attr(_T("id"), _T(""));
+							pTangramSession->InsertString(_T("id"), strFormID);
+							
+							strFormID = m_Parse.attr(_T("objid"), _T(""));
+							pTangramSession->InsertString(_T("objid"), strFormID);
+
 							pTangramSession->InsertString(_T("formname"), strFormName);
 							theAppProxy.m_mapTangramSession2CloudSession[pTangramSession] = pCloudSession;
 							if(thisForm->IsMdiContainer)

@@ -278,6 +278,7 @@ public:
 	map<LONGLONG, CTangramEventObj*>		m_mapTangramEvent;
 	map<HWND, CTangramCommonCtrl*>			m_mapTangramCommonCtrl;
 	vector<HWND>							m_vecEclipseHideTopWnd;
+	map<HWND, CTangramWinFormWnd*>			m_mapMainForm;
 	map<HWND, CTangramMDIChildWnd*>			m_mapTangramMDIChildWnd;
 	map<HWND, CTangramAFXHelperWnd*>		m_mapTangramAFXHelperWnd;
 	map<CString, CRuntimeClass*>			m_TabWndClassInfoDictionary;

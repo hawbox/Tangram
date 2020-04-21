@@ -1166,7 +1166,7 @@ namespace TangramCLR
 			void set(Object^ obj);
 		}
 
-		static property bool BuiltInBrowserModel
+		static property bool WebRuntimeInit
 		{
 			bool get();
 		}
@@ -1174,11 +1174,6 @@ namespace TangramCLR
 		static property System::Drawing::Icon^ DefaultIcon
 		{
 			System::Drawing::Icon^ get();
-		}
-
-		static property bool BrowserModel
-		{
-			void set(bool bBrowser);
 		}
 
 		static property bool SupportCrashReporting

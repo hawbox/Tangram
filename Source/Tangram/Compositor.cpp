@@ -1365,6 +1365,25 @@ LRESULT CTangramWinFormWnd::OnGetMe(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 	return DefWindowProc(uMsg, wParam, lParam);
 }
 
+LRESULT CTangramWinFormWnd::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
+{
+	auto it = g_pTangram->m_mapMainForm.find(m_hWnd);
+	if (it != g_pTangram->m_mapMainForm.end())
+	{
+		g_pTangram->m_mapMainForm.erase(it);
+		if (m_hWnd == g_pTangram->m_hMainWnd)
+		{
+			if (g_pTangram->m_mapMainForm.size())
+			{
+				it = g_pTangram->m_mapMainForm.begin();
+				if (it != g_pTangram->m_mapMainForm.end())
+					g_pTangram->m_hMainWnd = it->first;
+			}
+		}
+	}
+	return DefWindowProc(uMsg, wParam, lParam);
+}
+
 LRESULT CTangramWinFormWnd::OnTangramMsg(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
 {
 	switch (lParam)
@@ -1462,6 +1481,13 @@ LRESULT CTangramWinFormWnd::OnTangramMsg(UINT uMsg, WPARAM wParam, LPARAM lParam
 		{
 			m_pBKWnd->m_pCompositor->HostPosChanged();
 		}
+	}
+	break;
+	case 20200419:
+	{
+		auto it = g_pTangram->m_mapMainForm.find(m_hWnd);
+		if (it == g_pTangram->m_mapMainForm.end())
+			g_pTangram->m_mapMainForm[m_hWnd] = this;
 	}
 	break;
 	}

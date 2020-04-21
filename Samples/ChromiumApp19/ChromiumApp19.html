@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        window.onload = function (e) {
+            if (tangram) {
+                tangram.onWinFormCreated = function (e) {
+                    e.form.addEventListener("button1", "OnClick", function (x) {
+                        x.setStr("button1", x.getStr("textBox1"));
+                    });
+                    e.form.SyncCtrlTextChange("textBox1;button1", function (e) {
+                    });
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Define new DOM elements -->
+    <define tagName="mainWindow"></define>
+    <define tagName="application"></define>
+    <!-- End Define new DOM elements -->
+    <!-- The <application> node is required, it can provide application-level configuration. -->
+    <application>
+        <!-- Nothing at all -->
+    </application>
+    <!-- Determine the main window of the application, "ChromiumApp16.Form1,host" represents
+        the ChromiumApp16.Form1 class in the current executable program. -->
+    <mainWindow type="winform" objid="ChromiumApp19.Form1,host" caption="DEMO: HTML-driven dynamic native content">
+        <panel1>
+            <default>
+                <!-- The <window> node is a key structure in the Tangram system, which is used to
+                determine the content of the specified area. -->
+                <window>
+                    <node url="host"></node>
+                </window>
+            </default>
+        </panel1>
+    </mainWindow>
+</body>
+</html>
