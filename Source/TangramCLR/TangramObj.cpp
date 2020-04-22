@@ -291,10 +291,6 @@ namespace TangramCLR
 	Tangram::Tangram()
 	{
 		m_pTangramAppProxy = nullptr;
-		m_pApplicationContext = nullptr;
-		//AppDomain^ pAppDomain = AppDomain::CurrentDomain;
-		//pAppDomain->SetupInformation->TargetFrameworkName;
-		//String^ ver = AppDomain::CurrentDomain->SetupInformation->TargetFrameworkName;
 	}
 
 	Tangram::Tangram(ITangram* pTangram)
@@ -320,6 +316,27 @@ namespace TangramCLR
 			theApp.m_pTangram->InitEclipseApp();
 	}
 	
+	void Tangram::Run()
+	{
+		if(Tangram::WebRuntimeInit())
+			return;
+		System::Windows::Forms::Application::Run();
+	}
+	
+	void Tangram::Run(Form^ Mainform)
+	{
+		if (Tangram::WebRuntimeInit())
+			return;
+		System::Windows::Forms::Application::Run(Mainform);
+	}
+	
+	void Tangram::Run(ApplicationContext^ context)
+	{
+		if (Tangram::WebRuntimeInit())
+			return;
+		System::Windows::Forms::Application::Run(context);
+	}
+
 	Tangram^ Tangram::GetTangram()
 	{
 		if (theApp.m_pTangram == nullptr)
@@ -445,7 +462,7 @@ namespace TangramCLR
 		return TangramCLR::Tangram::m_pDefaultIcon;
 	}
 
-	bool Tangram::WebRuntimeInit::get()
+	bool Tangram::WebRuntimeInit()
 	{
 		if (IsChromeRunning)
 			return true;
@@ -483,13 +500,6 @@ namespace TangramCLR
 			}
 		}
 		return nullptr;
-	}
-
-	ApplicationContext^ Tangram::Context::get()
-	{
-		if (m_pApplicationContext == nullptr)
-			m_pApplicationContext = gcnew ApplicationContext();
-		return m_pApplicationContext;
 	}
 
 	Tangram^ Tangram::TangramCore::get()

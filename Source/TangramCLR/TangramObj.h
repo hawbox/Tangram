@@ -955,8 +955,6 @@ namespace TangramCLR
 	public:
 		Tangram(ITangram* pTangram);
 		~Tangram();
-
-		static ApplicationContext^ m_pApplicationContext;
 	private:
 		Tangram();
 		static bool IsAppInit = false;
@@ -970,6 +968,7 @@ namespace TangramCLR
 		static Dictionary<Control^, String^>^ m_pControlRelationDic = nullptr;
 		static Dictionary<Object^, TangramSession^>^ m_pCloudEventDic = gcnew Dictionary<Object^, TangramSession^>();
 		static Dictionary<String^, String^>^ CustomizeDictionary = gcnew Dictionary<String^, String^>();
+		static bool WebRuntimeInit();
 	public:
 #ifndef _WIN64
 		static Dictionary<String^, String^>^ replacementsDictionary = nullptr;
@@ -1015,6 +1014,10 @@ namespace TangramCLR
 		static Tangram^ InitTangramApp(bool bSupportCrashReporting, TangramAppType AppType);
 
 		static void InitEclipse();
+
+		static void Run();
+		static void Run(Form^ Mainform);
+		static void Run(ApplicationContext^ context);
 
 		static WndNode^ GetWndNodeFromObj(Object ^ obj)
 		{
@@ -1155,20 +1158,10 @@ namespace TangramCLR
 			ChromeWebBrowser^ get();
 		}
 
-		static property ApplicationContext^ Context
-		{
-			ApplicationContext^ get();
-		}
-
 		static property Object^ Application
 		{
 			Object^ get();
 			void set(Object^ obj);
-		}
-
-		static property bool WebRuntimeInit
-		{
-			bool get();
 		}
 
 		static property System::Drawing::Icon^ DefaultIcon
