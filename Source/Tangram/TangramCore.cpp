@@ -1573,6 +1573,19 @@ void CTangram::TangramInitFromeWeb()
 				}
 			}
 		}
+		CTangramXmlParse* pCLRApps = m_Parse.GetChild(_T("modules"));
+		if (pCLRApps)
+		{
+			int nCount = pCLRApps->GetCount();
+			LONGLONG hHandle = 0;
+			for (int i = 0; i < nCount; i++)
+			{
+				CTangramXmlParse* pCLRApp = pCLRApps->GetChild(i);
+				BSTR bstrAppXML = pCLRApp->xml().AllocSysString();
+				InitCLRApp(bstrAppXML, &hHandle);
+				::SysFreeString(bstrAppXML);
+			}
+		}
 	}
 }
 
@@ -2635,6 +2648,25 @@ int CTangram::LoadCLR()
 				if (hrStart != S_OK)
 					return -1;
 			}
+		}
+	}
+	if (m_pCLRProxy != nullptr && m_pClrHost == nullptr)
+	{
+		HMODULE	hMscoreeLib = LoadLibrary(TEXT("mscoree.dll"));
+		TangramCLRCreateInstance CLRCreateInstance = (TangramCLRCreateInstance)GetProcAddress(hMscoreeLib, "CLRCreateInstance");
+		if (CLRCreateInstance)
+		{
+			HRESULT hrStart = 0;
+			ICLRMetaHost* m_pMetaHost = NULL;
+			hrStart = CLRCreateInstance(CLSID_CLRMetaHost, IID_ICLRMetaHost, (LPVOID*)&m_pMetaHost);
+			CString strVer = _T("v4.0.30319");
+			ICLRRuntimeInfo* lpRuntimeInfo = nullptr;
+			hrStart = m_pMetaHost->GetRuntime(strVer.AllocSysString(), IID_ICLRRuntimeInfo, (LPVOID*)&lpRuntimeInfo);
+			if (FAILED(hrStart))
+				return S_FALSE;
+			hrStart = lpRuntimeInfo->GetInterface(CLSID_CLRRuntimeHost, IID_ICLRRuntimeHost, (LPVOID*)&m_pClrHost);
+			if (FAILED(hrStart))
+				return S_FALSE;
 		}
 	}
 	return 0;
@@ -7175,8 +7207,8 @@ STDMETHODIMP CTangram::InitCLRApp(BSTR strInitXml, LONGLONG* llHandle)
 	if (m_Parse.LoadXml(OLE2T(strInitXml)))
 	{
 		CString strLib = m_strAppPath + m_Parse.attr(_T("libname"), _T(""));
-		CString strObjName = m_strAppPath + m_Parse.attr(_T("objname"), _T(""));
-		CString strFunctionName = m_strAppPath + m_Parse.attr(_T("functionname"), _T(""));
+		CString strObjName = m_Parse.attr(_T("objname"), _T(""));
+		CString strFunctionName = m_Parse.attr(_T("functionname"), _T(""));
 		if (strLib != _T("") && strObjName != _T("") && strFunctionName != _T(""))
 		{
 			DWORD dwRetCode = 0;
