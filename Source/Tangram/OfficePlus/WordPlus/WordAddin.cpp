@@ -132,7 +132,7 @@ namespace OfficePlus
 							CTangramXmlParse* pNodeParse = m_Parse.FindItem(_T("node"));
 							strCap = pNodeParse->attr(_T("caption"), _T(""));
 							if (strCap == _T(""))
-								strCap = pNodeParse->attr(_T("name"), _T(""));;
+								strCap = pNodeParse->attr(_T("id"), _T(""));;
 							CComBSTR bstrCap(strCap);
 							HRESULT hr = m_pCTPFactory->CreateCTP(L"Tangram.Ctrl.1", bstrCap, vWindow, &_pCustomTaskPane);
 							_pCustomTaskPane->AddRef();
@@ -614,7 +614,7 @@ namespace OfficePlus
 							CTangramXmlParse* pNodeParse = m_Parse.FindItem(_T("node"));
 							strCap = pNodeParse->attr(_T("caption"), _T(""));
 							if (strCap == _T(""))
-								strCap = pNodeParse->attr(_T("name"), _T(""));;
+								strCap = pNodeParse->attr(_T("id"), _T(""));;
 							CComBSTR bstrCap(strCap);
 							HRESULT hr = m_pCTPFactory->CreateCTP(L"Tangram.Ctrl.1", bstrCap, vWindow, &_pCustomTaskPane);
 							_pCustomTaskPane->AddRef();

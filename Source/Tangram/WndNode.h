@@ -81,7 +81,6 @@ public:
 	HWND								m_hChildHostWnd;
 
 	CString 							m_strID;
-	CString 							m_strWebObjID = _T("");
 	CString 							m_strURL;
 	CString								m_strKey;
 	CString								m_strName;

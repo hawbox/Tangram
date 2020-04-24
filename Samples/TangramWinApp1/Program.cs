@@ -20,11 +20,7 @@
 ********************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 using TangramCLR;
 
 namespace TangramWinApp1
@@ -39,142 +35,8 @@ namespace TangramWinApp1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            if (Tangram.BuiltInBrowserModel == true)
-                return;
-
-            //string newTabPageLayout = Helper.LoadResourceFile("TangramWinApp1.Default.xml");
-            //Tangram.UpdateNewTabPageLayout(newTabPageLayout);
-            //Tangram.WizData = "TangramWinApp1.wizxml";
-            Tangram.NTPXml = "default.xml";
-            Tangram.OnBindCLRObjToWebPage += Tangram_OnBindCLRObjToWebPage;
-
-            //Support Application Type:
-            //Application is a Chromium Based WebBrowser
-            //Tangram.AppType = TangramAppType.APP_BROWSER;
-
-            //Application is a Chromium Based Desktop Application
-            //Tangram.AppType = TangramAppType.APP_BROWSERAPP;
-
-            //Application is a Chromium-Eclipse Based Desktop Application, Need Eclipse Binary Component and 64bit JVM
-            //Tangram.AppType = TangramAppType.APP_BROWSER_ECLIPSE; 
-            //Application is a Customized Eclipse IDE, Need Eclipse Binary Component and 64bit JVM
-            //Tangram.AppType = TangramAppType.APP_ECLIPSE;
-            //Application is a Win32 Desktop App
-            //Tangram.AppType = TangramAppType.APP_WIN32;
-            //TangramCLR.ApplicationContext Context = Tangram.Context;
-            switch (Tangram.AppType)
-            {
-                case TangramAppType.APP_BROWSER:
-                case TangramAppType.APP_BROWSERAPP:
-                    break;
-                case TangramAppType.APP_BROWSER_ECLIPSE:
-                    {
-                        Tangram.MainForm = Tangram.Context.MainForm = new TangramWinApp1MDIForm();
-
-                        Tangram.Context.MainForm.Show();
-                    }
-                    break;
-                case TangramAppType.APP_ECLIPSE:
-                    {
-                        Tangram.MainForm = Tangram.Context.MainForm = new TangramWinApp1MDIForm();
-                        Tangram.Context.MainForm.Show();
-                    }
-                    break;
-                case TangramAppType.APP_WIN32:
-                    {
-                        Tangram.MainForm = Tangram.Context.MainForm = new TangramWinApp1MDIForm();
-
-                        Tangram.Context.MainForm.Show();
-                    }
-                    break;
-                default:
-                    {
-                        Tangram.MainForm = Tangram.Context.MainForm = new TangramWinApp1MDIForm();
-
-                        Tangram.Context.MainForm.Show();
-                    }
-                    break;
-            }
-
-             //Application.Run(new TangramWinApp1MDIForm());
-           Application.Run();
-        }
-
-        private static void Tangram_OnBindCLRObjToWebPage(object SourceObj, TangramSession eventSession, string eventName)
-        {
-            switch (eventName)
-            {
-                case "SizeChanged":
-                    {
-                        Form thisForm = SourceObj as Form;
-                        thisForm.SizeChanged += ThisForm_SizeChanged;
-                    }
-                    break;
-                case "OnClick":
-                    {
-                        Button thisbtn = SourceObj as Button;
-                        thisbtn.Click += Thisbtn_Click;
-                    }
-                    break;
-                case "OnAfterSelect":
-                    {
-                        TreeView thisTreeview = SourceObj as TreeView;
-                        thisTreeview.AfterSelect += ThisTreeview_AfterSelect;
-                    }
-                    break;
-            }
-        }
-
-        private static void ThisTreeview_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            TangramSession thisSession = null;
-            if (TangramCLR.Tangram.WebBindEventDic.TryGetValue(sender, out thisSession))
-            {
-                if(e.Node.Tag!=null)
-                {
-                    string strTag = e.Node.Tag.ToString();
-                    XmlDocument xml = new XmlDocument();
-                    xml.LoadXml(strTag);
-                    foreach( XmlAttribute attribute in xml.ChildNodes[0].Attributes)
-                    {
-                        thisSession.InsertString(attribute.Name, attribute.Value);
-                    }
-                }
-                TreeView treeview = sender as TreeView;
-                thisSession.InsertString("msgID", "FIRE_EVENT");
-                thisSession.InsertInt64("subobjhandle", treeview.Handle.ToInt64());
-                thisSession.InsertString("currentevent", "OnAfterSelect@"+ treeview.Name);
-                thisSession.InsertString("currentsubobj", treeview.Name);
-                thisSession.SendMessage();
-            }
-        }
-
-        private static void Thisbtn_Click(object sender, EventArgs e)
-        {
-            TangramSession thisSession = null;
-            if (TangramCLR.Tangram.WebBindEventDic.TryGetValue(sender, out thisSession))
-            {
-                Button thisBtn = sender as Button;
-                thisSession.InsertString("msgID", "FIRE_EVENT");
-                thisSession.InsertString("currentsubobj", thisBtn.Name);
-                thisSession.InsertString("currentevent", "OnClick@"+thisBtn.Name);
-                thisSession.SendMessage();
-            }
-        }
-
-        private static void ThisForm_SizeChanged(object sender, EventArgs e)
-        {
-            TangramSession thisSession = null;
-            if(TangramCLR.Tangram.WebBindEventDic.TryGetValue(sender, out thisSession))
-            {
-                Form xform = sender as Form;
-                thisSession.InsertString("msgID", "FIRE_EVENT");
-                thisSession.InsertString("currentevent", "SizeChanged");
-                thisSession.InsertString("currentsubobj", "SizeChanged");
-                thisSession.InsertLong("width",xform.Width);
-                thisSession.InsertLong("height",xform.Height);
-                thisSession.SendMessage();
-            }
+            WebRuntimeProxy.WebDelegate.Tangram_OnAppInit();
+            Tangram.Run();
         }
     }
 }

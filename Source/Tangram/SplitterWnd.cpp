@@ -884,7 +884,7 @@ BOOL CSplitterNodeWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWO
 				strW = strWidth.Left(nPos);
 				strWidth = strWidth.Mid(nPos + 1);
 				nWidth = _ttoi(strW);
-				strName = pSubItem->attr(TGM_NAME, _T(""));
+				strName = pSubItem->attr(_T("id"), _T(""));
 				strName.Trim();
 				strName.MakeLower();
 				CWndNode* pObj = new CComObject<CWndNode>;

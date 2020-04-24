@@ -103,36 +103,27 @@ void CWndNode::InitWndNode()
 	ASSERT(m_pTangramNodeCommonData != nullptr);
 	m_nHeigh = m_pHostParse->attrInt(TGM_HEIGHT, 0);
 	m_nWidth = m_pHostParse->attrInt(TGM_WIDTH, 0);
-	if (m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd)
-	{
-		m_strWebObjID = m_pHostParse->attr(_T("id"), _T(""));
-		if (m_strWebObjID == _T(""))
-		{
-			m_strWebObjID = g_pTangram->GetNewGUID();
-			m_strWebObjID.Replace(_T("-"), _T(""));
-		}
-		if (m_strWebObjID != _T(""))
-		{
-			BindWebObj* pObj = new BindWebObj;
-			pObj->nType = 1;
-			pObj->m_pNode = this;
-			pObj->m_strBindObjName = m_strWebObjID;
-			auto it = m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.find(m_strWebObjID);
-			if (it != m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.end())
-			{
-				m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.erase(it);
-				delete it->second;
-			}
-			m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj[m_strWebObjID] = pObj;
-		}
-	}
-	m_nActivePage = m_pHostParse->attrInt(TGM_ACTIVE_PAGE, 0);
-	m_strCaption = m_pHostParse->attr(TGM_CAPTION, _T(""));
-	m_strName = m_pHostParse->attr(TGM_NAME, _T(""));
+	m_strName = m_pHostParse->attr(_T("id"), _T(""));
 	if (m_strName == _T(""))
 	{
 		m_strName.Format(_T("Node_%p"), (LONGLONG)this);
 	}
+	if (m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd)
+	{
+		BindWebObj* pObj = new BindWebObj;
+		pObj->nType = 1;
+		pObj->m_pNode = this;
+		pObj->m_strBindObjName = m_strName;
+		auto it = m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.find(m_strName);
+		if (it != m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.end())
+		{
+			m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.erase(it);
+			delete it->second;
+		}
+		m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj[m_strName] = pObj;
+	}
+	m_nActivePage = m_pHostParse->attrInt(TGM_ACTIVE_PAGE, 0);
+	m_strCaption = m_pHostParse->attr(TGM_CAPTION, _T(""));
 	if (m_pTangramNodeCommonData->m_pCompositor && m_pTangramNodeCommonData->m_pCompositor->m_pCompositorManager)
 	{
 		m_strNodeName = m_strName + _T("@") + g_pTangram->m_strCurrentKey + _T("@") + m_pTangramNodeCommonData->m_pCompositor->m_strCompositorName;
@@ -600,7 +591,7 @@ STDMETHODIMP CWndNode::put_Name(BSTR bstrNewName)
 		int nPos = _strName.Find(_strName2);
 		if (nPos == -1)
 		{
-			m_pHostParse->put_attr(L"name", strName);
+			m_pHostParse->put_attr(L"id", strName);
 			m_strName = strName;
 		}
 		else
@@ -1216,7 +1207,7 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 			{
 				CTangramXmlParse* pChild = m_pHostParse->GetChild(i);
 				CString _strName = pChild->name();
-				CString strName = pChild->attr(TGM_NAME, _T(""));
+				CString strName = pChild->attr(_T("id"), _T(""));
 				if (_strName.CompareNoCase(_T("node")) == 0)
 				{
 					strName.Trim();
@@ -1280,7 +1271,7 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 	CString strURL = _T("");
 	CString strID = strTag;
 	CComBSTR bstr2;
-	get_Attribute(CComBSTR("name"), &bstr2);
+	get_Attribute(CComBSTR("id"), &bstr2);
 	CString strName = OLE2T(bstr2);
 
 	CHtmlWnd* pHtmlWnd = nullptr;
@@ -1315,7 +1306,7 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 				it = m_pTangramNodeCommonData->m_mapAxNodes.find(str);
 			}
 			m_pTangramNodeCommonData->m_mapAxNodes[str] = this;
-			put_Attribute(CComBSTR("name"), str.AllocSysString());
+			put_Attribute(CComBSTR("id"), str.AllocSysString());
 		}
 		strID.MakeLower();
 		auto nPos = strID.Find(_T("http:"));
@@ -1395,28 +1386,49 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 				it = m_pTangramNodeCommonData->m_mapCLRNodes.find(str);
 			}
 			m_pTangramNodeCommonData->m_mapCLRNodes[str] = this;
-			put_Attribute(CComBSTR("name"), str.AllocSysString());
+			put_Attribute(CComBSTR("id"), str.AllocSysString());
 		}
-		CString strUIKey = _T("");
+		
+		CString strUIKey = strTag;
 		if (g_pTangram->m_pCLRProxy)
 		{
 			if (pHtmlWnd)
 			{
 				g_pTangram->m_pCLRProxy->m_strCurrentWinFormTemplate = _T("");
-
-				CComBSTR bstrKey("");
-				get_Attribute(CComBSTR("uikey"), &bstrKey);
-				strUIKey = OLE2T(bstrKey);
+				strUIKey.MakeLower();
+				//CComBSTR bstrKey("");
+				//get_Attribute(CComBSTR("uikey"), &bstrKey);
+				//strUIKey = OLE2T(bstrKey);
 				auto it = pHtmlWnd->m_mapUserControlsInfo.find(strUIKey);
 				if(it != pHtmlWnd->m_mapUserControlsInfo.end())
 				{
 					g_pTangram->m_mapControlScript[this] = it->second;
+					if (it->second != _T(""))
+					{
+						CTangramXmlParse parse;
+						if (parse.LoadXml(it->second))
+						{
+							CString _strTag = parse.attr(_T("objid"), _T(""));
+							if (_strTag != _T(""))
+								strTag = _strTag;
+						}
+					}
 				}
 				else
 				{
 					it = pHtmlWnd->m_mapFormsInfo.find(strUIKey);
 					if (it != pHtmlWnd->m_mapFormsInfo.end())
 						g_pTangram->m_pCLRProxy->m_strCurrentWinFormTemplate = it->second;
+					if (g_pTangram->m_pCLRProxy->m_strCurrentWinFormTemplate != _T(""))
+					{
+						CTangramXmlParse parse;
+						if (parse.LoadXml(g_pTangram->m_pCLRProxy->m_strCurrentWinFormTemplate))
+						{
+							CString _strTag = parse.attr(_T("objid"), _T(""));
+							if (_strTag != _T(""))
+								strTag = _strTag;
+						}
+					}
 				}
 			}
 			m_pDisp = g_pTangram->m_pCLRProxy->TangramCreateObject(strTag.AllocSysString(), hParentWnd, this);

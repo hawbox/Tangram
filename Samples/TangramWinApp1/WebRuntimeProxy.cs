@@ -1,27 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml;
 using TangramCLR;
+using System.Windows.Forms;
 
-namespace ChromiumApp19
+namespace WebRuntimeProxy
 {
-    static class Program
+    static class WebDelegate
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        public static bool Tangram_OnAppInit()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            // Important! Don't move this line.
             Tangram.OnBindCLRObjToWebPage += Tangram_OnBindCLRObjToWebPage;
-            Tangram.Run();
+            Tangram.OnGetSubObjForWebPage += Tangram_OnGetSubObjForWebPage;
+            Tangram.OnTangramIPCMsg += Tangram_OnTangramIPCMsg;
+            Tangram.OnTangramRenderHTMLElement += Tangram_OnTangramRenderHTMLElement;
+            return true;
         }
+
+        private static object Tangram_OnGetSubObjForWebPage(object SourceObj, string subObjName)
+        {
+            return null;
+        }
+
+        private static void Tangram_OnTangramIPCMsg(IntPtr hWnd, string strType, string strParam1, string strParam2)
+        {
+        }
+
+        private static void Tangram_OnTangramRenderHTMLElement(IntPtr hWnd, string strRuleName, string strHTML)
+        {
+        }
+
         private static void Tangram_OnBindCLRObjToWebPage(object SourceObj, TangramSession eventSession, string eventName)
         {
             switch (eventName)
@@ -67,6 +74,17 @@ namespace ChromiumApp19
                 thisSession.InsertInt64("subobjhandle", treeview.Handle.ToInt64());
                 thisSession.InsertString("currentevent", "OnAfterSelect@" + treeview.Name);
                 thisSession.InsertString("currentsubobj", treeview.Name);
+                Control ctrl = sender as Control;
+                if (ctrl != null && ctrl.Tag != null)
+                {
+                    string strTag = ctrl.Tag.ToString();
+                    XmlDocument xml = new XmlDocument();
+                    xml.LoadXml(strTag);
+                    foreach (XmlAttribute attribute in xml.ChildNodes[0].Attributes)
+                    {
+                        thisSession.InsertString(attribute.Name, attribute.Value);
+                    }
+                }
                 thisSession.SendMessage();
             }
         }
@@ -76,10 +94,20 @@ namespace ChromiumApp19
             TangramSession thisSession = null;
             if (TangramCLR.Tangram.WebBindEventDic.TryGetValue(sender, out thisSession))
             {
-                Button thisBtn = sender as Button;
+                Control ctrl = sender as Control;
                 thisSession.InsertString("msgID", "FIRE_EVENT");
-                thisSession.InsertString("currentsubobj", thisBtn.Name);
-                thisSession.InsertString("currentevent", "OnClick@" + thisBtn.Name);
+                thisSession.InsertString("currentsubobj", ctrl.Name);
+                thisSession.InsertString("currentevent", "OnClick@" + ctrl.Name);
+                if (ctrl != null && ctrl.Tag != null)
+                {
+                    string strTag = ctrl.Tag.ToString();
+                    XmlDocument xml = new XmlDocument();
+                    xml.LoadXml(strTag);
+                    foreach (XmlAttribute attribute in xml.ChildNodes[0].Attributes)
+                    {
+                        thisSession.InsertString(attribute.Name, attribute.Value);
+                    }
+                }
                 thisSession.SendMessage();
             }
         }
@@ -99,4 +127,5 @@ namespace ChromiumApp19
             }
         }
     }
+
 }

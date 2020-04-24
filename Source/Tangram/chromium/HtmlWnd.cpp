@@ -110,7 +110,7 @@ namespace ChromePlus {
 					pSession->InsertLong(_T("row"), pNode->m_nRow);
 					pSession->InsertLong(_T("col"), pNode->m_nCol);
 					pSession->InsertString(_T("objtype"), pNode->m_strCnnID);
-					pSession->InsertString(_T("name@page"), pNode->m_strWebObjID);
+					pSession->InsertString(_T("name@page"), pNode->m_strName);
 					pSession->Insertint64(_T("nodehandle"), (__int64)pNode->m_pHostWnd->m_hWnd);
 					pSession->Insertint64(_T("compositorhandle"), (__int64)pNode->m_pTangramNodeCommonData->m_pCompositor->m_hWnd);
 					pSession->Insertint64(_T("rootnodehandle"), (__int64)pNode->m_pRootObj->m_pHostWnd->m_hWnd);
@@ -1068,7 +1068,7 @@ namespace ChromePlus {
 					g_pTangram->m_pCurMDIChildFormInfo = pInfo;
 					for (int i = 0; i < nCount; i++)
 					{
-						CString strName = pMdiChildXmlParse->GetChild(i)->name();
+						CString strName = pMdiChildXmlParse->GetChild(i)->name().MakeLower();
 						if (pMdiClientXmlParse->GetChild(strName))
 							pInfo->m_mapFormsInfo[strName] = pMdiChildXmlParse->GetChild(i)->xml();
 					}
@@ -1101,7 +1101,7 @@ namespace ChromePlus {
 					g_pTangram->m_pCurMDIChildFormInfo = pInfo;
 					for (int i = 0; i < nCount; i++)
 					{
-						CString strName = pMdiChildXmlParse->GetChild(i)->name();
+						CString strName = pMdiChildXmlParse->GetChild(i)->name().MakeLower();
 						if (pMdiClientXmlParse->GetChild(strName))
 							pInfo->m_mapFormsInfo[strName] = pMdiChildXmlParse->GetChild(i)->xml();
 					}
@@ -1161,7 +1161,7 @@ namespace ChromePlus {
 			{
 				CString strStartup = _T("");
 				CTangramXmlParse* pChild3 = m_Parse.GetChild(_T("mdichild"));
-				CString strID = m_Parse.attr(_T("uikey"), _T(""));
+				CString strID = m_Parse.attr(_T("uikey"), _T("")).MakeLower();
 				CString strName = m_Parse.name();
 				if (strID != _T(""))
 				{
@@ -1181,7 +1181,7 @@ namespace ChromePlus {
 						g_pTangram->m_pCurMDIChildFormInfo = pInfo;
 						for (int i = 0; i < nCount; i++)
 						{
-							CString strName = pChild3->GetChild(i)->name();
+							CString strName = pChild3->GetChild(i)->name().MakeLower();
 							if (pChild4->GetChild(strName))
 								pInfo->m_mapFormsInfo[strName] = pChild3->GetChild(i)->xml();
 						}
@@ -1189,7 +1189,7 @@ namespace ChromePlus {
 				}
 				if (strStartup != _T(""))
 				{
-					CString strID = strStartup;
+					CString strID = strStartup.MakeLower();
 					if (g_pTangram->m_pCLRProxy == nullptr)
 						g_pTangram->LoadCLR();
 					if (g_pTangram->m_pCLRProxy)
@@ -1216,7 +1216,7 @@ namespace ChromePlus {
 			}
 			else if (strType.CompareNoCase(_T("usercontrol")) == 0)
 			{
-				CString strID = m_Parse.attr(_T("uikey"), _T(""));
+				CString strID = m_Parse.attr(_T("uikey"), _T("")).MakeLower();
 				if (strID != _T(""))
 				{
 					m_mapUserControlsInfo[strID] = m_Parse.xml();
@@ -1366,7 +1366,7 @@ namespace ChromePlus {
 						g_pTangram->m_pCurMDIChildFormInfo = pInfo;
 						for (int i = 0; i < nCount; i++)
 						{
-							CString strName = pMdiChildXmlParse->GetChild(i)->name();
+							CString strName = pMdiChildXmlParse->GetChild(i)->name().MakeLower();
 							if (pMdiClientXmlParse->GetChild(strName))
 								pInfo->m_mapFormsInfo[strName] = pMdiChildXmlParse->GetChild(i)->xml();
 						}
@@ -1416,7 +1416,7 @@ namespace ChromePlus {
 		if (hParent == 0)
 			hParent = (__int64)m_hWnd;
 		CString strKey = OLE2T(bstrKey);
-		auto it = this->m_mapFormsInfo.find(strKey);
+		auto it = this->m_mapFormsInfo.find(strKey.MakeLower());
 		if (it != m_mapFormsInfo.end())
 		{
 			*pRetForm = g_pTangram->m_pCLRProxy->CreateWinForm((HWND)hParent, CComBSTR(it->second));

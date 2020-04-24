@@ -40,6 +40,8 @@
 
 #include "Object/ClrFactoryDelegate.h"
 
+typedef HRESULT(__stdcall* TangramCLRCreateInstance)(REFCLSID clsid, REFIID riid, LPVOID* ppInterface);
+
 using namespace TangramCLR;
 using namespace System::Windows;
 #pragma managed(push, off)
@@ -180,6 +182,7 @@ CTangramCLRProxy::CTangramCLRProxy() : ITangramCLRImpl()
 			}
 		}
 	}
+
 	TangramCLR::Tangram::GetTangram();
 	//theApp.m_pTangramImpl->m_pObjectFactory->AddFactoryDelegate(new ::RefObject::ClrFactoryDelegate());
 }

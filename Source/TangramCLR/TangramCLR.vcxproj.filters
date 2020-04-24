@@ -52,9 +52,6 @@
     <ClCompile Include="TangramNodeCLREvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Win32AppForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WizForm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -112,9 +109,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TangramNodeCLREvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Win32AppForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WizForm.h">

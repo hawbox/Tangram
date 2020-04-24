@@ -220,7 +220,7 @@ int CNodeWnd::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message)
 	g_pTangram->m_pCompositor = m_pWndNode->m_pTangramNodeCommonData->m_pCompositor;
 
 	CHtmlWnd* pHtmlWnd = g_pTangram->m_pCompositor->m_pWebPageWnd;
-	CString strID = m_pWndNode->m_strWebObjID;// m_pHostParse->attr(_T("id"), _T(""));
+	CString strID = m_pWndNode->m_strName;
 
 	if ((m_pWndNode->m_nViewType == ActiveX || m_pWndNode->m_nViewType == CLRCtrl))
 	{
@@ -778,7 +778,7 @@ LRESULT CNodeWnd::OnTangramMsg(WPARAM wParam, LPARAM lParam)
 				{
 					pNode->m_pTangramNodeCommonData->m_mapAxNodes[strName] = m_pWndNode;
 				}
-				m_pWndNode->put_Attribute(CComBSTR(L"name"), strName.AllocSysString());
+				m_pWndNode->put_Attribute(CComBSTR(L"id"), strName.AllocSysString());
 				m_pWndNode->m_strName = strName;
 				BOOL bWebCtrl = false;
 				CString strURL = _T("");
@@ -957,7 +957,7 @@ LRESULT CNodeWnd::OnTangramMsg(WPARAM wParam, LPARAM lParam)
 				for (int i = 0; i < nCount; i++)
 				{
 					CTangramXmlParse* child = pRet->GetChild(i);
-					CString _strName = child->attr(_T("name"), _T(""));
+					CString _strName = child->attr(_T("id"), _T(""));
 					if (_strName.CompareNoCase(strName) == 0)
 					{
 						pChildNode->m_pHostParse = child;

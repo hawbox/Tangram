@@ -365,7 +365,6 @@
     <ClCompile Include="TangramNodeCLREvent.cpp" />
     <ClCompile Include="TangramObj.cpp" />
     <ClCompile Include="TangramProxy.cpp" />
-    <ClCompile Include="Win32AppForm.cpp" />
     <ClCompile Include="WizCtrl.cpp" />
     <ClCompile Include="WizForm.cpp" />
   </ItemGroup>
@@ -391,9 +390,6 @@
     <ClInclude Include="TangramNodeCLREvent.h" />
     <ClInclude Include="TangramObj.h" />
     <ClInclude Include="TangramProxy.h" />
-    <ClInclude Include="Win32AppForm.h">
-      <FileType>CppForm</FileType>
-    </ClInclude>
     <ClInclude Include="WizCtrl.h">
       <FileType>CppControl</FileType>
     </ClInclude>
@@ -418,9 +414,6 @@
     <EmbeddedResource Include="TangramNewChildForm.resx">
       <DependentUpon>TangramNewChildForm.h</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Win32AppForm.resx">
-      <DependentUpon>Win32AppForm.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WizCtrl.resx">
       <DependentUpon>WizCtrl.h</DependentUpon>

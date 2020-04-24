@@ -1685,7 +1685,7 @@ namespace TangramCLR
 								theApp.m_pTangramImpl->m_pCurMDIChildFormInfo = pInfo;
 								for (int i = 0; i < nCount; i++)
 								{
-									CString strName = pChild3->GetChild(i)->name();
+									CString strName = pChild3->GetChild(i)->name().MakeLower();
 									if (pChild4->GetChild(strName))
 										pInfo->m_mapFormsInfo[strName] = pChild3->GetChild(i)->xml();
 								}
@@ -1748,7 +1748,7 @@ namespace TangramCLR
 								theApp.m_pTangramImpl->m_pCurMDIChildFormInfo = pInfo;
 								for (int i = 0; i < nCount; i++)
 								{
-									CString strName = pChild3->GetChild(i)->name();
+									CString strName = pChild3->GetChild(i)->name().MakeLower();
 									if (pChild4->GetChild(strName))
 										pInfo->m_mapFormsInfo[strName] = pChild3->GetChild(i)->xml();
 								}

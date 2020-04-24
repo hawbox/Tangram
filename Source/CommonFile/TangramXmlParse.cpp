@@ -67,7 +67,7 @@ void CTangramXmlParse::ModifyNameAttrByFix(CString strNameFix)
 	if (strNameFix != _T(""))
 	{
 		CComVariant var;
-		CComBSTR bstrAttrName(L"name");
+		CComBSTR bstrAttrName(L"id");
 		CComBSTR bstrNAME(L"Name");
 		HRESULT hr = elem->getAttribute(bstrNAME, &var);
 		CString strNAME = OLE2T(var.bstrVal);
@@ -144,7 +144,7 @@ CTangramXmlParse* CTangramXmlParse::AddTabNode(CString strName, CString strCnnID
 	}
 	CTangramXmlParse* pNode = AddNode(_T("node"));
 	pNode->put_attr(_T("nodetype"), strObjID);
-	pNode->put_attr(_T("name"), strName);
+	pNode->put_attr(_T("id"), strName);
 	pNode->put_attr(_T("cnnid"), strCnnID);
 	pNode->put_attr(_T("tabstyle"), strStyle);
 	if (nPages)
@@ -154,7 +154,7 @@ CTangramXmlParse* CTangramXmlParse::AddTabNode(CString strName, CString strCnnID
 		{
 			CTangramXmlParse* _pNode = pNode->AddNode(_T("node"));
 			strVal.Format(_T("%s_Page%d"), strName, i);
-			_pNode->put_attr(_T("name"), strVal);
+			_pNode->put_attr(_T("id"), strVal);
 			_pNode->put_attr(_T("caption"), strVal);
 		}
 	}
@@ -178,7 +178,7 @@ CTangramXmlParse* CTangramXmlParse::AddSplitterNode(int nRows, int nCols, CStrin
 		if (pNode)
 		{
 			pNode->put_attr(_T("nodetype"), CString(_T("splitter")));
-			pNode->put_attr(_T("name"), strName);
+			pNode->put_attr(_T("id"), strName);
 			CString strVal = _T("");
 			strVal.Format(_T("%d"), nRows);
 			pNode->put_attr(_T("rows"), strVal);
@@ -202,7 +202,7 @@ CTangramXmlParse* CTangramXmlParse::AddSplitterNode(int nRows, int nCols, CStrin
 					}
 					CTangramXmlParse* _pNode = pNode->AddNode(_T("node"));
 					strVal3.Format(_T("%s_View%02d%02d"), strName, i, j);
-					_pNode->put_attr(_T("name"), strVal3);
+					_pNode->put_attr(_T("id"), strVal3);
 				}
 			}
 			pNode->put_attr(_T("width"), strRows);
@@ -398,7 +398,7 @@ CTangramXmlParse* CTangramXmlParse::FindItemByName(LPCTSTR strItemname)
 		for(int i = 0; i<GetCount(); i++)
 		{
 			CTangramXmlParse* pI = GetChild(i);
-			CString strName = pI->attr(_T("name"), _T(""));
+			CString strName = pI->attr(_T("id"), _T(""));
 			if (strName.CompareNoCase(strItemname) == 0)
 			{
 				pItem = pI;

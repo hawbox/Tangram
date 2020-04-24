@@ -4163,7 +4163,7 @@ BOOL CTangramHtmlTreeWnd::OnClick(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 			if (g_pTangram->m_pDocDOMTree == this)
 			{
 				CTangramXmlParse* pParse = pXTCD->m_pXmlParse;
-				CString strNodeName = pParse->attr(_T("name"),_T(""));
+				CString strNodeName = pParse->attr(_T("id"),_T(""));
 				IWndNode* _pNode = NULL;
 				if (g_pTangram->m_pDesignWindowNode)
 				{

@@ -46,13 +46,13 @@ namespace TangramCLR {
 	{
 		CString strXmlData = _strXmlData;
 		CTangramXmlParse m_Parse;
-		ImageList^ pImageList = gcnew ImageList();
-		pImageList->ImageSize = System::Drawing::Size(64, 64);
-		ctrl->LargeImageList = pImageList;
 		int nPos = strXmlData.ReverseFind('\\');
 		CString strPath = strXmlData.Left(nPos + 1);
 		if (m_Parse.LoadFile(strXmlData) || m_Parse.LoadXml(strXmlData))
 		{
+			ImageList^ pImageList = gcnew ImageList();
+			pImageList->ImageSize = System::Drawing::Size(64, 64);
+			ctrl->LargeImageList = pImageList;
 			m_pWizListView = ctrl;
 			int nCount = m_Parse.GetCount();
 			for (int i = 0; i < nCount; i++)
