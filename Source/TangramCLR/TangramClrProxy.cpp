@@ -32,7 +32,6 @@
 #include <stdio.h>
 #include "Markup.h"
 #include "AssemblyLocalor.h"
-#include "Win32AppForm.h"
 
 #include <string>
 #include <iostream>
@@ -1339,15 +1338,36 @@ Object^ CTangramCLRProxy::InitTangramNode(IWndNode* _pNode, Control^ pCtrl, bool
 								m_pOnCtrlVisible = gcnew EventHandler(CTangramCLRProxy::OnVisibleChanged);
 							}
 							pChild->VisibleChanged += m_pOnCtrlVisible;
-							if (strType == L"System.Windows.Forms.TreeView")
+						}
+						if (strType == L"System.Windows.Forms.TreeView")
+						{
+							TreeView^ pTreeView = (TreeView^)pChild;
+							CTangramXmlParse* _pChild = pParse->GetChild(pChild->Name);
+							if (_pChild)
 							{
-								TreeView^ pTreeView = (TreeView^)pChild;
-								pTreeView->AfterSelect += gcnew TreeViewEventHandler(&OnAfterSelect);
+								_pChild = _pChild->GetChild(_T("uidata"));
+								if (_pChild)
+								{
+									pTreeView->NodeMouseDoubleClick += gcnew System::Windows::Forms::TreeNodeMouseClickEventHandler(&OnNodeMouseDoubleClick);
+									pTreeView->AfterSelect += gcnew Forms::TreeViewEventHandler(&OnAfterSelect);
+									theAppProxy.m_mapUIData[(HWND)pChild->Handle.ToPointer()] = _pChild->xml();
+									CtrlInit(0, pChild, pCompositorManager->m_pCompositorManager);
+								}
 							}
-							else if (strType == L"System.Windows.Forms.ListView")
+						}
+						else if (strType == L"System.Windows.Forms.ListView")
+						{
+							ListView^ pListView = (ListView^)pChild;
+							CTangramXmlParse* _pChild = pParse->GetChild(pChild->Name);// ->GetChild(_T("uidata"));
+							if (_pChild)
 							{
-								ListView^ pListView = (ListView^)pChild;
-								pListView->ItemSelectionChanged += gcnew ListViewItemSelectionChangedEventHandler(&OnItemSelectionChanged);
+								_pChild = _pChild->GetChild(_T("uidata"));
+								if (_pChild)
+								{
+									pListView->ItemSelectionChanged += gcnew Forms::ListViewItemSelectionChangedEventHandler(&OnItemSelectionChanged);
+									theAppProxy.m_mapUIData[(HWND)pChild->Handle.ToPointer()] = _pChild->xml();
+									CtrlInit(1, pChild, pCompositorManager->m_pCompositorManager);
+								}
 							}
 						}
 					}
@@ -2817,8 +2837,6 @@ void CTangramCLRProxy::TangramAction(BSTR bstrXml, IWndNode* pNode)
 						}
 						else
 						{
-							Win32AppForm^ pForm = gcnew Win32AppForm();
-							pForm->Show();
 						}
 					}
 				}
