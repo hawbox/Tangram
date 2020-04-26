@@ -124,6 +124,7 @@ CTangram::CTangram()
 	m_pClrHost = nullptr;
 	m_nJVMVersion = JNI_VERSION_10;
 	g_pTangram = this;
+	m_bAppForTest = false;
 	m_bCLRObjTemplateInit = false;
 	m_bOfficeAddinUnLoad = true;
 	m_bCreatingForm = false;
@@ -2228,12 +2229,19 @@ void CTangram::BrowserAppStart()
 	if (g_bInit == true)
 		return;
 	g_bInit = true;
-	if (m_nAppType!= TANGRAM_APP_BROWSER && g_pTangram->m_pBrowserFactory && ::IsWindow(m_hChildHostWnd)) {
-		if(m_nAppType == TANGRAM_APP_BROWSERAPP)
+	if ((m_bAppForTest||m_nAppType!= TANGRAM_APP_BROWSER) && g_pTangram->m_pBrowserFactory && ::IsWindow(m_hChildHostWnd)) {
+		if(m_nAppType == TANGRAM_APP_BROWSERAPP&& m_bAppForTest==false)
 			m_hMainWnd = m_hHostWnd;
 		::PostMessage(m_hHostWnd, WM_TANGRAMMSG, 0, TANGRAM_CHROME_APP_INIT);
 		if (::PathFileExists(g_pTangram->m_strStartupURL) == false) {
-			return;
+			::GetModuleFileName(::GetModuleHandle(_T("chrome.dll")), g_pTangram->m_szBuffer, MAX_PATH);
+			CString strPath = CString(g_pTangram->m_szBuffer);
+			int nPos = strPath.ReverseFind('\\');
+			strPath = strPath.Left(nPos + 1) + _T("tangramteststartupURL.html");
+			if (::PathFileExists(strPath))			{
+				g_pTangram->m_strStartupURL = strPath;
+			}else
+				return;
 		}
 		CString str = _T("<host popup='true'><url></url></host>");
 		CTangramXmlParse m_Parse;

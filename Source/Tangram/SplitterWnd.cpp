@@ -363,7 +363,7 @@ LRESULT CSplitterNodeWnd::OnActiveTangramObj(WPARAM wParam, LPARAM lParam)
 LRESULT CSplitterNodeWnd::OnSplitterCreated(WPARAM wParam, LPARAM lParam)
 {
 	int _nWidth = 0;
-	SetColumnInfo(lParam, m_nHostWidth, _nWidth);
+	SetColumnInfo(lParam, m_nHostWidth>=0?m_nHostWidth:0, _nWidth);
 	SetRowInfo(wParam, m_nHostHeight, _nWidth);
 	//SetColumnInfo(lParam, (m_nHostWidth>=0)? m_nHostWidth:0, _nWidth);
 	//SetRowInfo(wParam, (m_nHostHeight>=0)? m_nHostHeight:0, _nWidth);

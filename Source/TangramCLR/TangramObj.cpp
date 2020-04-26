@@ -327,11 +327,38 @@ namespace TangramCLR
 	{
 		if (Tangram::WebRuntimeInit())
 			return;
+		Tangram::MainForm::set(Mainform);
 		System::Windows::Forms::Application::Run(Mainform);
 	}
 	
 	void Tangram::Run(ApplicationContext^ context)
 	{
+		if (Tangram::WebRuntimeInit())
+			return;
+		System::Windows::Forms::Application::Run(context);
+	}
+	
+	void Tangram::RunForTest()
+	{
+		theAppProxy.IsTestModel = true;
+		if(Tangram::WebRuntimeInit())
+			return;
+		System::Windows::Forms::Application::Run();
+	}
+	
+	void Tangram::RunForTest(Form^ Mainform)
+	{
+		theAppProxy.IsTestModel = true;
+		if (Tangram::WebRuntimeInit())
+			return;
+		
+		Tangram::MainForm::set(Mainform);
+		System::Windows::Forms::Application::Run(Mainform);
+	}
+	
+	void Tangram::RunForTest(ApplicationContext^ context)
+	{
+		theAppProxy.IsTestModel = true;
 		if (Tangram::WebRuntimeInit())
 			return;
 		System::Windows::Forms::Application::Run(context);
@@ -478,7 +505,7 @@ namespace TangramCLR
 				IsChromeRunning = FuncIsChromeRunning(false);
 				if (theAppProxy.m_bInitApp == false)
 				{
-					::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, 0, 20191022);
+					::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, theAppProxy.IsTestModel?1:0, 20191022);
 				}
 			}
 		}

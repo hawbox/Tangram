@@ -1019,6 +1019,10 @@ namespace TangramCLR
 		static void Run(Form^ Mainform);
 		static void Run(ApplicationContext^ context);
 
+		static void RunForTest();
+		static void RunForTest(Form^ Mainform);
+		static void RunForTest(ApplicationContext^ context);
+
 		static WndNode^ GetWndNodeFromObj(Object ^ obj)
 		{
 			WndNode^ pNode = nullptr;

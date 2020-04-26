@@ -68,6 +68,7 @@ public:
 	virtual~CTangramCLRProxy();
 
 	bool												m_bInitApp = false;
+	bool												IsTestModel = false;
 	HWND												m_hCreatingCLRWnd = nullptr;
 	gcroot<String^>										m_strExtendableTypes;
 	map<CString, gcroot<Assembly^>>						m_mapAssembly;

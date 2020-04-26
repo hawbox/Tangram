@@ -7,13 +7,13 @@ namespace WebRuntimeProxy
 {
     static class WebDelegate
     {
-        public static bool Tangram_OnAppInit()
+        public static int Tangram_OnAppInit(string e)
         {
             Tangram.OnBindCLRObjToWebPage += Tangram_OnBindCLRObjToWebPage;
             Tangram.OnGetSubObjForWebPage += Tangram_OnGetSubObjForWebPage;
             Tangram.OnTangramIPCMsg += Tangram_OnTangramIPCMsg;
             Tangram.OnTangramRenderHTMLElement += Tangram_OnTangramRenderHTMLElement;
-            return true;
+            return 0;
         }
 
         private static object Tangram_OnGetSubObjForWebPage(object SourceObj, string subObjName)

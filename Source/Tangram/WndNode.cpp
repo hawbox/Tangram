@@ -1396,9 +1396,6 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 			{
 				g_pTangram->m_pCLRProxy->m_strCurrentWinFormTemplate = _T("");
 				strUIKey.MakeLower();
-				//CComBSTR bstrKey("");
-				//get_Attribute(CComBSTR("uikey"), &bstrKey);
-				//strUIKey = OLE2T(bstrKey);
 				auto it = pHtmlWnd->m_mapUserControlsInfo.find(strUIKey);
 				if(it != pHtmlWnd->m_mapUserControlsInfo.end())
 				{

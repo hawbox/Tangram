@@ -2849,6 +2849,9 @@ void CTangramCLRProxy::TangramAction(BSTR bstrXml, IWndNode* pNode)
 				case TangramAppType::APP_BROWSER_ECLIPSE:
 				{
 					theApp.m_pTangramImpl->m_hMainWnd = NULL;
+					Form^ mainForm = TangramCLR::Tangram::MainForm::get();
+					if (mainForm)
+						theApp.m_pTangramImpl->m_hMainWnd = (HWND)mainForm->Handle.ToPointer();
 					theApp.InitTangramApp(theApp.m_pTangramImpl->m_bIsSupportCrashReporting);
 				}
 				break;
@@ -2864,6 +2867,38 @@ void CTangramCLRProxy::TangramAction(BSTR bstrXml, IWndNode* pNode)
 					}
 				}
 				break;
+				}
+			}
+			return;
+		}
+		if (strXml.CompareNoCase(_T("starttestclrapp")) == 0)
+		{
+			if (theAppProxy.IsTestModel)
+			{
+				theApp.m_pTangramImpl->m_hMainWnd = (HWND)TangramCLR::Tangram::m_pMainForm->Handle.ToPointer();
+				Form^ mainForm = TangramCLR::Tangram::MainForm;
+				Control^ client = nullptr;
+				if (mainForm->IsMdiContainer)
+				{
+					client = TangramCLR::Tangram::GetMDIClient(mainForm);
+				}
+				else
+				{
+					for each (Control ^ pChild in mainForm->Controls)
+					{
+						if (pChild->Dock == DockStyle::Fill)
+						{
+							if (pChild->Parent == mainForm)
+							{
+								client = pChild;
+								break;
+							}
+						}
+					}
+				}
+				if (client != nullptr)
+				{
+					::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, (WPARAM)client->Handle.ToPointer(), 20200426);
 				}
 			}
 			return;

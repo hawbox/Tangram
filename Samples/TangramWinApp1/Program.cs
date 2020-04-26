@@ -35,7 +35,6 @@ namespace TangramWinApp1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            WebRuntimeProxy.WebDelegate.Tangram_OnAppInit();
             Tangram.Run();
         }
     }

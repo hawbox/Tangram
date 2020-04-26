@@ -211,6 +211,7 @@ public:
 	CTangram();
 	virtual ~CTangram();
 
+	bool									m_bAppForTest;
 	bool									m_bAppInitFromWeb;
 
 	int										m_nRef;
