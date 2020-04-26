@@ -1030,6 +1030,10 @@ namespace ChromePlus {
 		{
 			RenderHTMLIndWindowElement(strHTML);
 		}
+		else if (strRuleName.CompareNoCase(_T("nodeDetails")) == 0)
+		{
+			RenderHTMLNodeDetailsElement(strHTML);
+		}
 		else if (strRuleName.CompareNoCase(_T("object")) == 0)
 		{
 			RenderHTMLObjectElement(strHTML);
@@ -1148,6 +1152,27 @@ namespace ChromePlus {
 			}
 
 			g_pTangram->m_pBrowserFactory->CreateBrowser(NULL, strUrls);
+		}
+	}
+
+	void CHtmlWnd::RenderHTMLNodeDetailsElement(CString strHTML)
+	{
+		CTangramXmlParse m_Parse;
+		if (m_Parse.LoadXml(strHTML))
+		{
+			CString strType = m_Parse.attr(_T("type"), _T(""));
+			CString strUiKey = m_Parse.attr(_T("uikey"), _T("")).MakeLower();
+			if (strUiKey != _T(""))
+			{
+				if (strType.CompareNoCase(_T("winform")) == 0)
+				{
+					m_mapFormsInfo[strUiKey] = m_Parse.xml();
+				}
+				else if (strType.CompareNoCase(_T("usercontrol")) == 0)
+				{
+					m_mapUserControlsInfo[strUiKey] = m_Parse.xml();
+				}
+			}
 		}
 	}
 

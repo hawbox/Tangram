@@ -1065,8 +1065,8 @@ Object^ CTangramCLRProxy::InitTangramCtrl(Form^ pForm, Control^ pCtrl, bool bSav
 									_pChild = _pChild->GetChild(_T("uidata"));
 									if (_pChild)
 									{
-										pTreeView->NodeMouseDoubleClick += gcnew System::Windows::Forms::TreeNodeMouseClickEventHandler(&OnNodeMouseDoubleClick);
-										pTreeView->AfterSelect += gcnew Forms::TreeViewEventHandler(&OnAfterSelect);
+										//pTreeView->NodeMouseDoubleClick += gcnew System::Windows::Forms::TreeNodeMouseClickEventHandler(&OnNodeMouseDoubleClick);
+										//pTreeView->AfterSelect += gcnew Forms::TreeViewEventHandler(&OnAfterSelect);
 										theAppProxy.m_mapUIData[(HWND)pChild->Handle.ToPointer()] = _pChild->xml();
 										CtrlInit(0, pChild, pCompositorManager->m_pCompositorManager);
 									}
@@ -1351,8 +1351,8 @@ Object^ CTangramCLRProxy::InitTangramNode(IWndNode* _pNode, Control^ pCtrl, bool
 								_pChild = _pChild->GetChild(_T("uidata"));
 								if (_pChild)
 								{
-									pTreeView->NodeMouseDoubleClick += gcnew System::Windows::Forms::TreeNodeMouseClickEventHandler(&OnNodeMouseDoubleClick);
-									pTreeView->AfterSelect += gcnew Forms::TreeViewEventHandler(&OnAfterSelect);
+									//pTreeView->NodeMouseDoubleClick += gcnew System::Windows::Forms::TreeNodeMouseClickEventHandler(&OnNodeMouseDoubleClick);
+									//pTreeView->AfterSelect += gcnew Forms::TreeViewEventHandler(&OnAfterSelect);
 									theAppProxy.m_mapUIData[(HWND)pChild->Handle.ToPointer()] = _pChild->xml();
 									CtrlInit(0, pChild, pCompositorManager->m_pCompositorManager);
 								}

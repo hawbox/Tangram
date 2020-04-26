@@ -1408,7 +1408,7 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 						CTangramXmlParse parse;
 						if (parse.LoadXml(it->second))
 						{
-							CString _strTag = parse.attr(_T("objid"), _T(""));
+							CString _strTag = parse.attr(_T("cnnid"), _T(""));
 							if (_strTag != _T(""))
 								strTag = _strTag;
 						}
@@ -1424,7 +1424,7 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 						CTangramXmlParse parse;
 						if (parse.LoadXml(g_pTangram->m_pCLRProxy->m_strCurrentWinFormTemplate))
 						{
-							CString _strTag = parse.attr(_T("objid"), _T(""));
+							CString _strTag = parse.attr(_T("cnnid"), _T(""));
 							if (_strTag != _T(""))
 								strTag = _strTag;
 						}
