@@ -68,7 +68,6 @@ public:
 	virtual~CTangramCLRProxy();
 
 	bool												m_bInitApp = false;
-	bool												IsTestModel = false;
 	HWND												m_hCreatingCLRWnd = nullptr;
 	gcroot<String^>										m_strExtendableTypes;
 	map<CString, gcroot<Assembly^>>						m_mapAssembly;
@@ -116,7 +115,7 @@ public:
 	void ExportCLRObjInfo(CString strPath);
 	void ExportAllCLRObjInfo(CString _strPath);
 	IDispatch* CreateCLRObj(CString bstrObjID);
-	void TangramAction(BSTR bstrXml, IWndNode* pNode);
+	void TangramAction(BSTR bstrXml, void*);
 	void _GetMenuInfo(FormInfo*, ToolStripMenuItem^);
 private:
 	map<HWND, gcroot<Form^>>				m_mapForm;
@@ -163,7 +162,6 @@ private:
 	void OnWebPageCreated(HWND, CChromeRenderFrameHostProxy*, IChromeWebPage*, int nState);
 	void HideMenuStripPopup();
 	bool PreWindowPosChanging(HWND hWnd, WINDOWPOS* lpwndpos, int nType);
-	bool BindCtrlEventsForBrowser(HWND hWebPage, HWND hWnd, CString strObjType, CString strBindEvents);
 	void ConnectNodeToWebPage(IWndNode*, bool);
 	void OnCloudMsgReceived(CTangramSession*);
 

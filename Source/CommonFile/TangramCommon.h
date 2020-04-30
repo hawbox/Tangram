@@ -586,7 +586,7 @@ namespace TangramCommon {
 		virtual HWND GetCtrlHandle(IDispatch* pCtrl) = 0;
 		virtual BSTR GetCtrlType(IDispatch* pCtrl) = 0;
 		virtual HWND IsCtrlCanNavigate(IDispatch* ctrl) = 0;
-		virtual void TangramAction(BSTR bstrXml, IWndNode* pNode) = 0;
+		virtual void TangramAction(BSTR bstrXml, void*) = 0;
 		virtual BSTR GetCtrlValueByName(IDispatch* CtrlDisp, BSTR bstrName, bool bFindInChild) = 0;
 		virtual void SetCtrlValueByName(IDispatch* CtrlDisp, BSTR bstrName, bool bFindInChild, BSTR strVal) = 0;
 		virtual void SelectNode(IWndNode*) {}
@@ -609,7 +609,6 @@ namespace TangramCommon {
 		virtual void OnWebPageCreated(HWND, CChromeRenderFrameHostProxy*, IChromeWebPage* pChromeWebContent, int nState) = 0;
 		virtual void HideMenuStripPopup() = 0;
 		virtual bool PreWindowPosChanging(HWND hWnd, WINDOWPOS* lpwndpos, int nType) = 0;
-		virtual bool BindCtrlEventsForBrowser(HWND hWebPage, HWND hWnd, CString strObjType, CString strBindEvents) = 0;
 		virtual void OnCloudMsgReceived(CTangramSession*) = 0;
 		virtual void ConnectNodeToWebPage(IWndNode*, bool) = 0;
 	};

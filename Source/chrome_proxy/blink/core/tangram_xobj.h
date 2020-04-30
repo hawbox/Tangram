@@ -73,9 +73,9 @@ friend class Tangram;
   TangramCommon::IPCSession session_;
   WebLocalFrameClient* m_pRenderframeImpl;
   mutable Member<Tangram> tangram_;
+  HeapHashMap<String, Member<V8ApplicationCallback>> mapTangramEventCallback_;
 private:
   String name_;
-  HeapHashMap<String, Member<V8ApplicationCallback>> mapTangramEventCallback_;
 };
 
 }  // namespace blink

@@ -124,7 +124,6 @@ CTangram::CTangram()
 	m_pClrHost = nullptr;
 	m_nJVMVersion = JNI_VERSION_10;
 	g_pTangram = this;
-	m_bAppForTest = false;
 	m_bCLRObjTemplateInit = false;
 	m_bOfficeAddinUnLoad = true;
 	m_bCreatingForm = false;
@@ -143,6 +142,7 @@ CTangram::CTangram()
 	m_bCreatingDevTool = false;
 	m_bOMNIBOXPOPUPVISIBLE = false;
 	m_pActiveTangramWinFormWnd = nullptr;
+	m_pHostHtmlWnd = nullptr;
 	m_pHtmlWndCreated = nullptr;
 	m_strAppXml = _T("");
 	m_strDefaultXml = _T("<default><window><node name=\"tangram\" nodetype=\"HostView\"/></window></default>");
@@ -2229,8 +2229,8 @@ void CTangram::BrowserAppStart()
 	if (g_bInit == true)
 		return;
 	g_bInit = true;
-	if ((m_bAppForTest||m_nAppType!= TANGRAM_APP_BROWSER) && g_pTangram->m_pBrowserFactory && ::IsWindow(m_hChildHostWnd)) {
-		if(m_nAppType == TANGRAM_APP_BROWSERAPP&& m_bAppForTest==false)
+	if ((m_nAppType!= TANGRAM_APP_BROWSER) && g_pTangram->m_pBrowserFactory && ::IsWindow(m_hChildHostWnd)) {
+		if(m_nAppType == TANGRAM_APP_BROWSERAPP)
 			m_hMainWnd = m_hHostWnd;
 		::PostMessage(m_hHostWnd, WM_TANGRAMMSG, 0, TANGRAM_CHROME_APP_INIT);
 		if (::PathFileExists(g_pTangram->m_strStartupURL) == false) {

@@ -1019,10 +1019,6 @@ namespace TangramCLR
 		static void Run(Form^ Mainform);
 		static void Run(ApplicationContext^ context);
 
-		static void RunForTest();
-		static void RunForTest(Form^ Mainform);
-		static void RunForTest(ApplicationContext^ context);
-
 		static WndNode^ GetWndNodeFromObj(Object ^ obj)
 		{
 			WndNode^ pNode = nullptr;
@@ -1346,6 +1342,13 @@ namespace TangramCLR
 		static void Fire_OnTangramIPCMsg(IntPtr hWnd, String^ strType, String^ strParam1, String^ strParam2)
 		{
 			OnTangramIPCMsg(hWnd, strType, strParam1, strParam2);
+		}
+
+		delegate void TangramCloudMsgReceived(TangramCLR::TangramSession^ cloudSession);
+		static event TangramCloudMsgReceived^ OnTangramCloudMsgReceived;
+		static void Fire_OnTangramCloudMsgReceived(TangramCLR::TangramSession^ cloudSession)
+		{
+			OnTangramCloudMsgReceived(cloudSession);
 		}
 
 		delegate void TangramRenderHTMLElement(IntPtr hWnd, String^ strRuleName, String^ strHTML);

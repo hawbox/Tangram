@@ -4,7 +4,7 @@
 ] interface TangramWindow : EventTarget {
 
 	// Message API
-	void sendMessage(TangramXobj msg,
+	void sendMessage([DefaultValue = Undefined] optional TangramXobj msg,
 		[DefaultValue = Undefined] optional ApplicationCallback callback);
 	void addEventListener(DOMString eventName, ApplicationCallback callback);
 	void removeEventListener(DOMString eventName);

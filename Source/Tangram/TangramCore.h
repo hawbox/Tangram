@@ -211,7 +211,6 @@ public:
 	CTangram();
 	virtual ~CTangram();
 
-	bool									m_bAppForTest;
 	bool									m_bAppInitFromWeb;
 
 	int										m_nRef;
@@ -243,6 +242,7 @@ public:
 	//.NET Version 4: 
 	ICLRRuntimeHost*						m_pClrHost;
 
+	CHtmlWnd*								m_pHostHtmlWnd;
 	CHtmlWnd*								m_pHtmlWndCreated;
 	CHtmlWnd*								m_pActiveHtmlWnd;
 	CHtmlWndDelegate*						m_pHtmlWndDelegate;

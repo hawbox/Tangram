@@ -4,7 +4,7 @@
 ] interface TangramControl : EventTarget {
 
 	// Message API
-	void sendMessage(TangramXobj msg,
+	void sendMessage([DefaultValue = Undefined] optional TangramXobj msg,
 		[DefaultValue = Undefined] optional ApplicationCallback callback);
 
 	// Control Events Binding:

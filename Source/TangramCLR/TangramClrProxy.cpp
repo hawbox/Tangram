@@ -1794,6 +1794,14 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 		{
 			m_strCurrentWinFormTemplate = bstrObjID;
 			CString strTagName = m_Parse.name();
+			CChromeRenderFrameHostProxy* pProxyBase = nullptr;
+			TangramCLR::TangramSession^ pCloudSession = nullptr;
+			CTangramSession* pTangramSession = nullptr;
+			__int64 nHandle = m_Parse.attrInt64(_T("renderframehostproxy"), 0);
+			if (nHandle)
+			{
+				pProxyBase = (CChromeRenderFrameHostProxy*)nHandle;
+			}
 			CString strObjID = m_Parse.attr(_T("objid"), _T(""));
 			if (strObjID != _T(""))
 			{
@@ -1805,11 +1813,9 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 					{
 						CString strCaption = m_Parse.attr(_T("caption"), _T(""));
 						Form^ thisForm = (Form^)pObj;
-						CChromeRenderFrameHostProxy* pProxyBase = nullptr;
-						__int64 nHandle = m_Parse.attrInt64(_T("renderframehostproxy"), 0);
+
 						if (nHandle)
 						{
-							pProxyBase = (CChromeRenderFrameHostProxy*)nHandle;
 							pProxyBase->OnWinFormCreated((HWND)thisForm->Handle.ToPointer());
 						}
 
@@ -1840,15 +1846,13 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 								TangramCLR::Tangram::CreateBKPage(thisForm, BSTR2STRING(strBKPage));
 							}
 						}
-						if (strTagName == _T("mainwindow") || strTagName == _T("mainWindow"))
+						if (strTagName.CompareNoCase(_T("mainwindow"))==0)
 						{
 							theApp.m_pTangramImpl->m_hMainWnd = (HWND)thisForm->Handle.ToPointer();
 							::PostMessage(theApp.m_pTangramImpl->m_hMainWnd, WM_TANGRAMMSG, 0, 20200419);
 						}
 						thisForm->Tag = BSTR2STRING(m_Parse.name());
 						__int64 nIpcSession = m_Parse.attrInt64(_T("ipcsession"), 0);
-						TangramCLR::TangramSession^ pCloudSession = nullptr;
-						CTangramSession* pTangramSession = nullptr;
 						if (nIpcSession)
 						{
 							pTangramSession = (CTangramSession*)nIpcSession;
@@ -1921,6 +1925,100 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 						}
 					}
 					return (IDispatch*)Marshal::GetIUnknownForObject(pObj).ToPointer();
+				}
+			}
+			else
+			{
+				HWND hWnd = (HWND)TangramCLR::Tangram::m_pMainForm->Handle.ToPointer();
+				theApp.m_pTangramImpl->m_hMainWnd = hWnd;
+				Form^ mainForm = TangramCLR::Tangram::MainForm;
+				Control^ client = nullptr;
+				if (mainForm->IsMdiContainer)
+				{
+					client = TangramCLR::Tangram::GetMDIClient(mainForm);
+				}
+				else
+				{
+					if (mainForm && mainForm->Controls->Count == 0)
+					{
+						Panel^ panel = gcnew Panel();
+						panel->Dock = DockStyle::Fill;
+						panel->Visible = true;
+						mainForm->Controls->Add(panel);
+						mainForm->ResumeLayout();
+					}
+					for each (Control ^ pChild in mainForm->Controls)
+					{
+						if (pChild->Dock == DockStyle::Fill)
+						{
+							if (pChild->Parent == mainForm)
+							{
+								client = pChild;
+								break;
+							}
+						}
+					}
+				}
+				pTangramSession = theApp.m_pTangramImpl->CreateCloudSession(pProxyBase);
+				pCloudSession = gcnew TangramSession(pTangramSession);
+				TangramCLR::Tangram::WebBindEventDic[mainForm] = pCloudSession;
+				pCloudSession->m_pHostObj = mainForm;
+				CString strFormName = mainForm->Name;
+				pTangramSession->InsertLong(_T("autodelete"), 0);
+				pTangramSession->Insertint64(_T("domhandle"), (__int64)pTangramSession);
+				pTangramSession->InsertString(_T("objid"), _T("mainForm"));
+				pTangramSession->InsertString(_T("formname"), strFormName);
+				theAppProxy.m_mapTangramSession2CloudSession[pTangramSession] = pCloudSession;
+
+				CString strFormID = m_Parse.attr(_T("id"), _T(""));
+				pTangramSession->InsertString(_T("id"), strFormID);
+
+				pTangramSession->Insertint64(_T("formhandle"), mainForm->Handle.ToInt64());
+				pTangramSession->InsertString(_T("msgID"), _T("WINFORM_CREATED"));
+
+				pTangramSession->SendMessage();
+
+				if (client != nullptr)
+				{
+					HWND hWnd = (HWND)client->Handle.ToPointer();
+					if (::IsWindow(hWnd))
+					{
+						CTangramXmlParse* pParse = m_Parse.GetChild(_T("mainclient"));
+						if (pParse)
+						{
+							CString strWebName = pParse->attr(_T("id"), _T(""));
+							if (strWebName == _T(""))strWebName = m_Parse.name();
+							if (strWebName != _T(""))
+							{
+								BindWebObj* pObj = new BindWebObj;
+								pObj->nType = 0;
+								pObj->m_pObjDisp = (IDispatch*)Marshal::GetIUnknownForObject(mainForm).ToPointer();
+								pObj->m_hWnd = hWnd;
+								pObj->m_strObjName = strWebName;
+								pObj->m_strObjType = "clrctrl";
+								pObj->m_strBindObjName = strWebName;
+								//pObj->m_strBindData = pChildParse->attr(_T("bindevent"), _T(""));
+								HWND hForm = (HWND)::GetParent(hWnd);
+								::PostMessage(hForm, WM_TANGRAMDATA, (WPARAM)pObj, 5);
+							}
+							pParse = pParse->GetChild(_T("default"));
+							if (pParse)
+							{
+								CString strMainForm = pParse->xml();
+								ICompositorManager* pManager = nullptr;
+								theApp.m_pTangram->CreateCompositorManager((__int64)::GetParent(hWnd), &pManager);
+								if (pManager)
+								{
+									ICompositor* pCompositor = nullptr;
+									pManager->CreateCompositor(CComVariant(0), CComVariant((__int64)hWnd), L"default", &pCompositor);
+									if (pCompositor) {
+										IWndNode* pNode = nullptr;
+										pCompositor->Open(L"default", CComBSTR(strMainForm), &pNode);
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -2506,12 +2604,12 @@ void CTangramCLRProxy::ConnectNodeToWebPage(IWndNode* pNode, bool bAdd)
 
 void CTangramCLRProxy::OnCloudMsgReceived(CTangramSession* pSession)
 {
+	CString strMsgID = pSession->GetString(L"msgID");
 	auto it = m_mapTangramSession2CloudSession.find(pSession);
 	if (it != m_mapTangramSession2CloudSession.end())
 	{
 		Object^ pObj = nullptr;
 		pObj = it->second->m_pHostObj;
-		CString strMsgID = pSession->GetString(L"msgID");
 		if (strMsgID == _T("MODIFY_CTRL_VALUE"))
 		{
 			CString strSubObj = pSession->GetString(L"currentsubobjformodify");
@@ -2622,11 +2720,12 @@ void CTangramCLRProxy::OnCloudMsgReceived(CTangramSession* pSession)
 				TangramCLR::Tangram::Fire_OnBindCLRObjToWebPage(pObj, pCloudSession, _strEventName);
 		}
 	}
-}
-
-bool CTangramCLRProxy::BindCtrlEventsForBrowser(HWND hWebPage, HWND hWnd, CString strObjType, CString strBindEvents)
-{
-	return false;
+	else
+	{
+		HWND hWnd = (HWND)pSession->Getint64(L"nodehandle");
+		TangramCLR::TangramSession^ pCloudSession = gcnew TangramCLR::TangramSession(pSession);
+		TangramCLR::Tangram::Fire_OnTangramCloudMsgReceived(pCloudSession);
+	}
 }
 
 void CTangramCLRProxy::OnClick(Object^ sender, EventArgs^ e)
@@ -2811,7 +2910,7 @@ HWND CTangramCLRProxy::IsCtrlCanNavigate(IDispatch* ctrl)
 	return 0;
 }
 
-void CTangramCLRProxy::TangramAction(BSTR bstrXml, IWndNode* pNode)
+void CTangramCLRProxy::TangramAction(BSTR bstrXml, void* pvoid)
 {
 	CString strXml = OLE2T(bstrXml);
 	if (strXml != _T(""))
@@ -2871,38 +2970,6 @@ void CTangramCLRProxy::TangramAction(BSTR bstrXml, IWndNode* pNode)
 			}
 			return;
 		}
-		if (strXml.CompareNoCase(_T("starttestclrapp")) == 0)
-		{
-			if (theAppProxy.IsTestModel)
-			{
-				theApp.m_pTangramImpl->m_hMainWnd = (HWND)TangramCLR::Tangram::m_pMainForm->Handle.ToPointer();
-				Form^ mainForm = TangramCLR::Tangram::MainForm;
-				Control^ client = nullptr;
-				if (mainForm->IsMdiContainer)
-				{
-					client = TangramCLR::Tangram::GetMDIClient(mainForm);
-				}
-				else
-				{
-					for each (Control ^ pChild in mainForm->Controls)
-					{
-						if (pChild->Dock == DockStyle::Fill)
-						{
-							if (pChild->Parent == mainForm)
-							{
-								client = pChild;
-								break;
-							}
-						}
-					}
-				}
-				if (client != nullptr)
-				{
-					::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, (WPARAM)client->Handle.ToPointer(), 20200426);
-				}
-			}
-			return;
-		}
 		if (strXml.CompareNoCase(_T("setmainform")) == 0)
 		{
 			if (TangramCLR::Tangram::m_pMainForm != nullptr)
@@ -2929,12 +2996,12 @@ void CTangramCLRProxy::TangramAction(BSTR bstrXml, IWndNode* pNode)
 		CTangramXmlParse m_Parse;
 		if (m_Parse.LoadXml(strXml))
 		{
-			if (pNode == nullptr)
+			if (pvoid == nullptr)
 			{
 			}
 			else
 			{
-				WndNode^ pWindowNode = (WndNode^)theAppProxy._createObject<IWndNode, WndNode>(pNode);
+				WndNode^ pWindowNode = (WndNode^)theAppProxy._createObject<IWndNode, WndNode>((IWndNode*)pvoid);
 				if (pWindowNode)
 				{
 					int nType = m_Parse.attrInt(_T("Type"), 0);

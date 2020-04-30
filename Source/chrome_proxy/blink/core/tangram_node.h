@@ -83,7 +83,10 @@ class CORE_EXPORT TangramNode final : public EventTargetWithInlineData,
 
   // Node API:
   TangramNode* getChild(long nIndex);
+  TangramNode* getChild(long row, long col);
   TangramNode* getChild(const String& strName);
+  void open(const String& strKey, const String& xml, V8ApplicationCallback* callback);
+  void openEx(const String& strKey, const String& xml, long row, long col, V8ApplicationCallback* callback);
 
   DEFINE_ATTRIBUTE_EVENT_LISTENER(MessageReceived, kTangram)
   DEFINE_ATTRIBUTE_EVENT_LISTENER(MdiChildActivate, kMdichildactivate)

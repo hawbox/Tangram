@@ -337,32 +337,6 @@ namespace TangramCLR
 			return;
 		System::Windows::Forms::Application::Run(context);
 	}
-	
-	void Tangram::RunForTest()
-	{
-		theAppProxy.IsTestModel = true;
-		if(Tangram::WebRuntimeInit())
-			return;
-		System::Windows::Forms::Application::Run();
-	}
-	
-	void Tangram::RunForTest(Form^ Mainform)
-	{
-		theAppProxy.IsTestModel = true;
-		if (Tangram::WebRuntimeInit())
-			return;
-		
-		Tangram::MainForm::set(Mainform);
-		System::Windows::Forms::Application::Run(Mainform);
-	}
-	
-	void Tangram::RunForTest(ApplicationContext^ context)
-	{
-		theAppProxy.IsTestModel = true;
-		if (Tangram::WebRuntimeInit())
-			return;
-		System::Windows::Forms::Application::Run(context);
-	}
 
 	Tangram^ Tangram::GetTangram()
 	{
@@ -505,7 +479,7 @@ namespace TangramCLR
 				IsChromeRunning = FuncIsChromeRunning(false);
 				if (theAppProxy.m_bInitApp == false)
 				{
-					::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, theAppProxy.IsTestModel?1:0, 20191022);
+					::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, 0, 20191022);
 				}
 			}
 		}
@@ -1673,6 +1647,8 @@ namespace TangramCLR
 		HWND hPWnd = (HWND)ParentHandle.ToPointer();
 		if (theApp.m_pTangramImpl->m_pBrowserFactory)
 		{
+			strUrls += L"|";
+			strUrls = strUrls->Replace(L"||", L"|");
 			HWND hWnd = theApp.m_pTangramImpl->m_pBrowserFactory->CreateBrowser(hPWnd, strUrls);
 			IChromeWebBrowser* pBrowser = (IChromeWebBrowser*)::SendMessage(hWnd, WM_TANGRAMMSG, 20190527, 0);
 			auto it = theAppProxy.m_mapChromeWebBrowser.find(pBrowser);
@@ -1875,14 +1851,14 @@ namespace TangramCLR
 		return nullptr;
 	}
 
-	WndNode^ WndNode::OpenChild(int rowNum, int colName, String^ layerName, String^ layerXML)
+	WndNode^ WndNode::OpenChild(int rowNum, int colNum, String^ layerName, String^ layerXML)
 	{
 		if (m_pWndNode)
 		{
 			BSTR blayerName = STRING2BSTR(layerName);
 			BSTR blayerXML = STRING2BSTR(layerXML);
 			IWndNode* pNode = nullptr;
-			m_pWndNode->OpenEx( rowNum, colName, blayerName, blayerXML, &pNode);
+			m_pWndNode->OpenEx( rowNum, colNum, blayerName, blayerXML, &pNode);
 			::SysFreeString(blayerName);
 			::SysFreeString(blayerXML);
 			if (pNode)

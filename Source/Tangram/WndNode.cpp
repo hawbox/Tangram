@@ -110,17 +110,17 @@ void CWndNode::InitWndNode()
 	}
 	if (m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd)
 	{
-		BindWebObj* pObj = new BindWebObj;
-		pObj->nType = 1;
-		pObj->m_pNode = this;
-		pObj->m_strBindObjName = m_strName;
 		auto it = m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.find(m_strName);
-		if (it != m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.end())
+		if (it == m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.end())
 		{
-			m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.erase(it);
-			delete it->second;
+			BindWebObj* pObj = new BindWebObj;
+			pObj->nType = 1;
+			pObj->m_pNode = this;
+			pObj->m_strBindObjName = m_strName;
+			//m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj.erase(it);
+			//delete it->second;
+			m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj[m_strName] = pObj;
 		}
-		m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd->m_mapBindWebObj[m_strName] = pObj;
 	}
 	m_nActivePage = m_pHostParse->attrInt(TGM_ACTIVE_PAGE, 0);
 	m_strCaption = m_pHostParse->attr(TGM_CAPTION, _T(""));
@@ -1259,6 +1259,8 @@ void CWndNode::NodeCreated()
 	CHtmlWnd* pHtmlWnd = m_pTangramNodeCommonData->m_pCompositor->m_pWebPageWnd;
 	if (pHtmlWnd == nullptr)
 		pHtmlWnd = GetHtmlWnd();
+	if (pHtmlWnd == nullptr)
+		pHtmlWnd = g_pTangram->m_pHostHtmlWnd;
 	if (pHtmlWnd&&m_pTangramCloudSession == nullptr)
 	{
 		::PostMessage(pHtmlWnd->m_hWnd, WM_TANGRAMMSG, 20200310, (LPARAM)this);

@@ -93,6 +93,12 @@ namespace ChromePlus {
 		bool bChild = ::GetWindowLongPtr(::GetParent(m_hWnd), GWL_STYLE) & WS_CHILD;
 		switch (wParam)
 		{
+		case 20200429:
+		{
+			CTangramSession* pSession = (CTangramSession*)lParam;
+			pSession->SendMessage();
+		}
+		break;
 		case 20200310:
 		{
 			CWndNode* pNode = (CWndNode*)lParam;
@@ -751,6 +757,7 @@ namespace ChromePlus {
 			if (g_pTangram->m_bAppInitFromWeb == false && g_pTangram->m_strAppXml != _T(""))
 			{
 				g_pTangram->m_bAppInitFromWeb = true;
+				g_pTangram->m_pHostHtmlWnd = this;
 				g_pTangram->TangramInitFromeWeb();
 				if (g_pTangram->m_strMainWndXml != _T(""))
 				{
@@ -1015,7 +1022,9 @@ namespace ChromePlus {
 		if (strRuleName.CompareNoCase(_T("application")) == 0)
 		{
 			if (g_pTangram->m_strAppXml == _T(""))
+			{
 				g_pTangram->m_strAppXml = strHTML;
+			}
 		}
 		else if (strRuleName.CompareNoCase(_T("mainWindow")) == 0)
 		{
@@ -1415,6 +1424,27 @@ namespace ChromePlus {
 					}
 					pSession->m_pOwner = this;
 					IDispatch* pDisp = g_pTangram->m_pCLRProxy->CreateCLRObj(xmlParse.xml());
+				}
+			}
+		}
+		else if (strMsgID == _T("OPEN_XML_SPLITTER"))
+		{
+			CString strKey = pSession->GetString(_T("openkey"));
+			CString strXml = pSession->GetString(_T("openxml"));
+			int nCol = pSession->GetLong(_T("opencol"));
+			int nRow = pSession->GetLong(_T("openrow"));
+			IWndNode* pSplitterNode = nullptr;
+			g_pTangram->GetNodeFromHandle(pSession->Getint64(_T("nodehandle")), &pSplitterNode);
+			if (pSplitterNode)
+			{
+				IWndNode* pNode = nullptr;
+				pSplitterNode->OpenEx(nRow, nCol, CComBSTR(strKey), CComBSTR(strXml), &pNode);
+				if (pNode)
+				{
+					__int64 nHandle = 0;
+					pNode->get_Handle(&nHandle);
+					pSession->Insertint64(_T("openxmlreturnhandle"),nHandle);
+					::PostMessage(m_hWnd, WM_TANGRAMMSG, 20200429, (LPARAM)pSession);
 				}
 			}
 		}

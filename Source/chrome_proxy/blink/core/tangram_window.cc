@@ -160,6 +160,8 @@ namespace blink {
 	{
 		if (m_pRenderframeImpl)
 		{
+			if (msg == nullptr)
+				msg = innerXobj_;
 			msg->setStr(L"senderid", id_);
 			if (callback)
 			{

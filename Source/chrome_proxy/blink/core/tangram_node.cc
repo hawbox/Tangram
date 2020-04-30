@@ -96,6 +96,14 @@ TangramNode* TangramNode::getChild(long nIndex)
 	return nullptr;
 }
 
+TangramNode* TangramNode::getChild(long row, long col)
+{
+	//auto it = m_mapChildNode.find(nIndex);
+	//if (it != m_mapChildNode.end())
+	//	return it->second;
+	return nullptr;
+}
+
 TangramNode* TangramNode::getChild(const String& strName)
 {
 	WebString str = strName;
@@ -131,6 +139,48 @@ void TangramNode::addEventListener(const String& subObjName, const String& event
 	}
 }
 
+void TangramNode::open(const String& strKey, const String& xml, V8ApplicationCallback* callback)
+{
+	if (m_pRenderframeImpl)
+	{
+		innerXobj_->setStr(L"senderid", id_);
+		String callbackid_ = WTF::CreateCanonicalUUIDString();
+		innerXobj_->setStr(L"msgID", L"OPEN_XML");
+		innerXobj_->setStr(L"open_callbackid", callbackid_);
+		innerXobj_->setStr(L"openkey", strKey);
+		innerXobj_->setStr(L"openxml", xml);
+		WebString strID = callbackid_;
+		m_pRenderframeImpl->m_mapTangramSession[strID.Utf16()] = this;
+		if (callback)
+		{
+			innerXobj_->mapTangramEventCallback_.insert(callbackid_, callback);
+		}
+		m_pRenderframeImpl->SendTangramMessageEx(innerXobj_->session_);
+	}
+}
+
+void TangramNode::openEx(const String& strKey, const String& xml, long row, long col, V8ApplicationCallback* callback)
+{
+	if (m_pRenderframeImpl)
+	{
+		innerXobj_->setStr(L"senderid", id_);
+		innerXobj_->setStr(L"msgID", L"OPEN_XML_SPLITTER");
+		innerXobj_->setStr(L"openkey", strKey);
+		innerXobj_->setStr(L"openxml", xml);
+		innerXobj_->setLong(L"opencol", col);
+		innerXobj_->setLong(L"openrow", row);
+		String callbackid_ = WTF::CreateCanonicalUUIDString();
+		innerXobj_->setStr(L"opencallbackid", callbackid_);
+		WebString strID = callbackid_;
+		m_pRenderframeImpl->m_mapTangramSession[strID.Utf16()] = this;
+		if (callback)
+		{
+			innerXobj_->mapTangramEventCallback_.insert(callbackid_, callback);
+		}
+		m_pRenderframeImpl->SendTangramMessageEx(innerXobj_->session_);
+	}
+}
+
 void TangramNode::SyncCtrlTextChange(const String& strcontrols, V8ApplicationCallback* callback)
 {
 	if (callback)
@@ -160,6 +210,8 @@ void TangramNode::sendMessage(TangramXobj* msg, V8ApplicationCallback* callback)
 {
 	if (m_pRenderframeImpl)
 	{
+		if (msg == nullptr)
+			msg = innerXobj_;
 		msg->setStr(L"senderid", id_);
 		if (callback)
 		{
