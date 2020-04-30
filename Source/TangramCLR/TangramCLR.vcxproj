@@ -85,7 +85,7 @@
     <_ProjectFileVersion>11.0.51106.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\..\Program Files %28x86%29\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\PublicAssemblies</OutDir>
+    <OutDir>..\..\..\..\Program Files %28x86%29\Microsoft Visual Studio\2019\Community\Common7\IDE\PublicAssemblies</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <LinkKeyFile>
@@ -93,7 +93,7 @@
     <TargetName>Tangram_CLR_RT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\chromium_root_80\src\out\tangram_non_static_debug_x64</OutDir>
+    <OutDir>..\..\chromium_root_81\src\out\tangram_non_static_debug_x64</OutDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <LinkKeyFile>TangramCLR.snk</LinkKeyFile>
