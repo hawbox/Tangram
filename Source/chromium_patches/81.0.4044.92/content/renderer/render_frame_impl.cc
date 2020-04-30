@@ -234,13 +234,13 @@
 #include "base/process/kill.h"
 // begin Add by TangramTeam
 #include "c:/src/tangram/source/chrome_proxy/blink/core/tangram.h"
-#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_xobj.h"
-#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_node.h"
-#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_event.h"
-#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_window.h"
-#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_control.h"
-#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_winform.h"
 #include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_compositor.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_control.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_event.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_node.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_window.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_winform.h"
+#include "c:/src/tangram/source/chrome_proxy/blink/core/tangram_xobj.h"
 using namespace std;
 // end Add by TangramTeam
 #elif defined(OS_POSIX)
@@ -1900,9 +1900,8 @@ void RenderFrameImpl::Initialize() {
   TRACE_EVENT_CATEGORY_GROUP_ENABLED("rail", &is_tracing_rail);
   if (is_tracing_rail || is_tracing_navigation) {
     int parent_id = RenderFrame::GetRoutingIdForWebFrame(frame_->Parent());
-    TRACE_EVENT2("navigation,rail", "RenderFrameImpl::Initialize",
-                 "id", routing_id_,
-                 "parent", parent_id);
+    TRACE_EVENT2("navigation,rail", "RenderFrameImpl::Initialize", "id",
+                 routing_id_, "parent", parent_id);
   }
 
   // |thread| may be null in tests.
@@ -2075,7 +2074,7 @@ bool RenderFrameImpl::IsPepperAcceptingCompositionEvents() const {
 }
 
 void RenderFrameImpl::PluginCrashed(const base::FilePath& plugin_path,
-                                   base::ProcessId plugin_pid) {
+                                    base::ProcessId plugin_pid) {
   // TODO(jam): dispatch this IPC in RenderFrameHost and switch to use
   // routing_id_ as a result.
   Send(new FrameHostMsg_PluginCrashed(routing_id_, plugin_path, plugin_pid));
@@ -2198,11 +2197,9 @@ bool RenderFrameImpl::OnMessageReceived(const IPC::Message& msg) {
 #if BUILDFLAG(ENABLE_PLUGINS)
     IPC_MESSAGE_HANDLER(FrameMsg_SetPepperVolume, OnSetPepperVolume)
 #endif
-    IPC_MESSAGE_HANDLER(FrameMsg_VisualStateRequest,
-                        OnVisualStateRequest)
+    IPC_MESSAGE_HANDLER(FrameMsg_VisualStateRequest, OnVisualStateRequest)
     IPC_MESSAGE_HANDLER(FrameMsg_Reload, OnReload)
-    IPC_MESSAGE_HANDLER(FrameMsg_SetAccessibilityMode,
-                        OnSetAccessibilityMode)
+    IPC_MESSAGE_HANDLER(FrameMsg_SetAccessibilityMode, OnSetAccessibilityMode)
     IPC_MESSAGE_HANDLER(AccessibilityMsg_SnapshotTree,
                         OnSnapshotAccessibilityTree)
     IPC_MESSAGE_HANDLER(FrameMsg_UpdateOpener, OnUpdateOpener)
@@ -2227,11 +2224,11 @@ bool RenderFrameImpl::OnMessageReceived(const IPC::Message& msg) {
 #endif
 #endif
     IPC_MESSAGE_HANDLER(UnfreezableFrameMsg_Delete, OnDeleteFrame)
-	  
-	// begin Add by TangramTeam
-	IPC_MESSAGE_HANDLER(TangramFrameMsg_Message, OnTangramMessage)
-	IPC_MESSAGE_HANDLER(TangramRendererIPCMsg, OnTangramRendererIPCMsg)
-	// end Add by TangramTeam
+
+    // begin Add by TangramTeam
+    IPC_MESSAGE_HANDLER(TangramFrameMsg_Message, OnTangramMessage)
+    IPC_MESSAGE_HANDLER(TangramRendererIPCMsg, OnTangramRendererIPCMsg)
+    // end Add by TangramTeam
 
   IPC_END_MESSAGE_MAP()
 
@@ -2582,8 +2579,7 @@ RenderFrameImpl::JavaScriptIsolatedWorldRequest::JavaScriptIsolatedWorldRequest(
       callback_(std::move(callback)) {}
 
 RenderFrameImpl::JavaScriptIsolatedWorldRequest::
-    ~JavaScriptIsolatedWorldRequest() {
-}
+    ~JavaScriptIsolatedWorldRequest() {}
 
 void RenderFrameImpl::JavaScriptIsolatedWorldRequest::Completed(
     const blink::WebVector<v8::Local<v8::Value>>& result) {
@@ -2660,8 +2656,8 @@ void RenderFrameImpl::OnSnapshotAccessibilityTree(int callback_id,
                                                   ui::AXMode ax_mode) {
   AXContentTreeUpdate response;
   RenderAccessibilityImpl::SnapshotAccessibilityTree(this, &response, ax_mode);
-  Send(new AccessibilityHostMsg_SnapshotResponse(
-      routing_id_, callback_id, response));
+  Send(new AccessibilityHostMsg_SnapshotResponse(routing_id_, callback_id,
+                                                 response));
 }
 
 void RenderFrameImpl::OnPortalActivated(
@@ -4023,8 +4019,8 @@ blink::WebLocalFrame* RenderFrameImpl::CreateChildFrame(
           frame_owner_properties);
   params.frame_owner_element_type = frame_owner_element_type;
   if (!Send(new FrameHostMsg_CreateChildFrame(params, &params_reply))) {
-    // Allocation of routing id failed, so we can't create a child frame. This can
-    // happen if the synchronous IPC message above has failed.  This can
+    // Allocation of routing id failed, so we can't create a child frame. This
+    // can happen if the synchronous IPC message above has failed.  This can
     // legitimately happen when the browser process has already destroyed
     // RenderProcessHost, but the renderer process hasn't quit yet.
     return nullptr;
@@ -4353,8 +4349,8 @@ void RenderFrameImpl::DidCommitProvisionalLoad(
     blink::WebHistoryCommitType commit_type,
     bool should_reset_browser_interface_broker) {
   TRACE_EVENT2("navigation,rail", "RenderFrameImpl::didCommitProvisionalLoad",
-               "id", routing_id_,
-               "url", GetLoadingUrl().possibly_invalid_spec());
+               "id", routing_id_, "url",
+               GetLoadingUrl().possibly_invalid_spec());
 
   InternalDocumentStateData* internal_data =
       InternalDocumentStateData::FromDocumentLoader(
@@ -4550,8 +4546,7 @@ void RenderFrameImpl::DidReceiveTitle(const blink::WebString& title,
 
     base::string16 title16 = title.Utf16();
     base::string16 shortened_title = title16.substr(0, kMaxTitleChars);
-    Send(new FrameHostMsg_UpdateTitle(routing_id_,
-                                      shortened_title, direction));
+    Send(new FrameHostMsg_UpdateTitle(routing_id_, shortened_title, direction));
   } else {
     // Set process title for sub-frames in traces.
     GURL loading_url = GetLoadingUrl();
@@ -4663,8 +4658,8 @@ void RenderFrameImpl::DidHandleOnloadEvents() {
 
 void RenderFrameImpl::DidFailLoad(const WebURLError& error,
                                   blink::WebHistoryCommitType commit_type) {
-  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didFailLoad",
-               "id", routing_id_);
+  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didFailLoad", "id",
+               routing_id_);
   // TODO(nasko): Move implementation here. No state needed.
   WebDocumentLoader* document_loader = frame_->GetDocumentLoader();
   DCHECK(document_loader);
@@ -4673,8 +4668,8 @@ void RenderFrameImpl::DidFailLoad(const WebURLError& error,
 }
 
 void RenderFrameImpl::DidFinishLoad() {
-  TRACE_EVENT1("navigation,benchmark,rail",
-               "RenderFrameImpl::didFinishLoad", "id", routing_id_);
+  TRACE_EVENT1("navigation,benchmark,rail", "RenderFrameImpl::didFinishLoad",
+               "id", routing_id_);
   if (!frame_->Parent()) {
     TRACE_EVENT_INSTANT0("WebCore,benchmark,rail", "LoadFinished",
                          TRACE_EVENT_SCOPE_PROCESS);
@@ -5680,13 +5675,13 @@ bool RenderFrameImpl::SwapIn() {
 
 void RenderFrameImpl::DidStartLoading() {
   // TODO(dgozman): consider removing this callback.
-  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didStartLoading",
-               "id", routing_id_);
+  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didStartLoading", "id",
+               routing_id_);
 }
 
 void RenderFrameImpl::DidStopLoading() {
-  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didStopLoading",
-               "id", routing_id_);
+  TRACE_EVENT1("navigation,rail", "RenderFrameImpl::didStopLoading", "id",
+               routing_id_);
 
   // Any subframes created after this point won't be considered part of the
   // current history navigation (if this was one), so we don't need to track
@@ -6296,8 +6291,7 @@ void RenderFrameImpl::SyncSelectionIfRequired() {
   // Sometimes we get repeated didChangeSelection calls from webkit when
   // the selection hasn't actually changed. We don't want to report these
   // because it will cause us to continually claim the X clipboard.
-  if (selection_text_offset_ != offset ||
-      selection_range_ != range ||
+  if (selection_text_offset_ != offset || selection_range_ != range ||
       selection_text_ != text) {
     selection_text_ = text;
     selection_text_offset_ = offset;
@@ -6754,8 +6748,8 @@ void RenderFrameImpl::PepperInstanceCreated(
     PepperPluginInstanceImpl* instance) {
   active_pepper_instances_.insert(instance);
 
-  Send(new FrameHostMsg_PepperInstanceCreated(
-      routing_id_, instance->pp_instance()));
+  Send(new FrameHostMsg_PepperInstanceCreated(routing_id_,
+                                              instance->pp_instance()));
 }
 
 void RenderFrameImpl::PepperInstanceDeleted(
@@ -6769,10 +6763,8 @@ void RenderFrameImpl::PepperInstanceDeleted(
 
   RenderFrameImpl* const render_frame = instance->render_frame();
   if (render_frame) {
-    render_frame->Send(
-        new FrameHostMsg_PepperInstanceDeleted(
-            render_frame->GetRoutingID(),
-            instance->pp_instance()));
+    render_frame->Send(new FrameHostMsg_PepperInstanceDeleted(
+        render_frame->GetRoutingID(), instance->pp_instance()));
   }
 }
 
@@ -6790,20 +6782,16 @@ void RenderFrameImpl::PepperFocusChanged(PepperPluginInstanceImpl* instance,
 void RenderFrameImpl::PepperStartsPlayback(PepperPluginInstanceImpl* instance) {
   RenderFrameImpl* const render_frame = instance->render_frame();
   if (render_frame) {
-    render_frame->Send(
-        new FrameHostMsg_PepperStartsPlayback(
-            render_frame->GetRoutingID(),
-            instance->pp_instance()));
+    render_frame->Send(new FrameHostMsg_PepperStartsPlayback(
+        render_frame->GetRoutingID(), instance->pp_instance()));
   }
 }
 
 void RenderFrameImpl::PepperStopsPlayback(PepperPluginInstanceImpl* instance) {
   RenderFrameImpl* const render_frame = instance->render_frame();
   if (render_frame) {
-    render_frame->Send(
-        new FrameHostMsg_PepperStopsPlayback(
-            render_frame->GetRoutingID(),
-            instance->pp_instance()));
+    render_frame->Send(new FrameHostMsg_PepperStopsPlayback(
+        render_frame->GetRoutingID(), instance->pp_instance()));
   }
 }
 
@@ -6976,14 +6964,13 @@ void RenderFrameImpl::OnTangramMessage(long messageindex,
                                        std::wstring param5) {
   blink::Tangram* pTangram = (blink::Tangram*)GetWebFrame()->GetTangram();
   if (pTangram) {
-      AtomicString strEventID = blink::event_type_names::kTangram;
-      switch (messageindex)
-      {
+    AtomicString strEventID = blink::event_type_names::kTangram;
+    switch (messageindex) {
       case IPC_MDIWINFORM_ACTIVEMDICHILD:
-          strEventID = blink::event_type_names::kMdichildactivate;
-          break;
-      }
-      pTangram->DispatchEvent(*blink::TangramEvent::Create(
+        strEventID = blink::event_type_names::kMdichildactivate;
+        break;
+    }
+    pTangram->DispatchEvent(*blink::TangramEvent::Create(
         strEventID, String(id.c_str()), String(param1.c_str()),
         String(param2.c_str()), String(param3.c_str()), String(param4.c_str()),
         String(param5.c_str()), 0, 0, nullptr));
@@ -6991,134 +6978,128 @@ void RenderFrameImpl::OnTangramMessage(long messageindex,
 }
 
 void RenderFrameImpl::OnTangramRendererIPCMsg(
-    FrameMsg_TANGRAM_HOST_String_Map mapString/* string map */,
-    FrameMsg_TANGRAM_HOST_LONG_Map mapLong/* long map*/,
-    FrameMsg_TANGRAM_HOST_INT64_Map mapint64/* int64 map*/,
-    FrameMsg_TANGRAM_HOST_FLOAT_Map mapFloat/* float*/)
-{
-    std::wstring strID = L"";
-    std::wstring strSession = L"";
-    auto itID = mapString.find(L"msgID");
-    if (itID != mapString.end())
-    {
-        strID = itID->second;
-    }
+    FrameMsg_TANGRAM_HOST_String_Map mapString /* string map */,
+    FrameMsg_TANGRAM_HOST_LONG_Map mapLong /* long map*/,
+    FrameMsg_TANGRAM_HOST_INT64_Map mapint64 /* int64 map*/,
+    FrameMsg_TANGRAM_HOST_FLOAT_Map mapFloat /* float*/) {
+  std::wstring strID = L"";
+  std::wstring strSession = L"";
+  auto itID = mapString.find(L"msgID");
+  if (itID != mapString.end()) {
+    strID = itID->second;
+  }
 
-    itID = mapString.find(L"sessionid");
-    if (itID != mapString.end())
-    {
-        strSession = itID->second;
-    }
-        
-    blink::Tangram* pTangram = (blink::Tangram*)GetWebFrame()->GetTangram();
-    blink::TangramXobj* var = nullptr;
+  itID = mapString.find(L"sessionid");
+  if (itID != mapString.end()) {
+    strSession = itID->second;
+  }
 
-    auto itObj = pTangram->mapCloudSession_.find(String(strSession.c_str()));
-    if (itObj != pTangram->mapCloudSession_.end())
-        var = itObj->value;
-    else
-    {
-        auto itXobj = mapint64.find(L"innerXobj");
-        if (itXobj != mapint64.end())
-        {
-            var = (blink::TangramXobj*)itXobj->second;
-        }
-        else
-        {
-            var = blink::TangramXobj::Create();
-            var->id_ = strSession.c_str();
-            var->tangram_ = pTangram;
-            var->m_pRenderframeImpl = this;
-        }
-    }
-    for (auto it1 : mapString)
-    {
-        var->session_.m_mapString[it1.first] = it1.second;
-    }
-    for (auto it2 : mapLong)
-    {
-        var->session_.m_mapLong[it2.first] = it2.second;
-    }
-    for (auto it3 : mapint64)
-    {
-        var->session_.m_mapint64[it3.first] = it3.second;
-    }
-    for (auto it4 : mapFloat)
-    {
-        var->session_.m_mapFloat[it4.first] = it4.second;
-    }
-    if (strID == L"BindCLRObject")
-    {
-        if (strSession != L"")
-        {
-            pTangram->mapCloudSession_.insert(String(strSession.c_str()), var);
-            mapString[L"BindState"] = L"OK";
-            Send(new TangramHostIPCMsg(routing_id_, mapString, mapLong, mapint64, mapFloat));
-            pTangram->DispatchEvent(*blink::TangramEvent::Create(blink::event_type_names::kBindclrobject, var));
-            return;
-        }
-    }
-    if (strID == L"FIRE_EVENT")
-    {
-        if (strSession!=L"")
-        {
-            //currentevent
-            itID = mapString.find(L"currentevent");
-            if (itID != mapString.end())
-            {
-                std::wstring eventname = itID->second;
-                var->fireEvent(eventname.c_str(), var);
-            }
-            return;
-        }
-    }
-    if (strID == L"WINFORM_CREATED")
-    {
-        if (strSession!=L"")
-        {
-            blink::TangramWinform* form = nullptr;
-            auto itForm = mapint64.find(L"form");
-            if (itForm != mapint64.end())
-            {
-                auto it = pTangram->m_mapWinForm.find(itForm->second);
-                if (it != pTangram->m_mapWinForm.end())
-                {
-                    form = it->value;
-                    itForm = mapint64.find(L"formhandle");
-                    if (itForm != mapint64.end())
-                    {
-                        pTangram->m_mapWinForm.erase(it);
-                        form->handle_ = itForm->second;
-                        pTangram->m_mapWinForm.insert(itForm->second,form);
-                    }
-                    if (form)
-                    {
-                        pTangram->invokeWinFormCreatedCallback(form);
-                        pTangram->DispatchEvent(*blink::TangramEvent::Create(blink::event_type_names::kWinformcreated, var));
-                    }
-                }
-            }
-            else
-            {
-                auto itForm2 = mapint64.find(L"formhandle");
-                if (itForm2 != mapint64.end())
-                {
-                    form = pTangram->newWinForm(itForm2->second, var);
-                    //form->handle_ = itForm2->second;
-                    //pTangram->m_mapWinForm.insert(itForm2->second, form);
-                    pTangram->DispatchEvent(*blink::TangramEvent::Create(blink::event_type_names::kWinformcreated, var));
-                }
-            }
-            return;
-        }
-    }
-    if (strID == L"Tangram_WndNode_Created")
-    {
-        pTangram->createTangramNode(var);
-        //return;
-    }
+  blink::Tangram* pTangram = (blink::Tangram*)GetWebFrame()->GetTangram();
+  blink::TangramXobj* var = nullptr;
 
-    pTangram->DispatchEvent(*blink::TangramEvent::Create(blink::event_type_names::kTangrammessage, var));
+  auto itObj = pTangram->mapCloudSession_.find(String(strSession.c_str()));
+  if (itObj != pTangram->mapCloudSession_.end())
+    var = itObj->value;
+  else {
+    auto itXobj = mapint64.find(L"innerXobj");
+    if (itXobj != mapint64.end()) {
+      var = (blink::TangramXobj*)itXobj->second;
+    } else {
+      var = blink::TangramXobj::Create();
+      var->id_ = strSession.c_str();
+      var->tangram_ = pTangram;
+      var->m_pRenderframeImpl = this;
+    }
+  }
+  for (auto it1 : mapString) {
+    var->session_.m_mapString[it1.first] = it1.second;
+  }
+  for (auto it2 : mapLong) {
+    var->session_.m_mapLong[it2.first] = it2.second;
+  }
+  for (auto it3 : mapint64) {
+    var->session_.m_mapint64[it3.first] = it3.second;
+  }
+  for (auto it4 : mapFloat) {
+    var->session_.m_mapFloat[it4.first] = it4.second;
+  }
+  if (strID == L"BindCLRObject") {
+    if (strSession != L"") {
+      pTangram->mapCloudSession_.insert(String(strSession.c_str()), var);
+      mapString[L"BindState"] = L"OK";
+      Send(new TangramHostIPCMsg(routing_id_, mapString, mapLong, mapint64,
+                                 mapFloat));
+      pTangram->DispatchEvent(*blink::TangramEvent::Create(
+          blink::event_type_names::kBindclrobject, var));
+      return;
+    }
+  }
+  if (strID == L"FIRE_EVENT") {
+    if (strSession != L"") {
+      // currentevent
+      itID = mapString.find(L"currentevent");
+      if (itID != mapString.end()) {
+        std::wstring eventname = itID->second;
+        var->fireEvent(eventname.c_str(), var);
+      }
+      return;
+    }
+  }
+  if (strID == L"WINFORM_CREATED") {
+    if (strSession != L"") {
+      blink::TangramWinform* form = nullptr;
+      auto itForm = mapint64.find(L"form");
+      if (itForm != mapint64.end()) {
+        auto it = pTangram->m_mapWinForm.find(itForm->second);
+        if (it != pTangram->m_mapWinForm.end()) {
+          form = it->value;
+          itForm = mapint64.find(L"formhandle");
+          if (itForm != mapint64.end()) {
+            pTangram->m_mapWinForm.erase(it);
+            form->handle_ = itForm->second;
+            pTangram->m_mapWinForm.insert(itForm->second, form);
+          }
+          if (form) {
+            pTangram->invokeWinFormCreatedCallback(form);
+            pTangram->DispatchEvent(*blink::TangramEvent::Create(
+                blink::event_type_names::kWinformcreated, var));
+          }
+        }
+      } else {
+        auto itForm2 = mapint64.find(L"formhandle");
+        if (itForm2 != mapint64.end()) {
+          form = pTangram->newWinForm(itForm2->second, var);
+          // form->handle_ = itForm2->second;
+          // pTangram->m_mapWinForm.insert(itForm2->second, form);
+          pTangram->DispatchEvent(*blink::TangramEvent::Create(
+              blink::event_type_names::kWinformcreated, var));
+        }
+      }
+      return;
+    }
+  }
+  if (strID == L"Tangram_WndNode_Created") {
+    pTangram->createTangramNode(var);
+    // return;
+  }
+  if (strID == L"OPEN_XML_SPLITTER") {
+    auto itnode = mapint64.find(L"nodehandle");
+    auto itNode = pTangram->m_mapTangramNode.find(itnode->second);
+    if (itNode != pTangram->m_mapTangramNode.end()) {
+      auto itreturnnode = mapint64.find(L"openxmlreturnhandle");
+      auto itNodeRet = pTangram->m_mapTangramNode.find(itreturnnode->second);
+      if (itNodeRet != pTangram->m_mapTangramNode.end()) {
+        auto itCallback = mapString.find(L"opencallbackid");
+        if (itCallback != mapString.end()) {
+          itNode->value->invokeCallback(itCallback->second,
+                                        itNodeRet->value->xobj());
+        }
+      }
+    }
+  }
+
+  pTangram->DispatchEvent(*blink::TangramEvent::Create(
+      blink::event_type_names::kTangrammessage, var));
 }
 
 void RenderFrameImpl::SendTangramMessage(std::wstring id,
@@ -7127,7 +7108,8 @@ void RenderFrameImpl::SendTangramMessage(std::wstring id,
                                          std::wstring param3,
                                          std::wstring param4,
                                          std::wstring param5) {
-  Send(new TangramFrameHostMsg_Message(routing_id_, id, param1, param2, param3, param4, param5));
+  Send(new TangramFrameHostMsg_Message(routing_id_, id, param1, param2, param3,
+                                       param4, param5));
 }
 
 void RenderFrameImpl::SendTangramMessage(std::wstring id,
@@ -7136,20 +7118,23 @@ void RenderFrameImpl::SendTangramMessage(std::wstring id,
                                          __int64 nID,
                                          std::wstring param4,
                                          std::wstring param5) {
-  Send(new TangramFrameHostMsg_Message2(routing_id_, id, param1, nHandle, nID, param4, param5));
+  Send(new TangramFrameHostMsg_Message2(routing_id_, id, param1, nHandle, nID,
+                                        param4, param5));
 }
 
 void RenderFrameImpl::SendTangramMessage5(
-    FrameMsg_TANGRAM_HOST_String_Map mapString/* string map */,
-    FrameMsg_TANGRAM_HOST_LONG_Map mapLong/* long map*/,
-    FrameMsg_TANGRAM_HOST_INT64_Map mapint64/* int64 map*/,
-    FrameMsg_TANGRAM_HOST_FLOAT_Map mapFloat/* float map */)
-{
-    Send(new TangramHostIPCMsg(routing_id_, mapString, mapLong, mapint64, mapFloat));
+    FrameMsg_TANGRAM_HOST_String_Map mapString /* string map */,
+    FrameMsg_TANGRAM_HOST_LONG_Map mapLong /* long map*/,
+    FrameMsg_TANGRAM_HOST_INT64_Map mapint64 /* int64 map*/,
+    FrameMsg_TANGRAM_HOST_FLOAT_Map mapFloat /* float map */) {
+  Send(new TangramHostIPCMsg(routing_id_, mapString, mapLong, mapint64,
+                             mapFloat));
 }
 
-void RenderFrameImpl::SendTangramMessageEx(blink::TangramCommon::IPCSession& var) {
-    Send(new TangramHostIPCMsg(routing_id_, var.m_mapString, var.m_mapLong, var.m_mapint64, var.m_mapFloat));
+void RenderFrameImpl::SendTangramMessageEx(
+    blink::TangramCommon::IPCSession& var) {
+  Send(new TangramHostIPCMsg(routing_id_, var.m_mapString, var.m_mapLong,
+                             var.m_mapint64, var.m_mapFloat));
 }
 
 // end Add by TangramTeam
