@@ -1929,91 +1929,94 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 			}
 			else
 			{
-				HWND hWnd = (HWND)TangramCLR::Tangram::m_pMainForm->Handle.ToPointer();
-				theApp.m_pTangramImpl->m_hMainWnd = hWnd;
-				Form^ mainForm = TangramCLR::Tangram::MainForm;
-				Control^ client = nullptr;
-				if (mainForm->IsMdiContainer)
+				if (TangramCLR::Tangram::m_pMainForm)
 				{
-					client = TangramCLR::Tangram::GetMDIClient(mainForm);
-				}
-				else
-				{
-					if (mainForm && mainForm->Controls->Count == 0)
+					HWND hWnd = (HWND)TangramCLR::Tangram::m_pMainForm->Handle.ToPointer();
+					theApp.m_pTangramImpl->m_hMainWnd = hWnd;
+					Form^ mainForm = TangramCLR::Tangram::MainForm;
+					Control^ client = nullptr;
+					if (mainForm->IsMdiContainer)
 					{
-						Panel^ panel = gcnew Panel();
-						panel->Dock = DockStyle::Fill;
-						panel->Visible = true;
-						mainForm->Controls->Add(panel);
-						mainForm->ResumeLayout();
+						client = TangramCLR::Tangram::GetMDIClient(mainForm);
 					}
-					for each (Control ^ pChild in mainForm->Controls)
+					else
 					{
-						if (pChild->Dock == DockStyle::Fill)
+						if (mainForm && mainForm->Controls->Count == 0)
 						{
-							if (pChild->Parent == mainForm)
+							Panel^ panel = gcnew Panel();
+							panel->Dock = DockStyle::Fill;
+							panel->Visible = true;
+							mainForm->Controls->Add(panel);
+							mainForm->ResumeLayout();
+						}
+						for each (Control ^ pChild in mainForm->Controls)
+						{
+							if (pChild->Dock == DockStyle::Fill)
 							{
-								client = pChild;
-								break;
+								if (pChild->Parent == mainForm)
+								{
+									client = pChild;
+									break;
+								}
 							}
 						}
 					}
-				}
-				pTangramSession = theApp.m_pTangramImpl->CreateCloudSession(pProxyBase);
-				pCloudSession = gcnew TangramSession(pTangramSession);
-				TangramCLR::Tangram::WebBindEventDic[mainForm] = pCloudSession;
-				pCloudSession->m_pHostObj = mainForm;
-				CString strFormName = mainForm->Name;
-				pTangramSession->InsertLong(_T("autodelete"), 0);
-				pTangramSession->Insertint64(_T("domhandle"), (__int64)pTangramSession);
-				pTangramSession->InsertString(_T("objid"), _T("mainForm"));
-				pTangramSession->InsertString(_T("formname"), strFormName);
-				theAppProxy.m_mapTangramSession2CloudSession[pTangramSession] = pCloudSession;
+					pTangramSession = theApp.m_pTangramImpl->CreateCloudSession(pProxyBase);
+					pCloudSession = gcnew TangramSession(pTangramSession);
+					TangramCLR::Tangram::WebBindEventDic[mainForm] = pCloudSession;
+					pCloudSession->m_pHostObj = mainForm;
+					CString strFormName = mainForm->Name;
+					pTangramSession->InsertLong(_T("autodelete"), 0);
+					pTangramSession->Insertint64(_T("domhandle"), (__int64)pTangramSession);
+					pTangramSession->InsertString(_T("objid"), _T("mainForm"));
+					pTangramSession->InsertString(_T("formname"), strFormName);
+					theAppProxy.m_mapTangramSession2CloudSession[pTangramSession] = pCloudSession;
 
-				CString strFormID = m_Parse.attr(_T("id"), _T(""));
-				pTangramSession->InsertString(_T("id"), strFormID);
+					CString strFormID = m_Parse.attr(_T("id"), _T(""));
+					pTangramSession->InsertString(_T("id"), strFormID);
 
-				pTangramSession->Insertint64(_T("formhandle"), mainForm->Handle.ToInt64());
-				pTangramSession->InsertString(_T("msgID"), _T("WINFORM_CREATED"));
+					pTangramSession->Insertint64(_T("formhandle"), mainForm->Handle.ToInt64());
+					pTangramSession->InsertString(_T("msgID"), _T("WINFORM_CREATED"));
 
-				pTangramSession->SendMessage();
+					pTangramSession->SendMessage();
 
-				if (client != nullptr)
-				{
-					HWND hWnd = (HWND)client->Handle.ToPointer();
-					if (::IsWindow(hWnd))
+					if (client != nullptr)
 					{
-						CTangramXmlParse* pParse = m_Parse.GetChild(_T("mainclient"));
-						if (pParse)
+						HWND hWnd = (HWND)client->Handle.ToPointer();
+						if (::IsWindow(hWnd))
 						{
-							CString strWebName = pParse->attr(_T("id"), _T(""));
-							if (strWebName == _T(""))strWebName = m_Parse.name();
-							if (strWebName != _T(""))
-							{
-								BindWebObj* pObj = new BindWebObj;
-								pObj->nType = 0;
-								pObj->m_pObjDisp = (IDispatch*)Marshal::GetIUnknownForObject(mainForm).ToPointer();
-								pObj->m_hWnd = hWnd;
-								pObj->m_strObjName = strWebName;
-								pObj->m_strObjType = "clrctrl";
-								pObj->m_strBindObjName = strWebName;
-								//pObj->m_strBindData = pChildParse->attr(_T("bindevent"), _T(""));
-								HWND hForm = (HWND)::GetParent(hWnd);
-								::PostMessage(hForm, WM_TANGRAMDATA, (WPARAM)pObj, 5);
-							}
-							pParse = pParse->GetChild(_T("default"));
+							CTangramXmlParse* pParse = m_Parse.GetChild(_T("mainclient"));
 							if (pParse)
 							{
-								CString strMainForm = pParse->xml();
-								ICompositorManager* pManager = nullptr;
-								theApp.m_pTangram->CreateCompositorManager((__int64)::GetParent(hWnd), &pManager);
-								if (pManager)
+								CString strWebName = pParse->attr(_T("id"), _T(""));
+								if (strWebName == _T(""))strWebName = m_Parse.name();
+								if (strWebName != _T(""))
 								{
-									ICompositor* pCompositor = nullptr;
-									pManager->CreateCompositor(CComVariant(0), CComVariant((__int64)hWnd), L"default", &pCompositor);
-									if (pCompositor) {
-										IWndNode* pNode = nullptr;
-										pCompositor->Open(L"default", CComBSTR(strMainForm), &pNode);
+									BindWebObj* pObj = new BindWebObj;
+									pObj->nType = 0;
+									pObj->m_pObjDisp = (IDispatch*)Marshal::GetIUnknownForObject(mainForm).ToPointer();
+									pObj->m_hWnd = hWnd;
+									pObj->m_strObjName = strWebName;
+									pObj->m_strObjType = "clrctrl";
+									pObj->m_strBindObjName = strWebName;
+									//pObj->m_strBindData = pChildParse->attr(_T("bindevent"), _T(""));
+									HWND hForm = (HWND)::GetParent(hWnd);
+									::PostMessage(hForm, WM_TANGRAMDATA, (WPARAM)pObj, 5);
+								}
+								pParse = pParse->GetChild(_T("default"));
+								if (pParse)
+								{
+									CString strMainForm = pParse->xml();
+									ICompositorManager* pManager = nullptr;
+									theApp.m_pTangram->CreateCompositorManager((__int64)::GetParent(hWnd), &pManager);
+									if (pManager)
+									{
+										ICompositor* pCompositor = nullptr;
+										pManager->CreateCompositor(CComVariant(0), CComVariant((__int64)hWnd), L"default", &pCompositor);
+										if (pCompositor) {
+											IWndNode* pNode = nullptr;
+											pCompositor->Open(L"default", CComBSTR(strMainForm), &pNode);
+										}
 									}
 								}
 							}

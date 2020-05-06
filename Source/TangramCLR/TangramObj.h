@@ -968,7 +968,6 @@ namespace TangramCLR
 		static Dictionary<Control^, String^>^ m_pControlRelationDic = nullptr;
 		static Dictionary<Object^, TangramSession^>^ m_pCloudEventDic = gcnew Dictionary<Object^, TangramSession^>();
 		static Dictionary<String^, String^>^ CustomizeDictionary = gcnew Dictionary<String^, String^>();
-		static bool WebRuntimeInit();
 	public:
 #ifndef _WIN64
 		static Dictionary<String^, String^>^ replacementsDictionary = nullptr;
@@ -1013,6 +1012,7 @@ namespace TangramCLR
 
 		static Tangram^ InitTangramApp(bool bSupportCrashReporting, TangramAppType AppType);
 
+		static bool WebRuntimeInit();
 		static void InitEclipse();
 
 		static void Run();

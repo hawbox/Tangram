@@ -213,13 +213,13 @@ void TangramNode::sendMessage(TangramXobj* msg, V8ApplicationCallback* callback)
 		if (msg == nullptr)
 			msg = innerXobj_;
 		msg->setStr(L"senderid", id_);
+		String callbackid_ = WTF::CreateCanonicalUUIDString();
+		msg->setStr(L"callbackid", callbackid_);
+		WebString strID = callbackid_;
+		m_pRenderframeImpl->m_mapTangramSession[strID.Utf16()] = this;
 		if (callback)
 		{
-			String callbackid_ = WTF::CreateCanonicalUUIDString();
-			msg->setStr(L"callbackid", callbackid_);
 			mapTangramEventCallback_.insert(callbackid_, callback);
-			WebString strID = callbackid_;
-			m_pRenderframeImpl->m_mapTangramSession[strID.Utf16()] = this;
 		}
 		m_pRenderframeImpl->SendTangramMessageEx(msg->session_);
 	}
