@@ -2105,6 +2105,13 @@ CTangramSession* CTangram::GetCloudSession(IWndNode* _pNode)
 	return nullptr; 
 }
 
+void CTangram::SetMainWnd(HWND hMain) 
+{
+	m_hMainWnd = hMain;
+	CTangramWinFormWnd* pWnd = new CTangramWinFormWnd();
+	pWnd->SubclassWindow(g_pTangram->m_hMainWnd);
+}
+
 void CTangram::ReleaseCLR() 
 {
 	if (m_pClrHost && m_nAppID == -1 && theApp.m_bHostCLR == false)

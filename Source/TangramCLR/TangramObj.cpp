@@ -520,6 +520,7 @@ namespace TangramCLR
 			m_pMainForm = frm;
 			if (m_pMainForm != nullptr)
 			{
+				theApp.m_pTangramImpl->SetMainWnd((HWND)frm->Handle.ToPointer());
 				::PostAppMessage(::GetCurrentThreadId(), WM_TANGRAMMSG, 0, 20191004);
 			}
 		}
@@ -803,6 +804,47 @@ namespace TangramCLR
 		return nullptr;
 	}
 	
+#ifndef _WIN64
+	IntPtr Tangram::GetChild(IntPtr nHandle)
+	{
+		HWND hWnd = (HWND)nHandle.ToPointer();
+		if(::IsWindow(hWnd))
+		{ 
+			hWnd = ::GetWindow(hWnd, GW_CHILD);
+			return (IntPtr)hWnd;
+		}
+		return IntPtr::Zero;
+	}
+
+	void Tangram::AttachGridView(long handle)
+	{
+		if (theAppProxy.m_pPropertyGrid)
+			return;
+		HWND hWnd = 0;
+		if (handle)
+		{
+			hWnd = (HWND)handle;
+		}
+		else
+		{
+			hWnd = ::GetActiveWindow();
+		}
+		if (::IsWindow(hWnd))
+		{
+			hWnd = ::FindWindowEx(hWnd, NULL, _T("GenericPane"), _T("Properties"));
+			if (hWnd)
+			{
+				hWnd = ::FindWindowEx(hWnd, nullptr, nullptr, nullptr);
+				hWnd = ::FindWindowEx(hWnd, nullptr, nullptr, _T("PropertyGrid"));
+				if (hWnd)
+				{
+					theApp.m_pTangramImpl->m_pCLRProxy->AttachVSPropertyWnd(hWnd);
+				}
+			}
+		}
+	}
+#endif
+
 	void Tangram::CreateBKPage(Form^ form, String^ strID)
 	{
 		Control^ mdiclient = Tangram::GetMDIClient(form);
@@ -1483,6 +1525,19 @@ namespace TangramCLR
 		}
 
 		return pRetObj;
+	}
+
+	CompositorManager^ Tangram::CreateCompositorManager(IntPtr nPageHandle)
+	{
+		LONGLONG hWnd = (LONGLONG)nPageHandle.ToInt64();
+		ICompositorManager* pCompositorManager = nullptr;
+		theApp.m_pTangram->CreateCompositorManager(hWnd, &pCompositorManager);
+		if (pCompositorManager)
+		{
+			CompositorManager^ _pCompositorManager = theAppProxy._createObject<ICompositorManager, CompositorManager>(pCompositorManager);
+			return _pCompositorManager;
+		}
+		return nullptr;
 	}
 
 	CompositorManager^ Tangram::CreateCompositorManager(Control^ ctrl, Object^ ExternalObj)

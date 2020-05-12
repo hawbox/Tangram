@@ -3390,7 +3390,7 @@ LRESULT CCompositor::OnWindowPosChanging(UINT uMsg, WPARAM wParam, LPARAM lParam
 			lpwndpos->cx = rect.right - rect.left;
 			lpwndpos->cy = rect.bottom - rect.top;
 		}
-		::SetWindowPos(m_pWorkNode->m_pHostWnd->m_hWnd, HWND_BOTTOM, lpwndpos->x, lpwndpos->y, lpwndpos->cx, lpwndpos->cy, lpwndpos->flags | SWP_NOREDRAW | SWP_NOACTIVATE);// | SWP_FRAMECHANGED);
+		::SetWindowPos(m_pWorkNode->m_pHostWnd->m_hWnd, HWND_BOTTOM, lpwndpos->x, lpwndpos->y, lpwndpos->cx, lpwndpos->cy, lpwndpos->flags | SWP_NOACTIVATE);// | SWP_FRAMECHANGED);SWP_NOREDRAW | 
 		CWndNode* _pHostNode = m_pBindingNode;
 		if (_pHostNode->m_pHostCompositor)
 		{

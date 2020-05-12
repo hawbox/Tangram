@@ -1099,9 +1099,15 @@ Object^ CTangramCLRProxy::InitTangramCtrl(Form^ pForm, Control^ pCtrl, bool bSav
 							}
 							else if (name == L"mdiclient")
 							{
+								CTangramXmlParse* pChildParse = pParse->GetChild(L"mdiclient");
+								CTangramXmlParse* pChildParse2 = nullptr;
+								if(pChildParse)
+									pChildParse2 = pChildParse->GetChild(_T("default"));
 								CompositorInfo* pInfo = new CompositorInfo;
 								pInfo->m_pDisp = nullptr;
 								pInfo->m_strNodeXml = _T("");
+								if(pChildParse2)
+									pInfo->m_strNodeXml = pChildParse2->xml();;
 								pInfo->m_pParentDisp = nullptr;
 								pInfo->m_hCtrlHandle = (HWND)pChild->Handle.ToInt64();
 								m_mapCompositorInfo[pInfo->m_hCtrlHandle] = pInfo;
@@ -1141,7 +1147,7 @@ Object^ CTangramCLRProxy::InitTangramCtrl(Form^ pForm, Control^ pCtrl, bool bSav
 									{
 										CompositorInfo* pInfo = new CompositorInfo;
 										pInfo->m_pDisp = nullptr;
-										pInfo->m_strNodeXml = _T("");// pChildParse2->xml();
+										pInfo->m_strNodeXml = pChildParse2->xml();
 										pInfo->m_pParentDisp = nullptr;
 										pInfo->m_hCtrlHandle = (HWND)pChild->Handle.ToInt64();
 										m_mapCompositorInfo[pInfo->m_hCtrlHandle] = pInfo;
@@ -1937,6 +1943,11 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 					Control^ client = nullptr;
 					if (mainForm->IsMdiContainer)
 					{
+						CString strBKPage = m_Parse.attr(_T("mdibkpageid"), _T(""));
+						if (strBKPage != _T(""))
+						{
+							TangramCLR::Tangram::CreateBKPage(mainForm, BSTR2STRING(strBKPage));
+						}
 						client = TangramCLR::Tangram::GetMDIClient(mainForm);
 					}
 					else
@@ -1946,6 +1957,7 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 							Panel^ panel = gcnew Panel();
 							panel->Dock = DockStyle::Fill;
 							panel->Visible = true;
+							panel->Name = L"mainclient";
 							mainForm->Controls->Add(panel);
 							mainForm->ResumeLayout();
 						}
@@ -1980,48 +1992,54 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 
 					pTangramSession->SendMessage();
 
-					if (client != nullptr)
+					//if (client != nullptr)
+					//{
+					//	HWND hWnd = (HWND)client->Handle.ToPointer();
+					//	if (::IsWindow(hWnd))
+					//	{
+					//		CTangramXmlParse* pParse = m_Parse.GetChild(_T("mainclient"));
+					//		if (pParse)
+					//		{
+					//			CString strWebName = pParse->attr(_T("id"), _T(""));
+					//			if (strWebName == _T(""))strWebName = m_Parse.name();
+					//			if (strWebName != _T(""))
+					//			{
+					//				BindWebObj* pObj = new BindWebObj;
+					//				pObj->nType = 0;
+					//				pObj->m_pObjDisp = (IDispatch*)Marshal::GetIUnknownForObject(mainForm).ToPointer();
+					//				pObj->m_hWnd = hWnd;
+					//				pObj->m_strObjName = strWebName;
+					//				pObj->m_strObjType = "clrctrl";
+					//				pObj->m_strBindObjName = strWebName;
+					//				//pObj->m_strBindData = pChildParse->attr(_T("bindevent"), _T(""));
+					//				HWND hForm = (HWND)::GetParent(hWnd);
+					//				::PostMessage(hForm, WM_TANGRAMDATA, (WPARAM)pObj, 5);
+					//			}
+					//			pParse = pParse->GetChild(_T("default"));
+					//			if (pParse)
+					//			{
+					//				CString strMainForm = pParse->xml();
+					//				ICompositorManager* pManager = nullptr;
+					//				theApp.m_pTangram->CreateCompositorManager((__int64)::GetParent(hWnd), &pManager);
+					//				if (pManager)
+					//				{
+					//					ICompositor* pCompositor = nullptr;
+					//					pManager->CreateCompositor(CComVariant(0), CComVariant((__int64)hWnd), L"default", &pCompositor);
+					//					if (pCompositor) {
+					//						IWndNode* pNode = nullptr;
+					//						pCompositor->Open(L"default", CComBSTR(strMainForm), &pNode);
+					//					}
+					//				}
+					//			}
+					//		}
+					//	}
+					//}
+					CTangramXmlParse* pChildForms = m_Parse.GetChild(_T("childforms"));
+					if (pChildForms)
 					{
-						HWND hWnd = (HWND)client->Handle.ToPointer();
-						if (::IsWindow(hWnd))
-						{
-							CTangramXmlParse* pParse = m_Parse.GetChild(_T("mainclient"));
-							if (pParse)
-							{
-								CString strWebName = pParse->attr(_T("id"), _T(""));
-								if (strWebName == _T(""))strWebName = m_Parse.name();
-								if (strWebName != _T(""))
-								{
-									BindWebObj* pObj = new BindWebObj;
-									pObj->nType = 0;
-									pObj->m_pObjDisp = (IDispatch*)Marshal::GetIUnknownForObject(mainForm).ToPointer();
-									pObj->m_hWnd = hWnd;
-									pObj->m_strObjName = strWebName;
-									pObj->m_strObjType = "clrctrl";
-									pObj->m_strBindObjName = strWebName;
-									//pObj->m_strBindData = pChildParse->attr(_T("bindevent"), _T(""));
-									HWND hForm = (HWND)::GetParent(hWnd);
-									::PostMessage(hForm, WM_TANGRAMDATA, (WPARAM)pObj, 5);
-								}
-								pParse = pParse->GetChild(_T("default"));
-								if (pParse)
-								{
-									CString strMainForm = pParse->xml();
-									ICompositorManager* pManager = nullptr;
-									theApp.m_pTangram->CreateCompositorManager((__int64)::GetParent(hWnd), &pManager);
-									if (pManager)
-									{
-										ICompositor* pCompositor = nullptr;
-										pManager->CreateCompositor(CComVariant(0), CComVariant((__int64)hWnd), L"default", &pCompositor);
-										if (pCompositor) {
-											IWndNode* pNode = nullptr;
-											pCompositor->Open(L"default", CComBSTR(strMainForm), &pNode);
-										}
-									}
-								}
-							}
-						}
+						::SendMessage((HWND)mainForm->Handle.ToPointer(), WM_TANGRAMMSG, (WPARAM)pChildForms, 20190601);
 					}
+					CompositorManager^ pCompositorManager = static_cast<CompositorManager^>(theAppProxy.InitTangramCtrl(mainForm, mainForm, true, &m_Parse));
 				}
 			}
 		}
@@ -3911,7 +3929,7 @@ void CTangramCLRProxy::OnSelectedObjectsChanged(Object^ sender, EventArgs^ e)
 			else
 			{
 				CComQIPtr<VxDTE::CodeElement> pCodeElement(pDisp);
-				if (pCodeElement)
+				if (pCodeElement&& theApp.m_pTangramImpl->m_pTangramPackageProxy)
 				{
 					BSTR bstrName = ::SysAllocString(L"");
 					pCodeElement->get_FullName(&bstrName);
@@ -3920,9 +3938,15 @@ void CTangramCLRProxy::OnSelectedObjectsChanged(Object^ sender, EventArgs^ e)
 					return;
 				}
 			}
-			BSTR strType = STRING2BSTR(s);
-			theApp.m_pTangramImpl->m_pTangramPackageProxy->OnSelectedObjectsChanged(pDisp, OLE2T(strType), (LPARAM)hWnd, nType);
-			::SysFreeString(strType);
+#ifndef _WIN64
+			if (theApp.m_pTangramImpl->m_pTangramPackageProxy)
+			{
+				BSTR strType = STRING2BSTR(s);
+				theApp.m_pTangramImpl->m_pTangramPackageProxy->OnSelectedObjectsChanged(pDisp, OLE2T(strType), (LPARAM)hWnd, nType);
+				::SysFreeString(strType);
+			}
+			TangramCLR::Tangram::Fire_OnSelectedObjectsChanged(theAppProxy.m_pPropertyGrid->SelectedObject, s, (IntPtr)hWnd, nType);
+#endif
 		}
 	}
 }

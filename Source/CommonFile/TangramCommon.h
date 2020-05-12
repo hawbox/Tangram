@@ -813,6 +813,7 @@ namespace TangramCommon {
 		virtual CTangramSession* CreateCloudSession(CChromeRenderFrameHostProxy*) { return nullptr; }
 		virtual CTangramSession* GetCloudSession(IWndNode*) { return nullptr; }
 		virtual void ReleaseCLR() {}
+		virtual void SetMainWnd(HWND hMain) {}
 	};
 
 	class ITangramDelegate {

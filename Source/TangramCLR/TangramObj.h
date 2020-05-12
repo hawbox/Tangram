@@ -981,6 +981,7 @@ namespace TangramCLR
 		static Dictionary<Object^, WndNode^>^ m_pFrameworkElementDic = gcnew Dictionary<Object^, WndNode^>();
 
 		static String^ ComputeHash(String^ source);
+		static CompositorManager^ CreateCompositorManager(IntPtr nPageHandle);
 		static CompositorManager^ CreateCompositorManager(Control^ ctrl, Object^ ExternalObj);
 		static Object^ CreateObject(String^ ObjID);
 		static Form^ CreateForm(IWin32Window^ parent, String^ ObjID);
@@ -1129,6 +1130,14 @@ namespace TangramCLR
 			};
 		}
 
+		static void AttachGridView(long handle);
+		static IntPtr GetChild(IntPtr nHandle);
+		delegate void SelectedObjectsChanged(Object^ SourceObj, String^ strObjType, IntPtr^ objHandle, int nType);
+		static event SelectedObjectsChanged^ OnSelectedObjectsChanged;
+		static void Fire_OnSelectedObjectsChanged(Object^ SourceObj, String^ strObjType, IntPtr^ objHandle, int nType)
+		{
+			OnSelectedObjectsChanged(SourceObj, strObjType, objHandle, nType);
+		}
 #endif
 
 		static property Dictionary<String^, String^>^ CustomizeDic

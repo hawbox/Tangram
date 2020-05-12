@@ -495,4 +495,5 @@ private:
 	CTangramSession* CreateCloudSession(CChromeRenderFrameHostProxy*);
 	CTangramSession* GetCloudSession(IWndNode*);
 	void ReleaseCLR();
+	void SetMainWnd(HWND hMain);
 };
