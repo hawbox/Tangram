@@ -835,7 +835,7 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 				}
 			}
 
-			if (::IsWindow(hWnd) == false&&m_strCnnID != _T(""))
+			if (m_nViewType!=CLRCtrl&&::IsWindow(hWnd) == false&&m_strCnnID != _T(""))
 			{
 				ITangramWindowProvider* pViewFactoryDisp = nullptr;
 				auto it = g_pTangram->m_mapTangramWindowProvider.find(m_strCnnID);
@@ -895,6 +895,14 @@ BOOL CWndNode::Create(DWORD dwStyle, const RECT & rect, CWnd * pParentWnd, UINT 
 									if (m_Parse.LoadFile(strPath))
 									{
 										strLib = g_pTangram->m_strProgramFilePath + _T("\\tangram\\tangramcomponent\\") + m_Parse.attr(_T("lib"), _T(""));
+									}
+									else
+									{
+										strPath = g_pTangram->m_strAppPath + _T("PublicAssemblies\\tangramcomponent\\") + m_strCnnID + _T(".component");
+										if (m_Parse.LoadFile(strPath))
+										{
+											strLib = g_pTangram->m_strAppPath + _T("PublicAssemblies\\tangramcomponent\\") + m_Parse.attr(_T("lib"), _T(""));
+										}
 									}
 								}
 								if (::PathFileExists(strLib)&&::LoadLibrary(strLib))

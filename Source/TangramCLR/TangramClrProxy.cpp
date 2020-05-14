@@ -3014,6 +3014,16 @@ void CTangramCLRProxy::TangramAction(BSTR bstrXml, void* pvoid)
 			}
 			return;
 		}
+		if (strXml.CompareNoCase(_T("ExternAction:")) >= 0)
+		{
+			WndNode^ pWindowNode = (WndNode^)theAppProxy._createObject<IWndNode, WndNode>((IWndNode*)pvoid);
+			if (pWindowNode != nullptr)
+			{
+				pWindowNode->ActionData = BSTR2STRING(bstrXml);
+				TangramCLR::Tangram::Fire_OnTangramActionDelegate(pWindowNode, L"");
+			}
+			return;
+		}
 		CTangramXmlParse m_Parse;
 		if (m_Parse.LoadXml(strXml))
 		{

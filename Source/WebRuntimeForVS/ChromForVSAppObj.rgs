@@ -1,0 +1,26 @@
+HKCR
+{
+	WebRuntimeForVs.AppObj.1 = s 'ChromForVSAppObj class'
+	{
+		CLSID = s '{52f412eb-30f0-4e90-85d3-6c3c621f6be6}'
+	}
+	WebRuntimeForVs.AppObj = s 'ChromForVSAppObj class'
+	{		
+		CurVer = s 'WebRuntimeForVs.AppObj.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {52f412eb-30f0-4e90-85d3-6c3c621f6be6} = s 'ChromForVSAppObj class'
+		{
+			ProgID = s 'WebRuntimeForVs.AppObj.1'
+			VersionIndependentProgID = s 'WebRuntimeForVs.AppObj'
+			ForceRemove Programmable
+			LocalServer32 = s '%MODULE%'
+			{
+				val ServerExecutable = s '%MODULE_RAW%'
+			}
+			TypeLib = s '{4e0ce9e8-cba3-48d4-8af2-548bf85236e7}'
+			Version = s '1.0'
+		}
+	}
+}

@@ -1,0 +1,32 @@
+HKCR
+{
+	WebRuntimeForVs.WebCtrl.1 = s 'WebRuntimeCtrl class'
+	{
+		CLSID = s '{635a281c-bd31-4cf2-b37b-9be9c3d7be57}'
+	}
+	WebRuntimeForVs.WebCtrl = s 'WebRuntimeCtrl class'
+	{		
+		CurVer = s 'WebRuntimeForVs.WebCtrl.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {635a281c-bd31-4cf2-b37b-9be9c3d7be57} = s 'WebRuntimeCtrl class'
+		{
+			ProgID = s 'WebRuntimeForVs.WebCtrl.1'
+			VersionIndependentProgID = s 'WebRuntimeForVs.WebCtrl'
+			ForceRemove Programmable
+			LocalServer32 = s '%MODULE%'
+			{
+				val ServerExecutable = s '%MODULE_RAW%'
+			}
+			ForceRemove Control
+			ForceRemove 'ToolboxBitmap32' = s '%MODULE%, 311'
+			MiscStatus = s '0'
+			{
+			    '1' = s '%OLEMISC%'
+			}
+			TypeLib = s '{4e0ce9e8-cba3-48d4-8af2-548bf85236e7}'
+			Version = s '1.0'
+		}
+	}
+}

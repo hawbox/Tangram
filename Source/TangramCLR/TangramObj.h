@@ -558,6 +558,19 @@ namespace TangramCLR
 			}
 		}
 
+		property Object^ ActionData
+		{
+			Object^ get()
+			{
+				return actionData;
+			}
+
+			void set(Object^ obj)
+			{
+				actionData = obj;
+			}
+		}
+
 		[BrowsableAttribute(false)]
 		property int ActivePage
 		{
@@ -832,6 +845,7 @@ namespace TangramCLR
 		HWND m_hWnd;
 		String^ m_strListViewData = nullptr;
 		String^ m_strTreeViewData = nullptr;
+		Object^ actionData;
 		WndNode^ bindTreeNode = nullptr;
 		WndNode^ bindListViewNode = nullptr;
 		Dictionary<String^, MethodInfo^>^ m_pTangramCLRMethodDic = nullptr;
@@ -1139,6 +1153,12 @@ namespace TangramCLR
 			OnSelectedObjectsChanged(SourceObj, strObjType, objHandle, nType);
 		}
 #endif
+		delegate void TangramActionDelegate(WndNode^ SourceObj, String^ strInfo);
+		static event TangramActionDelegate^ OnTangramActionDelegate;
+		static void Fire_OnTangramActionDelegate(WndNode^ SourceObj, String^ strInfo)
+		{
+			OnTangramActionDelegate(SourceObj, strInfo);
+		}
 
 		static property Dictionary<String^, String^>^ CustomizeDic
 		{
@@ -1211,6 +1231,7 @@ namespace TangramCLR
 		}
 
 		static ChromeWebBrowser^ CreateBrowser(IntPtr ParentHandle, String^ strUrls);
+		static ChromeWebBrowser^ CreateBrowserRemote(IntPtr ParentHandle, String^ strUrls);
 		//static property Dictionary<String^, Type^>^ FormTypeDictionary
 		//{
 		//	Dictionary<String^, Type^>^ get()

@@ -24,6 +24,7 @@
 #include "TangramNodeCLREvent.h"
 #include "TangramObj.h"
 #include "ChromeWebBrowser.h"
+#include "WebRuntimeForVS.h"
 #include "WizCtrl.h"
 #include "Markup.h"
 
@@ -75,6 +76,7 @@ namespace TangramCLR
 		LONGLONG nValue = (LONGLONG)pNode;
 		theAppProxy._insertObject(nValue, this);
 		m_pChromeBrowserProxy = nullptr;
+		actionData = nullptr;
 	}
 
 	WndNode::~WndNode()
@@ -1706,6 +1708,25 @@ namespace TangramCLR
 			strUrls = strUrls->Replace(L"||", L"|");
 			HWND hWnd = theApp.m_pTangramImpl->m_pBrowserFactory->CreateBrowser(hPWnd, strUrls);
 			IChromeWebBrowser* pBrowser = (IChromeWebBrowser*)::SendMessage(hWnd, WM_TANGRAMMSG, 20190527, 0);
+			auto it = theAppProxy.m_mapChromeWebBrowser.find(pBrowser);
+			if (it != theAppProxy.m_mapChromeWebBrowser.end())
+				return it->second;
+			else
+				return gcnew ChromeWebBrowser(pBrowser);
+		}
+		return nullptr;
+	}
+
+	ChromeWebBrowser^ Tangram::CreateBrowserRemote(IntPtr ParentHandle, String^ strUrls)
+	{
+		TangramCLR::Tangram::GetTangram();
+		HWND hPWnd = (HWND)ParentHandle.ToPointer();
+		CComPtr<IChromForVSAppObj> pAppObj;
+		pAppObj.CoCreateInstance(CComBSTR("WebRuntimeForVs.AppObj.1"));
+		if (pAppObj.p)
+		{
+			CComPtr< IChromeWebBrowser> pBrowser;
+			pAppObj.p->CreateBrowser((__int64)ParentHandle.ToPointer(), STRING2BSTR(strUrls),&pBrowser);
 			auto it = theAppProxy.m_mapChromeWebBrowser.find(pBrowser);
 			if (it != theAppProxy.m_mapChromeWebBrowser.end())
 				return it->second;
