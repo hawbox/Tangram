@@ -22,6 +22,7 @@ namespace Gui
         virtual ~IDocument() {};
 
         virtual void Load(PCWSTR pszXcml) = 0;
+        virtual INode* GetRoot() = 0;
         virtual void CreateWnd(HWND hPWnd) = 0;
     };
 

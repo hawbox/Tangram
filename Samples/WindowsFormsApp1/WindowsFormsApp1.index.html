@@ -1,0 +1,301 @@
+﻿<!-- This is "index.html". Normally, it is named "ProjectName.index.html". This webpage is the real entry point of the HTML-driven App. -->
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="./assets/github-markdown.css">
+    <style type="text/css">
+        .markdown-body {
+		    box-sizing: border-box;
+		    min-width: 200px;
+		    max-width: 980px;
+		    margin: 0 auto;
+		    padding: 45px;
+	    }
+
+	    @media (max-width: 767px) {
+		    .markdown-body {
+			    padding: 15px;
+		    }
+	    }
+        .hidden {
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
+    </style>
+    <script type="text/javascript">
+        window.onload = function () {
+            if (tangram != null) {
+                tangram.onWinFormCreated = function (e) {
+                };
+
+                tangram.onTangramWindowCreated = function (e) {
+                    e.window.onTangramNodeCreated = function (e) {
+                        if(e.node.name=="WindowsFormsApp1_ntpctrl"){
+                            e.node.addEventListener("button1", "OnClick", function (e) {
+                                if(e.node.parentNode!=null){
+                                    e.node.parentNode.openEx("key1",document.getElementById("mainwindow_1").outerHTML);
+                                }
+                            });  
+                            e.node.addEventListener("button2", "OnClick", function (e) {
+                                if(e.node.parentNode!=null){
+                                    e.node.parentNode.openEx("key2",document.getElementById("mainwindow_2").outerHTML);
+                                }
+                            });  
+                        }
+                        if (e.node.name == "navCtrl") {
+                            e.node.addEventListener("treeView1", "OnAfterSelect", function (e) {
+                                var name = e.getStr("name");
+                                var list = document.getElementsByTagName(name);
+                                for (var i = 0; i < list.length; i++) {
+                                    var target = list[i].getAttribute("target");
+                                    if (target != null) {
+                                        tangram.sendMessage("TANGRAM_UI_MESSAGE", name, e.getInt64("subobjhandle"), list[i].outerHTML, target);
+                                    }
+                                }
+                                var contentElements = document.getElementsByClassName("contents")[0].children;
+                                for (var i = 0; i < contentElements.length; i++) {
+                                    var contentElement = contentElements[i];
+                                    if (contentElement.classList.contains(name)) {
+                                        contentElement.classList.remove("hidden");
+                                        contentElement.classList.add("show");
+                                    } else {
+                                        contentElement.classList.remove("show");
+                                        contentElement.classList.add("hidden");
+                                    }
+                                }
+                            })
+                        }
+                    };
+                };
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Define new DOM elements -->
+    <define tagName="mainWindow"></define>
+    <define tagName="application"></define>
+    <define tagName="webViewport"></define>
+    <define tagName="nodeDetails"></define>
+    <!-- End Define new DOM elements -->
+    <!-- The <application> node is required, it can provide application-level configuration. -->
+    <application>
+        <modules>
+            <module libname="WindowsFormsApp1.exe" objname="WindowsFormsApp1.WebDelegate" functionname="Init"></module>
+        </modules>
+        <ntp>
+            <window>
+                <node nodetype='splitter' id='splitter' rows='1' cols='2' height='250,' width='350,350,' borderwidth='0' splitterwidth='10'>
+                    <node nodetype="hostview"></node>
+                    <node nodetype="clrctrl" cnnid="WindowsFormsApp1.ntpctrl,host"></node>
+                </node>
+            </window>
+        </ntp>
+        <urls><url url="https://www.tangram.dev"></url></urls>
+    </application>
+    <!-- Determine the main window of the application, "WindowsFormsApp1.MDIParent1,host" represents
+        the WindowsFormsApp1.MDIParent1 class in the current executable program. -->
+    <mainWindow objid="" caption="My Windows Forms App">
+        <mainclient id="mainworkclient">
+            <default>
+                <window>
+                    <node nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="39">
+                        <node nodetype='splitter' caption="host application" id='splitter' rows='1' cols='2' height='250,' width='350,350,' borderwidth='0' splitterwidth='10'>
+                            <node nodetype="hostview"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.ntpctrl,host"  id="WindowsFormsApp1_ntpctrl"></node>
+                        </node>
+                        <node caption="Web Runtime for Application" url="host"></node>
+                    </node>
+                </window>
+            </default>
+        </mainclient>
+    </mainWindow>
+    <nodeDetails type="usercontrol" cnnid="WindowsFormsApp1.NavControl,host" uikey="navDetails">
+        <treeView1>
+            <uidata key="uidata" treenode="true" text="Welcome to the World of Web Runtime for Applications!">
+                <treeView1_tag name="content"></treeView1_tag>
+                <node1 treenode="true" text="New Web New Application World"></node1>
+                <node1_tag name="content1"></node1_tag>
+                <node2 treenode="true" text="Splitter Node Window"></node2>
+                <node2_tag name="content2"></node2_tag>
+                <node3 treenode="true" text="Nested Splitter Window"></node3>
+                <node3_tag name="content3"></node3_tag>
+                <node4 treenode="true" text="Tabbed Node Window"></node4>
+                <node4_tag name="content4"></node4_tag>
+                <node5 treenode="true" text="Nested Node Window"></node5>
+                <node5_tag name="content5"></node5_tag>
+                <node6 treenode="true" text="More Complex Nested Node Window"></node6>
+                <node6_tag name="content6"></node6_tag>
+            </uidata>
+        </treeView1>
+    </nodeDetails>
+    <webViewport>
+        <window>
+            <node nodetype="splitter" rows="1" cols="2" width="350,100,">
+                <node nodetype="clrctrl" cnnid="navDetails" id="navCtrl"></node>
+                <node nodetype="hostview" id="mainClient"></node>
+            </node>
+        </window>
+    </webViewport>
+
+    <form1 id="mainwindow_1">
+        <window>
+            <node nodetype='splitter' id='properties' rows='2' cols='2' height='300,250,100,' width='300,200,100,' middlecolor='RGB(255,224,192)'>
+                <node id='tangramtabctrl_Page2' nodetype='hostview' caption=''></node>
+                <node id='test1'></node>
+                <node id='test2'></node>
+                <node id='test3'></node>
+            </node>
+        </window>
+    </form1>
+    <form id="mainwindow_2">
+        <window>
+            <node nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="18">
+                <node id='tangramtabctrl_Page2' nodetype='hostview' caption='Page 1'></node>
+                <node id='test1' caption='Page 2'></node>
+                <node id='test2' caption='Page 3'></node>
+                <node id='test3' caption='Page 4'></node>
+            </node>
+        </window>
+    </form>
+
+    <div class="contents">
+        <article class="show content markdown-body">
+            <h1>Web Runtime for Application</h1>
+            <p>Web Runtime for Application is a software runtime service that enables developers to organize software in the form of Web pages, it extends Java, COM, .NET, Win32 components into DOM elements of Web pages, allowing developers to develop application-oriented-web-page, each specific function of the application software is embodied in one or a group of application-oriented-web-pages, consumers can access each specific application function by accessing the URL.</p>
+            <p>This is a New and Dynamic Desktop Software World where you can combine most of the existing component frameworks, such as .NET, Java, COM, C++, Web and Office etc. ...</p>
+            <content target="mainClient">
+                <window>
+                    <node nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="39">
+                        <node caption="Web Runtime for Application" nodetype="hostview"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host" caption="Customize your own WebBrowser"></node>
+                    </node>
+                </window>
+            </content>
+        </article>
+        <article class="hidden content1 markdown-body">
+            <h1>New Web, New Application World!</h1>
+            <p>Web runtime for application constructs a new mixed world of native UI elements and web elements. In this world, a new web page is defined. While taking into account the standard web page, the ability to use native components as DOM elements is added ...</p>
+            <content1 target="mainClient">
+                <window>
+                    <node nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="18">
+                        <node caption="The mixed world of web and native UI" nodetype="hostview"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host" caption="Send Page"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host" caption="Third Page"></node>
+                    </node>
+                </window>
+            </content1>
+        </article>
+        <article class="hidden content2 markdown-body">
+            <h1>About Splitter Node</h1>
+            <p>Splitter Node refers to a grid structure with m rows and n columns. As a container node, each child node can carry a specific programmable object ...</p>
+            <content2 target="mainClient">
+                <window>
+                    <node nodetype="splitter" rows="3" cols="3" width="150,100,50" height="200,180,50">
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                        <node nodetype="hostview"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host"></node>
+                    </node>
+                </window>
+            </content2>
+        </article>
+        <article class="hidden content3 markdown-body">
+            <h1>Nested Splitter Node</h1>
+            <p>Nested Splitter means that a Splitter can be a child node of another Splitter. We allow nested structures to mean that developers can use "lines" to plan the layout of a rectangular structure ... ...</p>
+            <content3 target="mainClient">
+                <window>
+                    <node nodetype="splitter" rows="1" cols="2" width="200,100,">
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host"></node>
+                        <node nodetype="splitter" caption="Start Page" rows="3" cols="3" width="150,100,150" height="200,180,150">
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                            <node nodetype="hostview"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host"></node>
+                        </node>
+                    </node>
+                </window>
+            </content3>
+        </article>
+        <article class="hidden content4 markdown-body">
+            <h1>Tabbed Node</h1>
+            <p>A Tabbed Node is a container node which include a group of titled “tab structures". A tabbed node with n tabs is equivalent to a "1 row and n columns" Splitter ...</p>
+            <content4 target="mainClient">
+                <window>
+                    <node nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="23">
+                        <node caption="Introduction to Tabbed Node" nodetype="hostview"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host" caption="Send Page"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host" caption="Third Page"></node>
+                    </node>
+                </window>
+            </content4>
+        </article>
+        <article class="hidden content5 markdown-body">
+            <h1>Compound node: Tabbed Node with a Splitter Node as a Child Node</h1>
+            <p>Compound node refers to the "composite structure" formed by various container nodes. We allow Tabbed Node and Splitter Node to "composite nest" so that developers can implement a more comprehensive UI layout ...</p>
+            <content5 target="mainClient">
+                <window>
+                    <node nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="23">
+                        <node nodetype="splitter" caption="Nested Node" rows="3" cols="3" width="150,100,150" height="200,180,150">
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                            <node nodetype="hostview"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host"></node>
+                        </node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host" caption="Send Page"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host" caption="Third Page"></node>
+                    </node>
+                </window>
+            </content5>
+        </article>
+        <article class="hidden content6 markdown-body">
+            <h1>More complex compound node</h1>
+            <p>What is shown here is a three times composite page structure. Because the “tab structure” can have various "styles", each specific sub node can carry various programmable objects, based on this, a comprehensive page structure can be formed. Thanks to the flexible and powerful description mechanism of HTML, so that the web page can present a page with dual advantages of native-web application...</p>
+            <content6 target="mainClient">
+                <window>
+                    <node nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="23">
+                        <node nodetype="splitter" caption="Start Page" rows="3" cols="3" width="150,100,150" height="200,180,150">
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                            <node nodetype="TangramTabCtrl" cnnid="TangramTabbedWnd.TabbedComponent.1" style="18" activepage="1">
+                                <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host" caption="First Page"></node>
+                                <node nodetype="hostview" caption="Compound Node World Gives You An Unexpected Surprise"></node>
+                                <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host" caption="Third Page"></node>
+                            </node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl1,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host"></node>
+                            <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host"></node>
+                        </node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl3,host" caption="Send Page"></node>
+                        <node nodetype="clrctrl" cnnid="WindowsFormsApp1.UserControl2,host" caption="Third Page"></node>
+                    </node>
+                </window>
+            </content6>
+        </article>
+    </div>
+</body>
+</html>

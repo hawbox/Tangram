@@ -6,14 +6,16 @@ class IXmlReader;
 
 namespace Gui
 {
+    // As an XCML fragment.
     class Document : public IDocument
     {
     public:
         Document();
         virtual ~Document() {};
 
-        void Load(PCWSTR pszXcml);
-        void CreateWnd(HWND hPWnd);
+        void Load(PCWSTR pszXcml) override;
+        INode* GetRoot() override;
+        void CreateWnd(HWND hPWnd) override;
     private:
         HWND m_hInvisibleHWnd;
         INode* m_pRootNode;

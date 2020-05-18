@@ -38,5 +38,7 @@ namespace Gui
 
         INode* m_pParentNode;
         std::vector<INode*> m_vecChildNodes;
+
+        CString GetFactoryName();
     };
 }

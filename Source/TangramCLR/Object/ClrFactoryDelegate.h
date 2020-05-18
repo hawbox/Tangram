@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include "../CommonFile/IRefObject.h"
+#include "../CommonFile/IGui.h"
 
 namespace RefObject
 {

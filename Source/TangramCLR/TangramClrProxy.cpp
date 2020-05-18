@@ -184,7 +184,7 @@ CTangramCLRProxy::CTangramCLRProxy() : ITangramCLRImpl()
 	}
 
 	TangramCLR::Tangram::GetTangram();
-	//theApp.m_pTangramImpl->m_pObjectFactory->AddFactoryDelegate(new ::RefObject::ClrFactoryDelegate());
+	theApp.m_pTangramImpl->m_pObjectFactory->AddFactoryDelegate(new ::RefObject::ClrFactoryDelegate());
 }
 
 CTangramCLRProxy::~CTangramCLRProxy()

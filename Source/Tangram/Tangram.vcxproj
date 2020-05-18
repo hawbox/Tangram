@@ -103,7 +103,7 @@
     <SourcePath>$(VC_SourcePath);</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\..\..\TangramWizard\TangramShared\output</OutDir>
+    <OutDir>..\..\chromium_root_81\src\out\tangram_static_release_x64</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -316,6 +316,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="IPC\RFHTrackableWindow.cpp" />
     <ClCompile Include="TangramCloudSession.cpp" />
     <ClCompile Include="Gui\Document.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.h</PrecompiledHeaderFile>
@@ -535,6 +536,8 @@
     <ClInclude Include="chromium\HtmlWnd.h" />
     <ClInclude Include="chromium\BrowserWnd.h" />
     <ClInclude Include="chromium\HtmlWndDelegate.h" />
+    <ClInclude Include="IPC\RFHTrackableWindow.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="TangramCloudSession.h" />
     <ClInclude Include="Gui\Document.h" />
     <ClInclude Include="Gui\Grid.h" />

@@ -1,0 +1,41 @@
+﻿<!-- This is "index.html". Normally, it is named "ProjectName.index.html". This webpage is the real entry point of the HTML-driven App. -->
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <define tagname="mainwindow"></define>
+    <define tagname="application"></define>
+    <define tagname="formwindow"></define>
+    <script type="text/javascript">
+        window.onload = function () {
+            var n = 1;
+            function updateAttribute() {
+                document.getElementsByTagName("formwindow")[0].setAttribute("title", "Hello World!" + (++n));
+            }
+            this.setInterval(updateAttribute, 1000);
+        }
+    </script>
+</head>
+<body>
+    <!-- The <application> node is required, it can provide application-level configuration. -->
+    <application>
+        <!-- Nothing at all -->
+    </application>
+    <!-- Determine the main window of the application, "FusionApp1.Form1,host" represents
+        the FusionApp1.Form1 class in the current executable program. -->
+    <mainWindow objid="FusionApp1.Form1,host" caption="Test">
+        <panel1>
+            <default>
+                <window>
+                    <node url="host"></node>
+                </window>
+            </default>
+        </panel1>
+    </mainWindow>
+    <formwindow assemblyname="FusionApp1" typename="FusionApp1.Form2" title="Hello New Form Window">
+
+    </formwindow>
+</body>
+</html>

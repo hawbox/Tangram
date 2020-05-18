@@ -232,7 +232,7 @@ CTangram::CTangram()
 #endif
 	//g_pTangram = m_pTangramImplData;
 	m_mapValInfo[_T("currenteclipeworkBenchid")] = CComVariant(_T(""));
-	//m_pObjectFactory = new ::RefObject::ObjectFactory();
+	m_pObjectFactory = new ::RefObject::ObjectFactory();
 	//m_pXWindows = new ::Gui::XWindows();
 	m_pXWindows = nullptr;
 	m_TabWndClassInfoDictionary[_T("hostview")] = RUNTIME_CLASS(CNodeWnd);

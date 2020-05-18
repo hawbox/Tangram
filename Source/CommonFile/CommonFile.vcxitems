@@ -27,8 +27,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Browser.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ChromeProxy.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ChromeRenderDomProxy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)CommonFunction.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IGui.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IGuiFactoryDelegate.h" />
@@ -42,6 +40,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)IXNode.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)jni.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)jni_md.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Messages.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)metahost.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)msaddndr.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mscoree.h" />

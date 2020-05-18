@@ -10,21 +10,21 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApp1
 {
-    public partial class MDIForm : Form
+    public partial class MDIParent1 : Form
     {
         private int childFormNumber = 0;
 
-        public MDIForm()
+        public MDIParent1()
         {
             InitializeComponent();
         }
 
         private void ShowNewForm(object sender, EventArgs e)
         {
-            Form childForm = new Form();
-            childForm.MdiParent = this;
-            childForm.Text = "Window " + childFormNumber++;
-            childForm.Show();
+            //Form childForm = new Form();
+            //childForm.MdiParent = this;
+            //childForm.Text = "Window " + childFormNumber++;
+            //childForm.Show();
         }
 
         private void OpenFile(object sender, EventArgs e)

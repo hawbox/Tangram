@@ -8,8 +8,6 @@ using namespace System::Runtime::InteropServices;
 namespace RefObject
 {
     ref class RefObjectParams;
-    ref class RefObjectEventListener;
-    ref class RefObjectCallback;
     ref class RefObject;
 
     public ref struct ClrHandle
@@ -99,6 +97,12 @@ namespace RefObject
 
     private:
         IRefObject* GetNativeObjectFromHandle(ClrHandle^ clrHandle);
+    };
+
+    public interface class IRefObjectInvokeExtension
+    {
+    public:
+        void Invoke(String^ method, RefObjectParams^ params);
     };
 }
 

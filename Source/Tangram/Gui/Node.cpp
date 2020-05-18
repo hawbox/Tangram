@@ -48,6 +48,14 @@ namespace Gui
     void Node::SetAttribute(CString strName, CString strValue)
     {
         m_mapAttributes[strName] = strValue;
+        ::RefObject::IRefObject* pObj = g_pTangram->m_pObjectFactory->GetObjectFromHandle(m_nHandle);
+        if (pObj != nullptr)
+        {
+            ::RefObject::IRefObjectParams* pParams = g_pTangram->m_pObjectFactory->CreateParams();
+            pParams->AddParam(strName);
+            pParams->AddParam(strValue);
+            pObj->Invoke(_T("__SET_ATTRIBUTE__"), pParams);
+        }
     }
 
     int64_t Node::GetAttributeAsNumber(CString strName)
@@ -94,12 +102,23 @@ namespace Gui
         m_hPWnd = hPWnd;
         if (m_nHandle.IsZero())
         {
-            CString strTagName = GetTagName();
-            ::RefObject::IRefObject* pObj = g_pTangram->m_pObjectFactory->Create(strTagName, this);
+            CString strFactoryName = GetFactoryName();
+            ::RefObject::IRefObject* pObj = g_pTangram->m_pObjectFactory->Create(strFactoryName, this);
             if (pObj != nullptr)
             {
                 m_nHandle = pObj->GetHandle();
             }
+            // TODO: Continue to create the next node.
         }
+    }
+
+    CString Node::GetFactoryName()
+    {
+        CString strTagName = GetTagName();
+        if (strTagName.CompareNoCase(_T("formwindow")) == 0)
+        {
+            return _T("Clr");
+        }
+        return nullptr;
     }
 }

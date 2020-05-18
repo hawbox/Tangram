@@ -21,11 +21,19 @@ namespace Gui
         pXcmlSteam->Release();
     }
 
+    INode* Document::GetRoot()
+    {
+        return m_pRootNode;
+    }
+
     void Document::CreateWnd(HWND hPWnd)
     {
-        RemoveChildWindows(hPWnd);
         if (m_pRootNode != nullptr)
         {
+            if (::IsWindow(hPWnd))
+            {
+                RemoveChildWindows(hPWnd);
+            }
             m_pRootNode->CreateWnd(hPWnd);
         }
     }
