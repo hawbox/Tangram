@@ -150,7 +150,6 @@
 #include "third_party/blink/renderer/core/dom/node.h"
 #include "third_party/blink/renderer/core/dom/node_traversal.h"
 #include "third_party/blink/renderer/core/dom/shadow_root.h"
-
 #include "third_party/blink/renderer/core/editing/editing_utilities.h"
 #include "third_party/blink/renderer/core/editing/editor.h"
 #include "third_party/blink/renderer/core/editing/ephemeral_range.h"
@@ -2321,7 +2320,7 @@ void WebLocalFrameImpl::CopyImageAtForTesting(
 
 // begin Add by TangramTeam
 void* WebLocalFrameImpl::GetTangram() {
-	return GetFrame()->DomWindow()->tangram();
+  return GetFrame()->DomWindow()->tangram();
 }
 // end Add by TangramTeam
 
@@ -2606,6 +2605,15 @@ void WebLocalFrameImpl::SetAllowsCrossBrowsingInstanceFrameLookup() {
       ->GetDocument()
       ->GetMutableSecurityOrigin()
       ->GrantCrossAgentClusterAccess();
+}
+
+void WebLocalFrameImpl::SendCustomMessage(std::string msg) {
+  Client()->SendCustomMessage(msg);
+}
+
+void WebLocalFrameImpl::OnCustomMessageReceived(std::string msg) {
+  // TODO: Routing to LocalDOMWindow or Document.
+  GetFrame()->GetDocument()->OnCustomMessageReceived(msg);
 }
 
 }  // namespace blink

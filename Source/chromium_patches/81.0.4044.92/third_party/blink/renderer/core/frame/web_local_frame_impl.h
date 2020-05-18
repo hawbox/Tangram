@@ -439,6 +439,11 @@ class CORE_EXPORT WebLocalFrameImpl final
 
   virtual void Trace(blink::Visitor*);
 
+  // >>>>> TANGRAMDEV
+  void SendCustomMessage(std::string msg) override;
+  void OnCustomMessageReceived(std::string msg) override;
+  // <<<<< TANGRAMDEV
+
  protected:
   // WebLocalFrame protected overrides:
   void AddMessageToConsoleImpl(const WebConsoleMessage&,

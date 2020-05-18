@@ -115,17 +115,13 @@
 #include "content/renderer/pepper/plugin_power_saver_helper.h"
 #endif
 // begin add by TangramTeam
-using FrameMsg_TANGRAM_HOST_String_Map =
-std::map<std::wstring, std::wstring>;
+using FrameMsg_TANGRAM_HOST_String_Map = std::map<std::wstring, std::wstring>;
 
-using FrameMsg_TANGRAM_HOST_LONG_Map =
-std::map<std::wstring, long>;
+using FrameMsg_TANGRAM_HOST_LONG_Map = std::map<std::wstring, long>;
 
-using FrameMsg_TANGRAM_HOST_INT64_Map =
-std::map<std::wstring, __int64>;
+using FrameMsg_TANGRAM_HOST_INT64_Map = std::map<std::wstring, __int64>;
 
-using FrameMsg_TANGRAM_HOST_FLOAT_Map =
-std::map<std::wstring, float>;
+using FrameMsg_TANGRAM_HOST_FLOAT_Map = std::map<std::wstring, float>;
 // end add by TangramTeam
 
 struct FrameMsg_MixedContentFound_Params;
@@ -925,19 +921,19 @@ class CONTENT_EXPORT RenderFrameImpl
   void TransferUserActivationFrom(blink::WebLocalFrame* source_frame) override;
 
   // begin Add by TangramTeam
-  void SendTangramMessageEx(blink::TangramCommon::IPCSession& var)override;
+  void SendTangramMessageEx(blink::TangramCommon::IPCSession& var) override;
   void SendTangramMessage(std::wstring id,
-      std::wstring param1,
-      std::wstring param2,
-      std::wstring param3,
-      std::wstring param4,
-      std::wstring param5) override;
+                          std::wstring param1,
+                          std::wstring param2,
+                          std::wstring param3,
+                          std::wstring param4,
+                          std::wstring param5) override;
   void SendTangramMessage(std::wstring id,
-      std::wstring param1,
-      __int64 handle,
-      __int64 nID,
-      std::wstring param4,
-      std::wstring param5) override;
+                          std::wstring param1,
+                          __int64 handle,
+                          __int64 nID,
+                          std::wstring param4,
+                          std::wstring param5) override;
 
   void SendTangramMessage5(
       FrameMsg_TANGRAM_HOST_String_Map /* string map */,
@@ -946,12 +942,12 @@ class CONTENT_EXPORT RenderFrameImpl
       FrameMsg_TANGRAM_HOST_FLOAT_Map /* float map */) override;
 
   void OnTangramMessage(long messageindex,
-      std::wstring id,
-      std::wstring param1,
-      std::wstring param2,
-      std::wstring param3,
-      std::wstring param4,
-      std::wstring param5) override;
+                        std::wstring id,
+                        std::wstring param1,
+                        std::wstring param2,
+                        std::wstring param3,
+                        std::wstring param4,
+                        std::wstring param5) override;
 
   void OnTangramRendererIPCMsg(
       FrameMsg_TANGRAM_HOST_String_Map /* string map */,
@@ -969,6 +965,10 @@ class CONTENT_EXPORT RenderFrameImpl
   void SetWebURLLoaderFactoryOverrideForTest(
       std::unique_ptr<blink::WebURLLoaderFactoryForTest> factory);
 
+  // >>>>> TANGRAMDEV
+  void SendCustomMessage(std::string msg) override;
+  void OnCustomMessageReceived(std::string msg) override;
+  // <<<<< TANGRAMDEV
  protected:
   explicit RenderFrameImpl(CreateParams params);
 

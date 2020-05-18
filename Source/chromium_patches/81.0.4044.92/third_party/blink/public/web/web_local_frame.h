@@ -748,6 +748,10 @@ class WebLocalFrame : public WebFrame {
   // This should only be used for extensions and the webview tag.
   virtual void SetAllowsCrossBrowsingInstanceFrameLookup() = 0;
 
+  // >>>>> TANGRAMDEV
+  virtual void SendCustomMessage(std::string msg) = 0;
+  virtual void OnCustomMessageReceived(std::string msg) = 0;
+  // <<<<< TANGRAMDEV
  protected:
   explicit WebLocalFrame(WebTreeScopeType scope) : WebFrame(scope) {}
 

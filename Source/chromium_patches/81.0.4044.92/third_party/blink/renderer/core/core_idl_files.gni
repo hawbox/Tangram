@@ -264,6 +264,9 @@ core_idl_files =
                     "html/html_title_element.idl",
                     "html/html_ulist_element.idl",
                     "html/html_unknown_element.idl",
+                    # >>>>> TANGRAMDEV
+                    "html/html_new_element.idl",
+                    # <<<<< TANGRAMDEV
                     "html/time_ranges.idl",
                     "html/void_callback.idl",
                     "html/canvas/image_data.idl",

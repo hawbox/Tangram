@@ -1084,6 +1084,13 @@ IPC_MESSAGE_ROUTED2(FrameHostMsg_PrintCrossProcessSubframe,
                     gfx::Rect /* rect area of the frame content */,
                     int /* rendered document cookie */)
 
+// >>>>> TANGRAMDEV
+IPC_MESSAGE_ROUTED1(FrameHostMsg_Custom,
+                    std::string)
+IPC_MESSAGE_ROUTED1(FrameMsg_Custom,
+                    std::string)
+// <<<<< TANGRAMDEV
+
 // begin Add by TangramTeam
 IPC_MESSAGE_ROUTED7(TangramFrameMsg_Message,
 	long /* nessage index */,

@@ -711,6 +711,11 @@ public:
 
   // Transfers user activation state from |source_frame| to the current frame.
   virtual void TransferUserActivationFrom(WebLocalFrame* source_frame) {}
+
+  // >>>>> TANGRAMDEV
+  virtual void SendCustomMessage(std::string msg) {}
+  virtual void OnCustomMessageReceived(std::string msg) {}
+  // <<<<< TANGRAMDEV
 };
 
 }  // namespace blink

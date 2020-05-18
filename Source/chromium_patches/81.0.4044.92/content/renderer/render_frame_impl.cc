@@ -2230,6 +2230,10 @@ bool RenderFrameImpl::OnMessageReceived(const IPC::Message& msg) {
     IPC_MESSAGE_HANDLER(TangramRendererIPCMsg, OnTangramRendererIPCMsg)
     // end Add by TangramTeam
 
+    // >>>>> TANGRAMDEV
+    IPC_MESSAGE_HANDLER(FrameMsg_Custom, OnCustomMessageReceived)
+    // <<<<< TANGRAMDEV
+
   IPC_END_MESSAGE_MAP()
 
   return handled;
@@ -7136,6 +7140,16 @@ void RenderFrameImpl::SendTangramMessageEx(
   Send(new TangramHostIPCMsg(routing_id_, var.m_mapString, var.m_mapLong,
                              var.m_mapint64, var.m_mapFloat));
 }
+
+// >>>>> TANGRAMDEV
+void RenderFrameImpl::SendCustomMessage(std::string msg) {
+  Send(new FrameHostMsg_Custom(routing_id_, msg));
+}
+
+void RenderFrameImpl::OnCustomMessageReceived(std::string msg) {
+  GetWebFrame()->OnCustomMessageReceived(msg);
+}
+// <<<<< TANGRAMDEV
 
 // end Add by TangramTeam
 

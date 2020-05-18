@@ -151,6 +151,10 @@ using FrameMsg_TANGRAM_HOST_FLOAT_Map =
 std::map<std::wstring, float>;
 // end Add by TangramTeam
 
+// >>>>> TANGRAMDEV
+#include "c:/src/tangram/source/chrome_proxy/third_party/trackable.h"
+// <<<<< TANGRAMDEV
+
 class GURL;
 struct AccessibilityHostMsg_EventBundleParams;
 struct AccessibilityHostMsg_LocationChangeParams;
@@ -241,7 +245,8 @@ class CONTENT_EXPORT RenderFrameHostImpl :
       public service_manager::mojom::InterfaceProvider,
       public blink::mojom::LocalFrameHost,
       public CSPContext,
-      public ui::AXActionHandler {
+      public ui::AXActionHandler,
+      public TrackableChromiumObject {
  public:
   using AXTreeSnapshotCallback =
       base::OnceCallback<void(const ui::AXTreeUpdate&)>;
@@ -1557,6 +1562,12 @@ class CONTENT_EXPORT RenderFrameHostImpl :
   void SendTangramMessage(TangramCommon::IPCSession* var) override;
   void SendTangramMessage(TangramCommon::IPCMsg*) override;
   // end Add by TangramTeam
+  // >>>>> TANGRAMDEV
+  void SendCustomMessage(std::string msg);
+  void OnCustomMessageReceived(std::string msg);
+  void TrackWindowMsgHandle(WPARAM wParam, LPARAM lParam) override;
+  void TrackWindowEndMsgHandle(WPARAM wParam, LPARAM lParam) override;
+  // <<<<< TANGRAMDEV
   void OnDetach();
   void OnOpenURL(const FrameHostMsg_OpenURL_Params& params);
   void OnUpdateState(const PageState& state);

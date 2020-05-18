@@ -1027,9 +1027,18 @@ RenderFrameHostImpl::RenderFrameHostImpl(
   if (parent_ == nullptr && g_pTangramImpl)
 	  g_pTangramImpl->m_pCreatingChromeRenderFrameHostBase = this;
   // end Add by TangramTeam
+  // >>>>> TANGRAMDEV
+  if (parent_ == nullptr) {
+    StartTrack(this, 1);
+  }
+  // <<<<< TANGRAMDEV
 }
 
 RenderFrameHostImpl::~RenderFrameHostImpl() {
+  // >>>>> TANGRAMDEV
+  EndTrack();
+  // <<<<< TANGRAMDEV
+
   // When a RenderFrameHostImpl is deleted, it may still contain children. This
   // can happen with the unload timer. It causes a RenderFrameHost to delete
   // itself even if it is still waiting for its children to complete their
@@ -1761,6 +1770,9 @@ bool RenderFrameHostImpl::OnMessageReceived(const IPC::Message& msg) {
 	IPC_MESSAGE_HANDLER(TangramFrameHostMsg_Message2, OnTangramMessage2)
 	IPC_MESSAGE_HANDLER(TangramHostIPCMsg, OnTangramHostIPCMsg)
 	// end Add by TangramTeam
+    // >>>>> TANGRAMDEV
+    IPC_MESSAGE_HANDLER(FrameHostMsg_Custom, OnCustomMessageReceived)
+    // <<<<< TANGRAMDEV
 
   IPC_END_MESSAGE_MAP()
 
@@ -8550,5 +8562,38 @@ void RenderFrameHostImpl::SendTangramMessage(TangramCommon::IPCMsg* pMsg) {
     }
 }
 // end Add by TangramTeam
+
+// >>>>> TANGRAMDEV
+static LPSTR ParamFromString(std::string str) {
+  LPSTR lpStr = new char[str.length() + 1];
+  strcpy(lpStr, str.c_str());
+  return lpStr;
+}
+
+static std::string ParamToString(LPSTR lpStr) {
+  std::string str(lpStr);
+  return str;
+}
+
+void RenderFrameHostImpl::SendCustomMessage(std::string msg) {
+    Send(new FrameMsg_Custom(routing_id_, msg));
+}
+
+void RenderFrameHostImpl::OnCustomMessageReceived(std::string msg) {
+    LPSTR lpStr = ParamFromString(msg);
+    PostMsgToTrackWindowClient(NULL, (LPARAM)lpStr);
+}
+
+void RenderFrameHostImpl::TrackWindowMsgHandle(WPARAM wParam, LPARAM lParam) {
+    LPSTR lpStr = (LPSTR)lParam;
+    std::string msg = ParamToString(lpStr);
+    SendCustomMessage(msg);
+}
+
+void RenderFrameHostImpl::TrackWindowEndMsgHandle(WPARAM wParam, LPARAM lParam) {
+    LPSTR lpStr = (LPSTR)lParam;
+    delete[] lpStr;
+}
+// <<<<< TANGRAMDEV
 
 }  // namespace content
