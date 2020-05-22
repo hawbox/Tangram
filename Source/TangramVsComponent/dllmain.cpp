@@ -41,5 +41,15 @@ BOOL CTangramApp::InitInstance()
 	m_mapInnerObjInfo[_T("webview")] = RUNTIME_CLASS(CWebView);
 	m_mapInnerObjInfo[_T("tangramvscomponentformview")] = RUNTIME_CLASS(TangramVsComponentForm);
 	TangramInit(_T("Forms"));
+	if (m_pTangramFromWebRuntime == nullptr)
+	{
+		CComPtr<ITangram> pDisp;
+		pDisp.CoCreateInstance(CComBSTR("WebRuntimeForVs.AppObj.1"));
+		if (pDisp)
+		{
+			m_pTangramFromWebRuntime = pDisp.Detach();
+			m_pTangramFromWebRuntime->AddRef();
+		}
+	}
 	return CWinApp::InitInstance();
 }

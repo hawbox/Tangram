@@ -421,6 +421,9 @@ namespace ChromePlus {
 			g_pTangram->m_mapBrowserWnd.erase(it);
 		}
 
+		////if(g_pTangram->m_pTangramVS)
+		//	return DefWindowProc(uMsg, wParam, lParam);
+
 		if ((g_pTangram->m_hMainWnd == g_pTangram->m_hHostWnd && g_pTangram->m_mapBrowserWnd.size() == 1)|| 
 			g_pTangram->m_hHostBrowserWnd == m_hWnd)
 		{
@@ -449,6 +452,7 @@ namespace ChromePlus {
 				g_pTangram->m_hCBTHook = nullptr;
 			}
 		}
+
 		LRESULT lRes = DefWindowProc(uMsg, wParam, lParam);
 
 		if (g_pTangram->m_hMainWnd == NULL &&

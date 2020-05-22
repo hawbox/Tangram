@@ -6,7 +6,9 @@
 #include "olectl.h"
 import "ocidl.idl";
 import "oaidl.idl";
+import "shobjidl.idl";
 import "..\CommonFile\tangram.idl";
+
 [
 	object,
 	uuid(424ec3e0-2d0c-4b90-a1e2-162cc7aab4bd),
@@ -20,49 +22,12 @@ interface IWebRuntimeCtrl : IDispatch
 	HRESULT HWND([out, retval]LONG_PTR* pHWND);
 };
 
-[
-	object,
-	uuid(82249965-9d73-42d0-81cd-149924f437bb),
-	dual,
-	nonextensible,
-	pointer_default(unique)
-]
-interface IChromForVSAppObj : IDispatch
-{
-	[id(100), helpstring("method Create ChromeWebBrowser")] HRESULT CreateBrowser(ULONGLONG hParentWnd, BSTR strUrls, [out]IChromeWebBrowser** ppRet);
-	[id(101)] HRESULT GetCreatingBrowserWnd(LONGLONG* retHandle);
-};
 [ uuid(4e0ce9e8-cba3-48d4-8af2-548bf85236e7), version(1.0) ]
 library WebRuntimeForVS
 {
 	importlib("stdole32.tlb");
 	importlib("stdole2.tlb");
 
-	//  Primary dispatch interface for CWebRuntimeForVSDoc
-
-	[ uuid(5199b64b-46b9-444b-8e33-b39ab193eb55) ]
-	dispinterface IWebRuntimeForVS
-	{
-		properties:
-
-		methods:
-	};
-
-	//  Class information for CWebRuntimeForVSDoc
-
-	[ uuid(4e77a03b-254d-4956-90d8-a15be84bbcb8) ]
-	coclass CWebRuntimeForVSDoc
-	{
-		[default] dispinterface IWebRuntimeForVS;
-	};
-	[
-		uuid(74cb9a2d-97fe-4e9f-8b57-955fba5bf5e3)
-	]
-	dispinterface _IWebRuntimeCtrlEvents
-	{
-		properties:
-		methods:
-	};
 	[
 		uuid(635a281c-bd31-4cf2-b37b-9be9c3d7be57),
 		control
@@ -70,23 +35,13 @@ library WebRuntimeForVS
 	coclass WebRuntimeCtrl
 	{
 		[default] interface IWebRuntimeCtrl;
-		[default, source] dispinterface _IWebRuntimeCtrlEvents;
 	};
-	[
-		uuid(37fed054-75d7-4563-8518-86b632e78563)
-	]
-	dispinterface _IChromForVSAppObjEvents
-	{
-		properties:
-		methods:
-	};
+
 	[
 		uuid(52f412eb-30f0-4e90-85d3-6c3c621f6be6)
 	]
 	coclass ChromForVSAppObj
 	{
-		[default] interface IChromForVSAppObj;
-		[default, source] dispinterface _IChromForVSAppObjEvents;
+		[default] interface ITangram;
 	};
 };
-import "shobjidl.idl";

@@ -16,17 +16,6 @@
 
 // CWebRuntimeForVSApp
 
-
-class CWebRuntimeForVSModule :
-	public ATL::CAtlMfcModule
-{
-public:
-	DECLARE_LIBID(LIBID_WebRuntimeForVS);
-	DECLARE_REGISTRY_APPID_RESOURCEID(IDR_WEBRUNTIMEFORVS, "{15EDB059-AABD-4FA5-BB0F-0A75B04A04ED}");
-};
-
-CWebRuntimeForVSModule _AtlModule;
-
 BEGIN_MESSAGE_MAP(CWebRuntimeForVSApp, CWinApp)
 END_MESSAGE_MAP()
 
@@ -35,6 +24,7 @@ END_MESSAGE_MAP()
 
 CWebRuntimeForVSApp::CWebRuntimeForVSApp() noexcept
 {
+	m_dwThreadID = ::GetCurrentThreadId();
 }
 
 // The one and only CWebRuntimeForVSApp object
@@ -85,10 +75,9 @@ BOOL CWebRuntimeForVSApp::InitInstance()
 
 	#if !defined(_WIN32_WCE) || defined(_CE_DCOM)
 	// Register class factories via CoRegisterClassObject().
-	if (FAILED(_AtlModule.RegisterClassObjects(CLSCTX_LOCAL_SERVER, REGCLS_MULTIPLEUSE)))
+	if (FAILED(theApp.RegisterClassObjects(CLSCTX_LOCAL_SERVER, REGCLS_MULTIPLEUSE)))
 		return FALSE;
 	#endif // !defined(_WIN32_WCE) || defined(_CE_DCOM)
-
 	// App was launched with /Embedding or /Automation switch.
 	// Run app as automation server.
 	if (cmdInfo.m_bRunEmbedded || cmdInfo.m_bRunAutomated)
@@ -100,25 +89,25 @@ BOOL CWebRuntimeForVSApp::InitInstance()
 	// typelibrary.  Other unregistration occurs in ProcessShellCommand().
 	else if (cmdInfo.m_nShellCommand == CCommandLineInfo::AppUnregister)
 	{
-		_AtlModule.UpdateRegistryAppId(FALSE);
-		_AtlModule.UnregisterServer(TRUE);
+		UpdateRegistryAppId(FALSE);
+		UnregisterServer(TRUE);
 		AfxOleUnregisterTypeLib(_tlid, _wVerMajor, _wVerMinor);
 	}
 	// App was launched standalone or with other switches (e.g. /Register
 	// or /Regserver).  Update registry entries, including typelibrary.
 	else
 	{
-		_AtlModule.UpdateRegistryAppId(TRUE);
-		_AtlModule.RegisterServer(TRUE);
+		UpdateRegistryAppId(TRUE);
+		RegisterServer(TRUE);
 		AfxOleRegisterTypeLib(AfxGetInstanceHandle(), _tlid);
+		return false;
 	}
 
 	// Dispatch commands specified on the command line.  Will return FALSE if
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
-	//cmdInfo.m_nShellCommand = cmdInfo.FileNothing;
+
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
-
 	return TRUE;
 }
 
@@ -127,10 +116,37 @@ CString CWebRuntimeForVSApp::GetNTPXml()
 	return _T("Default_Mfc.xml");
 }
 
+HRESULT CWebRuntimeForVSApp::UpdateRegistry(BOOL bRegister)
+{
+	return theApp.UpdateRegistryFromResource(IDR_CHROMFORVSAPPOBJ, bRegister);
+}
+
+HRESULT CWebRuntimeForVSApp::CreateInstance(void* pv, REFIID riid, LPVOID* ppv)
+{
+	if (g_pTangram)
+	{
+		DWORD dwID = ::GetCurrentThreadId();
+		if (dwID != theApp.m_dwThreadID)
+		{
+			IStream* pStream = 0;
+			HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IDispatch, (ITangram*)g_pTangram, &pStream);
+			if (hr == S_OK)
+			{
+				IDispatch* pTarget = nullptr;
+				hr = ::CoGetInterfaceAndReleaseStream(pStream, IID_IDispatch, (LPVOID*)&pTarget);
+				if (hr == S_OK && pTarget)
+					return pTarget->QueryInterface(riid, ppv);
+			}
+		}
+		return g_pTangram->QueryInterface(riid, ppv);
+	}
+	return S_FALSE;
+}
+
 int CWebRuntimeForVSApp::ExitInstance()
 {
 #if !defined(_WIN32_WCE) || defined(_CE_DCOM)
-	_AtlModule.RevokeClassObjects();
+	RevokeClassObjects();
 #endif
 	//TODO: handle additional resources you may have added
 	AfxOleTerm(FALSE);
@@ -139,13 +155,5 @@ int CWebRuntimeForVSApp::ExitInstance()
 }
 
 // CWebRuntimeForVSApp message handlers
-
-void CWebRuntimeForVSApp::OnFileNewFrame()
-{
-}
-
-void CWebRuntimeForVSApp::OnFileNew()
-{
-}
 
 

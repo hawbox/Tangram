@@ -22,9 +22,9 @@
 #pragma once
 #include "TangramClrProxy.h"
 #include <map>
-#include "../CommonFile/IRefObject.h"
 #include "Object/RefObject.h"
 #include "../CommonFile/IXNode.h"
+#include "../CommonFile/IRefObject.h"
 
 using namespace std;
 using namespace System;
@@ -988,6 +988,7 @@ namespace TangramCLR
 		static Control^ m_pWizForm = nullptr;
 #endif
 		static String^ m_strWizData = L"";
+		static String^ m_strAppData = L"";
 		static System::Drawing::Icon^ m_pDefaultIcon = nullptr;
 		static Form^ m_pMainForm = nullptr;
 		static Dictionary<String^, Object^>^ m_pTangramCLRObjDic = gcnew Dictionary<String^, Object^>();
@@ -1016,6 +1017,7 @@ namespace TangramCLR
 		static void RegComponentForTangram(String^ strIDs, Assembly^ a);
 		static void UpdateNewTabPageLayout(String^ newTabPageLayout);
 		static void BindObjToWebPage(IntPtr hWebPage, Object^ pObj, String^ name);
+		static void InstallWebRuntimeToApp(String^ strSrc, String^ strTarget, String^ strAppName);
 
 		TangramCLR::ITangramApp^ m_pTangramAppProxy;
 
@@ -1146,6 +1148,7 @@ namespace TangramCLR
 
 		static void AttachGridView(long handle);
 		static IntPtr GetChild(IntPtr nHandle);
+		static void ShowVSToolBox(IntPtr nHandle);
 		delegate void SelectedObjectsChanged(Object^ SourceObj, String^ strObjType, IntPtr^ objHandle, int nType);
 		static event SelectedObjectsChanged^ OnSelectedObjectsChanged;
 		static void Fire_OnSelectedObjectsChanged(Object^ SourceObj, String^ strObjType, IntPtr^ objHandle, int nType)
@@ -1216,6 +1219,11 @@ namespace TangramCLR
 		}
 
 		static property String^ CurrentDesigningTangramXml
+		{
+			String^ get();
+		}
+
+		static property String^ AppData
 		{
 			String^ get();
 		}
@@ -1386,6 +1394,13 @@ namespace TangramCLR
 		static void Fire_OnTangramRenderHTMLElement(IntPtr hWnd, String^ strRuleName, String^ strHTML)
 		{
 			OnTangramRenderHTMLElement(hWnd, strRuleName, strHTML);
+		}
+
+		delegate void TangramAppData(String^ strAppData);
+		static event TangramAppData^ OnTangramAppData;
+		static void Fire_OnTTangramAppData(String^ strAppData)
+		{
+			OnTangramAppData(strAppData);
 		}
 
 		delegate void FormNodeCreated(String^ bstrObjID, Form^ pForm, WndNode^ pNode);
@@ -1780,6 +1795,11 @@ namespace TangramCLR
 	public interface class ICompositorProxy
 	{
 		virtual void OnExtend(WndNode^ pRetNode, String^ bstrKey, String^ bstrXml);
+	};
+
+	public interface class IVSProxy
+	{
+		virtual void OnConnect(String^ bstrKey, IntPtr nHandle);
 	};
 
 	public interface class ITangramApp

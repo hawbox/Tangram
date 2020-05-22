@@ -80,12 +80,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <EmbedManifest>false</EmbedManifest>
+    <OutDir>..\..\..\..\ProgramData\WebRuntimeApp\WebRuntimeVS</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <EmbedManifest>false</EmbedManifest>
+    <OutDir>..\..\..\..\ProgramData\WebRuntimeApp\WebRuntimeVS</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -124,7 +127,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <RegisterOutput>true</RegisterOutput>
+      <RegisterOutput>false</RegisterOutput>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -199,17 +202,13 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ChromForVSAppObj.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WebRuntimeCtrl.h" />
     <ClInclude Include="WebRuntimeForVS.h" />
-    <ClInclude Include="_IChromForVSAppObjEvents_CP.h" />
-    <ClInclude Include="_IWebRuntimeCtrlEvents_CP.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ChromForVSAppObj.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -285,6 +284,9 @@
     <Image Include="res\WebRuntimeForVS.ico" />
     <Image Include="res\WebRuntimeForVSDoc.ico" />
     <Image Include="WebRuntimeCtrl.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="res\WebRuntimeForVS.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

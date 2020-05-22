@@ -72,6 +72,31 @@ public:
 	LRESULT OnWindowPosChanging(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 };
 
+class CGenericPaneWnd :
+	public CWindowImpl<CGenericPaneWnd, CWindow>
+{
+public:
+	CGenericPaneWnd(void)
+	{
+		m_hChild = NULL;
+	};
+
+	~CGenericPaneWnd(void) {};
+	HWND m_hChild;
+	CCompositor* m_pCompositor = nullptr;
+	BEGIN_MSG_MAP(CGenericPaneWnd)
+		MESSAGE_HANDLER(WM_SHOWWINDOW, OnShowWindow)
+		MESSAGE_HANDLER(WM_TANGRAMMSG, OnTangramMsg)
+		MESSAGE_HANDLER(WM_TANGRAMDATA, OnTangramData)
+		MESSAGE_HANDLER(WM_WINDOWPOSCHANGED, OnWindowPosChanging)
+	END_MSG_MAP()
+	void OnFinalMessage(HWND hWnd);
+	LRESULT OnShowWindow(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnTangramMsg(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnTangramData(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnWindowPosChanging(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+};
+
 class CTangramApp :
 	public CWinApp,
 	public CComObjectRootBase,

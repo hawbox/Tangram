@@ -7,8 +7,8 @@
 /* at Tue Jan 19 11:14:07 2038
  */
 /* Compiler settings for ..\CommonFile\Tangram.idl:
-    Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 8.01.0622 
-    protocol : dce , ms_ext, c_ext, robust
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0622 
+    protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -4845,6 +4845,14 @@ EXTERN_C const IID IID_ITangram;
             BSTR strInitXml,
             /* [retval][out] */ LONGLONG *llHandle) = 0;
         
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CreateBrowser( 
+            ULONGLONG hParentWnd,
+            BSTR strUrls,
+            /* [out] */ IChromeWebBrowser **ppRet) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE GetCreatingBrowserWnd( 
+            LONGLONG *retHandle) = 0;
+        
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE TangramCommand( 
             IDispatch *RibbonControl) = 0;
         
@@ -5233,6 +5241,16 @@ EXTERN_C const IID IID_ITangram;
             BSTR strInitXml,
             /* [retval][out] */ LONGLONG *llHandle);
         
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CreateBrowser )( 
+            ITangram * This,
+            ULONGLONG hParentWnd,
+            BSTR strUrls,
+            /* [out] */ IChromeWebBrowser **ppRet);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetCreatingBrowserWnd )( 
+            ITangram * This,
+            LONGLONG *retHandle);
+        
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *TangramCommand )( 
             ITangram * This,
             IDispatch *RibbonControl);
@@ -5480,6 +5498,12 @@ EXTERN_C const IID IID_ITangram;
 
 #define ITangram_InitCLRApp(This,strInitXml,llHandle)	\
     ( (This)->lpVtbl -> InitCLRApp(This,strInitXml,llHandle) ) 
+
+#define ITangram_CreateBrowser(This,hParentWnd,strUrls,ppRet)	\
+    ( (This)->lpVtbl -> CreateBrowser(This,hParentWnd,strUrls,ppRet) ) 
+
+#define ITangram_GetCreatingBrowserWnd(This,retHandle)	\
+    ( (This)->lpVtbl -> GetCreatingBrowserWnd(This,retHandle) ) 
 
 #define ITangram_TangramCommand(This,RibbonControl)	\
     ( (This)->lpVtbl -> TangramCommand(This,RibbonControl) ) 

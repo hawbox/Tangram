@@ -15,14 +15,15 @@
 // See WebRuntimeForVS.cpp for the implementation of this class
 //
 
-class CWebRuntimeForVSApp : public CTangramWinApp
+class CWebRuntimeForVSApp : 
+	public CTangramWinApp,
+	public CComObjectRootBase,
+	public CComCoClass<CWebRuntimeForVSApp>,
+	public ATL::CAtlMfcModule
 {
 public:
 	CWebRuntimeForVSApp() noexcept;
-
-protected:
-	CMultiDocTemplate* m_pDocTemplate;
-public:
+	DECLARE_LIBID(LIBID_WebRuntimeForVS);
 
 // Overrides
 public:
@@ -31,10 +32,14 @@ public:
 	// Add by TangramTeam:
 	virtual CString GetNTPXml();
 
-	afx_msg void OnAppAbout();
-	afx_msg void OnFileNewFrame();
-	afx_msg void OnFileNew();
+	static HRESULT WINAPI UpdateRegistry(BOOL bRegister);
+	static HRESULT WINAPI CreateInstance(void* pv, REFIID riid, LPVOID* ppv);
 	DECLARE_MESSAGE_MAP()
+
+private:
+	DWORD m_dwThreadID;
 };
+
+TANGRAM_OBJECT_ENTRY_AUTO(CLSID_ChromForVSAppObj, CWebRuntimeForVSApp)
 
 extern CWebRuntimeForVSApp theApp;

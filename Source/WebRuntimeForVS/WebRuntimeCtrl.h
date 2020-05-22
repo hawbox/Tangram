@@ -3,7 +3,6 @@
 #include "resource.h"       // main symbols
 #include <atlctl.h>
 #include "WebRuntimeForVS_h.h"
-#include "_IWebRuntimeCtrlEvents_CP.h"
 
 #if defined(_WIN32_WCE) && !defined(_CE_DCOM) && !defined(_CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA)
 #error "Single-threaded COM objects are not properly supported on Windows CE platform, such as the Windows Mobile platforms that do not include full DCOM support. Define _CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA to force ATL to support creating single-thread COM object's and allow use of it's single-threaded COM object implementations. The threading model in your rgs file was set to 'Free' as that is the only threading model supported in non DCOM Windows CE platforms."
@@ -22,17 +21,11 @@ class ATL_NO_VTABLE CWebRuntimeCtrl :
 	public IOleInPlaceActiveObjectImpl<CWebRuntimeCtrl>,
 	public IViewObjectExImpl<CWebRuntimeCtrl>,
 	public IOleInPlaceObjectWindowlessImpl<CWebRuntimeCtrl>,
-	public IConnectionPointContainerImpl<CWebRuntimeCtrl>,
-	public CProxy_IWebRuntimeCtrlEvents<CWebRuntimeCtrl>,
 	public CComCoClass<CWebRuntimeCtrl, &CLSID_WebRuntimeCtrl>,
 	public CComControl<CWebRuntimeCtrl>
 {
 public:
-
-
-	CWebRuntimeCtrl()
-	{
-	}
+	CWebRuntimeCtrl();
 
 DECLARE_OLEMISC_STATUS(OLEMISC_RECOMPOSEONRESIZE |
 	OLEMISC_CANTLINKINSIDE |
@@ -58,7 +51,6 @@ BEGIN_COM_MAP(CWebRuntimeCtrl)
 	COM_INTERFACE_ENTRY(IOleInPlaceActiveObject)
 	COM_INTERFACE_ENTRY(IOleControl)
 	COM_INTERFACE_ENTRY(IOleObject)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
 END_COM_MAP()
 
 BEGIN_PROP_MAP(CWebRuntimeCtrl)
@@ -69,12 +61,10 @@ BEGIN_PROP_MAP(CWebRuntimeCtrl)
 	// PROP_PAGE(CLSID_StockColorPage)
 END_PROP_MAP()
 
-BEGIN_CONNECTION_POINT_MAP(CWebRuntimeCtrl)
-	CONNECTION_POINT_ENTRY(__uuidof(_IWebRuntimeCtrlEvents))
-END_CONNECTION_POINT_MAP()
-
 BEGIN_MSG_MAP(CWebRuntimeCtrl)
 	CHAIN_MSG_MAP(CComControl<CWebRuntimeCtrl>)
+	MESSAGE_HANDLER(WM_CREATE, OnCreate)
+	MESSAGE_HANDLER(WM_WINDOWPOSCHANGED, OnWindowPosChanging)
 	DEFAULT_REFLECTION_HANDLER()
 END_MSG_MAP()
 // Handler prototypes:
@@ -131,7 +121,7 @@ public:
 		return S_OK;
 	}
 
-
+	HWND m_hBrowser = NULL;
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 	HRESULT FinalConstruct()
@@ -142,6 +132,8 @@ public:
 	void FinalRelease()
 	{
 	}
+	LRESULT OnCreate(UINT, WPARAM, LPARAM, BOOL&);
+	LRESULT OnWindowPosChanging(UINT, WPARAM, LPARAM, BOOL&);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WebRuntimeCtrl), CWebRuntimeCtrl)

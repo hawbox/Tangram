@@ -3,13 +3,14 @@
 
 #include "pch.h"
 #include "WebView.h"
+#include "dllmain.h"
 
 IMPLEMENT_DYNCREATE(CWebView, CView)
 
 CWebView::CWebView()
 {
 	m_hWebBrowser = NULL;
-	m_pChromForVSAppObj = nullptr;
+	//m_pChromForVSAppObj = nullptr;
 }
 
 CWebView::~CWebView()
@@ -20,6 +21,8 @@ BEGIN_MESSAGE_MAP(CWebView, CView)
 	ON_WM_CREATE()
 	ON_WM_WINDOWPOSCHANGED()
 	ON_MESSAGE(WM_DPICHANGED, OnDpiChanged)
+	ON_WM_SIZE()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -60,20 +63,20 @@ int CWebView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
-	if (m_pChromForVSAppObj == nullptr)
+	CComBSTR bstrUrl;
+	if (theApp.m_pTangram)
 	{
-		CComPtr<IChromForVSAppObj> pDisp;
-		pDisp.CoCreateInstance(CComBSTR("WebRuntimeForVs.AppObj.1"));
-		if (pDisp)
+		IWndNode* pNode = nullptr;
+		theApp.m_pTangram->get_CreatingNode(&pNode);
+		pNode->get_Attribute(CComBSTR("url"), &bstrUrl);
+		if (theApp.m_pTangramFromWebRuntime && bstrUrl.Length())
 		{
-			m_pChromForVSAppObj = pDisp.Detach();
-			m_pChromForVSAppObj->AddRef();
 			CComPtr<IChromeWebBrowser> pWebBrowser;
-			m_pChromForVSAppObj->CreateBrowser((__int64)m_hWnd, CComBSTR("http://www.csdn.net|c:/index.html|http://www.tangram.dev"), &pWebBrowser);
+			theApp.m_pTangramFromWebRuntime->CreateBrowser((__int64)m_hWnd, bstrUrl, &pWebBrowser);
 			if (pWebBrowser)
 			{
 				__int64 hWnd = 0;
-				m_pChromForVSAppObj->GetCreatingBrowserWnd(&hWnd);
+				theApp.m_pTangramFromWebRuntime->GetCreatingBrowserWnd(&hWnd);
 				m_hWebBrowser = (HWND)hWnd;
 			}
 		}
@@ -84,11 +87,26 @@ int CWebView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CWebView::OnWindowPosChanged(WINDOWPOS* lpwndpos)
 {
-	CView::OnWindowPosChanged(lpwndpos);
-
 	// TODO: Add your message handler code here
 	if (::IsWindow(m_hWebBrowser))
 	{
-		::SetWindowPos(m_hWebBrowser, NULL, 0, 0, lpwndpos->cx, lpwndpos->cy, SWP_FRAMECHANGED);
+		::SetWindowPos(m_hWebBrowser, NULL, 0, 0, lpwndpos->cx, lpwndpos->cy, SWP_NOACTIVATE | SWP_NOREDRAW);
 	}
+	CView::OnWindowPosChanged(lpwndpos);
+}
+
+
+void CWebView::OnSize(UINT nType, int cx, int cy)
+{
+	CView::OnSize(nType, cx, cy);
+
+
+	// TODO: Add your message handler code here
+}
+
+
+void CWebView::OnDestroy()
+{
+	::DestroyWindow(m_hWebBrowser);
+	CView::OnDestroy();
 }

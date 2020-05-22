@@ -814,6 +814,7 @@ namespace TangramCommon {
 		virtual CTangramSession* GetCloudSession(IWndNode*) { return nullptr; }
 		virtual void ReleaseCLR() {}
 		virtual void SetMainWnd(HWND hMain) {}
+		virtual void TangramNotify(CString strPara1, CString strPara2, WPARAM, LPARAM) {}
 	};
 
 	class ITangramDelegate {

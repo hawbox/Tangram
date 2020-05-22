@@ -2457,6 +2457,7 @@ STDMETHODIMP CCompositor::Attach(void)
 		SubclassWindow(m_hHostWnd);
 	}
 	HostPosChanged();
+	//::PostMessage(m_hWnd, WM_TANGRAMMSG, 0, 20180115);
 	return S_OK;
 }
 

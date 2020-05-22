@@ -27,16 +27,7 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_IWebRuntimeCtrlEvents_CP.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WebRuntimeCtrl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="_IChromForVSAppObjEvents_CP.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChromForVSAppObj.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -48,9 +39,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WebRuntimeCtrl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChromForVSAppObj.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -159,5 +147,8 @@
     <Image Include="WebRuntimeCtrl.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="res\WebRuntimeForVS.manifest" />
   </ItemGroup>
 </Project>

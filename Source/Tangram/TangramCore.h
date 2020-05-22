@@ -266,6 +266,7 @@ public:
 	CCompositorManager*						m_pDesignerCompositorManager;
 
 	CTangramAppCtrl*						m_pTangramAppCtrl;
+	ITangram*								m_pTangramVS = nullptr;
 
 	CTangramHtmlTreeWnd*					m_pDocDOMTree;
 	CEclipseWnd*							m_pActiveEclipseWnd;
@@ -370,6 +371,8 @@ public:
 	STDMETHOD(ReadTextFromWeb)(BSTR bstrURL, BSTR bstrOrg, BSTR bstrRepo, BSTR bstrBranch, BSTR bstrFile, BSTR bstrTarget, LONGLONG hNotify);
 	STDMETHOD(DeleteFrame)(ICompositor* pCompositor);
 	STDMETHOD(InitCLRApp)(BSTR strInitXml, LONGLONG* llHandle);
+	STDMETHOD(GetCreatingBrowserWnd)(LONGLONG* retHandle);
+	STDMETHOD(CreateBrowser)(ULONGLONG hParentWnd, BSTR strUrls, IChromeWebBrowser** ppRet);
 
 	void Init();
 	void Lock() {}
@@ -458,6 +461,7 @@ protected:
 	ULONG InternalRelease();
 
 private:
+	HWND m_hCreatingWnd;
 	CString								m_strOfficeAppIDs;
 	CString								m_strExcludeAppExtenderIDs;
 	CWindow								m_HelperWnd;
@@ -496,4 +500,5 @@ private:
 	CTangramSession* GetCloudSession(IWndNode*);
 	void ReleaseCLR();
 	void SetMainWnd(HWND hMain);
+	DWORD ExecCmd(const CString cmd, const BOOL setCurrentDirectory);
 };

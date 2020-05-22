@@ -30,7 +30,8 @@
 
 // add headers that you want to pre-compile here
 #include "framework.h"
-#include <afxcontrolbars.h>     // MFC support for ribbons and control bars
+#define _AFX_NO_MFC_CONTROLS_IN_DIALOGS
+//#include <afxcontrolbars.h>     // MFC support for ribbons and control bars
 #include "TangramAppDelegate.h"
 #endif //PCH_H
 #include <afxwin.h>

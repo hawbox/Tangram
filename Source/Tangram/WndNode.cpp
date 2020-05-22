@@ -1484,14 +1484,17 @@ HWND CWndNode::CreateView(HWND hParentWnd, CString strTag)
 	if (m_pDisp)
 	{
 		m_pTangramNodeCommonData->m_mapLayoutNodes[m_strName] = this;
-		HWND hCtrl = NULL;
-		if (g_pTangram->m_pCLRProxy)
-			hCtrl = g_pTangram->m_pCLRProxy->GetCtrlHandle(m_pDisp);
-		if (g_pTangram->m_hFormNodeWnd&& hCtrl == g_pTangram->m_hFormNodeWnd &&(::GetWindowLongPtr(g_pTangram->m_hFormNodeWnd, GWL_STYLE) & WS_CHILD))
+		if (m_nViewType == CLRCtrl)
 		{
-			HWND hWnd = g_pTangram->m_hFormNodeWnd;
-			g_pTangram->m_hFormNodeWnd = nullptr;
-			return hWnd;
+			HWND hCtrl = NULL;
+			if (g_pTangram->m_pCLRProxy)
+				hCtrl = g_pTangram->m_pCLRProxy->GetCtrlHandle(m_pDisp);
+			if (g_pTangram->m_hFormNodeWnd&& hCtrl == g_pTangram->m_hFormNodeWnd &&(::GetWindowLongPtr(g_pTangram->m_hFormNodeWnd, GWL_STYLE) & WS_CHILD))
+			{
+				HWND hWnd = g_pTangram->m_hFormNodeWnd;
+				g_pTangram->m_hFormNodeWnd = nullptr;
+				return hWnd;
+			}
 		}
 		auto hWnd = ::CreateWindowEx(NULL, L"Tangram Window Class", NULL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 0, 0, hParentWnd, NULL, AfxGetInstanceHandle(), NULL);
 		CAxWindow m_Wnd;

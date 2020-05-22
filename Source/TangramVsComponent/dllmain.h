@@ -27,6 +27,7 @@ class CTangramApp : public CTangramComponentApp
 public:
 	// Overrides
 	virtual BOOL InitInstance();
+	ITangram* m_pTangramFromWebRuntime = nullptr;;
 };
 
 extern CTangramApp theApp;

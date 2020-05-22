@@ -573,6 +573,8 @@ interface ITangram : IDispatch{
 	[id(0x00126)] HRESULT DeleteFrame(ICompositor* pCompositor);
 	[id(0x00127)] HRESULT InitEclipseApp();
 	[id(0x00128)] HRESULT InitCLRApp(BSTR strInitXml, [out, retval] LONGLONG* llHandle);
+	[id(0x00129), helpstring("method Create ChromeWebBrowser")] HRESULT CreateBrowser(ULONGLONG hParentWnd, BSTR strUrls, [out]IChromeWebBrowser** ppRet);
+	[id(0x0012a)] HRESULT GetCreatingBrowserWnd(LONGLONG* retHandle);
 
 	[id(0x001000), helpstring("method TangramCommand")] HRESULT TangramCommand(IDispatch* RibbonControl);
 	[id(0x001001), helpstring("method TangramGetImage")] HRESULT TangramGetImage(BSTR strValue, [out, retval] IPictureDisp** ppdispImage);

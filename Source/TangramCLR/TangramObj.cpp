@@ -24,7 +24,6 @@
 #include "TangramNodeCLREvent.h"
 #include "TangramObj.h"
 #include "ChromeWebBrowser.h"
-#include "WebRuntimeForVS.h"
 #include "WizCtrl.h"
 #include "Markup.h"
 
@@ -32,6 +31,7 @@ using namespace System::Threading;
 using namespace System::Diagnostics;
 using namespace System::Reflection;
 using namespace System::Runtime::InteropServices;
+using namespace System::IO::Compression;
 
 namespace TangramCLR
 {
@@ -399,6 +399,26 @@ namespace TangramCLR
 		return m_pManager;
 	}
 
+	void Tangram::InstallWebRuntimeToApp(String^ strSrc, String^ strTarget, String^ strAppName)
+	{
+		CString strSRC = strSrc;
+		if (String::IsNullOrEmpty(strSrc))
+		{
+			CString strSRC = theApp.m_pTangramImpl->m_strAppPath;
+			strSRC += _T("PublicAssemblies\\WebRuntimeData\\output.zip");
+		}
+		TCHAR m_szBuffer[MAX_PATH];
+		HRESULT hr = SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, m_szBuffer);
+		CString m_strAppDataPath = CString(m_szBuffer) + _T("\\WebRuntimeApp\\");
+		m_strAppDataPath += STRING2BSTR(strTarget);
+		m_strAppDataPath += _T("\\");
+		//m_strAppDataPath += STRING2BSTR(strAppName);
+		if (::PathFileExists(strSRC))
+		{
+			System::IO::Compression::ZipFile::ExtractToDirectory(BSTR2STRING(strSRC), BSTR2STRING(m_strAppDataPath));
+		}
+	}
+
 	String^ Tangram::ComputeHash(String^ source)
 	{
 		BSTR bstrSRC = STRING2BSTR(source);
@@ -584,6 +604,11 @@ namespace TangramCLR
 			return BSTR2STRING(bstrXml);
 		}
 		return nullptr;
+	}
+
+	String^ Tangram::AppData::get()
+	{
+		return m_strAppData;
 	}
 
 	WndNode^ Tangram::CreatingNode::get()
@@ -807,13 +832,74 @@ namespace TangramCLR
 	}
 	
 #ifndef _WIN64
+	void Tangram::ShowVSToolBox(IntPtr nHandle)
+	{
+		HWND hWnd = (HWND)nHandle.ToPointer();
+		if (::IsWindow(hWnd))
+		{
+			HWND hWndChild = ::GetWindow(hWnd, GW_CHILD);
+			ICompositor* pCompositor = nullptr;
+			theApp.m_pTangram->GetCompositor((__int64)hWndChild, &pCompositor);
+			if (pCompositor)
+			{
+				pCompositor->Attach();
+			}
+		}
+	}
+
 	IntPtr Tangram::GetChild(IntPtr nHandle)
 	{
 		HWND hWnd = (HWND)nHandle.ToPointer();
 		if(::IsWindow(hWnd))
 		{ 
-			hWnd = ::GetWindow(hWnd, GW_CHILD);
-			return (IntPtr)hWnd;
+			HWND hWndChild = ::GetWindow(hWnd, GW_CHILD);
+			TCHAR	szBuffer[MAX_PATH];
+			::GetClassName(hWnd, szBuffer, MAX_PATH);
+			CString strClassName = CString(szBuffer);
+			if (strClassName == _T("GenericPane"))
+			{
+				::GetClassName(hWndChild, szBuffer, MAX_PATH);
+				strClassName = CString(szBuffer);
+				if (strClassName == _T("TBToolboxPane"))
+				{
+					if (theApp.m_bVSToolBoxConnected == true)
+						return (IntPtr)hWndChild;
+					theApp.m_bVSToolBoxConnected = true;
+					CComPtr<ITangram> pAppObj;
+					pAppObj.CoCreateInstance(CComBSTR("WebRuntimeForVs.AppObj.1"));
+					if (pAppObj.p)
+					{
+						CComVariant var;
+						pAppObj->get_AppKeyValue(CComBSTR("appdata"), &var);
+						CString strXml = OLE2T(var.bstrVal);
+						if (strXml != _T(""))
+						{
+							CTangramXmlParse m_Parse;
+							if (m_Parse.LoadXml(strXml))
+							{
+								CTangramXmlParse* pVSParse = m_Parse.GetChild(_T("vstoolbox"));
+								if (pVSParse)
+								{
+									ICompositorManager* pManager = nullptr;
+									theApp.m_pTangram->CreateCompositorManager((LONGLONG)hWnd, &pManager);
+									if (pManager)
+									{
+										ICompositor* pICompositor = nullptr;
+										pManager->CreateCompositor(CComVariant((LONGLONG)hWnd), CComVariant((__int64)hWndChild), CComBSTR("default"), &pICompositor);
+										if (pICompositor)
+										{
+											IWndNode* pNode = nullptr;
+											pICompositor->Open(CComBSTR("default"), CComBSTR(pVSParse->xml()), &pNode);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			return (IntPtr)hWndChild;
 		}
 		return IntPtr::Zero;
 	}
@@ -1721,7 +1807,7 @@ namespace TangramCLR
 	{
 		TangramCLR::Tangram::GetTangram();
 		HWND hPWnd = (HWND)ParentHandle.ToPointer();
-		CComPtr<IChromForVSAppObj> pAppObj;
+		CComPtr<ITangram> pAppObj;
 		pAppObj.CoCreateInstance(CComBSTR("WebRuntimeForVs.AppObj.1"));
 		if (pAppObj.p)
 		{

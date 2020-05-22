@@ -1101,12 +1101,12 @@ Object^ CTangramCLRProxy::InitTangramCtrl(Form^ pForm, Control^ pCtrl, bool bSav
 							{
 								CTangramXmlParse* pChildParse = pParse->GetChild(L"mdiclient");
 								CTangramXmlParse* pChildParse2 = nullptr;
-								if(pChildParse)
+								if (pChildParse)
 									pChildParse2 = pChildParse->GetChild(_T("default"));
 								CompositorInfo* pInfo = new CompositorInfo;
 								pInfo->m_pDisp = nullptr;
 								pInfo->m_strNodeXml = _T("");
-								if(pChildParse2)
+								if (pChildParse2)
 									pInfo->m_strNodeXml = pChildParse2->xml();;
 								pInfo->m_pParentDisp = nullptr;
 								pInfo->m_hCtrlHandle = (HWND)pChild->Handle.ToInt64();
@@ -1852,7 +1852,7 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 								TangramCLR::Tangram::CreateBKPage(thisForm, BSTR2STRING(strBKPage));
 							}
 						}
-						if (strTagName.CompareNoCase(_T("mainwindow"))==0)
+						if (strTagName.CompareNoCase(_T("mainwindow")) == 0)
 						{
 							theApp.m_pTangramImpl->m_hMainWnd = (HWND)thisForm->Handle.ToPointer();
 							::PostMessage(theApp.m_pTangramImpl->m_hMainWnd, WM_TANGRAMMSG, 0, 20200419);
@@ -1885,13 +1885,13 @@ IDispatch* CTangramCLRProxy::CreateCLRObj(CString bstrObjID)
 							pTangramSession->Insertint64(_T("domhandle"), (__int64)pTangramSession);
 							CString strFormID = m_Parse.attr(_T("id"), _T(""));
 							pTangramSession->InsertString(_T("id"), strFormID);
-							
+
 							strFormID = m_Parse.attr(_T("objid"), _T(""));
 							pTangramSession->InsertString(_T("objid"), strFormID);
 
 							pTangramSession->InsertString(_T("formname"), strFormName);
 							theAppProxy.m_mapTangramSession2CloudSession[pTangramSession] = pCloudSession;
-							if(thisForm->IsMdiContainer)
+							if (thisForm->IsMdiContainer)
 								pTangramSession->Insertint64(_T("formhandle"), thisForm->Handle.ToInt64());
 							else if (thisForm->MdiParent)
 							{
@@ -2604,7 +2604,7 @@ void CTangramCLRProxy::ConnectNodeToWebPage(IWndNode* pNode, bool bAdd)
 			bool bExists = TangramCLR::Tangram::WebBindEventDic->TryGetValue(pObj, pCloudSession);
 			if (bAdd)
 			{
-				if (bExists==false)
+				if (bExists == false)
 				{
 					pCloudSession = gcnew TangramSession(pSession);
 					TangramCLR::Tangram::WebBindEventDic[pObj] = pCloudSession;
@@ -2657,7 +2657,7 @@ void CTangramCLRProxy::OnCloudMsgReceived(CTangramSession* pSession)
 			TangramCLR::TangramSession^ pCloudSession = nullptr;
 			if (!TangramCLR::Tangram::WebBindEventDic->TryGetValue(pObj, pCloudSession))
 			{
-				pCloudSession =  gcnew TangramCLR::TangramSession(pSession);
+				pCloudSession = gcnew TangramCLR::TangramSession(pSession);
 				TangramCLR::Tangram::WebBindEventDic[pObj] = pCloudSession;
 			}
 			CString strEventName = pSession->GetString(LPCTSTR(strCallback));
@@ -2689,7 +2689,7 @@ void CTangramCLRProxy::OnCloudMsgReceived(CTangramSession* pSession)
 						}
 					}
 				}
-					
+
 				return;
 			}
 			String^ _strEventName = L"";
@@ -3024,9 +3024,85 @@ void CTangramCLRProxy::TangramAction(BSTR bstrXml, void* pvoid)
 			}
 			return;
 		}
+
 		CTangramXmlParse m_Parse;
 		if (m_Parse.LoadXml(strXml))
 		{
+			if (m_Parse.name().CompareNoCase(_T("installwebruntimeapp")) == 0)
+			{
+				CString strSrc = m_Parse.attr(_T("src"), _T(""));
+				CString strTarget = m_Parse.attr(_T("target"), _T(""));
+				CString strSRC = strSrc;
+				if (strSrc == _T(""))
+				{
+					strSRC = theApp.m_pTangramImpl->m_strAppPath;
+					strSRC += _T("PublicAssemblies\\WebRuntimeData\\output.zip");
+				}
+				TCHAR m_szBuffer[MAX_PATH];
+				HRESULT hr = SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, m_szBuffer);
+				CString m_strAppDataPath = CString(m_szBuffer) + _T("\\WebRuntimeApp\\");
+				m_strAppDataPath += strTarget;
+				m_strAppDataPath += _T("\\");
+				CString strWebRuntimeForVS = m_strAppDataPath + _T("WebRuntimeForVS.exe");
+				if (::PathFileExists(strSRC))//&&!::PathFileExists(strWebRuntimeForVS)
+				{
+					try
+					{
+						String^ outDir = BSTR2STRING(m_strAppDataPath);
+						if (System::IO::Directory::Exists(outDir))
+						{
+							try
+							{
+								System::IO::Directory::Delete(outDir, true);
+							}
+							catch (IOException ^ e)
+							{
+								String^ strInfo = e->Message;
+							}
+						}
+						System::IO::Compression::ZipFile::ExtractToDirectory(BSTR2STRING(strSRC), outDir);
+					}
+					catch (IOException ^ e)
+					{
+						String^ strInfo = e->Message;
+					}
+					strSRC = theApp.m_pTangramImpl->m_strAppPath;
+					strSRC += _T("PublicAssemblies\\WebRuntimeData\\WebRuntimeForVS.exe");
+					if (::PathFileExists(strSRC))
+					{
+						System::IO::File::Copy(BSTR2STRING(strSRC), BSTR2STRING(strWebRuntimeForVS), true);
+						strSRC = theApp.m_pTangramImpl->m_strAppPath;
+						strSRC += _T("PublicAssemblies\\WebRuntimeData\\WebRuntimeForVS.index.html");
+						CString strServer = strWebRuntimeForVS;
+						strWebRuntimeForVS = m_strAppDataPath + _T("WebRuntimeForVS.index.html");
+						if (::PathFileExists(strSRC))
+							System::IO::File::Copy(BSTR2STRING(strSRC), BSTR2STRING(strWebRuntimeForVS), true);
+						strSRC = theApp.m_pTangramImpl->m_strAppPath;
+						strSRC += _T("PublicAssemblies\\WebRuntimeData\\index.html");
+						if (::PathFileExists(strSRC))
+						{
+							strWebRuntimeForVS = m_strAppDataPath + _T("index.html");
+							System::IO::File::Copy(BSTR2STRING(strSRC), BSTR2STRING(strWebRuntimeForVS), true);
+						}
+						STARTUPINFO startupInfo;
+						memset(&startupInfo, 0, sizeof(startupInfo));
+						startupInfo.cb = sizeof(startupInfo);
+						PROCESS_INFORMATION processInfo;
+						memset(&processInfo, 0, sizeof(processInfo));
+						DWORD code;
+						wchar_t cmdLine[2048];
+						swprintf_s(cmdLine, _T("%s /Regserver"), strServer.GetBuffer());
+						if (CreateProcess(NULL, cmdLine, NULL, NULL, true, 0, NULL, NULL, &startupInfo, &processInfo))
+						{
+							// wait for the installer to finish
+							WaitForSingleObject(processInfo.hProcess, INFINITE);
+							GetExitCodeProcess(processInfo.hProcess, &code);
+							Sleep(200);
+						}
+					}
+				}
+				return;
+			}
 			if (pvoid == nullptr)
 			{
 			}
@@ -3939,7 +4015,7 @@ void CTangramCLRProxy::OnSelectedObjectsChanged(Object^ sender, EventArgs^ e)
 			else
 			{
 				CComQIPtr<VxDTE::CodeElement> pCodeElement(pDisp);
-				if (pCodeElement&& theApp.m_pTangramImpl->m_pTangramPackageProxy)
+				if (pCodeElement && theApp.m_pTangramImpl->m_pTangramPackageProxy)
 				{
 					BSTR bstrName = ::SysAllocString(L"");
 					pCodeElement->get_FullName(&bstrName);

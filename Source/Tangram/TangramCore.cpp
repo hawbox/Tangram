@@ -114,7 +114,7 @@ int readIniFile(_TCHAR* program, int* argc, _TCHAR*** argv);
 int readConfigFile(_TCHAR* config_file, int* argc, _TCHAR*** argv);
 _TCHAR* getIniFile(_TCHAR* program, int consoleLauncher);
 
-typedef jint(JNICALL *JNI_GetCreatedJavaVMs_)(JavaVM **, jsize, jsize *);
+typedef jint(JNICALL* JNI_GetCreatedJavaVMs_)(JavaVM**, jsize, jsize*);
 
 // CTangram
 
@@ -150,6 +150,7 @@ CTangram::CTangram()
 	m_nRef = 4;
 	m_nAppID = -1;
 	m_nAppType = 0;
+	m_hCreatingWnd = NULL;
 	m_pMDIMainWnd = nullptr;
 	m_pActiveMDIChildWnd = nullptr;
 	m_hTangramWnd = NULL;
@@ -301,7 +302,7 @@ BOOL CTangram::CopyFolder(CString strSrcPath, CString strDesPath)
 	return TRUE;
 }
 
-typedef BOOL(WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
+typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
 LPFN_ISWOW64PROCESS fnIsWow64Process;
 
@@ -327,7 +328,7 @@ BOOL IsWow64()
 }
 
 void CTangram::Init()
-{ 
+{
 	static bool bInit = false;
 	if (bInit)
 		return;
@@ -336,7 +337,7 @@ void CTangram::Init()
 	GetNativeSystemInfo(&si);
 
 	if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 ||
-		si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64||
+		si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64 ||
 		si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64)
 		m_b64bitSystem = true;
 	if (m_b64bitSystem)
@@ -369,7 +370,7 @@ void CTangram::Init()
 		{
 			::SHCreateDirectory(nullptr, m_strAppWPFObjsInfoPath);
 		}
-		
+
 		m_strAppControlsInfoPath = m_strAppDataPath + _T("TangramControlsInfo\\");
 		if (::PathIsDirectory(m_strAppControlsInfoPath) == false)
 		{
@@ -416,24 +417,24 @@ void CTangram::Init()
 
 
 	CString _strPath = _T("");
-		_strPath = m_strAppPath + m_strExeName + _T("InitData\\");
+	_strPath = m_strAppPath + m_strExeName + _T("InitData\\");
 	if (::PathIsDirectory(_strPath))
 	{
 		//auto task = create_task([this, _strPath]()
 		//{
-			CTangramXmlParse m_Parse;
-			CTangramXmlParse* pZipNode = nullptr;
-			BOOL b = m_Parse.LoadFile(m_strConfigDataFile);
-			if (b)
+		CTangramXmlParse m_Parse;
+		CTangramXmlParse* pZipNode = nullptr;
+		BOOL b = m_Parse.LoadFile(m_strConfigDataFile);
+		if (b)
+		{
+			pZipNode = m_Parse.GetChild(_T("tangramappdata"));
+			if (pZipNode == nullptr)
 			{
-				pZipNode = m_Parse.GetChild(_T("tangramappdata"));
-				if (pZipNode == nullptr)
-				{
-					CopyFolder(_strPath, m_strAppDataPath);
-					pZipNode = m_Parse.AddNode(_T("tangramappdata"));
-					m_Parse.SaveFile(m_strConfigDataFile);
-				}
+				CopyFolder(_strPath, m_strAppDataPath);
+				pZipNode = m_Parse.AddNode(_T("tangramappdata"));
+				m_Parse.SaveFile(m_strConfigDataFile);
 			}
+		}
 		//});
 	}
 
@@ -460,7 +461,7 @@ void CTangram::Init()
 					m_strDesignerToolBarCaption = pXmlParse->text();
 				}
 				pXmlParse = _pXmlParse->GetChild(_T("designertoolxml"));
-				if (pXmlParse&&pXmlParse->GetChild(_T("window")))
+				if (pXmlParse && pXmlParse->GetChild(_T("window")))
 				{
 					CString strCaption = m_strDesignerToolBarCaption = pXmlParse->attr(_T("caption"), _T("Tangram Designer"));
 					strCaption.Trim();
@@ -560,11 +561,11 @@ CTangram::~CTangram()
 {
 	OutputDebugString(_T("------------------Begin Release CTangram------------------------\n"));
 
-	if(m_pXWindows)
+	if (m_pXWindows)
 		delete m_pXWindows;
 	//if(m_pObjectFactory)
 	//	delete m_pObjectFactory;
-	if(m_pHtmlWndDelegate)
+	if (m_pHtmlWndDelegate)
 		delete m_pHtmlWndDelegate;
 
 	for (auto it : m_mapTangramDocTemplateInfo)
@@ -663,7 +664,7 @@ CTangram::~CTangram()
 		m_TabWndClassInfoDictionary.clear();
 	}
 
-	if (m_pClrHost&&m_nAppID == -1 && theApp.m_bHostCLR == false)
+	if (m_pClrHost && m_nAppID == -1 && theApp.m_bHostCLR == false)
 	{
 		OutputDebugString(_T("------------------Begin Stop CLR------------------------\n"));
 		HRESULT hr = m_pClrHost->Stop();
@@ -750,7 +751,7 @@ void CTangram::ExportComponentInfo()
 	{
 		while (!_wfindnext(pf, &fd))
 		{
-			if (fd.attrib&FILE_ATTRIBUTE_DIRECTORY)
+			if (fd.attrib & FILE_ATTRIBUTE_DIRECTORY)
 			{
 				CString str = fd.name;
 				str.MakeLower();
@@ -839,7 +840,7 @@ CString CTangram::GetOfficePath()
 		if (m_Parse.LoadFile(strPath))
 		{
 			strOfficePath = m_Parse.attr(_T("path"), _T(""));
-			if (strOfficePath != _T("")&&::PathIsDirectory(strOfficePath))
+			if (strOfficePath != _T("") && ::PathIsDirectory(strOfficePath))
 				return strOfficePath;
 		}
 	}
@@ -888,7 +889,7 @@ CString CTangram::GetOfficePath()
 		}
 		RegCloseKey(hKey);
 	}
-	if (strOfficePath==_T("")&&RegCreateKeyEx(HKEY_LOCAL_MACHINE, buf, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_READ | KEY_QUERY_VALUE | KEY_WOW64_64KEY, NULL, &hKey, NULL) == ERROR_SUCCESS)
+	if (strOfficePath == _T("") && RegCreateKeyEx(HKEY_LOCAL_MACHINE, buf, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_READ | KEY_QUERY_VALUE | KEY_WOW64_64KEY, NULL, &hKey, NULL) == ERROR_SUCCESS)
 	{
 		wchar_t path[_MAX_PATH];
 		if (RegQueryValueEx(hKey, L"Path", 0, NULL, (BYTE*)&path, &size) == ERROR_SUCCESS)
@@ -934,7 +935,7 @@ LRESULT CTangram::Close(void)
 			Lock();
 			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
 			Unlock();
-			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
+			IDispatch* pConnection = static_cast<IDispatch*>(punkConnection.p);
 			if (pConnection)
 			{
 				CComVariant varResult;
@@ -1306,7 +1307,7 @@ void CTangram::FireTangramAppEvent(CTangramEventObj* pObj)
 			avarParams[0] = (ITangramEventObj*)pObj;
 			avarParams[0].vt = VT_DISPATCH;
 			DISPPARAMS params = { avarParams, NULL, 1, 0 };
-			IDispatch * pConnection = nullptr;
+			IDispatch* pConnection = nullptr;
 			if (cConnections)
 			{
 				for (int iConnection = 0; iConnection < cConnections; iConnection++)
@@ -1314,7 +1315,7 @@ void CTangram::FireTangramAppEvent(CTangramEventObj* pObj)
 					Lock();
 					CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
 					Unlock();
-					pConnection = static_cast<IDispatch *>(punkConnection.p);
+					pConnection = static_cast<IDispatch*>(punkConnection.p);
 					if (pConnection)
 					{
 						CComVariant varResult;
@@ -1329,7 +1330,7 @@ void CTangram::FireTangramAppEvent(CTangramEventObj* pObj)
 					Lock();
 					CComPtr<IUnknown> punkConnection = m_pTangramAppCtrl->m_vec.GetAt(iConnection);
 					Unlock();
-					pConnection = static_cast<IDispatch *>(punkConnection.p);
+					pConnection = static_cast<IDispatch*>(punkConnection.p);
 					if (pConnection)
 					{
 						CComVariant varResult;
@@ -1361,7 +1362,7 @@ CString CTangram::GetXmlData(CString strName, CString strXml)
 	return _T("");
 }
 
-BOOL CTangram::LoadImageFromResource(ATL::CImage *pImage, HMODULE hMod, CString strResID, LPCTSTR lpTyp)
+BOOL CTangram::LoadImageFromResource(ATL::CImage* pImage, HMODULE hMod, CString strResID, LPCTSTR lpTyp)
 {
 	if (pImage == nullptr)
 		return false;
@@ -1405,7 +1406,7 @@ BOOL CTangram::LoadImageFromResource(ATL::CImage *pImage, HMODULE hMod, CString 
 	return true;
 }
 
-BOOL CTangram::LoadImageFromResource(ATL::CImage *pImage, HMODULE hMod, UINT nResID, LPCTSTR lpTyp)
+BOOL CTangram::LoadImageFromResource(ATL::CImage* pImage, HMODULE hMod, UINT nResID, LPCTSTR lpTyp)
 {
 	if (pImage == nullptr)
 		return false;
@@ -1469,7 +1470,7 @@ void CTangram::TangramLoad()
 	m_strTempPath = CString(m_szBuffer);
 	m_bAdmin = IsUserAdministrator();
 	HRESULT hr = SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, m_szBuffer);
-	m_strAppDataPath = CString(m_szBuffer)+_T("\\");
+	m_strAppDataPath = CString(m_szBuffer) + _T("\\");
 	m_strAppDataPath.Replace(_T("\\\\"), _T("\\"));
 	m_strAppCommonDocPath += m_strAppDataPath + _T("TangramCommonDocTemplate\\");
 	if (::PathIsDirectory(m_strAppCommonDocPath) == false)
@@ -1529,7 +1530,7 @@ void CTangram::TangramInitFromeWeb()
 	if (m_Parse.LoadXml(m_strAppXml))
 	{
 		CTangramXmlParse* pParse = m_Parse.GetChild(_T("ntp"));
-		if(pParse)
+		if (pParse)
 			m_strNtpXml = m_Parse[_T("ntp")].xml();
 		if (pWnd->m_pVisibleWebWnd)
 		{
@@ -1586,6 +1587,14 @@ void CTangram::TangramInitFromeWeb()
 				InitCLRApp(bstrAppXML, &hHandle);
 				::SysFreeString(bstrAppXML);
 			}
+		}
+		pCLRApps = m_Parse.GetChild(_T("appdata"));
+		if (pCLRApps)
+		{
+			//::MessageBox(nullptr, pCLRApps->xml(), L"", MB_OK);
+			m_mapValInfo[_T("appdata")] = CComVariant(pCLRApps->xml());
+			//if (m_pCLRProxy)
+			//	m_pCLRProxy->TangramAction(_T("appdata"), nullptr);
 		}
 	}
 }
@@ -1772,6 +1781,76 @@ void CTangram::TangramInit()
 		m_Parse.SaveFile(_strPath);
 	if (m_strLibs != _T(""))
 		::PostMessage(m_hTangramWnd, WM_TANGRAMMSG, 0, 19651963);
+	if (m_strExeName == _T("devenv"))
+	{
+		if (m_pCLRProxy == nullptr)
+			LoadCLR();
+		TCHAR m_szBuffer[MAX_PATH];
+		HRESULT hr = SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, m_szBuffer);
+		CString m_strAppServerPath = CString(m_szBuffer) + _T("\\WebRuntimeApp\\WebRuntimeVS\\WebRuntimeForVS.exe");
+		CComPtr<ITangram> pDisp;
+		pDisp.CoCreateInstance(CComBSTR("WebRuntimeForVs.AppObj.1"));
+		if (pDisp.p == nullptr)
+		{
+			CString strXml = _T("<installwebruntimeapp target='WebRuntimeVS'></installwebruntimeapp>");
+			if (m_pCLRProxy)
+				m_pCLRProxy->TangramAction(CComBSTR(strXml), nullptr);
+			pDisp.CoCreateInstance(CComBSTR("WebRuntimeForVs.AppObj.1"));
+		}
+		if (pDisp)
+		{
+			m_pTangramVS = pDisp;
+			m_pTangramVS->AddRef();
+		}
+	}
+}
+
+DWORD CTangram::ExecCmd(const CString cmd, const BOOL setCurrentDirectory)
+{
+	BOOL  bReturnVal = false;
+	STARTUPINFO  si;
+	DWORD  dwExitCode = ERROR_NOT_SUPPORTED;
+	SECURITY_ATTRIBUTES saProcess, saThread;
+	PROCESS_INFORMATION process_info;
+
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+
+	saProcess.nLength = sizeof(saProcess);
+	saProcess.lpSecurityDescriptor = NULL;
+	saProcess.bInheritHandle = true;
+
+	saThread.nLength = sizeof(saThread);
+	saThread.lpSecurityDescriptor = NULL;
+	saThread.bInheritHandle = false;
+
+	CString currentDirectory = _T("");
+
+	bReturnVal = CreateProcess(NULL,
+		(LPTSTR)(LPCTSTR)cmd,
+		&saProcess,
+		&saThread,
+		false,
+		DETACHED_PROCESS,
+		NULL,
+		currentDirectory,
+		&si,
+		&process_info);
+
+	if (bReturnVal)
+	{
+		CloseHandle(process_info.hThread);
+		WaitForSingleObject(process_info.hProcess, INFINITE);
+		GetExitCodeProcess(process_info.hProcess, &dwExitCode);
+		CloseHandle(process_info.hProcess);
+	}
+	//else
+	//{
+	//	DWORD dw =  GetLastError();
+	//	dwExitCode = dw;
+	//}
+
+	return dwExitCode;
 }
 
 void CTangram::ExitInstance()
@@ -1906,9 +1985,9 @@ void CTangram::ProcessMsg(LPMSG lpMsg)
 				if (_hPWnd == nullptr)
 				{
 					ChromePlus::CBrowserWnd* pBrowserWnd = (ChromePlus::CBrowserWnd*)it->second;
-					if (pBrowserWnd->m_pOmniboxViewViews&& pBrowserWnd->m_pOmniboxViewViews->IsFocused() == false)
+					if (pBrowserWnd->m_pOmniboxViewViews && pBrowserWnd->m_pOmniboxViewViews->IsFocused() == false)
 						return;
-					CHtmlWnd * pWnd = pBrowserWnd->m_pVisibleWebWnd;
+					CHtmlWnd* pWnd = pBrowserWnd->m_pVisibleWebWnd;
 					if (pWnd && lpMsg->hwnd != pWnd->m_hWnd)
 					{
 						CWndNode* pRetNode = (CWndNode*)::SendMessage(lpMsg->hwnd, WM_TANGRAMGETNODE, 0, 0);
@@ -1936,7 +2015,7 @@ void CTangram::ProcessMsg(LPMSG lpMsg)
 		}
 		return;
 	}
-	if (m_bEclipse&&m_pTangramAppProxy)
+	if (m_bEclipse && m_pTangramAppProxy)
 	{
 		BOOL bToolBarMg = false;
 		ITangramAppProxy* pProxy = m_pActiveAppProxy;
@@ -1995,7 +2074,7 @@ void CTangram::ProcessMsg(LPMSG lpMsg)
 	if (m_pActiveAppProxy)
 	{
 		HWND hMenuWnd = m_pActiveAppProxy->GetActivePopupMenu(nullptr);
-		if (hMenuWnd&&::IsWindow(hMenuWnd))
+		if (hMenuWnd && ::IsWindow(hMenuWnd))
 			::PostMessage(hMenuWnd, WM_CLOSE, 0, 0);
 	}
 }
@@ -2017,7 +2096,7 @@ void CTangram::CreateCommonDesignerToolBar()
 	if (m_pCLRProxy && m_pCLRProxy->IsSupportDesigner() == false)
 		return;
 	HWND hwnd = ::GetActiveWindow();
-	if (m_hHostWnd&&m_pDesignerCompositorManager == nullptr)
+	if (m_hHostWnd && m_pDesignerCompositorManager == nullptr)
 	{
 		RECT rc;
 		::GetWindowRect(hwnd, &rc);
@@ -2071,7 +2150,7 @@ void CTangram::CreateCommonDesignerToolBar()
 
 void CTangram::AttachNode(void* pNodeEvents)
 {
-	CWndNodeEvents*	m_pCLREventConnector = (CWndNodeEvents*)pNodeEvents;
+	CWndNodeEvents* m_pCLREventConnector = (CWndNodeEvents*)pNodeEvents;
 	CWndNode* pNode = (CWndNode*)m_pCLREventConnector->m_pWndNode;
 	pNode->m_pCLREventConnector = m_pCLREventConnector;
 }
@@ -2088,7 +2167,7 @@ long CTangram::GetIPCMsgIndex(CString strMsgID)
 CTangramSession* CTangram::CreateCloudSession(CChromeRenderFrameHostProxy* pOwner)
 {
 	CTangramCloudSession* pSession = new CTangramCloudSession();
-	pSession->m_pOwner = pOwner? pOwner:m_pMainChromeRenderFrameHostProxy;
+	pSession->m_pOwner = pOwner ? pOwner : m_pMainChromeRenderFrameHostProxy;
 	pSession->m_pSession = pSession->m_pOwner->m_pChromeRenderFrameHost->GetIPCSession();
 	pSession->Insertint64(_T("domhandle"), (__int64)pSession);
 	pSession->InsertString(L"sessionid", GetNewGUID());
@@ -2096,23 +2175,23 @@ CTangramSession* CTangram::CreateCloudSession(CChromeRenderFrameHostProxy* pOwne
 }
 
 CTangramSession* CTangram::GetCloudSession(IWndNode* _pNode)
-{ 
+{
 	if (_pNode)
 	{
 		CWndNode* pNode = (CWndNode*)_pNode;
 		return pNode->m_pTangramCloudSession;
 	}
-	return nullptr; 
+	return nullptr;
 }
 
-void CTangram::SetMainWnd(HWND hMain) 
+void CTangram::SetMainWnd(HWND hMain)
 {
 	m_hMainWnd = hMain;
 	CTangramWinFormWnd* pWnd = new CTangramWinFormWnd();
 	pWnd->SubclassWindow(g_pTangram->m_hMainWnd);
 }
 
-void CTangram::ReleaseCLR() 
+void CTangram::ReleaseCLR()
 {
 	if (m_pClrHost && m_nAppID == -1 && theApp.m_bHostCLR == false)
 	{
@@ -2162,10 +2241,10 @@ ICompositor* CTangram::ConnectCompositorManager(HWND hFrame, CString _strFrameNa
 		else
 		{
 			HWND hWnd = pCompositorManager->m_hWnd;
-			if (::GetWindowLong(hWnd, GWL_EXSTYLE)&WS_EX_MDICHILD)
+			if (::GetWindowLong(hWnd, GWL_EXSTYLE) & WS_EX_MDICHILD)
 			{
 				CTangramMDIChildWnd* pWnd = (CTangramMDIChildWnd*)::SendMessage(hWnd, WM_TANGRAMMSG, 0, 19631222);
-				if (pWnd&&pWnd->m_pDocTemplate)
+				if (pWnd && pWnd->m_pDocTemplate)
 				{
 					//strFrameName = _strFrameName;
 					pDocTemplate = pWnd->m_pDocTemplate;
@@ -2219,7 +2298,7 @@ ICompositor* CTangram::ConnectCompositorManager(HWND hFrame, CString _strFrameNa
 			CTangramWinFormWnd* pWnd = (CTangramWinFormWnd*)::SendMessage(hWnd, WM_TANGRAMDATA, 0, 20190214);
 			if (pWnd)
 			{
-				if ((::GetWindowLong(hWnd, GWL_EXSTYLE)&WS_EX_MDICHILD)||(pWnd->m_bMdiForm&&pWnd->m_strChildFormPath != _T("")))
+				if ((::GetWindowLong(hWnd, GWL_EXSTYLE) & WS_EX_MDICHILD) || (pWnd->m_bMdiForm && pWnd->m_strChildFormPath != _T("")))
 					return pCompositor;
 			}
 			pNode->put_SaveToConfigFile(true);
@@ -2231,13 +2310,13 @@ ICompositor* CTangram::ConnectCompositorManager(HWND hFrame, CString _strFrameNa
 
 bool g_bInit = false;
 void CTangram::BrowserAppStart()
-{ 
+{
 	Init();
 	if (g_bInit == true)
 		return;
 	g_bInit = true;
-	if ((m_nAppType!= TANGRAM_APP_BROWSER) && g_pTangram->m_pBrowserFactory && ::IsWindow(m_hChildHostWnd)) {
-		if(m_nAppType == TANGRAM_APP_BROWSERAPP)
+	if ((m_nAppType != TANGRAM_APP_BROWSER) && g_pTangram->m_pBrowserFactory && ::IsWindow(m_hChildHostWnd)) {
+		if (m_nAppType == TANGRAM_APP_BROWSERAPP)
 			m_hMainWnd = m_hHostWnd;
 		::PostMessage(m_hHostWnd, WM_TANGRAMMSG, 0, TANGRAM_CHROME_APP_INIT);
 		if (::PathFileExists(g_pTangram->m_strStartupURL) == false) {
@@ -2245,9 +2324,10 @@ void CTangram::BrowserAppStart()
 			CString strPath = CString(g_pTangram->m_szBuffer);
 			int nPos = strPath.ReverseFind('\\');
 			strPath = strPath.Left(nPos + 1) + _T("tangramteststartupURL.html");
-			if (::PathFileExists(strPath))			{
+			if (::PathFileExists(strPath)) {
 				g_pTangram->m_strStartupURL = strPath;
-			}else
+			}
+			else
 				return;
 		}
 		CString str = _T("<host popup='true'><url></url></host>");
@@ -2268,7 +2348,7 @@ bool CTangram::IsMDIClientCompositorNode(IWndNode* pNode)
 
 	CWndNode* _pNode = (CWndNode*)pNode;
 	HWND hWnd = _pNode->m_pTangramNodeCommonData->m_pCompositorManager->m_hWnd;
-	if (::GetWindowLong(hWnd, GWL_EXSTYLE)&WS_EX_MDICHILD)
+	if (::GetWindowLong(hWnd, GWL_EXSTYLE) & WS_EX_MDICHILD)
 	{
 		return false;
 	}
@@ -2477,12 +2557,12 @@ CString CTangram::InitEclipse(_TCHAR* jarFile)
 	if (mainClassString == nullptr)
 		return _T("");
 
-	const _TCHAR * stringChars = (_TCHAR *)pJVMenv->GetStringChars(mainClassString, 0);
+	const _TCHAR* stringChars = (_TCHAR*)pJVMenv->GetStringChars(mainClassString, 0);
 	CString strName = CString(stringChars);
-	pJVMenv->ReleaseStringChars(mainClassString, (const jchar *)stringChars);
+	pJVMenv->ReleaseStringChars(mainClassString, (const jchar*)stringChars);
 	strName.Trim();
 	strName.Replace(_T("."), _T("/"));
-	
+
 	return strName;
 }
 
@@ -2567,7 +2647,7 @@ void CTangram::CreateEclipseApp(CString strKey, CString strXml)
 
 int CTangram::LoadCLR()
 {
-	if (m_pCLRProxy == nullptr&&m_pClrHost == nullptr)
+	if (m_pCLRProxy == nullptr && m_pClrHost == nullptr)
 	{
 		HMODULE	hMscoreeLib = LoadLibrary(TEXT("mscoree.dll"));
 		if (hMscoreeLib)
@@ -2577,13 +2657,13 @@ int CTangram::LoadCLR()
 			{
 				HRESULT hrStart = 0;
 				ICLRMetaHost* m_pMetaHost = NULL;
-				hrStart = CLRCreateInstance(CLSID_CLRMetaHost, IID_ICLRMetaHost, (LPVOID *)&m_pMetaHost);
+				hrStart = CLRCreateInstance(CLSID_CLRMetaHost, IID_ICLRMetaHost, (LPVOID*)&m_pMetaHost);
 				CString strVer = _T("v4.0.30319");
-				ICLRRuntimeInfo * lpRuntimeInfo = nullptr;
-				hrStart = m_pMetaHost->GetRuntime(strVer.AllocSysString(), IID_ICLRRuntimeInfo, (LPVOID *)&lpRuntimeInfo);
+				ICLRRuntimeInfo* lpRuntimeInfo = nullptr;
+				hrStart = m_pMetaHost->GetRuntime(strVer.AllocSysString(), IID_ICLRRuntimeInfo, (LPVOID*)&lpRuntimeInfo);
 				if (FAILED(hrStart))
 					return S_FALSE;
-				hrStart = lpRuntimeInfo->GetInterface(CLSID_CLRRuntimeHost, IID_ICLRRuntimeHost, (LPVOID *)&m_pClrHost);
+				hrStart = lpRuntimeInfo->GetInterface(CLSID_CLRRuntimeHost, IID_ICLRRuntimeHost, (LPVOID*)&m_pClrHost);
 				if (FAILED(hrStart))
 					return S_FALSE;
 
@@ -2638,14 +2718,18 @@ int CTangram::LoadCLR()
 
 				if (strPath == _T(""))
 				{
-					int nVer = 0;
-	#ifdef _WIN64
-					nVer = 64;
-	#else
-					nVer = 32;
-	#endif
-					strPath.Format(_T("%s\\Microsoft.NET\\assembly\\GAC_%d\\tangram_clr_rt\\v4.0_1.0.1992.1963__1bcc94f26a4807a7\\Tangram_CLR_RT.dll"), m_szBuffer, nVer);
-				}
+					strPath = m_strAppPath + _T("PublicAssemblies\\tangram_clr_rt.dll"); // find the first file
+					if (!::PathFileExists(strPath))
+					{
+						int nVer = 0;
+#ifdef _WIN64
+						nVer = 64;
+#else
+						nVer = 32;
+#endif
+						strPath.Format(_T("%s\\Microsoft.NET\\assembly\\GAC_%d\\tangram_clr_rt\\v4.0_1.0.1992.1963__1bcc94f26a4807a7\\Tangram_CLR_RT.dll"), m_szBuffer, nVer);
+					}
+					}
 
 				CTangramImpl* pTangramProxyBase = static_cast<CTangramImpl*>(this);
 				CString strInfo = _T("");
@@ -2662,9 +2746,9 @@ int CTangram::LoadCLR()
 				FreeLibrary(hMscoreeLib);
 				if (hrStart != S_OK)
 					return -1;
+				}
 			}
 		}
-	}
 	if (m_pCLRProxy != nullptr && m_pClrHost == nullptr)
 	{
 		HMODULE	hMscoreeLib = LoadLibrary(TEXT("mscoree.dll"));
@@ -2685,7 +2769,7 @@ int CTangram::LoadCLR()
 		}
 	}
 	return 0;
-}
+	}
 
 CString CTangram::RemoveUTF8BOM(CString strUTF8)
 {
@@ -2701,7 +2785,7 @@ CString CTangram::RemoveUTF8BOM(CString strUTF8)
 			memcpy(new_cstr, cstr + 3, cc - 3);
 
 			CStringW newStrUTF8;
-			wchar_t *buf = newStrUTF8.GetBuffer(cc - 3);
+			wchar_t* buf = newStrUTF8.GetBuffer(cc - 3);
 			MultiByteToWideChar(CP_UTF8, 0, new_cstr, -1, buf, cc - 3);
 			newStrUTF8.ReleaseBuffer();
 			free(new_cstr);
@@ -2757,7 +2841,7 @@ CWndNode* CTangram::OpenEx(long hWnd, CString strExXml, CString strXml)
 			pWnd->ModifyStyle(0, WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
 	}
 
-	CWndNode *pRootNode = nullptr;
+	CWndNode* pRootNode = nullptr;
 	m_pCompositorManager = nullptr;
 	pRootNode = _pCompositor->OpenXtmlDocument(m_pParse, m_strCurrentKey, strXml);
 	m_strCurrentKey = _T("");
@@ -2790,7 +2874,7 @@ STDMETHODIMP CTangram::put_Application(IDispatch* newVal)
 	return S_FALSE;
 }
 
-STDMETHODIMP CTangram::get_ActiveChromeBrowserWnd(IChromeWebBrowser** ppChromeWebBrowser) 
+STDMETHODIMP CTangram::get_ActiveChromeBrowserWnd(IChromeWebBrowser** ppChromeWebBrowser)
 {
 	ITangram* pTangram = nullptr;
 	get_RemoteTangram(CComBSTR("chromeplus.tangram"), &pTangram);
@@ -2812,7 +2896,7 @@ STDMETHODIMP CTangram::get_ActiveChromeBrowserWnd(IChromeWebBrowser** ppChromeWe
 	return S_OK;
 }
 
-STDMETHODIMP CTangram::get_HostChromeBrowserWnd(IChromeWebBrowser** ppChromeWebBrowser) 
+STDMETHODIMP CTangram::get_HostChromeBrowserWnd(IChromeWebBrowser** ppChromeWebBrowser)
 {
 	if (::GetModuleHandle(L"chrome_elf.dll"))
 	{
@@ -2993,7 +3077,7 @@ STDMETHODIMP CTangram::CreateCLRObj(BSTR bstrObjID, IDispatch** ppDisp)
 							}
 						}
 					}
-					else 
+					else
 					{
 						pApp->QueryInterface(IID_ITangram, (void**)&pRemoteTangram);
 						if (pRemoteTangram)
@@ -3024,7 +3108,7 @@ STDMETHODIMP CTangram::CreateCLRObj(BSTR bstrObjID, IDispatch** ppDisp)
 							if (S_OK == hr)
 							{
 								hr = pApp->Invoke(dispID, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_PROPERTYGET, &dispParams, &result, &excepInfo, &nArgErr);
-								if (S_OK == hr && VT_DISPATCH == result.vt&&result.pdispVal)
+								if (S_OK == hr && VT_DISPATCH == result.vt && result.pdispVal)
 								{
 									result.pdispVal->QueryInterface(IID_ITangram, (void**)&pRemoteTangram);
 									if (pRemoteTangram)
@@ -3062,13 +3146,13 @@ STDMETHODIMP CTangram::CreateCLRObj(BSTR bstrObjID, IDispatch** ppDisp)
 			}
 		}
 	}
-	
+
 	nPos = strID.Find(_T(","));
-	if (nPos!=-1||strID.CompareNoCase(_T("chromert"))==0)
+	if (nPos != -1 || strID.CompareNoCase(_T("chromert")) == 0)
 	{
 		LoadCLR();
 
-		if (m_pCLRProxy&&bstrObjID != L"")
+		if (m_pCLRProxy && bstrObjID != L"")
 		{
 			*ppDisp = m_pCLRProxy->CreateCLRObj(OLE2T(bstrObjID));
 			if (*ppDisp)
@@ -3143,7 +3227,7 @@ CString CTangram::EncodeFileToBase64(CString strSRC)
 			else
 			{
 				int nMaxLineLen = dwFileSize * 2;
-				char *pDstInfo = new char[nMaxLineLen];
+				char* pDstInfo = new char[nMaxLineLen];
 				memset(pDstInfo, 0, dwFileSize * 2);
 				Base64Encode(buffer, dwFileSize, pDstInfo, &nMaxLineLen, 0);
 				CString strInfo = CA2W(pDstInfo);
@@ -3166,7 +3250,7 @@ CString CTangram::Encode(CString strSRC, BOOL bEnCode)
 		std::string strSrc = (LPCSTR)CW2A(srcInfo, CP_UTF8);
 		int nSrcLen = strSrc.length();
 		int nDstLen = Base64EncodeGetRequiredLength(nSrcLen);
-		char *pDstInfo = new char[nSrcLen * 2];
+		char* pDstInfo = new char[nSrcLen * 2];
 		memset(pDstInfo, 0, nSrcLen * 2);
 		ATL::Base64Encode((BYTE*)strSrc.c_str(), nSrcLen, pDstInfo, &nDstLen);
 		CString strInfo = CA2W(pDstInfo);
@@ -3176,7 +3260,7 @@ CString CTangram::Encode(CString strSRC, BOOL bEnCode)
 	else
 	{
 		long nSrcSize = strSRC.GetLength();
-		BYTE *pDecodeStr = new BYTE[nSrcSize];
+		BYTE* pDecodeStr = new BYTE[nSrcSize];
 		memset(pDecodeStr, 0, nSrcSize);
 		int nLen = nSrcSize;
 		ATL::Base64Decode(CW2A(strSRC), nSrcSize, pDecodeStr, &nLen);
@@ -3598,7 +3682,7 @@ STDMETHODIMP CTangram::put_AppKeyValue(BSTR bstrKey, VARIANT newVal)
 
 	if (strKey.CompareNoCase(_T("CLRProxy")) == 0)
 	{
-		if (newVal.llVal == 0&& m_pCLRProxy)
+		if (newVal.llVal == 0 && m_pCLRProxy)
 		{
 			for (auto it : m_mapThreadInfo)
 			{
@@ -3666,7 +3750,7 @@ STDMETHODIMP CTangram::put_AppKeyValue(BSTR bstrKey, VARIANT newVal)
 	}
 	if (strKey.CompareNoCase(_T("unloadclr")) == 0)
 	{
-		if (m_pClrHost&&m_nAppID == -1 && theApp.m_bHostCLR == false)
+		if (m_pClrHost && m_nAppID == -1 && theApp.m_bHostCLR == false)
 		{
 			if (m_hCBTHook)
 			{
@@ -3818,7 +3902,7 @@ STDMETHODIMP CTangram::TangramGetObject(IDispatch* SourceDisp, IDispatch** Resul
 	if (hr == S_OK)
 	{
 		IDispatch* pEventTarget = nullptr;
-		hr = ::CoGetInterfaceAndReleaseStream(pStream, IID_IDispatch, (LPVOID *)&pEventTarget);
+		hr = ::CoGetInterfaceAndReleaseStream(pStream, IID_IDispatch, (LPVOID*)&pEventTarget);
 		if (hr == S_OK && pEventTarget)
 		{
 			*ResultDisp = pEventTarget;
@@ -3830,7 +3914,7 @@ STDMETHODIMP CTangram::TangramGetObject(IDispatch* SourceDisp, IDispatch** Resul
 STDMETHODIMP CTangram::GetCLRControl(IDispatch* CtrlDisp, BSTR bstrNames, IDispatch** ppRetDisp)
 {
 	CString strNames = OLE2T(bstrNames);
-	if (m_pCLRProxy&&strNames != _T("") && CtrlDisp)
+	if (m_pCLRProxy && strNames != _T("") && CtrlDisp)
 		*ppRetDisp = m_pCLRProxy->GetCLRControl(CtrlDisp, bstrNames);
 
 	return S_OK;
@@ -3934,7 +4018,7 @@ STDMETHODIMP CTangram::SetItemText(IWndNode* pNode, long nCtrlID, BSTR bstrText)
 }
 
 STDMETHODIMP CTangram::StartApplication(BSTR bstrAppID, BSTR bstrXml)
-{ 
+{
 	CString strAppID = OLE2T(bstrAppID);
 	strAppID.Trim();
 	strAppID.MakeLower();
@@ -4055,7 +4139,7 @@ STDMETHODIMP CTangram::StartApplication(BSTR bstrAppID, BSTR bstrXml)
 					}
 				}
 			}
-			else if (strAppID == _T("chromeplus")&&::GetModuleHandle(_T("chrome.dll")))
+			else if (strAppID == _T("chromeplus") && ::GetModuleHandle(_T("chrome.dll")))
 			{
 				if (::IsWindow(m_hHostBrowserWnd))
 				{
@@ -4079,7 +4163,7 @@ STDMETHODIMP CTangram::StartApplication(BSTR bstrAppID, BSTR bstrXml)
 				if (S_OK == hr)
 				{
 					hr = pApp->Invoke(dispID, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_PROPERTYGET, &dispParams, &result, &excepInfo, &nArgErr);
-					if (S_OK == hr && VT_DISPATCH == result.vt&&result.pdispVal)
+					if (S_OK == hr && VT_DISPATCH == result.vt && result.pdispVal)
 					{
 						ITangram* pRemoteTangram = nullptr;
 						result.pdispVal->QueryInterface(IID_ITangram, (void**)&pRemoteTangram);
@@ -4115,7 +4199,7 @@ STDMETHODIMP CTangram::StartApplication(BSTR bstrAppID, BSTR bstrXml)
 			int nPos = strAppID.Find(_T(","));
 			if (nPos != -1)
 			{
-				
+
 			}
 		}
 	}
@@ -4126,9 +4210,9 @@ STDMETHODIMP CTangram::StartApplication(BSTR bstrAppID, BSTR bstrXml)
 	return S_OK;
 }
 
-bool CTangram::CheckUrl(CString&   url)
+bool CTangram::CheckUrl(CString& url)
 {
-	char*		res = nullptr;
+	char* res = nullptr;
 	char		dwCode[20];
 	DWORD		dwIndex, dwCodeLen;
 	HINTERNET   hSession, hFile;
@@ -4214,14 +4298,14 @@ STDMETHODIMP CTangram::UpdateWndNode(IWndNode* pNode)
 		}
 		if (pWindowNode->m_nViewType == Splitter)
 		{
-			((CSplitterNodeWnd*)pWindowNode->m_pHostWnd)->Save(); 
+			((CSplitterNodeWnd*)pWindowNode->m_pHostWnd)->Save();
 		}
 		for (auto it2 : pWindowNode->m_vChildNodes)
 		{
 			UpdateWndNode(it2);
 		}
 
-		if ((pWindowNode == pWindowNode->m_pRootObj|| pWindowNode->m_pParentObj==nullptr)&&pWindowNode->m_pTangramNodeCommonData->m_pOfficeObj)
+		if ((pWindowNode == pWindowNode->m_pRootObj || pWindowNode->m_pParentObj == nullptr) && pWindowNode->m_pTangramNodeCommonData->m_pOfficeObj)
 		{
 			CTangramXmlParse* pWndParse = pWindowNode->m_pTangramNodeCommonData->m_pTangramParse->GetChild(_T("window"));
 			CString strXml = pWndParse->xml();
@@ -4230,6 +4314,29 @@ STDMETHODIMP CTangram::UpdateWndNode(IWndNode* pNode)
 		}
 	}
 
+	return S_OK;
+}
+
+HRESULT CTangram::GetCreatingBrowserWnd(LONGLONG* retHandle)
+{
+	*retHandle = (__int64)m_hCreatingWnd;
+	return S_OK;
+}
+
+HRESULT CTangram::CreateBrowser(ULONGLONG hParentWnd, BSTR bstrUrls, IChromeWebBrowser** ppRet)
+{
+	HWND hPWnd = (HWND)hParentWnd;
+	CString strUrls = OLE2T(bstrUrls);
+	CString strPath = m_strAppPath;
+	strUrls.Replace(_T("host:"), strPath);
+	if (m_pBrowserFactory)
+	{
+		strUrls += _T("|");
+		strUrls.Replace(_T("||"), _T("|"));
+		m_hCreatingWnd = m_pBrowserFactory->CreateBrowser(hPWnd, strUrls);
+
+		*ppRet = (IChromeWebBrowser*)::SendMessage(m_hCreatingWnd, WM_TANGRAMMSG, 20190527, 0);
+	}
 	return S_OK;
 }
 
@@ -4498,7 +4605,7 @@ STDMETHODIMP CTangram::CreateTangramCtrl(BSTR bstrAppID, ITangramCtrl** ppRetCtr
 				if (S_OK == hr)
 				{
 					hr = pApp->Invoke(dispID, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_PROPERTYGET, &dispParams, &result, &excepInfo, &nArgErr);
-					if (S_OK == hr && VT_DISPATCH == result.vt&&result.pdispVal)
+					if (S_OK == hr && VT_DISPATCH == result.vt && result.pdispVal)
 					{
 						ITangram* pCloudAddin = nullptr;
 						result.pdispVal->QueryInterface(IID_ITangram, (void**)&pCloudAddin);
@@ -4717,7 +4824,7 @@ STDMETHODIMP CTangram::AttachObjEvent(IDispatch* pDisp, int nEventIndex)
 
 #include <wincrypt.h>
 
-int CTangram::CalculateByteMD5(BYTE* pBuffer, int BufferSize, CString &MD5)
+int CTangram::CalculateByteMD5(BYTE* pBuffer, int BufferSize, CString& MD5)
 {
 	HCRYPTPROV hProv = NULL;
 	DWORD dw = 0;
@@ -4744,7 +4851,7 @@ int CTangram::CalculateByteMD5(BYTE* pBuffer, int BufferSize, CString &MD5)
 
 				unsigned char b;
 				char c;
-				char *Value = new char[1024];
+				char* Value = new char[1024];
 				int k = 0;
 				for (int i = 0; i < 16; i++)
 				{
@@ -4946,7 +5053,7 @@ void CTangramDocTemplate::InitXmlData()
 					}
 				}
 			}
-			if (g_pTangram->m_pMDIMainWnd&&g_pTangram->m_pMDIMainWnd->m_pDocTemplate == this)
+			if (g_pTangram->m_pMDIMainWnd && g_pTangram->m_pMDIMainWnd->m_pDocTemplate == this)
 			{
 				CTangramXmlParse m_Parse;
 				CString strPath = g_pTangram->m_strAppDataPath + _T("default.doctemplate");
@@ -5050,7 +5157,7 @@ bool CTangramDocTemplate::SaveXmlData()
 					strPath += strKey + _T(".doctemplate");
 					bRet = m_Parse.SaveFile(strPath);
 				}
-				else if (g_pTangram->m_pMDIMainWnd&&g_pTangram->m_pMDIMainWnd->m_pDocTemplate == this)
+				else if (g_pTangram->m_pMDIMainWnd && g_pTangram->m_pMDIMainWnd->m_pDocTemplate == this)
 				{
 					strPath = g_pTangram->m_strAppDataPath + _T("default.doctemplate");
 					bRet = m_Parse.SaveFile(strPath);
@@ -5513,9 +5620,9 @@ STDMETHODIMP CTangram::OpenCompositors(LONGLONG hWnd, BSTR bstrFrames, BSTR bstr
 					else
 					{
 						it1.second->Open(bstrKey, bstrXml, &pNode);
-						if (pNode&&bSave)
+						if (pNode && bSave)
 							pNode->put_SaveToConfigFile(true);
-						if (pWnd&&pWnd->m_bMdiForm)
+						if (pWnd && pWnd->m_bMdiForm)
 						{
 							CWndNode* _pNode = (CWndNode*)pNode;
 							CString strXml = _pNode->m_pTangramNodeCommonData->m_pTangramParse->xml();
@@ -5528,7 +5635,7 @@ STDMETHODIMP CTangram::OpenCompositors(LONGLONG hWnd, BSTR bstrFrames, BSTR bstr
 					}
 				}
 			}
-			if (pWnd&&pWnd->m_bMdiForm)
+			if (pWnd && pWnd->m_bMdiForm)
 			{
 				_strXml += _T("</");
 				_strXml += strKey;
@@ -5555,7 +5662,7 @@ STDMETHODIMP CTangram::OpenCompositors(LONGLONG hWnd, BSTR bstrFrames, BSTR bstr
 				{
 					IWndNode* pNode = nullptr;
 					it1.second->Open(bstrKey, bstrXml, &pNode);
-					if (pNode&&bSave)
+					if (pNode && bSave)
 						pNode->put_SaveToConfigFile(true);
 				}
 			}
@@ -5684,9 +5791,9 @@ CString CTangram::GetDesignerData(CWndNode* pNode)
 }
 
 _TCHAR* findProgram(_TCHAR* argv[]) {
-	_TCHAR * program;
+	_TCHAR* program;
 	/* windows, make sure we are looking for the .exe */
-	_TCHAR * ch;
+	_TCHAR* ch;
 	int length = _tcslen(argv[0]);
 	ch = (_TCHAR*)malloc((length + 5) * sizeof(_TCHAR));
 	_tcscpy(ch, argv[0]);
@@ -5770,15 +5877,15 @@ _TCHAR* checkForIni(int argc, _TCHAR* argv[])
 *
 * Returns 0 if success.
 */
-int createUserArgs(int configArgc, _TCHAR **configArgv, int *argc, _TCHAR ***argv)
+int createUserArgs(int configArgc, _TCHAR** configArgv, int* argc, _TCHAR*** argv)
 {
-	_TCHAR** newArray = (_TCHAR **)malloc((configArgc + *argc + 1) * sizeof(_TCHAR *));
+	_TCHAR** newArray = (_TCHAR**)malloc((configArgc + *argc + 1) * sizeof(_TCHAR*));
 
 	newArray[0] = (*argv)[0];	/* use the original argv[0] */
-	memcpy(newArray + 1, configArgv, configArgc * sizeof(_TCHAR *));
+	memcpy(newArray + 1, configArgv, configArgc * sizeof(_TCHAR*));
 
 	/* Skip the argument zero (program path and name) */
-	memcpy(newArray + 1 + configArgc, *argv + 1, (*argc - 1) * sizeof(_TCHAR *));
+	memcpy(newArray + 1 + configArgc, *argv + 1, (*argc - 1) * sizeof(_TCHAR*));
 
 	/* Null terminate the new list of arguments and return it. */
 	*argv = newArray;
@@ -5800,7 +5907,7 @@ int createUserArgs(int configArgc, _TCHAR **configArgv, int *argc, _TCHAR ***arg
 */
 _TCHAR* getDefaultOfficialName(_TCHAR* program)
 {
-	_TCHAR *ch = NULL;
+	_TCHAR* ch = NULL;
 
 	/* Skip the directory part */
 	ch = lastDirSeparator(program);
@@ -5811,7 +5918,7 @@ _TCHAR* getDefaultOfficialName(_TCHAR* program)
 #ifdef _WIN32
 	{
 		/* Search for the extension .exe and cut it */
-		_TCHAR *extension = _tcsrchr(ch, _T_ECLIPSE('.'));
+		_TCHAR* extension = _tcsrchr(ch, _T_ECLIPSE('.'));
 		if (extension != NULL)
 		{
 			*extension = _T_ECLIPSE('\0');
@@ -5880,7 +5987,7 @@ void CTangram::EclipseInit()
 			::DestroyWindow(m_hHostWnd);
 		if (::IsWindow(m_hTangramWnd))
 			::DestroyWindow(m_hTangramWnd);
-		if(::IsWindow(m_hMainWnd))
+		if (::IsWindow(m_hMainWnd))
 			::DestroyWindow(m_hMainWnd);
 	}
 }
@@ -6266,7 +6373,7 @@ void CTangram::InitTangramDocManager()
 	strPath = strPath.Left(nPos + 1);
 	HINSTANCE hInstResource = ::GetModuleHandle(NULL);
 	m_DocImageList.Create(48, 48, ILC_COLOR32, 0, 4);
-	if(m_DocTemplateImageList.m_hImageList==0)
+	if (m_DocTemplateImageList.m_hImageList == 0)
 		m_DocTemplateImageList.Create(32, 32, ILC_COLOR32, 0, 4);
 	m_strDocFilters = _T("");
 	if (m_strDefaultTemplate != _T(""))
@@ -6671,7 +6778,7 @@ void CTangram::InitTangramDocManager()
 		if (strOfficePath != _T(""))
 		{
 			SHFILEINFO sfi;
-			SHGetFileInfo(strOfficePath+_T("excel.exe"),	0,&sfi,	sizeof(SHFILEINFO),	SHGFI_ICON|SHGFI_SYSICONINDEX | SHGFI_LARGEICON);
+			SHGetFileInfo(strOfficePath + _T("excel.exe"), 0, &sfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_SYSICONINDEX | SHGFI_LARGEICON);
 			int nImageIndex = m_DocImageList.Add(sfi.hIcon);
 			m_DocTemplateImageList.Add(sfi.hIcon);
 			pTangramDocTemplateInfo = new TangramDocTemplateInfo();
@@ -6823,25 +6930,25 @@ HICON CTangram::GetAppIcon(int nIndex)
 	switch (nIndex)
 	{
 	case 0:
+	{
+		if (m_hLargeIcon == nullptr)
 		{
-			if (m_hLargeIcon == nullptr)
-			{
-				if(g_pTangram->m_pCLRProxy)
-					m_hLargeIcon=g_pTangram->m_pCLRProxy->GetAppIcon(nIndex);
-			}
-			return m_hLargeIcon;
+			if (g_pTangram->m_pCLRProxy)
+				m_hLargeIcon = g_pTangram->m_pCLRProxy->GetAppIcon(nIndex);
 		}
-		break;
+		return m_hLargeIcon;
+	}
+	break;
 	case 1:
+	{
+		if (m_hSmallIcon == nullptr)
 		{
-			if (m_hSmallIcon == nullptr)
-			{
-				if(g_pTangram->m_pCLRProxy)
-					m_hSmallIcon =g_pTangram->m_pCLRProxy->GetAppIcon(nIndex);
-			}
-			return m_hSmallIcon;
+			if (g_pTangram->m_pCLRProxy)
+				m_hSmallIcon = g_pTangram->m_pCLRProxy->GetAppIcon(nIndex);
 		}
-		break;
+		return m_hSmallIcon;
+	}
+	break;
 	}
 
 	return nullptr;
@@ -7174,12 +7281,12 @@ STDMETHODIMP CTangram::InitEclipseApp()
 			_wfinddata_t fd;
 			fd.attrib = FILE_ATTRIBUTE_DIRECTORY;
 			intptr_t pf = _wfindfirst(strPath, &fd);
-			m_bEclipse = (fd.attrib&FILE_ATTRIBUTE_DIRECTORY) == 0;
+			m_bEclipse = (fd.attrib & FILE_ATTRIBUTE_DIRECTORY) == 0;
 			if (m_bEclipse == false)
 			{
 				while (!_wfindnext(pf, &fd))
 				{
-					m_bEclipse = (fd.attrib&FILE_ATTRIBUTE_DIRECTORY) == 0;
+					m_bEclipse = (fd.attrib & FILE_ATTRIBUTE_DIRECTORY) == 0;
 					if (m_bEclipse)
 					{
 						break;
@@ -7190,7 +7297,7 @@ STDMETHODIMP CTangram::InitEclipseApp()
 		}
 		if (m_bEclipse)
 		{
-			m_strStartJarPath =  DEFAULT_EQUINOX_STARTUP;
+			m_strStartJarPath = DEFAULT_EQUINOX_STARTUP;
 			//CString _strBridgeJavaClass = _T("org/eclipse/equinox/launcher/JNIBridge");
 			//_strBridgeJavaClass.Replace(_T("."), _T("/"));
 			//USES_CONVERSION;
@@ -7202,7 +7309,7 @@ STDMETHODIMP CTangram::InitEclipseApp()
 				EclipseInit();
 				if (::IsWindow(m_hMainWnd) == false)
 				{
-					if (m_nAppType== TANGRAM_APP_ECLIPSE)
+					if (m_nAppType == TANGRAM_APP_ECLIPSE)
 						::PostQuitMessage(0);
 					else
 						m_nAppType = TANGRAM_APP_WILLCLOSE;
@@ -7446,7 +7553,7 @@ ITangramDoc* CTangram::ConnectTangramDoc(ITangramAppProxy* AppProxy, LONGLONG do
 	strID.MakeLower();
 	CTangramDoc* pDoc = nullptr;
 	ITangramAppProxy* pProxy = (ITangramAppProxy*)AppProxy;
-	if (docID&&strID != _T("") && ::IsWindow(hView))
+	if (docID && strID != _T("") && ::IsWindow(hView))
 	{
 		CString s = _T(",");
 		s += strID;
@@ -7488,7 +7595,7 @@ ITangramDoc* CTangram::ConnectTangramDoc(ITangramAppProxy* AppProxy, LONGLONG do
 			pWnd->m_pDocFrame->m_mapWnd[hFrame] = pWnd;
 
 			HWND hPWnd = ::GetParent(hFrame);
-			if (::GetWindowLong(hFrame, GWL_EXSTYLE)&WS_EX_MDICHILD)
+			if (::GetWindowLong(hFrame, GWL_EXSTYLE) & WS_EX_MDICHILD)
 			{
 				::PostMessage(hFrame, WM_TANGRAMMSG, (WPARAM)hFrame, (LPARAM)::GetParent(hPWnd));
 			}
@@ -7515,7 +7622,7 @@ __declspec(dllexport) CTangramImpl* __stdcall  GetTangramImpl(ITangram** pTangra
 
 __declspec(dllexport) void __stdcall  FreeCLR()
 {
-	if (g_pTangram&& g_pTangram->m_pClrHost)
+	if (g_pTangram && g_pTangram->m_pClrHost)
 	{
 		OutputDebugString(_T("------------------Begin Stop CLR------------------------\n"));
 		HRESULT hr = g_pTangram->m_pClrHost->Stop();
@@ -7546,7 +7653,7 @@ __declspec(dllexport) void __stdcall  SetMainDllLoader(CTangramMainDllLoader* pL
 	switch (g_pTangram->m_nAppType)
 	{
 	case TANGRAM_APP_BROWSER:
-		if(g_pTangram->m_pTangramDelegate->m_pJVM==nullptr)
+		if (g_pTangram->m_pTangramDelegate->m_pJVM == nullptr)
 			::PostQuitMessage(0);
 		break;
 	case TANGRAM_APP_WILLCLOSE:
@@ -7558,7 +7665,7 @@ __declspec(dllexport) void __stdcall  SetMainDllLoader(CTangramMainDllLoader* pL
 	}
 }
 
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved)
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
 	JNIEnv* env = nullptr;
 	if (vm->GetEnv(reinterpret_cast<void**>(&env), g_pTangram->m_nJVMVersion) != JNI_OK) {
@@ -7579,34 +7686,34 @@ BOOL CTangram::InitJNIForTangram()
 {
 	if (m_bTangramJniInit == TRUE)
 		return FALSE;
-	JNIEnv * _pJVMenv = nullptr;
+	JNIEnv* _pJVMenv = nullptr;
 	if (g_pTangram->m_pTangramDelegate->m_pJVMenv)
 		_pJVMenv = g_pTangram->m_pTangramDelegate->m_pJVMenv;
 	else
 	{
 		JNI_GetCreatedJavaVMs_ GetJavaVM = (JNI_GetCreatedJavaVMs_)::GetProcAddress(::GetModuleHandle(_T("jvm.dll")), "JNI_GetCreatedJavaVMs");
-		if (GetJavaVM != nullptr){
-			JavaVM*  pVM = nullptr;
+		if (GetJavaVM != nullptr) {
+			JavaVM* pVM = nullptr;
 			jsize nSize = 1;
 			jsize nCount = 0;
 			jint nRet = GetJavaVM(&pVM, nSize, &nCount);
-			if (nRet == 0){
+			if (nRet == 0) {
 				ASSERT(pVM != nullptr);
 				if (pVM->GetEnv(reinterpret_cast<void**>(&_pJVMenv), g_pTangram->m_nJVMVersion) != JNI_OK) {
 					return FALSE;
 				}
 			}
-			else{
+			else {
 				TRACE(_T("GetVM Failed\n"));
 			}
 		}
 	}
-	if(_pJVMenv){
+	if (_pJVMenv) {
 		CString strJavaJniPath = m_strAppPath + _T("TangramJniInfo.xml");
 		CTangramXmlParse m_Parse;
-		if (!(::PathFileExists(strJavaJniPath)&&m_Parse.LoadFile(strJavaJniPath))){
+		if (!(::PathFileExists(strJavaJniPath) && m_Parse.LoadFile(strJavaJniPath))) {
 			auto it = g_pTangram->m_mapValInfo.find(_T("tangramjniinfo"));
-			if (it != g_pTangram->m_mapValInfo.end()){
+			if (it != g_pTangram->m_mapValInfo.end()) {
 				if (m_Parse.LoadXml(it->second.bstrVal) == false)
 					return FALSE;
 			}
@@ -7623,21 +7730,21 @@ BOOL CTangram::InitJNIForTangram()
 		{
 			if (systemClass != NULL) {
 				loadMethod = _pJVMenv->GetStaticMethodID(systemClass, "load", "(Ljava/lang/String;)V");
-				if (loadMethod != NULL){
-					for (int j = 0; j < nCount; j++){
+				if (loadMethod != NULL) {
+					for (int j = 0; j < nCount; j++) {
 						CTangramXmlParse* pParse = m_Parse.GetChild(j);
 						CString strLib = pParse->text();
 						bool bExists = true;
-						if (::PathFileExists(strLib) == false){
+						if (::PathFileExists(strLib) == false) {
 							CString _strLib = strLib;
 							strLib = m_strAppPath + _T("tangramjni\\") + strLib;
-							if (::PathFileExists(strLib) == false){
+							if (::PathFileExists(strLib) == false) {
 								strLib = m_strProgramFilePath + _T("tangram\\tangramjni\\") + _strLib;
 								if (::PathFileExists(strLib) == false)
 									bExists = false;
 							}
 						}
-						if (bExists){
+						if (bExists) {
 							wchar_t* _strLib = strLib.GetBuffer();
 							jstring jarFileString = newJavaString(_pJVMenv, _strLib);
 							strLib.ReleaseBuffer();
@@ -7761,13 +7868,13 @@ CString CTangram::GetSchemeBaseName()
 }
 
 char* CTangram::GetSchemeString(int nType, CString strKey)
-{ 
+{
 	switch (nType)
 	{
 	case 0:
 		return "chrome";
 	}
-	return nullptr; 
+	return nullptr;
 }
 
 void CTangram::InsertTangramDataMap(int nType, CString strKey, void* pData)
@@ -7776,7 +7883,7 @@ void CTangram::InsertTangramDataMap(int nType, CString strKey, void* pData)
 	{
 	case 0:
 	{
-		if(pData)
+		if (pData)
 			m_mapTangramAppProxy[strKey] = (ITangramAppProxy*)pData;
 		else
 		{
@@ -7787,7 +7894,7 @@ void CTangram::InsertTangramDataMap(int nType, CString strKey, void* pData)
 			}
 		}
 	}
-		break;
+	break;
 	case 1:
 	{
 		if (pData)
@@ -7803,6 +7910,6 @@ void CTangram::InsertTangramDataMap(int nType, CString strKey, void* pData)
 			}
 		}
 	}
-		break;
+	break;
 	}
 }
