@@ -84,6 +84,7 @@ public:
 	~CGenericPaneWnd(void) {};
 	HWND m_hChild;
 	CCompositor* m_pCompositor = nullptr;
+	CString m_strToolType = _T("");
 	BEGIN_MSG_MAP(CGenericPaneWnd)
 		MESSAGE_HANDLER(WM_SHOWWINDOW, OnShowWindow)
 		MESSAGE_HANDLER(WM_TANGRAMMSG, OnTangramMsg)

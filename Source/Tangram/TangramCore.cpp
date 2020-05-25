@@ -1796,11 +1796,18 @@ void CTangram::TangramInit()
 			if (m_pCLRProxy)
 				m_pCLRProxy->TangramAction(CComBSTR(strXml), nullptr);
 			pDisp.CoCreateInstance(CComBSTR("WebRuntimeForVs.AppObj.1"));
+			if (pDisp == nullptr && m_bAdmin == false)
+			{
+				::MessageBox(NULL, _T("In order for WebRuntime for Visual Studio Work Correctly, \nPlease restart Visual Studio with Administrator AUTHORITY!"), _T("Visual Studio"), MB_OK);
+				return;
+			}
 		}
 		if (pDisp)
 		{
 			m_pTangramVS = pDisp;
 			m_pTangramVS->AddRef();
+			__int64 nHandle = (__int64)m_pTangramVS;
+			m_mapValInfo[_T("vstangramhandle")] = CComVariant((__int64)nHandle);
 		}
 	}
 }
@@ -4136,17 +4143,6 @@ STDMETHODIMP CTangram::StartApplication(BSTR bstrAppID, BSTR bstrXml)
 								m_mapRemoteTangramHelperWnd[strAppID] = pWnd;
 							}
 						}
-					}
-				}
-			}
-			else if (strAppID == _T("chromeplus") && ::GetModuleHandle(_T("chrome.dll")))
-			{
-				if (::IsWindow(m_hHostBrowserWnd))
-				{
-					auto it = m_mapBrowserWnd.find(m_hHostBrowserWnd);
-					if (it != m_mapBrowserWnd.end())
-					{
-						HWND hBrowser = m_pBrowserFactory->CreateBrowser(NULL, OLE2T(bstrXml));
 					}
 				}
 			}

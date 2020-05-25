@@ -75,6 +75,8 @@ int CWebView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 			theApp.m_pTangramFromWebRuntime->CreateBrowser((__int64)m_hWnd, bstrUrl, &pWebBrowser);
 			if (pWebBrowser)
 			{
+				m_pChromeWebBrowser = pWebBrowser.Detach();
+				m_pChromeWebBrowser->AddRef();
 				__int64 hWnd = 0;
 				theApp.m_pTangramFromWebRuntime->GetCreatingBrowserWnd(&hWnd);
 				m_hWebBrowser = (HWND)hWnd;
@@ -107,6 +109,7 @@ void CWebView::OnSize(UINT nType, int cx, int cy)
 
 void CWebView::OnDestroy()
 {
+	m_pChromeWebBrowser->Release();
 	::DestroyWindow(m_hWebBrowser);
 	CView::OnDestroy();
 }
