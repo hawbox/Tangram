@@ -36,4 +36,4 @@
 #endif //PCH_H
 #include <afxwin.h>
 
-#include "WebRuntimeForVS.h"
+#include "TangramCommon.h"

@@ -984,6 +984,7 @@ namespace TangramCLR
 		static Dictionary<String^, String^>^ CustomizeDictionary = gcnew Dictionary<String^, String^>();
 	public:
 #ifndef _WIN64
+		static IntPtr m_nHWebRuntimeToolWndPane = IntPtr::Zero;
 		static Dictionary<String^, String^>^ replacementsDictionary = nullptr;
 		static Control^ m_pWizForm = nullptr;
 #endif
@@ -1146,6 +1147,7 @@ namespace TangramCLR
 			};
 		}
 
+		static Compositor^ CreateVSToolWnd(String^ strXm);
 		static void AttachGridView(long handle);
 		static IntPtr GetChild(IntPtr nHandle);
 		static void ShowVSToolBox(IntPtr nHandle);

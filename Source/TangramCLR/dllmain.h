@@ -40,6 +40,7 @@ public:
 	DWORD									m_dwThreadID;
 	HWND									m_hHostWnd;
 	ITangram*								m_pTangram;
+	ITangram*								m_pTangramVS = nullptr;
 	IVSExtender*							m_pVSExtender;
 
 	CString									m_strAppPath;

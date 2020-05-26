@@ -43,13 +43,9 @@ BOOL CTangramApp::InitInstance()
 	TangramInit(_T("Forms"));
 	if (m_pTangramFromWebRuntime == nullptr)
 	{
-		CComPtr<ITangram> pDisp;
-		pDisp.CoCreateInstance(CComBSTR("WebRuntimeForVs.AppObj.1"));
-		if (pDisp)
-		{
-			m_pTangramFromWebRuntime = pDisp.Detach();
-			m_pTangramFromWebRuntime->AddRef();
-		}
+		CComVariant var;
+		theApp.m_pTangram->get_AppKeyValue(CComBSTR("vstangramhandle"), &var);
+		m_pTangramFromWebRuntime = (ITangram*)var.llVal;
 	}
 	return CWinApp::InitInstance();
 }

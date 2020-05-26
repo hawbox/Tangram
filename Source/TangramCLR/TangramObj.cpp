@@ -846,6 +846,30 @@ namespace TangramCLR
 			}
 		}
 	}
+	
+	Compositor^ Tangram::CreateVSToolWnd(String^ strXml)
+	{
+		if (m_nHWebRuntimeToolWndPane == IntPtr::Zero)
+		{
+			CComVariant var;
+			theApp.m_pTangram->get_AppKeyValue(CComBSTR("webruntimetoolwndpane"), &var);
+			m_nHWebRuntimeToolWndPane = (IntPtr)var.llVal;
+		}
+		if (m_nHWebRuntimeToolWndPane != IntPtr::Zero)
+		{
+			HWND hWnd = (HWND)m_nHWebRuntimeToolWndPane.ToPointer();
+			CString _strXml = strXml;
+			LRESULT l = ::SendMessage(hWnd, WM_TANGRAMMSG, (WPARAM)_strXml.GetBuffer(), 20200525);
+			_strXml.ReleaseBuffer();
+			hWnd = (HWND)l;
+			if (::IsWindow(hWnd))
+			{
+				ICompositor* pCompositor = (ICompositor*)::GetWindowLongPtr(hWnd, GWLP_USERDATA);
+				return theAppProxy._createObject<ICompositor, Compositor>(pCompositor);
+			}
+		}
+		return nullptr;
+	}
 
 	IntPtr Tangram::GetChild(IntPtr nHandle)
 	{
@@ -865,12 +889,20 @@ namespace TangramCLR
 					if (theApp.m_bVSToolBoxConnected == true)
 						return (IntPtr)hWndChild;
 					theApp.m_bVSToolBoxConnected = true;
-					CComPtr<ITangram> pAppObj;
-					pAppObj.CoCreateInstance(CComBSTR("WebRuntimeForVs.AppObj.1"));
-					if (pAppObj.p)
+					if (theApp.m_pTangramVS == nullptr)
 					{
 						CComVariant var;
-						pAppObj->get_AppKeyValue(CComBSTR("appdata"), &var);
+						theApp.m_pTangram->get_AppKeyValue(CComBSTR("vstangramhandle"), &var);
+						__int64 nHandle = var.llVal;
+						if (nHandle)
+						{
+							theApp.m_pTangramVS = (ITangram*)nHandle;
+						}
+					}
+					if (theApp.m_pTangramVS)
+					{
+						CComVariant var;
+						theApp.m_pTangramVS->get_AppKeyValue(CComBSTR("appdata"), &var);
 						CString strXml = OLE2T(var.bstrVal);
 						if (strXml != _T(""))
 						{
@@ -1807,12 +1839,20 @@ namespace TangramCLR
 	{
 		TangramCLR::Tangram::GetTangram();
 		HWND hPWnd = (HWND)ParentHandle.ToPointer();
-		CComPtr<ITangram> pAppObj;
-		pAppObj.CoCreateInstance(CComBSTR("WebRuntimeForVs.AppObj.1"));
-		if (pAppObj.p)
+		if (theApp.m_pTangramVS == nullptr)
+		{
+			CComVariant var;
+			theApp.m_pTangram->get_AppKeyValue(CComBSTR("vstangramhandle"), &var);
+			__int64 nHandle = var.llVal;
+			if (nHandle)
+			{
+				theApp.m_pTangramVS = (ITangram*)nHandle;
+			}
+		}
+		if (theApp.m_pTangramVS)
 		{
 			CComPtr< IChromeWebBrowser> pBrowser;
-			pAppObj.p->CreateBrowser((__int64)ParentHandle.ToPointer(), STRING2BSTR(strUrls),&pBrowser);
+			theApp.m_pTangramVS->CreateBrowser((__int64)ParentHandle.ToPointer(), STRING2BSTR(strUrls),&pBrowser);
 			auto it = theAppProxy.m_mapChromeWebBrowser.find(pBrowser);
 			if (it != theAppProxy.m_mapChromeWebBrowser.end())
 				return it->second;
